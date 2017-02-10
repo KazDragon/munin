@@ -38,6 +38,18 @@ if (GTEST_FOUND)
     enable_testing()
 endif()
 
+if (MUNIN_SANITIZE)
+    list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
+    list(APPEND CMAKE_EXE_LINKER_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
+endif()
+
+if (MUNIN_COVERAGE)
+    list(APPEND CMAKE_CXX_FLAGS "--coverage -g -O0")
+    list(APPEND CMAKE_EXE_LINKER_FLAGS "--coverage")
+endif()
+
+set (MUNIN_VERSION 0.0.1)
+
 set (munin_SOURCES
     src/algorithm.cpp
 )
@@ -47,6 +59,13 @@ add_library(munin ${munin_SOURCES})
 generate_export_header(munin
     EXPORT_FILE_NAME
         "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
+)
+
+set_target_properties(munin
+    PROPERTIES
+        CXX_VISIBILITY_PRESET hidden
+        VERSION ${MUNIN_VERSION}
+        SOVERSION ${MUNIN_VERSION}
 )
 
 target_include_directories(munin
@@ -67,3 +86,22 @@ target_compile_features(munin
         cxx_generic_lambdas
 )
 
+if (GTEST_FOUND)
+    enable_testing()
+
+    set (munin_test_SOURCES
+        test/algorithm_test.cpp
+    )
+
+    add_executable(munin_tester
+        ${munin_test_SOURCES}
+    )
+
+    target_link_libraries(munin_tester
+        munin
+        ${GTEST_LIBRARY}
+        ${GTEST_MAIN_LIBRARY}
+    )
+
+    add_test(munin_test munin_tester)
+endif()
