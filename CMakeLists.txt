@@ -11,6 +11,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include(FindBoost)
 find_package(Boost REQUIRED)
 
+# Terminal++ is required for this library.
+find_package(Terminalpp)
+
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
@@ -36,15 +39,20 @@ if (GTEST_FOUND)
 endif()
 
 set (munin_SOURCES
-    src/munin/dummy.cpp
+    src/algorithm.cpp
 )
 
 add_library(munin ${munin_SOURCES})
 
+generate_export_header(munin
+    EXPORT_FILE_NAME
+        "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
+)
+
 target_include_directories(munin
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-        ${Boost_INCLUDE_DIRS}
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        "${Boost_INCLUDE_DIRS}"
 )
 
 target_link_libraries(munin
