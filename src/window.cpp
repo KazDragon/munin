@@ -3,28 +3,12 @@
 #include "munin/container.hpp"
 #include "munin/basic_container.hpp"
 #include "munin/context.hpp"
+#include "munin/detail/lambda_visitor.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <terminalpp/terminalpp.hpp>
 #include <boost/format.hpp>
 
 namespace munin {
-
-namespace {
-
-// ==========================================================================
-// UNPACKAGE_VISITOR
-// ==========================================================================
-struct unpackage_visitor : boost::static_visitor<boost::any>
-{
-    // Simply package up any input into a Boost.Any and return it.
-    template <class Packaged>
-    boost::any operator()(Packaged &&pack)
-    {
-        return pack;
-    }
-};
-
-}
 
 // ==========================================================================
 // WINDOW IMPLEMENTATION STRUCTURE
@@ -140,13 +124,11 @@ public :
     // ======================================================================
     void data(std::string const &data)
     {
-        static unpackage_visitor visitor;
-
-        auto tokens = terminal_.read(data);
-
-        for (auto const &token : tokens)
+        for (auto const &token : terminal_.read(data))
         {
-            content_->event(boost::apply_visitor(visitor, token));
+            content_->event(
+                munin::detail::make_lambda_visitor(
+                    [](auto &&ev) { return ev; }));
         }
     }
 
@@ -324,7 +306,7 @@ private :
     bool                          handling_newline_;
     char                          newline_char_;
 
-    std::vector<boost::signals::connection> connections_;
+    std::vector<boost::signals2::connection> connections_;
 };
 
 // ==========================================================================

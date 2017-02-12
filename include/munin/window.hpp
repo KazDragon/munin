@@ -5,7 +5,7 @@
 #include <terminalpp/terminal.hpp>
 #include <boost/any.hpp>
 #include <boost/asio/strand.hpp>
-#include <boost/signal.hpp>
+#include <boost/signals2/signal.hpp>
 #include <string>
 
 namespace munin {
@@ -71,7 +71,7 @@ public :
     /// \brief Connect to this signal in order to receive notification about
     /// when the window has repainted and the data for how to repaint it.
     //* =====================================================================
-    boost::signal
+    boost::signals2::signal
     <
         void (std::string const &paint_data)
     > on_repaint;

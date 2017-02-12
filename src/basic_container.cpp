@@ -6,7 +6,7 @@
 namespace munin {
 
 namespace {
-    typedef std::map<odin::u32, std::unique_ptr<layout>> layered_layout_map;
+    typedef std::map<u32, std::unique_ptr<layout>> layered_layout_map;
 }
 
 // ==========================================================================
@@ -216,9 +216,9 @@ struct basic_container::impl
         // has no focus, we move the focus to the next subcomponent that
         // can be focused.  If there is no such object, then we lose our
         // focus.
-        odin::u32 number_of_components = odin::u32(components_.size());
+        u32 number_of_components = u32(components_.size());
 
-        for (odin::u32 index = 0; index < number_of_components; ++index)
+        for (u32 index = 0; index < number_of_components; ++index)
         {
             auto current_component = components_[index];
 
@@ -231,7 +231,7 @@ struct basic_container::impl
                     bool focused = false;
 
                     // Find the index of the next component that can have focus.
-                    for (odin::u32 next_index = index + 1;
+                    for (u32 next_index = index + 1;
                          next_index < number_of_components && !focused;
                          ++next_index)
                     {
@@ -283,9 +283,9 @@ struct basic_container::impl
         // that, it no longer has focus, then we find the component prior
         // to that that can have focus and tell it to set its previous focus.
         // If there is no component to focus, then just lose our focus.
-        auto number_of_components = odin::u32(components_.size());
+        auto number_of_components = u32(components_.size());
 
-        for (odin::u32 index = 0; index < number_of_components; ++index)
+        for (u32 index = 0; index < number_of_components; ++index)
         {
             auto current_component = components_[index];
 
@@ -334,7 +334,7 @@ struct basic_container::impl
     {
         // Find the last component that could have focus and focus its
         // last element.
-        auto number_of_components = odin::u32(components_.size());
+        auto number_of_components = u32(components_.size());
 
         for (auto index = number_of_components; index > 0; --index)
         {
@@ -348,17 +348,17 @@ struct basic_container::impl
         }
     }
 
-    basic_container                                     &self_;
-    std::weak_ptr<component>                             parent_;
-    std::vector<std::shared_ptr<component>>              components_;
-    std::vector<boost::any>                              component_hints_;
-    std::vector<odin::u32>                               component_layers_;
-    std::vector<std::vector<boost::signals::connection>> component_connections_;
-    layered_layout_map                                   layouts_;
-    rectangle                                            bounds_;
-    bool                                                 has_focus_;
-    bool                                                 cursor_state_;
-    bool                                                 enabled_;
+    basic_container                                      &self_;
+    std::weak_ptr<component>                              parent_;
+    std::vector<std::shared_ptr<component>>               components_;
+    std::vector<boost::any>                               component_hints_;
+    std::vector<u32>                                      component_layers_;
+    std::vector<std::vector<boost::signals2::connection>> component_connections_;
+    layered_layout_map                                    layouts_;
+    rectangle                                             bounds_;
+    bool                                                  has_focus_;
+    bool                                                  cursor_state_;
+    bool                                                  enabled_;
 };
 
 // ==========================================================================
@@ -447,14 +447,14 @@ terminalpp::extent basic_container::do_get_preferred_size() const
     terminalpp::extent preferred_size(0, 0);
 
     // Sort the components/hints into layers
-    typedef std::map<odin::u32, std::vector<std::shared_ptr<component>>> clmap;
-    typedef std::map<odin::u32, std::vector<boost::any>>                 chmap;
+    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
+    typedef std::map<u32, std::vector<boost::any>>                 chmap;
 
     clmap component_layers_map;
     chmap component_hints_map;
 
     // Iterate through the components, sorting them by layer
-    for (odin::u32 index = 0; index < pimpl_->components_.size(); ++index)
+    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
     {
         auto comp =  pimpl_->components_[index];
         auto hint =  pimpl_->component_hints_[index];
@@ -495,9 +495,9 @@ terminalpp::extent basic_container::do_get_preferred_size() const
 // ==========================================================================
 // DO_GET_NUMBER_OF_COMPONENTS
 // ==========================================================================
-odin::u32 basic_container::do_get_number_of_components() const
+u32 basic_container::do_get_number_of_components() const
 {
-    return odin::u32(pimpl_->components_.size());
+    return u32(pimpl_->components_.size());
 }
 
 // ==========================================================================
@@ -506,14 +506,14 @@ odin::u32 basic_container::do_get_number_of_components() const
 void basic_container::do_add_component(
     std::shared_ptr<component> const &comp
   , boost::any                 const &hint
-  , odin::u32                         layer)
+  , u32                         layer)
 {
     // Store the component and the layer in which it is to be drawn.
     pimpl_->components_.push_back(comp);
     pimpl_->component_hints_.push_back(hint);
     pimpl_->component_layers_.push_back(layer);
 
-    std::vector<boost::signals::connection> component_connections;
+    std::vector<boost::signals2::connection> component_connections;
 
     // Register for callbacks for when the new subcomponent either gains
     // or loses focus.  We can make sure our own focus is correct based
@@ -615,7 +615,7 @@ void basic_container::do_remove_component(
 // ==========================================================================
 // DO_GET_COMPONENT
 // ==========================================================================
-std::shared_ptr<component> basic_container::do_get_component(odin::u32 index) const
+std::shared_ptr<component> basic_container::do_get_component(u32 index) const
 {
     return pimpl_->components_[index];
 }
@@ -623,7 +623,7 @@ std::shared_ptr<component> basic_container::do_get_component(odin::u32 index) co
 // ==========================================================================
 // DO_GET_COMPONENT_HINT
 // ==========================================================================
-boost::any basic_container::do_get_component_hint(odin::u32 index) const
+boost::any basic_container::do_get_component_hint(u32 index) const
 {
     return pimpl_->component_hints_[index];
 }
@@ -631,7 +631,7 @@ boost::any basic_container::do_get_component_hint(odin::u32 index) const
 // ==========================================================================
 // DO_GET_COMPONENT_LAYER
 // ==========================================================================
-odin::u32 basic_container::do_get_component_layer(odin::u32 index) const
+u32 basic_container::do_get_component_layer(u32 index) const
 {
     return pimpl_->component_layers_[index];
 }
@@ -641,7 +641,7 @@ odin::u32 basic_container::do_get_component_layer(odin::u32 index) const
 // ==========================================================================
 void basic_container::do_set_layout(
     std::unique_ptr<munin::layout> lyt
-  , odin::u32                      layer)
+  , u32                      layer)
 {
     pimpl_->layouts_[layer] = std::move(lyt);
 }
@@ -649,7 +649,7 @@ void basic_container::do_set_layout(
 // ==========================================================================
 // DO_GET_LAYOUT
 // ==========================================================================
-boost::optional<layout &> basic_container::do_get_layout(odin::u32 layer) const
+boost::optional<layout &> basic_container::do_get_layout(u32 layer) const
 {
     auto result = pimpl_->layouts_.find(layer);
 
@@ -661,11 +661,11 @@ boost::optional<layout &> basic_container::do_get_layout(odin::u32 layer) const
 // ==========================================================================
 // DO_GET_LAYOUT_LAYERS
 // ==========================================================================
-std::vector<odin::u32> basic_container::do_get_layout_layers() const
+std::vector<u32> basic_container::do_get_layout_layers() const
 {
-    std::vector<odin::u32> layers(pimpl_->layouts_.size());
+    std::vector<u32> layers(pimpl_->layouts_.size());
 
-    odin::u32 index = 0;
+    u32 index = 0;
     for (auto const &lp : pimpl_->layouts_)
     {
         layers[index++] = lp.first;
@@ -846,8 +846,8 @@ void basic_container::do_event(boost::any const &event)
                 // subcomponent's position is taken into account.
                 terminalpp::ansi::mouse::report subreport;
                 subreport.button_     = report->button_;
-                subreport.x_position_ = odin::u8(report->x_position_ - position.x);
-                subreport.y_position_ = odin::u8(report->y_position_ - position.y);
+                subreport.x_position_ = u8(report->x_position_ - position.x);
+                subreport.y_position_ = u8(report->y_position_ - position.y);
 
                 // Forward the event onto the component, then look no further.
                 current_component->event(subreport);
@@ -945,14 +945,14 @@ void basic_container::do_set_attribute(
 void basic_container::do_layout()
 {
     // Sort the components/hints into layers
-    typedef std::map<odin::u32, std::vector<std::shared_ptr<component>>> clmap;
-    typedef std::map<odin::u32, std::vector<boost::any>>                 chmap;
+    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
+    typedef std::map<u32, std::vector<boost::any>>                 chmap;
 
     clmap component_layers_map;
     chmap component_hints_map;
 
     // Iterate through the components, sorting them by layer
-    for (odin::u32 index = 0; index < pimpl_->components_.size(); ++index)
+    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
     {
         auto comp =  pimpl_->components_[index];
         auto hint =  pimpl_->component_hints_[index];

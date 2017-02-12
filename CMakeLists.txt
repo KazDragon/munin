@@ -8,16 +8,18 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+# Some Boost components are required for this library
 include(FindBoost)
-find_package(Boost REQUIRED)
+find_package(Boost
+    REQUIRED
+    COMPONENTS
+        system)
 
 # Terminal++ is required for this library.
-find_package(Terminalpp)
+find_package(Terminalpp REQUIRED)
 
-# When building shared objects, etc., we only want to export certain symbols.
-# Therefore, we need to generate headers suitable for declaring which symbols
-# should be included.
-include(GenerateExportHeader)
+# GSL-Lite is required for this library
+find_package(gsl_lite REQUIRED)
 
 # Due to the strange requirements for Google Test, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
@@ -30,13 +32,18 @@ include(GenerateExportHeader)
 #  cd ..
 find_package(GTest)
 
-# For GTest, it is necessary to link with the appropriate local threading 
-# library.
-find_package(Threads)
-
 if (GTEST_FOUND)
+    # For GTest, it is necessary to link with the appropriate local threading
+    # library.
+    find_package(Threads)
+
     enable_testing()
 endif()
+
+# When building shared objects, etc., we only want to export certain symbols.
+# Therefore, we need to generate headers suitable for declaring which symbols
+# should be included.
+include(GenerateExportHeader)
 
 if (MUNIN_SANITIZE)
     list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
@@ -52,6 +59,12 @@ set (MUNIN_VERSION 0.0.1)
 
 set (munin_SOURCES
     src/algorithm.cpp
+    src/basic_container.cpp
+    src/component.cpp
+    src/container.cpp
+    src/context.cpp
+    src/layout.cpp
+    src/window.cpp
 )
 
 add_library(munin ${munin_SOURCES})
@@ -77,10 +90,11 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        ${Boost_SYSTEM_LIBRARY}
 )
 
 target_compile_features(munin
-    PRIVATE 
+    PRIVATE
         cxx_auto_type
         cxx_strong_enums
         cxx_generic_lambdas

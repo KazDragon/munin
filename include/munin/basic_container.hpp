@@ -75,7 +75,7 @@ protected :
     /// override this function in order to retrieve the number of components
     /// in this basic_container in a custom manner.
     //* =====================================================================
-    virtual odin::u32 do_get_number_of_components() const override;
+    virtual u32 do_get_number_of_components() const override;
 
     //* =====================================================================
     /// \brief Called by add_component().  Derived classes must override
@@ -83,9 +83,9 @@ protected :
     /// custom manner.
     //* =====================================================================
     virtual void do_add_component(
-        std::shared_ptr<component> const &component
-      , boost::any                 const &hint
-      , odin::u32                         layer) override;
+        std::shared_ptr<component> const &component,
+        boost::any                 const &hint,
+        u32                               layer) override;
 
     //* ====================================================================
     /// \brief Called by remove_component().  Derived classes must override
@@ -100,29 +100,29 @@ protected :
     /// function in order to retrieve a component in a custom manner.
     //* =====================================================================
     virtual std::shared_ptr<component> do_get_component(
-        odin::u32 index) const override;
+        u32 index) const override;
 
     //* =====================================================================
     /// \brief Called by get_component_hint().  Derived classes must
     /// override this function in order to retrieve a component hint in a
     /// custom manner.
     //* =====================================================================
-    virtual boost::any do_get_component_hint(odin::u32 index) const override;
+    virtual boost::any do_get_component_hint(u32 index) const override;
 
     //* =====================================================================
     /// \brief Called by get_component_layer().  Derived classes must
     /// override this function in order to retrieve a component layer in a
     /// custom manner.
     //* =====================================================================
-    virtual odin::u32 do_get_component_layer(odin::u32 index) const override;
+    virtual u32 do_get_component_layer(u32 index) const override;
 
     //* =====================================================================
     /// \brief Called by set_layout.  Derived classes must override this
     /// function in order to set a layout in a custom manner.
     //* =====================================================================
     virtual void do_set_layout(
-        std::unique_ptr<munin::layout> lyt
-      , odin::u32                      layer) override;
+        std::unique_ptr<munin::layout> lyt,
+        u32                            layer) override;
 
     //* =====================================================================
     /// \brief Called by get_layout.  Derived classes must override this
@@ -130,14 +130,14 @@ protected :
     /// manner.
     //* =====================================================================
     virtual boost::optional<munin::layout &> do_get_layout(
-        odin::u32 layer) const override;
+        u32 layer) const override;
 
     //* =====================================================================
     /// \brief Called by get_layout_layers.  Derived classes must override
     /// this function in order to get the container's layout in a custom
     /// manner.
     //* =====================================================================
-    virtual std::vector<odin::u32> do_get_layout_layers() const override;
+    virtual std::vector<u32> do_get_layout_layers() const override;
 
     //* =====================================================================
     /// \brief Called by has_focus().  Derived classes must override this

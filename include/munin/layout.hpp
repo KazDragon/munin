@@ -1,7 +1,7 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include "odin/core.hpp"
+#include "munin/core.hpp"
 #include <terminalpp/extent.hpp>
 #include <boost/any.hpp>
 #include <boost/optional.hpp>

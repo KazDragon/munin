@@ -2,7 +2,7 @@
 
 #include "munin/export.hpp"
 #include "munin/component.hpp"
-#include "odin/core.hpp"
+#include "munin/core.hpp"
 #include <boost/optional.hpp>
 #include <vector>
 
@@ -11,11 +11,11 @@ namespace munin {
 class layout;
 
 BOOST_STATIC_CONSTANT(
-    odin::u32, HIGHEST_LAYER = (std::numeric_limits<odin::u32>::max)());
+    u32, HIGHEST_LAYER = (std::numeric_limits<u32>::max)());
 BOOST_STATIC_CONSTANT(
-    odin::u32, LOWEST_LAYER = (std::numeric_limits<odin::u32>::min)());
+    u32, LOWEST_LAYER = (std::numeric_limits<u32>::min)());
 BOOST_STATIC_CONSTANT(
-    odin::u32, DEFAULT_LAYER = (std::numeric_limits<odin::u32>::max)() / 2);
+    u32, DEFAULT_LAYER = (std::numeric_limits<u32>::max)() / 2);
 
 //* =========================================================================
 /// \brief A graphical element capable of containing and arranging other
@@ -40,7 +40,7 @@ public :
     /// \brief Retrieves the number of components that this container
     /// contains.
     //* =====================================================================
-    odin::u32 get_number_of_components() const;
+    u32 get_number_of_components() const;
 
     //* =====================================================================
     /// \brief Adds a component to the container.
@@ -49,9 +49,9 @@ public :
     ///        layout.
     //* =====================================================================
     void add_component(
-        std::shared_ptr<component> const &comp
-      , boost::any                 const &layout_hint = boost::any()
-      , odin::u32                         layer = DEFAULT_LAYER);
+        std::shared_ptr<component> const &comp,
+        boost::any                 const &layout_hint = boost::any(),
+        u32                               layer = DEFAULT_LAYER);
 
     //* =====================================================================
     /// \brief Removes a component from the container.
@@ -61,36 +61,36 @@ public :
     //* =====================================================================
     /// \brief Retrieves a component from the container.
     //* =====================================================================
-    std::shared_ptr<component> get_component(odin::u32 index) const;
+    std::shared_ptr<component> get_component(u32 index) const;
 
     //* =====================================================================
     /// \brief Retrieves a component's hint from the container.
     //* =====================================================================
-    boost::any get_component_hint(odin::u32 index) const;
+    boost::any get_component_hint(u32 index) const;
 
     //* =====================================================================
     /// \brief Retrieves a component's layer from the container.
     //* =====================================================================
-    odin::u32 get_component_layer(odin::u32 index) const;
+    u32 get_component_layer(u32 index) const;
 
     //* =====================================================================
     /// \brief Sets the container's current layout for a given layer
     //* =====================================================================
     void set_layout(
-        std::unique_ptr<munin::layout> lyt
-      , odin::u32                      layer = DEFAULT_LAYER);
+        std::unique_ptr<munin::layout> lyt,
+        u32                            layer = DEFAULT_LAYER);
 
     //* =====================================================================
     /// \brief Retrieves the current layout from the container for a given
     /// layer.
     //* =====================================================================
     boost::optional<munin::layout &> get_layout(
-        odin::u32 layer = DEFAULT_LAYER) const;
+        u32 layer = DEFAULT_LAYER) const;
 
     //* =====================================================================
     /// \brief Returns an array of layers that currently have layouts
     //* =====================================================================
-    std::vector<odin::u32> get_layout_layers() const;
+    std::vector<u32> get_layout_layers() const;
 
 protected :
     //* =====================================================================
@@ -98,7 +98,7 @@ protected :
     /// override this function in order to retrieve the number of components
     /// in this container in a custom manner.
     //* =====================================================================
-    virtual odin::u32 do_get_number_of_components() const = 0;
+    virtual u32 do_get_number_of_components() const = 0;
 
     //* =====================================================================
     /// \brief Called by add_component().  Derived classes must override
@@ -106,9 +106,9 @@ protected :
     /// custom manner.
     //* =====================================================================
     virtual void do_add_component(
-        std::shared_ptr<component> const &comp
-      , boost::any                 const &hint
-      , odin::u32                         layer) = 0;
+        std::shared_ptr<component> const &comp,
+        boost::any                 const &hint,
+        u32                               layer) = 0;
 
     //* =====================================================================
     /// \brief Called by remove_component().  Derived classes must override
@@ -123,21 +123,21 @@ protected :
     /// function in order to retrieve a component in a custom manner.
     //* =====================================================================
     virtual std::shared_ptr<component> do_get_component(
-        odin::u32 index) const = 0;
+        u32 index) const = 0;
 
     //* =====================================================================
     /// \brief Called by get_component_hint().  Derived classes must
     /// override this function in order to retrieve a component hint in a
     /// custom manner.
     //* =====================================================================
-    virtual boost::any do_get_component_hint(odin::u32 index) const = 0;
+    virtual boost::any do_get_component_hint(u32 index) const = 0;
 
     //* =====================================================================
     /// \brief Called by get_component_layer().  Derived classes must
     /// override this function in order to retrieve a component layer in a
     /// custom manner.
     //* =====================================================================
-    virtual odin::u32 do_get_component_layer(odin::u32 index) const = 0;
+    virtual u32 do_get_component_layer(u32 index) const = 0;
 
     //* =====================================================================
     /// \brief Called by set_layout.  Derived classes must override this
@@ -145,21 +145,21 @@ protected :
     //* =====================================================================
     virtual void do_set_layout(
         std::unique_ptr<munin::layout> lyt
-      , odin::u32                      layer) = 0;
+      , u32                      layer) = 0;
 
     //* =====================================================================
     /// \brief Called by get_layout.  Derived classes must override this
     /// function in order to get the container's layout in a custom manner.
     //* =====================================================================
     virtual boost::optional<munin::layout &> do_get_layout(
-        odin::u32 layer) const = 0;
+        u32 layer) const = 0;
 
     //* =====================================================================
     /// \brief Called by get_layout_layers.  Derived classes must override
     /// this function in order to get the container's layout in a custom
     /// manner.
     //* =====================================================================
-    virtual std::vector<odin::u32> do_get_layout_layers() const = 0;
+    virtual std::vector<u32> do_get_layout_layers() const = 0;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
