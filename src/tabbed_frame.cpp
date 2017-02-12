@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin Tabbed Frame.
-//
-// Copyright (C) 2013 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/tabbed_frame.hpp"
 #include "munin/background_fill.hpp"
 #include "munin/basic_container.hpp"
@@ -150,13 +124,13 @@ protected :
     // ======================================================================
     void do_event(boost::any const &event)
     {
-        auto *report = 
+        auto *report =
             boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-            
+
         if (report
          && report->button_ != terminalpp::ansi::mouse::report::BUTTON_UP)
         {
-            
+
             on_click();
         }
     }
@@ -273,7 +247,7 @@ protected :
                         handled = true;
                     }
                     break;
-                    
+
                 case terminalpp::vk::cursor_left :
                     if (selected_ != 0)
                     {
@@ -283,7 +257,7 @@ protected :
                         handled = true;
                     }
                     break;
-                    
+
                 default :
                     // Do nothing.
                     break;
@@ -342,7 +316,7 @@ private :
             make_background_fill(), COMPASS_LAYOUT_NORTH,
             make_background_fill(), COMPASS_LAYOUT_CENTRE,
             filler_, COMPASS_LAYOUT_SOUTH);
-            
+
         // To create the middle section, use a vertical strip layout and
         // alternate label/rivet until complete.
         auto tab_section = view(
@@ -353,7 +327,7 @@ private :
              index < tabs_.size();
              ++index)
         {
-            auto label = 
+            auto label =
                 std::make_shared<tabbed_frame_header_label>(tabs_[index]);
             labels_.push_back(label);
 
@@ -504,13 +478,13 @@ private :
             left_rivet,
             label,
             right_rivet);
-        
+
         content_ = view(
             make_compass_layout(),
             tabs, COMPASS_LAYOUT_WEST,
             filler, COMPASS_LAYOUT_CENTRE,
             right_rivet, COMPASS_LAYOUT_EAST);
-        
+
         get_container()->add_component(content_);
 
         update_highlights();
@@ -609,7 +583,7 @@ tabbed_frame::tabbed_frame()
     pimpl_->bottom_left_corner_  = make_fill(double_lined_bottom_left_corner);
     pimpl_->bottom_border_       = make_fill(double_lined_horizontal_beam);
     pimpl_->bottom_right_corner_ = make_fill(double_lined_bottom_right_corner);
-        
+
     auto north = view(
         make_grid_layout(1, 1),
         pimpl_->header_);
@@ -618,7 +592,7 @@ tabbed_frame::tabbed_frame()
     auto west = view(
         make_grid_layout(1, 1),
         pimpl_->left_border_);
-    
+
     // East Container
     auto east = view(
         make_grid_layout(1, 1),

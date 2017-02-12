@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin Edit Component.
-//
-// Copyright (C) 2010 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/edit.hpp"
 #include "munin/text/default_singleline_document.hpp"
 #include "munin/algorithm.hpp"
@@ -151,20 +125,20 @@ struct edit::impl
     void do_event(boost::any const &event)
     {
         auto const *vk = boost::any_cast<terminalpp::virtual_key>(&event);
-        
+
         if (vk)
         {
             do_vk_event(*vk);
         }
-        
-        auto const *report = 
+
+        auto const *report =
             boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-            
+
         if (report)
         {
             do_mouse_event(*report);
         }
-        
+
     }
 
     //* =====================================================================
@@ -314,25 +288,25 @@ private :
     void do_vk_event(terminalpp::virtual_key const &vk)
     {
         auto amount = vk.repeat_count;
-        
+
         switch (vk.key)
         {
             case terminalpp::vk::cursor_left :
                 do_cursor_backward_key_event(amount);
                 break;
-                
+
             case terminalpp::vk::cursor_right :
                 do_cursor_forward_key_event(amount);
                 break;
-                
+
             case terminalpp::vk::home :
                 do_home_key_event();
                 break;
-                
+
             case terminalpp::vk::end :
                 do_end_key_event();
                 break;
-                
+
             case terminalpp::vk::f12 :
                 if (self_.is_enabled())
                 {
@@ -346,7 +320,7 @@ private :
                 if (self_.is_enabled())
                 {
                     auto caret_index = document_->get_caret_index();
-    
+
                     if (caret_index != 0)
                     {
                         document_->delete_text(
@@ -354,12 +328,12 @@ private :
                     }
                 }
                 break;
-            
+
             default :
                 if (self_.is_enabled())
                 {
                     terminalpp::glyph gly(char(vk.key));
-    
+
                     if (is_printable(gly))
                     {
                         document_->insert_text({gly});
@@ -473,7 +447,7 @@ void edit::do_set_attribute(std::string const &name, boost::any const &attr)
 {
     if (name == EDIT_PASSWORD_ELEMENT)
     {
-        terminalpp::element const *element = 
+        terminalpp::element const *element =
             boost::any_cast<terminalpp::element>(&attr);
 
         if (element != nullptr)

@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin View.
-//
-// Copyright (C) 2013 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file 
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor 
-//    or contributors, which in any way restrict the ability of any party 
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS 
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
-// ==========================================================================
 #pragma once
 
 #include <munin/basic_container.hpp>
@@ -36,19 +10,19 @@
 
 namespace munin { namespace detail {
 
-// Overload where the next argument is convertible to a component.    
+// Overload where the next argument is convertible to a component.
 template <class... Args>
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    std::shared_ptr<component> const &comp, 
+    std::shared_ptr<component> const &comp,
     Args&&... args);
 
 // Overload where the next argument is not convertible to a component.
 // In this case, the argument is automatically wrapped in a Boost.Any
 // object and passed as the layout hint.
 template <
-    class Hint, 
+    class Hint,
     class = typename std::enable_if<
         !std::is_convertible<Hint, std::shared_ptr<component>>::value
     >::type,
@@ -57,7 +31,7 @@ template <
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    Hint&& hint, 
+    Hint&& hint,
     Args&&... args);
 
 // Overload where there is no next argument.  This is the terminal case.
@@ -70,7 +44,7 @@ inline void view_helper(
         content->add_component(prev);
     }
 }
-    
+
 }
 
 //* =========================================================================
@@ -106,46 +80,44 @@ std::shared_ptr<container> view(
     comp->set_layout(std::move(lyt));
     detail::view_helper(
         comp, std::shared_ptr<component>{}, std::forward<Args>(args)...);
-    
+
     return comp;
 }
 
 namespace detail {
-    
+
 template <class... Args>
 void view_helper(
-    std::shared_ptr<container> const &content, 
+    std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    std::shared_ptr<component> const &comp, 
+    std::shared_ptr<component> const &comp,
     Args&&... args)
 {
     if (prev)
     {
         content->add_component(prev);
     }
-    
+
     view_helper(content, comp, std::forward<Args>(args)...);
 }
 
 template <
-    class Hint, 
+    class Hint,
     class,
     class... Args
 >
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    Hint&& hint, 
+    Hint&& hint,
     Args&&... args)
 {
     if (prev)
     {
         content->add_component(prev, boost::any(std::forward<Hint>(hint)));
     }
-    
+
     view_helper(content, {}, std::forward<Args>(args)...);
-}
-    
 }
 
 }

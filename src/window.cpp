@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin Window.
-//
-// Copyright (C) 2010 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/window.hpp"
 #include "munin/algorithm.hpp"
 #include "munin/container.hpp"
@@ -34,7 +8,7 @@
 #include <boost/format.hpp>
 
 namespace munin {
-    
+
 namespace {
 
 // ==========================================================================
@@ -169,7 +143,7 @@ public :
         static unpackage_visitor visitor;
 
         auto tokens = terminal_.read(data);
-        
+
         for (auto const &token : tokens)
         {
             content_->event(boost::apply_visitor(visitor, token));
@@ -257,7 +231,7 @@ private :
     void do_repaint()
     {
         auto size = content_->get_size();
-        
+
         // If the canvas has changed size, then many things can happen.
         // If it's shrunk, then there's no way to tell if the client has
         // clipped or scrolled or whatever.  If it's grown, then the new
@@ -265,7 +239,7 @@ private :
         // Therefore, we forego detection of whether a region is similar
         // to what it used to be and instead just repaint everything.
         bool size_changed = size != last_window_size_;
-        
+
         // Ensure that our canvas is the correct size for the content that we
         // are going to paint.
         if (size_changed)
@@ -284,7 +258,7 @@ private :
 
         terminalpp::canvas_view canvas_view(canvas_);
         context ctx(canvas_view, strand_);
-        
+
         // Draw each slice on the canvas.
         for (auto const &region : slices)
         {
@@ -293,7 +267,7 @@ private :
 
         // First, get the data that will draw the screen onto the terminal.
         auto repaint_data = screen_.draw(terminal_, canvas_);
-        
+
         // And deal with the cursor.
         if (content_->get_cursor_state())
         {
@@ -305,12 +279,12 @@ private :
         {
             repaint_data += terminal_.hide_cursor();
         }
-        
+
         if (self_valid_)
         {
             self_.on_repaint(repaint_data);
         }
-        
+
         redraw_regions_.clear();
 
         // We are once again interested in repaint requests.
@@ -333,7 +307,7 @@ private :
     bool                          self_valid_;
 
     boost::asio::strand          &strand_;
-    
+
     terminalpp::terminal          terminal_;
     std::shared_ptr<container>    content_;
     terminalpp::screen            screen_;

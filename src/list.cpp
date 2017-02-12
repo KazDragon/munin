@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin List Component.
-//
-// Copyright (C) 2011 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/list.hpp"
 #include "munin/context.hpp"
 #include <terminalpp/canvas_view.hpp>
@@ -83,7 +57,7 @@ struct list::impl
     {
         self_.set_item_index(items_.size() - 1);
     }
-    
+
     // ======================================================================
     // DO_VK_EVENT
     // ======================================================================
@@ -94,24 +68,24 @@ struct list::impl
             case terminalpp::vk::cursor_up :
                 do_cursor_up_key_event(vk.repeat_count);
                 break;
-                
+
             case terminalpp::vk::cursor_down :
                 do_cursor_down_key_event(vk.repeat_count);
                 break;
-                
+
             case terminalpp::vk::home :
                 do_home_key_event();
                 break;
-                
+
             case terminalpp::vk::end :
                 do_end_key_event();
                 break;
-                
+
             case terminalpp::vk::bs : // fall-through
             case terminalpp::vk::del :
                 self_.set_item_index(-1);
                 break;
-                
+
             default :
                 // Do nothing.
                 break;
@@ -339,15 +313,15 @@ void list::do_draw(
 void list::do_event(boost::any const &event)
 {
     auto const *vk = boost::any_cast<terminalpp::virtual_key>(&event);
-    
+
     if (vk)
     {
         pimpl_->do_vk_event(*vk);
     }
-    
-    auto const *report = 
+
+    auto const *report =
         boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-        
+
     if (report)
     {
         pimpl_->do_mouse_event(*report);

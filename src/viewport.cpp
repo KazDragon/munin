@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin Viewport.
-//
-// Copyright (C) 2011 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/viewport.hpp"
 #include "munin/context.hpp"
 #include "munin/rectangle.hpp"
@@ -46,7 +20,7 @@ struct viewport::impl
     // CONSTRUCTOR
     // ======================================================================
     impl(
-        viewport &self, 
+        viewport &self,
         std::shared_ptr<component> const &underlying_component)
       : self_(self),
         component_(std::move(underlying_component))
@@ -268,11 +242,11 @@ struct viewport::impl
             case terminalpp::vk::pgup :
                 do_pgup_key_event();
                 return true;
-                
+
             case terminalpp::vk::pgdn :
                 do_pgdn_key_event();
                 return true;
-                
+
             default :
                 return false;
         }
@@ -288,11 +262,11 @@ struct viewport::impl
             case terminalpp::ansi::mouse::report::SCROLLWHEEL_UP :
                 do_pgup_key_event();
                 return true;
-                
+
             case terminalpp::ansi::mouse::report::SCROLLWHEEL_DOWN :
                 do_pgdn_key_event();
                 return true;
-                
+
             default :
                 return false;
         }
@@ -304,19 +278,19 @@ struct viewport::impl
     bool do_event(boost::any const &event)
     {
         auto vk = boost::any_cast<terminalpp::virtual_key>(&event);
-        
+
         if (vk)
         {
             return do_vk_event(*vk);
         }
-        
+
         auto report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-        
+
         if (report)
         {
-            return do_mouse_event(*report);    
+            return do_mouse_event(*report);
         }
-        
+
         return false;
     }
 };
@@ -611,7 +585,7 @@ void viewport::do_event(boost::any const &event)
 {
     auto report =
         boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-        
+
     if (report != nullptr)
     {
         auto origin = get_origin();

@@ -1,29 +1,3 @@
-// ==========================================================================
-// Munin Drop-Down List Component.
-//
-// Copyright (C) 2011 Matthew Chaplain, All Rights Reserved.
-//
-// Permission to reproduce, distribute, perform, display, and to prepare
-// derivitive works from this file under the following conditions:
-//
-// 1. Any copy, reproduction or derivitive work of any part of this file
-//    contains this copyright notice and licence in its entirety.
-//
-// 2. The rights granted to you under this license automatically terminate
-//    should you attempt to assert any patent claims against the licensor
-//    or contributors, which in any way restrict the ability of any party
-//    from using this software or portions thereof in any form under the
-//    terms of this license.
-//
-// Disclaimer: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
-//             KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-//             WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
-//             PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
-//             OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-//             OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-//             OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-//             SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-// ==========================================================================
 #include "munin/dropdown_list.hpp"
 #include "munin/background_fill.hpp"
 #include "munin/compass_layout.hpp"
@@ -227,15 +201,15 @@ struct dropdown_list::impl
             case terminalpp::vk::enter :
                 toggle_dropdown();
                 return true;
-                
+
             case terminalpp::vk::cursor_down :
                 return do_cursor_down_key_event(vk.repeat_count);
-                
+
             default :
                 // Do nothing.
                 break;
         }
-        
+
         return false;
     }
 
@@ -312,7 +286,7 @@ dropdown_list::dropdown_list()
             pimpl_->dropdown_button_,              COMPASS_LAYOUT_CENTRE,
             make_fill(double_lined_vertical_beam), COMPASS_LAYOUT_EAST
         ), COMPASS_LAYOUT_EAST);
-        
+
     // Construct the bottom bar +-----+-+
     pimpl_->bottom_left_corner_  = make_fill(double_lined_bottom_left_corner);
     pimpl_->bottom_tee_          = make_fill(double_lined_bottom_tee);
@@ -343,7 +317,7 @@ dropdown_list::dropdown_list()
     // Now put them together.
     pimpl_->dropdown_ = view(
         make_compass_layout(),
-        // Put the scrollpane in a fixed-height layout so that it doesn't 
+        // Put the scrollpane in a fixed-height layout so that it doesn't
         // prefer to take up the entire screen.
         view(
             std::unique_ptr<fixed_height_layout>(new fixed_height_layout(7)),
@@ -416,7 +390,7 @@ void dropdown_list::do_event(boost::any const &event)
     bool handled = false;
 
     auto vk = boost::any_cast<terminalpp::virtual_key>(&event);
-    
+
     if (vk)
     {
         handled = pimpl_->do_vk_event(*vk);
