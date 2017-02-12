@@ -417,22 +417,6 @@ terminalpp::extent basic_container::do_get_size() const
 }
 
 // ==========================================================================
-// DO_SET_PARENT
-// ==========================================================================
-void basic_container::do_set_parent(std::shared_ptr<component> const &parent)
-{
-    pimpl_->parent_ = parent;
-}
-
-// ==========================================================================
-// DO_GET_PARENT
-// ==========================================================================
-std::shared_ptr<component> basic_container::do_get_parent() const
-{
-    return pimpl_->parent_.lock();
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent basic_container::do_get_preferred_size() const
@@ -565,8 +549,6 @@ void basic_container::do_add_component(
            , std::weak_ptr<component>(comp))));
 
     pimpl_->component_connections_.push_back(component_connections);
-
-    comp->set_parent(shared_from_this());
 }
 
 // ==========================================================================
@@ -608,8 +590,6 @@ void basic_container::do_remove_component(
             ++current_signals;
         }
     }
-
-    comp->set_parent({});
 }
 
 // ==========================================================================

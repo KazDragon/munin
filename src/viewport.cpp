@@ -417,22 +417,6 @@ void viewport::do_set_size(terminalpp::extent const &size)
 }
 
 // ==========================================================================
-// DO_SET_PARENT
-// ==========================================================================
-void viewport::do_set_parent(std::shared_ptr<component> const &parent)
-{
-    pimpl_->component_->set_parent(parent);
-}
-
-// ==========================================================================
-// DO_GET_PARENT
-// ==========================================================================
-std::shared_ptr<component> viewport::do_get_parent() const
-{
-    return pimpl_->component_->get_parent();
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent viewport::do_get_preferred_size() const

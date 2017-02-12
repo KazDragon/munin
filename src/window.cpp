@@ -34,8 +34,6 @@ public :
         , last_window_size_({0, 0})
         , repaint_scheduled_(false)
         , layout_scheduled_(false)
-        , handling_newline_(false)
-        , newline_char_('\0')
     {
         connections_.push_back(content_->on_redraw.connect(
             [this](auto const &regions)
@@ -106,17 +104,9 @@ public :
     // ======================================================================
     // GET_CONTENT
     // ======================================================================
-    std::shared_ptr<container> get_content()
+    container *get_content()
     {
-        return content_;
-    }
-
-    // ======================================================================
-    // GET_CONTENT
-    // ======================================================================
-    std::shared_ptr<container const> get_content() const
-    {
-        return content_;
+        return content_.get();
     }
 
     // ======================================================================
@@ -303,9 +293,6 @@ private :
     bool                          repaint_scheduled_;
     bool                          layout_scheduled_;
 
-    bool                          handling_newline_;
-    char                          newline_char_;
-
     std::vector<boost::signals2::connection> connections_;
 };
 
@@ -364,7 +351,7 @@ void window::enable_mouse_tracking()
 // ==========================================================================
 // GET_CONTENT
 // ==========================================================================
-std::shared_ptr<container> window::get_content()
+container *window::get_content()
 {
     return pimpl_->get_content();
 }

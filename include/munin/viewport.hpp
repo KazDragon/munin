@@ -74,20 +74,6 @@ protected :
     virtual void do_set_size(terminalpp::extent const &size);
 
     //* =====================================================================
-    /// \brief Called by set_parent().  Derived classes must override this
-    /// function in order to set the parent of the component in a custom
-    /// manner.
-    //* =====================================================================
-    virtual void do_set_parent(std::shared_ptr<component> const &parent);
-
-    //* =====================================================================
-    /// \brief Called by get_parent().  Derived classes must override this
-    /// function in order to get the parent of the component in a custom
-    /// manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_parent() const;
-
-    //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
     /// this function in order to get the size of the component in a custom
     /// manner.

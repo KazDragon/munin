@@ -52,22 +52,6 @@ terminalpp::extent component::get_size() const
 }
 
 // ==========================================================================
-// SET_PARENT
-// ==========================================================================
-void component::set_parent(std::shared_ptr<component> const &parent)
-{
-    do_set_parent(parent);
-}
-
-// ==========================================================================
-// GET_PARENT
-// ==========================================================================
-std::shared_ptr<component> component::get_parent() const
-{
-    return do_get_parent();
-}
-
-// ==========================================================================
 // GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent component::get_preferred_size() const

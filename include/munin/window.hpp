@@ -55,7 +55,7 @@ public :
     /// \brief Retrieve the top level container in the window.  This
     /// contains all the components that are displayed in this window.
     //* =====================================================================
-    std::shared_ptr<container> get_content();
+    container *get_content();
 
     //* =====================================================================
     /// \brief Sends data that has been received from the client.  This is

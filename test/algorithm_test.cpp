@@ -5,17 +5,12 @@ TEST(munin_algorithm, test_rectangle_intersection_same)
 {
     // Test that the overlapping area of two similar rectangles is the same
     // as the area of the overlapping rectangles.
-    munin::rectangle lhs;
-    lhs.origin.x    = 1;
-    lhs.origin.y    = 2;
-    lhs.size.width  = 3;
-    lhs.size.height = 4;
-    
+    munin::rectangle lhs = {{1, 2}, {3, 4}};
     munin::rectangle rhs = lhs;
-    
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
+
     ASSERT_EQ(terminalpp::s32(1), intersection->origin.x);
     ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
     ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
@@ -26,18 +21,9 @@ TEST(munin_algorithm, test_rectangle_intersection_no_overlap)
 {
     // Test that the intersection of two rectangles that do overlap is
     // returned as not-a-rectangle.
-    munin::rectangle lhs;
-    lhs.origin.x    = 0;
-    lhs.origin.y    = 0;
-    lhs.size.width  = 1;
-    lhs.size.height = 1;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 1;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 1;
-    rhs.size.height = 1;
-    
+    munin::rectangle lhs = {{0, 0}, {1, 1}};
+    munin::rectangle rhs = {{1, 1}, {1, 1}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_FALSE(intersection.is_initialized());
 }
@@ -54,25 +40,13 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_top_left)
     // 3+---|    |      3    +-+
     // 4    +----+      4
     //
-    munin::rectangle lhs;
-    lhs.origin.x    = 4;
-    lhs.origin.y    = 1;
-    lhs.size.width  = 6;
-    lhs.size.height = 4;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 0;
-    rhs.origin.y    = 0;
-    rhs.size.width  = 7;
-    rhs.size.height = 4;
-    
+    munin::rectangle lhs = {{4, 1}, {6, 4}};
+    munin::rectangle rhs = {{0, 0}, {7, 4}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(4), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(1), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{4, 1}, {3, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_left)
@@ -85,31 +59,19 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_left)
     // 1    | L  |      1
     // 2+---|    |  ->  2    +-+
     // 3| R +----+      3    +-+
-    // 4+-----+         4    
-    munin::rectangle lhs;
-    lhs.origin.x    = 4;
-    lhs.origin.y    = 0;
-    lhs.size.width  = 5;
-    lhs.size.height = 4;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 0;
-    rhs.origin.y    = 2;
-    rhs.size.width  = 7;
-    rhs.size.height = 3;
-    
+    // 4+-----+         4
+    munin::rectangle lhs = {{4, 0}, {5, 4}};
+    munin::rectangle rhs = {{0, 2}, {7, 3}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(4), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(2), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{4, 2}, {3, 2}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_right)
 {
-    // Test that, if the second rectangle overlaps the bottom right of the 
+    // Test that, if the second rectangle overlaps the bottom right of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -120,31 +82,19 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_right)
     // 4 +----+  |      4   +--+
     // 5   |   R |      5
     // 6   +-----+      6
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 1;
-    lhs.origin.y    = 1;
-    lhs.size.width  = 6;
-    lhs.size.height = 4;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 3;
-    rhs.origin.y    = 2;
-    rhs.size.width  = 7;
-    rhs.size.height = 5;
-    
+
+    munin::rectangle lhs = {{1, 1}, {6, 4}};
+    munin::rectangle rhs = {{3, 2}, {7, 5}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 2}, {4, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_overlap_top_right)
 {
-    // Test that, if the second rectangle overlaps the top right of the 
+    // Test that, if the second rectangle overlaps the top right of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -155,31 +105,19 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_top_right)
     // 4  | L  | |      4    |  |
     // 5  |    |-+      5    +--+
     // 6  +----+        6
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 2;
-    lhs.origin.y    = 3;
-    lhs.size.width  = 6;
-    lhs.size.height = 4;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 4;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 6;
-    rhs.size.height = 5;
-    
+
+    munin::rectangle lhs = {{2, 3}, {6, 4}};
+    munin::rectangle rhs = {{4, 1}, {6, 5}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(4), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{4, 3}, {4, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_enclose_top)
 {
-    // Test that, if the second rectangle encloses the top of the 
+    // Test that, if the second rectangle encloses the top of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -190,41 +128,26 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_top)
     // 4 | | L| |       4   |  |
     // 5 +-|  |-+       5   +--+
     // 6   +--+         6
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 3;
-    lhs.origin.y    = 3;
-    lhs.size.width  = 4;
-    lhs.size.height = 4;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 1;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 8;
-    rhs.size.height = 5;
-    
+
+    munin::rectangle lhs = {{3, 3}, {4, 4}};
+    munin::rectangle rhs = {{1, 1}, {8, 5}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
-    
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 3}, {4, 3}}));
+
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::intersection(rhs, lhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 3}, {4, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_enclose_left)
 {
-    // Test that, if the second rectangle encloses the left of the 
+    // Test that, if the second rectangle encloses the left of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -236,41 +159,26 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_left)
     // 5 | +-----+      5   +--+
     // 6 |    |         6
     // 7 +----+         7
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 3;
-    lhs.origin.y    = 3;
-    lhs.size.width  = 7;
-    lhs.size.height = 3;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 1;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 6;
-    rhs.size.height = 7;
-    
+
+    munin::rectangle lhs = {{3, 3}, {7, 3}};
+    munin::rectangle rhs = {{1, 1}, {6, 7}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
-    
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 3}, {4, 3}}));
+
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::intersection(rhs, lhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 3}, {4, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_enclose_bottom)
 {
-    // Test that, if the second rectangle encloses the bottom of the 
+    // Test that, if the second rectangle encloses the bottom of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -280,86 +188,56 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_bottom)
     // 3+-|   |--+  ->  3  +---+
     // 4| +---+ R|      4  +---+
     // 5+--------+      5
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 0;
-    lhs.origin.y    = 3;
-    lhs.size.width  = 10;
-    lhs.size.height = 3;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 2;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 5;
-    rhs.size.height = 4;
-    
+
+    munin::rectangle lhs = {{0, 3}, {10, 3}};
+    munin::rectangle rhs = {{2, 1}, {5, 4}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(5), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(2), intersection->size.height);
-    
+
+    ASSERT_EQ(*intersection, munin::rectangle({{2, 3}, {5, 2}}));
+
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::intersection(rhs, lhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(5), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(2), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{2, 3}, {5, 2}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_enclose_right)
 {
-    // Test that, if the second rectangle encloses the right of the 
+    // Test that, if the second rectangle encloses the right of the
     // first rectangle, that overlapping region is returned.
     //
     //  0123456789       0123456789
     // 0                0
     // 1     +---+      1
-    // 2  +----+ |      2     +-+ 
+    // 2  +----+ |      2     +-+
     // 3  | L  | |  ->  3     | |
     // 4  +----+ |      4     +-+
     // 5     | R |      5
     // 6     +---+      6
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 5;
-    lhs.origin.y    = 1;
-    lhs.size.width  = 5;
-    lhs.size.height = 6;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 2;
-    rhs.origin.y    = 2;
-    rhs.size.width  = 6;
-    rhs.size.height = 3;
-    
+
+    munin::rectangle lhs = {{5, 1}, {5, 6}};
+    munin::rectangle rhs = {{2, 2}, {6, 3}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(5), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
-    
+
+    ASSERT_EQ(*intersection, munin::rectangle({{5, 2}, {3, 3}}));
+
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::intersection(rhs, lhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(5), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{5, 2}, {3, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_contain)
 {
-    // Test that, if the second rectangle contains the first entirely, 
+    // Test that, if the second rectangle contains the first entirely,
     // that overlapping region is returned.
     //
     //  0123456789       0123456789
@@ -369,153 +247,142 @@ TEST(munin_algorithm, test_rectangle_intersection_contain)
     // 3 | |L |R|   ->  3   |  |
     // 4 | +--+ |       4   +--+
     // 5 +------+       5
-    
-    munin::rectangle lhs;
-    lhs.origin.x    = 3;
-    lhs.origin.y    = 2;
-    lhs.size.width  = 4;
-    lhs.size.height = 3;
-    
-    munin::rectangle rhs;
-    rhs.origin.x    = 1;
-    rhs.origin.y    = 1;
-    rhs.size.width  = 8;
-    rhs.size.height = 5;
-    
+
+    munin::rectangle lhs = {{3, 2}, {4, 3}};
+    munin::rectangle rhs = {{1, 1}, {8, 5}};
+
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
-    
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 2}, {4, 3}}));
+
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::intersection(rhs, lhs);
     ASSERT_TRUE(intersection.is_initialized());
-    
-    ASSERT_EQ(terminalpp::s32(3), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.height);
+
+    ASSERT_EQ(*intersection, munin::rectangle({{3, 2}, {4, 3}}));
 }
 
 TEST(munin_algorithm, test_rectangular_slice)
 {
-    using terminalpp::point;
-    using terminalpp::extent;
-    using munin::rectangle;
-    
     {
         // Test the identity case.  The following should be returned unchanged.
-        std::vector<munin::rectangle> rectangles;
-        rectangles.push_back(rectangle(point(0, 0), extent(1, 1)));
-        rectangles.push_back(rectangle(point(1, 1), extent(1, 1)));
-        rectangles.push_back(rectangle(point(2, 2), extent(1, 1)));
-        
-        std::vector<munin::rectangle> result = munin::rectangular_slice(rectangles);
-            
+        std::vector<munin::rectangle> rectangles = {
+            {{0, 0}, {1, 1}},
+            {{1, 1}, {1, 1}},
+            {{2, 2}, {1, 1}}
+        };
+
+        auto result = munin::rectangular_slice(rectangles);
+
         ASSERT_EQ(rectangles.size(), result.size());
-        
+
         for (size_t index = 0; index < rectangles.size(); ++index)
         {
             ASSERT_EQ(rectangles[index], result[index]);
-        } 
+        }
     }
-    
+
     {
         // Test the simple case.  One rectangle of two lines should be sliced
         // into two rectangles of one line.
-        std::vector<munin::rectangle> rectangles;
-        rectangles.push_back(rectangle(point(0,0), extent(1,2)));
-        
-        std::vector<munin::rectangle> expected_rectangles;
-        expected_rectangles.push_back(rectangle(point(0,0), extent(1,1)));
-        expected_rectangles.push_back(rectangle(point(0,1), extent(1,1)));
+        std::vector<munin::rectangle> rectangles = {
+            {{0, 0}, {1, 2}}
+        };
 
-        std::vector<munin::rectangle> result = munin::rectangular_slice(rectangles);
-        
+        std::vector<munin::rectangle> expected_rectangles = {
+            {{0, 0}, {1, 1}},
+            {{0, 1}, {1, 1}}
+        };
+
+        auto result = munin::rectangular_slice(rectangles);
+
         ASSERT_EQ(expected_rectangles.size(), result.size());
-        
+
         for (size_t index = 0; index < expected_rectangles.size(); ++index)
         {
             ASSERT_EQ(expected_rectangles[index], result[index]);
-        } 
+        }
     }
-    
+
     {
         // Test the adjacent case.
-        std::vector<munin::rectangle> rectangles;
-        rectangles.push_back(rectangle(point(0,0), extent(1,1)));
-        rectangles.push_back(rectangle(point(1,0), extent(1,1)));
+        std::vector<munin::rectangle> rectangles = {
+            {{0, 0}, {1, 1}},
+            {{1, 0}, {1, 1}}
+        };
 
-        std::vector<munin::rectangle> expected_rectangles;
-        expected_rectangles.push_back(rectangle(point(0,0), extent(2,1)));
+        std::vector<munin::rectangle> expected_rectangles = {
+            {{0, 0}, {2, 1}}
+        };
 
-        std::vector<munin::rectangle> result = munin::rectangular_slice(rectangles);
-        
+        auto result = munin::rectangular_slice(rectangles);
+
         ASSERT_EQ(expected_rectangles.size(), result.size());
-        
+
         for (size_t index = 0; index < expected_rectangles.size(); ++index)
         {
             ASSERT_EQ(expected_rectangles[index], result[index]);
-        } 
+        }
     }
 
     {
-        // Test the overlap case.  After being sliced, rectangles should be 
+        // Test the overlap case.  After being sliced, rectangles should be
         // merged if they occupy common space.
-        
+
         //
-        //  +---+         +---+               
-        //  |   |         |   |          
-        //  | +-+-+       +---+-+            
-        //  | |   |   ->  |     |               
-        //  +-+   |       +-+---+          
-        //    |   |         |   |               
+        //  +---+         +---+
+        //  |   |         |   |
+        //  | +-+-+       +---+-+
+        //  | |   |   ->  |     |
+        //  +-+   |       +-+---+
+        //    |   |         |   |
         //    +---+         +---+
-        
-        std::vector<munin::rectangle> rectangles;
-        rectangles.push_back(rectangle(point(0,0), extent(2,2)));
-        rectangles.push_back(rectangle(point(1,1), extent(2,2)));
-        
-        std::vector<munin::rectangle> expected_rectangles;
-        expected_rectangles.push_back(rectangle(point(0,0), extent(2,1)));
-        expected_rectangles.push_back(rectangle(point(0,1), extent(3,1)));
-        expected_rectangles.push_back(rectangle(point(1,2), extent(2,1)));
-        
-        std::vector<munin::rectangle> result = munin::rectangular_slice(rectangles);
-        
+
+        std::vector<munin::rectangle> rectangles = {
+            {{0, 0}, {2, 2}},
+            {{1, 1}, {2, 2}}
+        };
+
+        std::vector<munin::rectangle> expected_rectangles = {
+            {{0, 0}, {2, 1}},
+            {{0, 1}, {3, 1}},
+            {{1, 2}, {2, 1}}
+        };
+
+        auto result = munin::rectangular_slice(rectangles);
+
         ASSERT_EQ(expected_rectangles.size(), result.size());
-        
+
         for (size_t index = 0; index < expected_rectangles.size(); ++index)
         {
             ASSERT_EQ(expected_rectangles[index], result[index]);
-        } 
+        }
     }
-    
     {
         // Test the unsorted case.  This is the same as before, except the
         // order of the rectangles is in reverse.  The result should be the
         // same.
 
-        std::vector<munin::rectangle> rectangles;
-        rectangles.push_back(rectangle(point(1,1), extent(2,2)));
-        rectangles.push_back(rectangle(point(0,0), extent(2,2)));
-        
-        std::vector<munin::rectangle> expected_rectangles;
-        expected_rectangles.push_back(rectangle(point(0,0), extent(2,1)));
-        expected_rectangles.push_back(rectangle(point(0,1), extent(3,1)));
-        expected_rectangles.push_back(rectangle(point(1,2), extent(2,1)));
-        
-        std::vector<munin::rectangle> result = munin::rectangular_slice(rectangles);
-        
+        std::vector<munin::rectangle> rectangles = {
+            {{1, 1}, {2, 2}},
+            {{0, 0}, {2, 2}}
+        };
+
+        std::vector<munin::rectangle> expected_rectangles = {
+            {{0, 0}, {2, 1}},
+            {{0, 1}, {3, 1}},
+            {{1, 2}, {2, 1}}
+        };
+
+        auto result = munin::rectangular_slice(rectangles);
+
         ASSERT_EQ(expected_rectangles.size(), result.size());
-        
+
         for (size_t index = 0; index < expected_rectangles.size(); ++index)
         {
             ASSERT_EQ(expected_rectangles[index], result[index]);
-        } 
+        }
     }
 }

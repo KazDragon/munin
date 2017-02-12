@@ -98,22 +98,6 @@ terminalpp::extent basic_component::do_get_size() const
 }
 
 // ==========================================================================
-// DO_SET_PARENT
-// ==========================================================================
-void basic_component::do_set_parent(std::shared_ptr<component> const &parent)
-{
-    pimpl_->parent_ = parent;
-}
-
-// ==========================================================================
-// DO_GET_PARENT
-// ==========================================================================
-std::shared_ptr<component> basic_component::do_get_parent() const
-{
-    return pimpl_->parent_.lock();
-}
-
-// ==========================================================================
 // DO_SET_CAN_FOCUS
 // ==========================================================================
 void basic_component::do_set_can_focus(bool focus)

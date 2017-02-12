@@ -93,22 +93,6 @@ terminalpp::extent composite_component::do_get_size() const
 }
 
 // ==========================================================================
-// DO_SET_PARENT
-// ==========================================================================
-void composite_component::do_set_parent(std::shared_ptr<component> const &parent)
-{
-    pimpl_->container_->set_parent(parent);
-}
-
-// ==========================================================================
-// DO_GET_PARENT
-// ==========================================================================
-std::shared_ptr<component> composite_component::do_get_parent() const
-{
-    return pimpl_->container_->get_parent();
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent composite_component::do_get_preferred_size() const
