@@ -18,9 +18,6 @@ find_package(Boost
 # Terminal++ is required for this library.
 find_package(Terminalpp REQUIRED)
 
-# GSL-Lite is required for this library
-find_package(gsl_lite REQUIRED)
-
 # Due to the strange requirements for Google Test, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
 # equivalent of the following script before building Telnet++:
@@ -115,6 +112,7 @@ if (GTEST_FOUND)
         munin
         ${GTEST_LIBRARY}
         ${GTEST_MAIN_LIBRARY}
+        ${CMAKE_THREAD_LIBS_INIT}
     )
 
     add_test(munin_test munin_tester)
