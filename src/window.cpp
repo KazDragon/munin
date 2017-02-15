@@ -21,14 +21,15 @@ public :
     // CONSTRUCTOR
     // ======================================================================
     impl(
-        window                                &self
-      , boost::asio::strand                   &strand
-      , terminalpp::terminal::behaviour const &behaviour)
+        window                           &self,
+        std::shared_ptr<component> const &content,
+        terminalpp::terminal            &&terminal,
+        boost::asio::io_service::strand  &strand)
         : self_(self)
         , self_valid_(true)
         , strand_(strand)
-        , terminal_(behaviour)
-        , content_(std::make_shared<basic_container>())
+        , terminal_(std::move(terminal))
+        , content_(content)
         , canvas_({80, 24})
         , screen_()
         , last_window_size_({0, 0})
@@ -104,7 +105,7 @@ public :
     // ======================================================================
     // GET_CONTENT
     // ======================================================================
-    container *get_content()
+    component *get_content()
     {
         return content_.get();
     }
@@ -116,9 +117,9 @@ public :
     {
         for (auto const &token : terminal_.read(data))
         {
-            content_->event(
-                munin::detail::make_lambda_visitor(
-                    [](auto &&ev) { return ev; }));
+            content_->event(munin::detail::make_lambda_visitor(
+                [](auto &&ev) { return ev; }
+            ));
         }
     }
 
@@ -281,7 +282,7 @@ private :
     boost::asio::strand          &strand_;
 
     terminalpp::terminal          terminal_;
-    std::shared_ptr<container>    content_;
+    std::shared_ptr<component>    content_;
     terminalpp::screen            screen_;
     terminalpp::canvas            canvas_;
     terminalpp::glyph             glyph_;
@@ -296,15 +297,18 @@ private :
     std::vector<boost::signals2::connection> connections_;
 };
 
-// ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 window::window(
-    boost::asio::strand &strand
-  , terminalpp::terminal::behaviour const &behaviour)
+    std::shared_ptr<component> const &content,
+    terminalpp::terminal            &&terminal,
+    boost::asio::io_service::strand  &strand)
 {
     pimpl_ = std::make_shared<impl>(
-        std::ref(*this), std::ref(strand), std::ref(behaviour));
+        std::ref(*this), 
+        std::ref(content),
+        std::move(terminal),
+        std::ref(strand));
 }
 
 // ==========================================================================
@@ -316,20 +320,12 @@ window::~window()
 }
 
 // ==========================================================================
-// GET_SIZE
-// ==========================================================================
-terminalpp::extent window::get_size() const
-{
-    return pimpl_->get_content()->get_size();
-}
-
-// ==========================================================================
 // SET_SIZE
 // ==========================================================================
 void window::set_size(terminalpp::extent size)
 {
-    get_content()->set_size(size);
-    get_content()->on_layout_change();
+    pimpl_->get_content()->set_size(size);
+    pimpl_->get_content()->on_layout_change();
 }
 
 // ==========================================================================
@@ -346,14 +342,6 @@ void window::set_title(std::string const &title)
 void window::enable_mouse_tracking()
 {
     pimpl_->enable_mouse_tracking();
-}
-
-// ==========================================================================
-// GET_CONTENT
-// ==========================================================================
-container *window::get_content()
-{
-    return pimpl_->get_content();
 }
 
 // ==========================================================================

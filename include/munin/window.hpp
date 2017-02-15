@@ -2,15 +2,17 @@
 
 #include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
-#include <terminalpp/terminal.hpp>
-#include <boost/any.hpp>
-#include <boost/asio/strand.hpp>
+#include <boost/asio/io_service.hpp>
 #include <boost/signals2/signal.hpp>
 #include <string>
 
+namespace terminalpp {
+    class terminal;
+}
+
 namespace munin {
 
-class container;
+class component;
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
@@ -20,20 +22,21 @@ class MUNIN_EXPORT window
 public :
     //* =====================================================================
     /// \brief Constructor
+    /// \param content A component that this window displays.  May not be
+    ///        null.
+    /// \param terminal a terminal that is used to display this window.
     /// \param strand A boost::asio::strand in which all asynchronous calls
     /// will be run.
     //* =====================================================================
-    window(boost::asio::strand &strand, terminalpp::terminal::behaviour const &behaviour);
+    window(
+        std::shared_ptr<component> const &content,
+        terminalpp::terminal            &&terminal,
+        boost::asio::io_service::strand  &strand);
 
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
     ~window();
-
-    //* =====================================================================
-    /// \brief Gets the size of the window.
-    //* =====================================================================
-    terminalpp::extent get_size() const;
 
     //* =====================================================================
     /// \brief Sets the size of the window.  Following this, the contents
@@ -50,12 +53,6 @@ public :
     /// \brief Enables mouse tracking for the window.
     //* =====================================================================
     void enable_mouse_tracking();
-
-    //* =====================================================================
-    /// \brief Retrieve the top level container in the window.  This
-    /// contains all the components that are displayed in this window.
-    //* =====================================================================
-    container *get_content();
 
     //* =====================================================================
     /// \brief Sends data that has been received from the client.  This is
