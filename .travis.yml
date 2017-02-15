@@ -97,13 +97,19 @@ before_install:
   - export GTEST_ROOT=$PWD
   - cd ..
 
+  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
+  - tar zxvf terminalpp.tar.gz
+  - cd terminalpp-1.2
+  - CC=$CCOMPILE CXX=CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED
+  - make terminalpp
+  
 # install coverage software
   - if [ "$COVERAGE" == "ON" ]; then gem install coveralls-lcov; fi
 
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTERMINALPP_ROOT=../terminalpp-1.2 -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - make -j2
