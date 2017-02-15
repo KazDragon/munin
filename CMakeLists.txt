@@ -56,9 +56,7 @@ set (MUNIN_VERSION 0.0.1)
 
 set (munin_SOURCES
     src/algorithm.cpp
-    src/basic_container.cpp
     src/component.cpp
-    src/container.cpp
     src/context.cpp
     src/layout.cpp
     src/window.cpp

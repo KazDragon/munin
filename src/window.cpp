@@ -285,8 +285,6 @@ private :
     std::shared_ptr<component>    content_;
     terminalpp::screen            screen_;
     terminalpp::canvas            canvas_;
-    terminalpp::glyph             glyph_;
-    terminalpp::attribute         attribute_;
 
     terminalpp::extent            last_window_size_;
 

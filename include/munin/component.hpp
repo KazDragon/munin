@@ -13,10 +13,6 @@ namespace munin {
 
 class context;
 
-// TODO: Remove these somehow.
-static const std::string ATTRIBUTE_GLYPH = "GLYPH";
-static const std::string ATTRIBUTE_PEN = "PEN";
-
 //* =========================================================================
 /// \brief An object capable of being drawn on a canvas.
 /// \par
