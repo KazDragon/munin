@@ -102,6 +102,7 @@ before_install:
   - cd terminalpp-1.2
   - CC=$CCOMPILE CXX=CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED
   - make terminalpp
+  - cd ..
   
 # install coverage software
   - if [ "$COVERAGE" == "ON" ]; then gem install coveralls-lcov; fi
