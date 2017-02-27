@@ -23,12 +23,12 @@ public :
     impl(
         window                           &self,
         std::shared_ptr<component> const &content,
-        terminalpp::terminal            &&terminal,
+        terminalpp::terminal             &terminal,
         boost::asio::io_service::strand  &strand)
         : self_(self)
         , self_valid_(true)
         , strand_(strand)
-        , terminal_(std::move(terminal))
+        , terminal_(terminal)
         , content_(content)
         , canvas_({80, 24})
         , screen_()
@@ -281,7 +281,7 @@ private :
 
     boost::asio::strand          &strand_;
 
-    terminalpp::terminal          terminal_;
+    terminalpp::terminal         &terminal_;
     std::shared_ptr<component>    content_;
     terminalpp::screen            screen_;
     terminalpp::canvas            canvas_;
@@ -299,13 +299,13 @@ private :
 // ==========================================================================
 window::window(
     std::shared_ptr<component> const &content,
-    terminalpp::terminal            &&terminal,
+    terminalpp::terminal             &terminal,
     boost::asio::io_service::strand  &strand)
 {
     pimpl_ = std::make_shared<impl>(
         std::ref(*this), 
         std::ref(content),
-        std::move(terminal),
+        std::ref(terminal),
         std::ref(strand));
 }
 

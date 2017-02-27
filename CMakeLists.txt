@@ -18,6 +18,9 @@ find_package(Boost
 # Terminal++ is required for this library.
 find_package(Terminalpp REQUIRED)
 
+# The Microsoft GSL is requied for this library.
+find_package(gsl REQUIRED)
+
 # Due to the strange requirements for Google Test, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
 # equivalent of the following script before building Telnet++:
@@ -30,6 +33,8 @@ find_package(Terminalpp REQUIRED)
 find_package(GTest)
 
 if (GTEST_FOUND)
+    find_package(GMock REQUIRED)
+    
     # For GTest, it is necessary to link with the appropriate local threading
     # library.
     find_package(Threads)
@@ -58,6 +63,7 @@ set (munin_SOURCES
     src/algorithm.cpp
     src/component.cpp
     src/context.cpp
+    src/horizontal_strip_layout.cpp
     src/layout.cpp
     src/window.cpp
 )
@@ -100,14 +106,22 @@ if (GTEST_FOUND)
 
     set (munin_test_SOURCES
         test/algorithm_test.cpp
+        test/horizontal_strip_layout_test.cpp
     )
 
     add_executable(munin_tester
         ${munin_test_SOURCES}
     )
 
+    target_include_directories(munin_tester
+        PRIVATE
+            ${GTEST_INCLUDE_DIR}
+    )
+    
     target_link_libraries(munin_tester
         munin
+        terminalpp-core
+        ${GMOCK_LIBRARY}
         ${GTEST_LIBRARY}
         ${GTEST_MAIN_LIBRARY}
         ${CMAKE_THREAD_LIBS_INIT}

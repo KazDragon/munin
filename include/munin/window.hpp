@@ -30,7 +30,7 @@ public :
     //* =====================================================================
     window(
         std::shared_ptr<component> const &content,
-        terminalpp::terminal            &&terminal,
+        terminalpp::terminal             &terminal,
         boost::asio::io_service::strand  &strand);
 
     //* =====================================================================

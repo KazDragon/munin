@@ -23,14 +23,9 @@ class MUNIN_EXPORT component
 {
 public :
     //* =====================================================================
-    /// \brief Constructor
-    //* =====================================================================
-    component();
-
-    //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~component();
+    virtual ~component() = default;
 
     //* =====================================================================
     /// \brief Sets the position of this component.  This does not cause a
@@ -276,6 +271,11 @@ public :
     > on_cursor_position_changed;
 
 protected :
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    component() = default;
+
     //* =====================================================================
     /// \brief Called by set_position().  Derived classes must override this
     /// function in order to set the position of the component in a custom

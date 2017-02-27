@@ -7,8 +7,8 @@ namespace munin {
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent horizontal_strip_layout::do_get_preferred_size(
-    std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any>                 const &hints) const
+    gsl::span<std::shared_ptr<component>> const &components,
+    gsl::span<boost::any>                 const &hints) const
 {
     // The preferred size of the whole component is the maximum width of
     // the components and the sum of the preferred heights of the components.
@@ -32,11 +32,11 @@ terminalpp::extent horizontal_strip_layout::do_get_preferred_size(
 // DO_LAYOUT
 // ==========================================================================
 void horizontal_strip_layout::do_layout(
-    std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any>                 const &hints,
-    terminalpp::extent                             size)
+    gsl::span<std::shared_ptr<component>> const &components,
+    gsl::span<boost::any>                 const &hints,
+    terminalpp::extent                           size)
 {
-    auto y_coord = odin::u32(0);
+    auto y_coord = terminalpp::u32(0);
 
     for (auto comp : components)
     {

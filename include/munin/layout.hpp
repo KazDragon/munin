@@ -1,12 +1,10 @@
 #pragma once
 
-#include "munin/export.hpp"
 #include "munin/core.hpp"
 #include <terminalpp/extent.hpp>
+#include <gsl.h>
 #include <boost/any.hpp>
-#include <boost/optional.hpp>
 #include <memory>
-#include <vector>
 
 namespace munin {
 
@@ -20,14 +18,9 @@ class MUNIN_EXPORT layout
 {
 public :
     //* =====================================================================
-    /// \brief Constructor
-    //* =====================================================================
-    layout();
-
-    //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~layout();
+    virtual ~layout() = default;
 
     //* =====================================================================
     /// \brief Returns the preferred size of this layout.
@@ -36,27 +29,32 @@ public :
     /// if all components in it were at their preferred sizes.
     //* =====================================================================
     terminalpp::extent get_preferred_size(
-        std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any>                 const &hints) const;
+        gsl::span<std::shared_ptr<component>> const &components,
+        gsl::span<boost::any>                 const &hints) const;
 
     //* =====================================================================
     /// \brief Performs a layout of the specified components within the
     /// specified bounds.
     //* =====================================================================
     void operator()(
-        std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any>                 const &hints,
-        terminalpp::extent                             size);
+        gsl::span<std::shared_ptr<component>> const &components,
+        gsl::span<boost::any>                 const &hints,
+        terminalpp::extent                           size);
 
 protected :
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    layout() = default;
+
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
     /// this function in order to retrieve the preferred size of the layout
     /// in a custom manner.
     //* =====================================================================
     virtual terminalpp::extent do_get_preferred_size(
-        std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any>                 const &hints) const = 0;
+        gsl::span<std::shared_ptr<component>> const &components,
+        gsl::span<boost::any>                 const &hints) const = 0;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -64,9 +62,9 @@ protected :
     /// manner.
     //* =====================================================================
     virtual void do_layout(
-        std::vector<std::shared_ptr<component> > const &components,
-        std::vector<boost::any>                  const &hints,
-        terminalpp::extent                              size) = 0;
+        gsl::span<std::shared_ptr<component> > const &components,
+        gsl::span<boost::any>                  const &hints,
+        terminalpp::extent                            size) = 0;
 };
 
 }
