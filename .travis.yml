@@ -20,7 +20,7 @@ addons:
       - clang
       - gcc-4.8
       - g++-4.8
-      - libgtest-dev
+      - google-mock
       - libboost1.55-all-dev
 #      - libcrypto++-dev
 # Note: libcrypto++-dev is not yet whitelisted, nor usable in the packaged
@@ -39,7 +39,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -51,7 +51,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -63,7 +63,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -75,7 +75,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
 cache:
@@ -91,11 +91,12 @@ before_install:
     fi
   - export CMAKE=../cmake-3.4.0-Linux-x86_64/bin/cmake
 
-  - mkdir gtest
-  - cd gtest
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
-  - export GTEST_ROOT=$PWD
-  - cd ..
+  - mkdir gmock
+  - cd gmock
+  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gmock && make
+  - export GMOCK_ROOT=$PWD
+  - export GTEST_LIBRARY=$PWD/gtest
+  - export GTEST_INCLUDE_DIR=/usr/src/gmock/gtest/include
 
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
