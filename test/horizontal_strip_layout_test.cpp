@@ -57,3 +57,71 @@ TEST(
     
     ASSERT_EQ(expected_preferred_size, preferred_size);
 }
+
+TEST(a_horizontal_strip_layout_with_no_components, lays_out_nothing)
+{
+    munin::horizontal_strip_layout hsl;
+    hsl({}, {}, {80, 20});
+}
+
+TEST(a_horizontal_strip_layout_with_one_component, fills_width_but_not_height_with_component)
+{
+    static constexpr terminalpp::extent comp_preferred_size{80, 24}; 
+    static constexpr terminalpp::extent layout_size{100, 40};
+    static constexpr terminalpp::extent expected_size{100, 24};
+
+    auto comp = std::make_shared<StrictMock<component>>();
+    EXPECT_CALL(*comp, do_get_preferred_size())
+        .WillOnce(Return(comp_preferred_size));
+
+    EXPECT_CALL(*comp, do_set_position(terminalpp::point{0, 0}));
+    EXPECT_CALL(*comp, do_set_size(expected_size));
+    
+    std::shared_ptr<munin::component> components[] = {
+        comp
+    };
+    
+    munin::horizontal_strip_layout hsl;
+    hsl(components, {}, layout_size);
+}
+
+TEST(a_horizontal_strip_layout_with_multiple_components, plots_components_below_each_other)
+{
+    // The layout will continue to plot components below each other, giving
+    // them the maximum width, and ignoring the boundaries of the layout.
+    static constexpr terminalpp::extent comp_preferred_size{80, 24};
+    static constexpr terminalpp::extent layout_size{100, 40};
+    static constexpr terminalpp::extent expected_size{100, 24};
+
+    static constexpr terminalpp::point expected0_pos{0, 0};
+    static constexpr terminalpp::point expected1_pos{0, 24};
+    static constexpr terminalpp::point expected2_pos{0, 48};
+    
+    auto comp0 = std::make_shared<StrictMock<component>>();
+    EXPECT_CALL(*comp0, do_get_preferred_size())
+        .WillOnce(Return(comp_preferred_size));
+
+    auto comp1 = std::make_shared<StrictMock<component>>();
+    EXPECT_CALL(*comp1, do_get_preferred_size())
+        .WillOnce(Return(comp_preferred_size));
+
+    auto comp2 = std::make_shared<StrictMock<component>>();
+    EXPECT_CALL(*comp2, do_get_preferred_size())
+        .WillOnce(Return(comp_preferred_size));
+        
+    EXPECT_CALL(*comp0, do_set_position(expected0_pos));
+    EXPECT_CALL(*comp0, do_set_size(expected_size));
+    
+    EXPECT_CALL(*comp1, do_set_position(expected1_pos));
+    EXPECT_CALL(*comp1, do_set_size(expected_size));
+    
+    EXPECT_CALL(*comp2, do_set_position(expected2_pos));
+    EXPECT_CALL(*comp2, do_set_size(expected_size));
+    
+    std::shared_ptr<munin::component> components[] = {
+        comp0, comp1, comp2
+    };
+    
+    munin::horizontal_strip_layout hsl;
+    hsl(components, {}, layout_size);
+}

@@ -14,7 +14,7 @@ terminalpp::extent horizontal_strip_layout::do_get_preferred_size(
     // the components and the sum of the preferred heights of the components.
     terminalpp::extent maximum_preferred_size(0, 0);
 
-    for (auto comp : components)
+    for (auto const &comp : components)
     {
         auto preferred_size = comp->get_preferred_size();
 
@@ -38,7 +38,7 @@ void horizontal_strip_layout::do_layout(
 {
     auto y_coord = terminalpp::u32(0);
 
-    for (auto comp : components)
+    for (auto &comp : components)
     {
         auto preferred_size = comp->get_preferred_size();
 
