@@ -38,12 +38,10 @@ before_install:
     fi
   - export CMAKE=../cmake-3.4.0-Linux-x86_64/bin/cmake
 
-  - mkdir gmock
-  - cd gmock
-  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gmock && make
-  - export GMOCK_ROOT=$PWD
-  - export GTEST_LIBRARY=$PWD/gtest
-  - export GTEST_INCLUDE_DIR=/usr/src/gmock/gtest/include
+  - mkdir gtest
+  - cd gtest
+  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
+  - export GTEST_ROOT=$PWD
 
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
