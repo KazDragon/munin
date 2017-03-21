@@ -6,10 +6,10 @@ compiler:
   - clang
 
 env:
-  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+#  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
   - CONFIG=Release SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
-  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
-  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
+#  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+#  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
 
 addons:
   apt:
@@ -22,61 +22,6 @@ addons:
       - g++-4.8
       - google-mock
       - libboost1.55-all-dev
-#      - libcrypto++-dev
-# Note: libcrypto++-dev is not yet whitelisted, nor usable in the packaged
-# version in Clang without editing a file (see below)
-
-matrix:
-  include:
-
-    # g++-5.2
-    - compiler: g++
-      env: CONFIG=Release SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
-
-    - compiler: g++
-      env: CONFIG=Release SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
-
-    - compiler: g++
-      env: CONFIG=Debug SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
-
-    - compiler: g++
-      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
 
 cache:
   - apt: true
@@ -84,6 +29,8 @@ cache:
       - cmake-3.4.0-Linux-x86_64
 
 before_install:
+  - ls -lR /usr/src
+
 # workaround for not having CMake 3.4
   - if [ ! -d "cmake-3.4.0-Linux-x86_64/bin" ]; then
       wget --no-check-certificate http://www.cmake.org/files/v3.4/cmake-3.4.0-Linux-x86_64.tar.gz;
