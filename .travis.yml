@@ -42,6 +42,7 @@ before_install:
   - cd gtest
   - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
   - export GTEST_ROOT=$PWD
+  - cd ..
 
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
