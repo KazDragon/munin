@@ -45,11 +45,14 @@ before_install:
   - cd ..
 
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
+  - mkdir terminalpp_build
+  - export TERMINALPP_ROOT=$PWD/terminalpp_build
+  
   - tar zxvf terminalpp.tar.gz
   - cd terminalpp-1.2
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$TERMINALPP_ROOT
   - make terminalpp
-  - export TERMINALPP_ROOT=$PWD
+  - make install
   - cd ..
   
 # install coverage software
