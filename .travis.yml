@@ -46,7 +46,7 @@ before_install:
 
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.1.tar.gz -O terminalpp.tar.gz
   - mkdir terminalpp_build
-  - export TERMINALPP_ROOT=$PWD/terminalpp_build/lib/terminalpp
+  - export TERMINALPP_ROOT=$PWD/terminalpp_build
   
   - tar zxvf terminalpp.tar.gz
   - cd terminalpp-1.2.1
@@ -61,7 +61,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$TERMINALPP_ROOT -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$TERMINALPP_ROOT/lib/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - make -j2
