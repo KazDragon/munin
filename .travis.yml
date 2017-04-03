@@ -38,20 +38,35 @@ before_install:
     fi
   - export CMAKE=$PWD/cmake-3.4.0-Linux-x86_64/bin/cmake
 
+# install GTest
+
   - mkdir gtest
   - cd gtest
   - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
   - export GTEST_ROOT=$PWD
   - cd ..
 
+# build and install a number of other libraries
+  - mkdir ext
+  - export EXTERNAL_LIBRARIES=$PWD/ext
+
+# install Terminal++
   - wget https://github.com/KazDragon/terminalpp/archive/v1.2.1.tar.gz -O terminalpp.tar.gz
-  - mkdir terminalpp_build
-  - export TERMINALPP_ROOT=$PWD/terminalpp_build
-  
   - tar zxvf terminalpp.tar.gz
+  
   - cd terminalpp-1.2.1
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$TERMINALPP_ROOT
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
   - make terminalpp
+  - make install
+  - cd ..
+  
+# install GSL
+  - wget https://github.com/KazDragon/GSL/archive/munin-mods-0.2.tar.gz gsl.tar.gz
+  - tar zxvf gsl.tar.gz
+  
+  - cd GSL-munin-mods-0.2
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
+  - make gsl
   - make install
   - cd ..
   
@@ -61,7 +76,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$TERMINALPP_ROOT/lib/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/lib/terminalpp -DGsl_DIR=$EXTERNAL_LIBRARIES/lib/gsl -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - make -j2
