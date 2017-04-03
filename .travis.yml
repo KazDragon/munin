@@ -61,7 +61,7 @@ before_install:
   - cd ..
   
 # install GSL
-  - wget https://github.com/KazDragon/GSL/archive/munin-mods-0.2.tar.gz gsl.tar.gz
+  - wget https://github.com/KazDragon/GSL/archive/munin-mods-0.2.tar.gz -O gsl.tar.gz
   - tar zxvf gsl.tar.gz
   
   - cd GSL-munin-mods-0.2
