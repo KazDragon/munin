@@ -66,7 +66,7 @@ before_install:
   
   - cd GSL-munin-mods-0.2
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
-  - make gsl
+  - make
   - make install
   - cd ..
   
