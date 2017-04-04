@@ -79,7 +79,7 @@ before_script:
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/lib/terminalpp -Dgsl_DIR=$EXTERNAL_LIBRARIES/lib/gsl -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
-  - make -j2
+  - make VERBOSE=1
   - if [ "$COVERAGE" == "ON" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
     fi
