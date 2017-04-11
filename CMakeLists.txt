@@ -91,6 +91,7 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        gsl
         ${Boost_SYSTEM_LIBRARY}
 )
 

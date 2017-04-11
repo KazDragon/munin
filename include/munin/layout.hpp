@@ -2,7 +2,7 @@
 
 #include "munin/core.hpp"
 #include <terminalpp/extent.hpp>
-#include <gsl.h>
+#include <gsl/gsl>
 #include <boost/any.hpp>
 #include <memory>
 
