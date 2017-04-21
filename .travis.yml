@@ -18,8 +18,8 @@ addons:
       - boost-latest
     packages:
       - clang
-      - gcc-4.8
-      - g++-4.8
+      - gcc-5.2
+      - g++-5.2
       - google-mock
       - libboost1.55-all-dev
 
