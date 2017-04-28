@@ -51,10 +51,10 @@ before_install:
   - export EXTERNAL_LIBRARIES=$PWD/ext
 
 # install Terminal++
-  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.1.tar.gz -O terminalpp.tar.gz
+  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.2.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
   
-  - cd terminalpp-1.2.1
+  - cd terminalpp-1.2.2
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
   - make terminalpp
   - make install
