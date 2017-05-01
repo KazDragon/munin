@@ -47,13 +47,8 @@ TEST(
     EXPECT_CALL(*comp1, do_get_preferred_size())
         .WillOnce(Return(comp1_preferred_size));
         
-    std::shared_ptr<munin::component> components[] = {
-        std::shared_ptr<munin::component>(comp0),
-        std::shared_ptr<munin::component>(comp1)
-    };
-    
     munin::horizontal_strip_layout hsl;
-    auto preferred_size = hsl.get_preferred_size(components, {});
+    auto preferred_size = hsl.get_preferred_size({comp0, comp1}, {});
     
     ASSERT_EQ(expected_preferred_size, preferred_size);
 }
@@ -77,12 +72,8 @@ TEST(a_horizontal_strip_layout_with_one_component, fills_width_but_not_height_wi
     EXPECT_CALL(*comp, do_set_position(terminalpp::point{0, 0}));
     EXPECT_CALL(*comp, do_set_size(expected_size));
     
-    std::shared_ptr<munin::component> components[] = {
-        comp
-    };
-    
     munin::horizontal_strip_layout hsl;
-    hsl(components, {}, layout_size);
+    hsl({comp}, {}, layout_size);
 }
 
 TEST(a_horizontal_strip_layout_with_multiple_components, plots_components_below_each_other)
@@ -118,10 +109,6 @@ TEST(a_horizontal_strip_layout_with_multiple_components, plots_components_below_
     EXPECT_CALL(*comp2, do_set_position(expected2_pos));
     EXPECT_CALL(*comp2, do_set_size(expected_size));
     
-    std::shared_ptr<munin::component> components[] = {
-        comp0, comp1, comp2
-    };
-    
     munin::horizontal_strip_layout hsl;
-    hsl(components, {}, layout_size);
+    hsl({comp0, comp1, comp2}, {}, layout_size);
 }

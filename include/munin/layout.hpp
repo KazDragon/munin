@@ -2,9 +2,9 @@
 
 #include "munin/core.hpp"
 #include <terminalpp/extent.hpp>
-#include <gsl/gsl>
 #include <boost/any.hpp>
 #include <memory>
+#include <vector>
 
 namespace munin {
 
@@ -29,17 +29,17 @@ public :
     /// if all components in it were at their preferred sizes.
     //* =====================================================================
     terminalpp::extent get_preferred_size(
-        gsl::span<std::shared_ptr<component>> const &components,
-        gsl::span<boost::any>                 const &hints) const;
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints) const;
 
     //* =====================================================================
     /// \brief Performs a layout of the specified components within the
     /// specified bounds.
     //* =====================================================================
     void operator()(
-        gsl::span<std::shared_ptr<component>> const &components,
-        gsl::span<boost::any>                 const &hints,
-        terminalpp::extent                           size);
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints,
+        terminalpp::extent                             size);
 
 protected :
     //* =====================================================================
@@ -53,8 +53,8 @@ protected :
     /// in a custom manner.
     //* =====================================================================
     virtual terminalpp::extent do_get_preferred_size(
-        gsl::span<std::shared_ptr<component>> const &components,
-        gsl::span<boost::any>                 const &hints) const = 0;
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints) const = 0;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -62,9 +62,9 @@ protected :
     /// manner.
     //* =====================================================================
     virtual void do_layout(
-        gsl::span<std::shared_ptr<component> > const &components,
-        gsl::span<boost::any>                  const &hints,
-        terminalpp::extent                            size) = 0;
+        std::vector<std::shared_ptr<component> > const &components,
+        std::vector<boost::any>                  const &hints,
+        terminalpp::extent                              size) = 0;
 };
 
 }
