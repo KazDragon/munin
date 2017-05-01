@@ -56,8 +56,8 @@ before_install:
   
   - cd terminalpp-1.2.2
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
-  - make terminalpp
-  - make install
+  - make terminalpp VERBOSE=1 
+  - make install VERBOSE=1 
   - cd ..
   
 # install GSL
@@ -76,7 +76,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -Dgsl_DIR=$EXTERNAL_LIBRARIES/share/cmake/gsl -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE VERBOSE=1 -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -Dgsl_DIR=$EXTERNAL_LIBRARIES/share/cmake/gsl -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - make VERBOSE=1

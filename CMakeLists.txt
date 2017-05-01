@@ -107,7 +107,7 @@ if (GTEST_FOUND)
 
     set (munin_test_SOURCES
         test/algorithm_test.cpp
-        test/horizontal_strip_layout_test.cpp
+#        test/horizontal_strip_layout_test.cpp
     )
 
     add_executable(munin_tester
