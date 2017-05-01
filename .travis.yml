@@ -6,10 +6,10 @@ compiler:
   - clang
 
 env:
-#  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
   - CONFIG=Release SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
-#  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
-#  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
+  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
 
 addons:
   apt:
@@ -22,6 +22,70 @@ addons:
       - g++-4.8
       - google-mock
       - libboost1.55-all-dev
+
+matrix:
+  include:
+
+    # g++-5.2 with coverage
+    - compiler: g++
+      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5 COVERAGE=ON
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    # g++-5.2
+    - compiler: g++
+      env: CONFIG=Release SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Release SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Debug SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
+
+    - compiler: g++
+      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - clang
+            - gcc-5
+            - g++-5
+            - libgtest-dev
+            - libboost1.55-all-dev
 
 cache:
   - apt: true
@@ -56,8 +120,8 @@ before_install:
   
   - cd terminalpp-1.2.2
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
-  - make terminalpp VERBOSE=1 
-  - make install VERBOSE=1 
+  - make terminalpp
+  - make install
   - cd ..
   
 # install coverage software
@@ -66,7 +130,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE VERBOSE=1 -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - make
