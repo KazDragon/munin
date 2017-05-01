@@ -91,6 +91,8 @@ cache:
   - apt: true
   - directories:
       - cmake-3.4.0-Linux-x86_64
+      - lcov
+      - gtest
 
 before_install:
   - ls -lR /usr/src
@@ -101,6 +103,15 @@ before_install:
       tar -xzf cmake-3.4.0-Linux-x86_64.tar.gz;
     fi
   - export CMAKE=$PWD/cmake-3.4.0-Linux-x86_64/bin/cmake
+
+# workaround for not having lcov 1.13
+  - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
+      wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz;
+      tar -xzf lcov_1.13.orig.tar.gz;
+      mkdir lcov || true;
+      DESTDIR=$HOME/lcov make -C lcov-1.13/ install;
+    fi
+  - export LCOV=$HOME/lcov/usr/local/bin/lcov
 
 # install GTest
 
