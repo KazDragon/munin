@@ -115,14 +115,14 @@ before_install:
 
 # install GTest
 
-  - mkdir gtest
+  - mkdir gtest || true
   - cd gtest
   - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
   - export GTEST_ROOT=$PWD
   - cd ..
 
 # build and install a number of other libraries
-  - mkdir ext
+  - mkdir ext || true
   - export EXTERNAL_LIBRARIES=$PWD/ext
 
 # install Terminal++
@@ -131,7 +131,6 @@ before_install:
   
   - cd terminalpp-1.2.2
   - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
-  - make terminalpp
   - make install
   - cd ..
   
