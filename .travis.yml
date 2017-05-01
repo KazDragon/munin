@@ -35,7 +35,7 @@ matrix:
           packages:
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     # g++-5.2
@@ -48,7 +48,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -60,7 +60,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -72,7 +72,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
     - compiler: g++
@@ -84,7 +84,7 @@ matrix:
             - clang
             - gcc-5
             - g++-5
-            - libgtest-dev
+            - google-mock
             - libboost1.55-all-dev
 
 cache:
