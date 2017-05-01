@@ -7,6 +7,13 @@
 using testing::Return;
 using testing::StrictMock;
 
+TEST(make_horizontal_strip_layout, creates_a_new_horizontal_strip_layout)
+{
+    auto lyt = munin::make_horizontal_strip_layout();
+    auto hsl = dynamic_cast<munin::horizontal_strip_layout*>(lyt.get());
+    ASSERT_TRUE(hsl != nullptr);
+}
+
 TEST(a_horizontal_strip_layout_with_no_components, has_a_preferred_size_of_zero)
 {
     munin::horizontal_strip_layout hsl;
