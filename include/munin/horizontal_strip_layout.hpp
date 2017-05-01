@@ -29,8 +29,8 @@ protected :
     /// in a custom manner.
     //* =====================================================================
     terminalpp::extent do_get_preferred_size(
-        gsl::span<std::shared_ptr<component>> const &components,
-        gsl::span<boost::any>                 const &hints) const override;
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints) const override;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -38,8 +38,8 @@ protected :
     /// manner.
     //* =====================================================================
     void do_layout(
-        gsl::span<std::shared_ptr<component>> const &components,
-        gsl::span<boost::any>                 const &hints,
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints,
         terminalpp::extent                           size) override;
 };
 

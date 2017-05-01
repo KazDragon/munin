@@ -22,12 +22,21 @@ addons:
       - g++-4.8
       - google-mock
       - libboost1.55-all-dev
-#      - libcrypto++-dev
-# Note: libcrypto++-dev is not yet whitelisted, nor usable in the packaged
-# version in Clang without editing a file (see below)
 
 matrix:
   include:
+
+    # g++-5.2 with coverage
+    - compiler: g++
+      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5 COVERAGE=ON
+      addons:
+        apt:
+          sources: *sources
+          packages:
+            - gcc-5
+            - g++-5
+            - google-mock
+            - libboost1.55-all-dev
 
     # g++-5.2
     - compiler: g++
@@ -82,27 +91,47 @@ cache:
   - apt: true
   - directories:
       - cmake-3.4.0-Linux-x86_64
+      - lcov
+      - gtest
 
 before_install:
+  - ls -lR /usr/src
+
 # workaround for not having CMake 3.4
   - if [ ! -d "cmake-3.4.0-Linux-x86_64/bin" ]; then
       wget --no-check-certificate http://www.cmake.org/files/v3.4/cmake-3.4.0-Linux-x86_64.tar.gz;
       tar -xzf cmake-3.4.0-Linux-x86_64.tar.gz;
     fi
-  - export CMAKE=../cmake-3.4.0-Linux-x86_64/bin/cmake
+  - export CMAKE=$PWD/cmake-3.4.0-Linux-x86_64/bin/cmake
 
-  - mkdir gmock
-  - cd gmock
-  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gmock && make
-  - export GMOCK_ROOT=$PWD
-  - export GTEST_LIBRARY=$PWD/gtest
-  - export GTEST_INCLUDE_DIR=/usr/src/gmock/gtest/include
+# workaround for not having lcov 1.13
+  - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
+      wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz;
+      tar -xzf lcov_1.13.orig.tar.gz;
+      mkdir lcov || true;
+      DESTDIR=$HOME/lcov make -C lcov-1.13/ install;
+    fi
+  - export LCOV=$HOME/lcov/usr/local/bin/lcov
 
-  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.tar.gz -O terminalpp.tar.gz
+# install GTest
+
+  - mkdir gtest || true
+  - cd gtest
+  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
+  - export GTEST_ROOT=$PWD
+  - cd ..
+
+# build and install a number of other libraries
+  - mkdir ext || true
+  - export EXTERNAL_LIBRARIES=$PWD/ext
+
+# install Terminal++
+  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.2.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
-  - cd terminalpp-1.2
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED
-  - make terminalpp
+  
+  - cd terminalpp-1.2.2
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
+  - make install
   - cd ..
   
 # install coverage software
@@ -111,10 +140,10 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTERMINALPP_ROOT=../terminalpp-1.2 -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
-  - make -j2
+  - make
   - if [ "$COVERAGE" == "ON" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
     fi

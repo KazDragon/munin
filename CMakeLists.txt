@@ -18,9 +18,6 @@ find_package(Boost
 # Terminal++ is required for this library.
 find_package(Terminalpp REQUIRED)
 
-# The Microsoft GSL is requied for this library.
-find_package(gsl REQUIRED)
-
 # Due to the strange requirements for Google Test, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
 # equivalent of the following script before building Telnet++:
