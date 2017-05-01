@@ -27,3 +27,11 @@
 *.exe
 *.out
 *.app
+
+# Generated files
+export.hpp
+
+# Common IDE-related files
+Munin.*
+build
+
