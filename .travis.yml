@@ -60,26 +60,16 @@ before_install:
   - make install VERBOSE=1 
   - cd ..
   
-# install GSL
-  - wget https://github.com/KazDragon/GSL/archive/munin-mods-0.2.tar.gz -O gsl.tar.gz
-  - tar zxvf gsl.tar.gz
-  
-  - cd GSL-munin-mods-0.2
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
-  - make
-  - make install
-  - cd ..
-  
 # install coverage software
   - if [ "$COVERAGE" == "ON" ]; then gem install coveralls-lcov; fi
 
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE VERBOSE=1 -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -Dgsl_DIR=$EXTERNAL_LIBRARIES/share/cmake/gsl -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE VERBOSE=1 -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
-  - make VERBOSE=1
+  - make
   - if [ "$COVERAGE" == "ON" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
     fi
