@@ -158,7 +158,7 @@ public :
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    MOCK_METHOD2(do_draw, void (munin::context &, munin::rectangle const &));
+    MOCK_CONST_METHOD2(do_draw, void (munin::context &, munin::rectangle const &));
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this
