@@ -20,7 +20,7 @@ find_package(Terminalpp REQUIRED)
 
 # Due to the strange requirements for Google Test, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
-# equivalent of the following script before building Telnet++:
+# equivalent of the following script before building Munin
 #
 #  mkdir gtest
 #  cd gtest

@@ -1,4 +1,4 @@
-# Telnet++
+# Munin
 
 [![Documentation](https://codedocs.xyz/KazDragon/munin.svg)](https://codedocs.xyz/KazDragon/munin/)
 [![License](https://img.shields.io/github/license/KazDragon/munin.svg)](https://en.wikipedia.org/wiki/MIT_License)
