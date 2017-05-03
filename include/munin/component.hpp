@@ -166,7 +166,7 @@ public :
     //* =====================================================================
     void draw(
         context         &ctx
-      , rectangle const &region);
+      , rectangle const &region) const;
 
     //* =====================================================================
     /// \brief Send an event to the component.  This may be of any type.
@@ -429,7 +429,7 @@ protected :
     //* =====================================================================
     virtual void do_draw(
         context         &ctx
-      , rectangle const &region) = 0;
+      , rectangle const &region) const = 0;
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

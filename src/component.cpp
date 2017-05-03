@@ -178,7 +178,7 @@ void component::layout()
 // ==========================================================================
 void component::draw(
     context         &ctx
-  , rectangle const &region)
+  , rectangle const &region) const
 {
     do_draw(ctx, region);
 }
