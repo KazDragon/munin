@@ -11,7 +11,7 @@ private :
         return {0, 0};
     }
     
-    void do_draw(munin::context  &ctx, munin::rectangle const &region) override
+    void do_draw(munin::context  &ctx, munin::rectangle const &region) const override
     {
     }
 };

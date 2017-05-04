@@ -14,7 +14,6 @@ struct basic_component::impl
     // ======================================================================
     impl(basic_component &self)
         : self_(self)
-        , can_focus_(true)
         , has_focus_(false)
         , enabled_(true)
     {
@@ -38,10 +37,8 @@ struct basic_component::impl
     }
 
     basic_component                  &self_;
-    std::weak_ptr<component>          parent_;
     std::map<std::string, boost::any> attributes_;
     rectangle                         bounds_;
-    bool                              can_focus_;
     bool                              has_focus_;
     bool                              enabled_;
 };
@@ -98,22 +95,6 @@ terminalpp::extent basic_component::do_get_size() const
 }
 
 // ==========================================================================
-// DO_SET_CAN_FOCUS
-// ==========================================================================
-void basic_component::do_set_can_focus(bool focus)
-{
-    pimpl_->can_focus_ = focus;
-}
-
-// ==========================================================================
-// DO_CAN_FOCUS
-// ==========================================================================
-bool basic_component::do_can_focus() const
-{
-    return pimpl_->can_focus_;
-}
-
-// ==========================================================================
 // DO_HAS_FOCUS
 // ==========================================================================
 bool basic_component::do_has_focus() const
@@ -126,11 +107,8 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    if (can_focus())
-    {
-        pimpl_->has_focus_ = true;
-        on_focus_set();
-    }
+    pimpl_->has_focus_ = true;
+    on_focus_set();
 }
 
 // ==========================================================================

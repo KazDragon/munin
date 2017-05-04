@@ -53,20 +53,6 @@ protected :
     virtual terminalpp::extent do_get_size() const override;
 
     //* =====================================================================
-    /// \brief Called by set_can_focus().  Derived classes must override this
-    /// function in order to set whether this component can be focussed in
-    /// a custom manner.
-    //* =====================================================================
-    virtual void do_set_can_focus(bool focus) override;
-
-    //* =====================================================================
-    /// \brief Called by can_focus().  Derived classes must override this
-    /// function in order to return whether this component can be focused in
-    /// a custom manner.
-    //* =====================================================================
-    virtual bool do_can_focus() const override;
-
-    //* =====================================================================
     /// \brief Called by has_focus().  Derived classes must override this
     /// function in order to return whether this component has focus in a
     /// custom manner.

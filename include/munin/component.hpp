@@ -74,16 +74,6 @@ public :
     bool has_focus() const;
 
     //* =====================================================================
-    /// \brief Sets whether this component can take focus.
-    //* =====================================================================
-    void set_can_focus(bool focus);
-
-    //* =====================================================================
-    /// \brief Returns whether this component can be focused.
-    //* =====================================================================
-    bool can_focus() const;
-
-    //* =====================================================================
     /// \brief Sets this component to have the focus.
     //* =====================================================================
     void set_focus();
@@ -317,20 +307,6 @@ protected :
     /// custom manner.
     //* =====================================================================
     virtual bool do_has_focus() const = 0;
-
-    //* =====================================================================
-    /// \brief Called by set_can_focus().  Derived classes must override this
-    /// function in order to set whether this component can be focussed in
-    /// a custom manner.
-    //* =====================================================================
-    virtual void do_set_can_focus(bool focus) = 0;
-
-    //* =====================================================================
-    /// \brief Called by can_focus().  Derived classes must override this
-    /// function in order to return whether this component can be focused in
-    /// a custom manner.
-    //* =====================================================================
-    virtual bool do_can_focus() const = 0;
 
     //* =====================================================================
     /// \brief Called by set_focus().  Derived classes must override this

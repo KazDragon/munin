@@ -14,12 +14,6 @@ TEST(a_new_basic_component, has_a_size_of_zero)
     ASSERT_EQ(terminalpp::extent(0, 0), comp.get_size());
 }
 
-TEST(a_new_basic_component, can_receive_focus)
-{
-    fake_basic_component comp;
-    ASSERT_TRUE(comp.can_focus());
-}
-
 TEST(a_new_basic_component, does_not_have_focus)
 {
     fake_basic_component comp;
