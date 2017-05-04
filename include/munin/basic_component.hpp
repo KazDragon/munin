@@ -86,13 +86,6 @@ protected :
     virtual void do_focus_previous() override;
 
     //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_focussed_component() override;
-
-    //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this
     /// function in order to disable the component in a custom manner.
     //* =====================================================================

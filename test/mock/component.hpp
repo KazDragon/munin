@@ -73,15 +73,6 @@ public :
     MOCK_METHOD0(do_focus_previous, void ());
 
     //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    MOCK_METHOD0(
-        do_get_focussed_component, 
-        std::shared_ptr<munin::component> ());
-
-    //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this
     /// function in order to disable the component in a custom manner.
     //* =====================================================================

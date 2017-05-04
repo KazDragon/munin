@@ -116,8 +116,13 @@ void basic_component::do_set_focus()
 // ==========================================================================
 void basic_component::do_lose_focus()
 {
+    bool old_focus = pimpl_->has_focus_;
     pimpl_->has_focus_ = false;
-    on_focus_lost();
+    
+    if (old_focus)
+    {
+        on_focus_lost();
+    }
 }
 
 // ==========================================================================
@@ -134,16 +139,6 @@ void basic_component::do_focus_next()
 void basic_component::do_focus_previous()
 {
     pimpl_->toggle_focus();
-}
-
-// ==========================================================================
-// DO_GET_FOCUSSED_COMPONENT
-// ==========================================================================
-std::shared_ptr<component> basic_component::do_get_focussed_component()
-{
-    return pimpl_->has_focus_
-      ? std::shared_ptr<component>(shared_from_this())
-      : std::shared_ptr<component>();
 }
 
 // ==========================================================================

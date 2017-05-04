@@ -100,13 +100,6 @@ public :
     void focus_previous();
 
     //* =====================================================================
-    /// \brief Returns component with focus at the deepest part of the
-    /// component heirarchy, or an empty shared_ptr<> if no component has
-    /// focus.
-    //* =====================================================================
-    std::shared_ptr<component> get_focussed_component();
-
-    //* =====================================================================
     /// \brief Enables the component.
     //* =====================================================================
     void enable();
@@ -333,13 +326,6 @@ protected :
     /// this function in order to move the focus in a custom manner.
     //* =====================================================================
     virtual void do_focus_previous() = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_focussed_component() = 0;
 
     //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this

@@ -105,6 +105,7 @@ if (GTEST_FOUND)
     set (munin_test_SOURCES
         test/algorithm_test.cpp
         test/basic_component/new_basic_component_test.cpp
+        test/basic_component/unfocused_basic_component_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 
