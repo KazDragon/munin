@@ -107,8 +107,11 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    pimpl_->has_focus_ = true;
-    on_focus_set();
+    if (pimpl_->enabled_)
+    {
+        pimpl_->has_focus_ = true;
+        on_focus_set();
+    }
 }
 
 // ==========================================================================
@@ -130,7 +133,10 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-    pimpl_->toggle_focus();
+    if (pimpl_->enabled_)
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================
@@ -138,7 +144,10 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-    pimpl_->toggle_focus();
+    if (pimpl_->enabled_)
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================
