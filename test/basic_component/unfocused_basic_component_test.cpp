@@ -1,5 +1,6 @@
 #include "fake_basic_component.hpp"
 #include <munin/basic_component.hpp>
+#include <terminalpp/ansi/mouse.hpp>
 #include <gtest/gtest.h>
 #include <memory>
 #include <cassert>
@@ -62,6 +63,31 @@ TEST_F(an_enabled_unfocused_basic_component, gains_focus_when_previous_focus_is_
     ASSERT_EQ(1, on_focus_set_count);
 }
 
+TEST_F(an_enabled_unfocused_basic_component, sets_focus_on_mouse_down)
+{
+    terminalpp::ansi::mouse::report mouse_event;
+    mouse_event.x_position_ = 0;
+    mouse_event.y_position_ = 0;
+    mouse_event.button_ = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
+    
+    component_.event(mouse_event);
+    
+    ASSERT_TRUE(component_.has_focus());
+    ASSERT_EQ(1, on_focus_set_count);
+}
+
+TEST_F(an_enabled_unfocused_basic_component, does_nothing_on_mouse_up)
+{
+    terminalpp::ansi::mouse::report mouse_event;
+    mouse_event.x_position_ = 0;
+    mouse_event.y_position_ = 0;
+    mouse_event.button_ = terminalpp::ansi::mouse::report::BUTTON_UP;
+    
+    component_.event(mouse_event);
+    
+    ASSERT_FALSE(component_.has_focus());
+}
+
 class a_disabled_unfocused_basic_component : public testing::Test
 {
 protected :
@@ -121,4 +147,28 @@ TEST_F(a_disabled_unfocused_basic_component, does_nothing_when_previous_focus_is
     
     ASSERT_FALSE(component_.has_focus());
     ASSERT_EQ(0, on_focus_set_count);
+}
+
+TEST_F(a_disabled_unfocused_basic_component, does_nothing_on_mouse_down)
+{
+    terminalpp::ansi::mouse::report mouse_event;
+    mouse_event.x_position_ = 0;
+    mouse_event.y_position_ = 0;
+    mouse_event.button_ = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
+    
+    component_.event(mouse_event);
+    
+    ASSERT_FALSE(component_.has_focus());
+}
+
+TEST_F(a_disabled_unfocused_basic_component, does_nothing_on_mouse_up)
+{
+    terminalpp::ansi::mouse::report mouse_event;
+    mouse_event.x_position_ = 0;
+    mouse_event.y_position_ = 0;
+    mouse_event.button_ = terminalpp::ansi::mouse::report::BUTTON_UP;
+    
+    component_.event(mouse_event);
+    
+    ASSERT_FALSE(component_.has_focus());
 }
