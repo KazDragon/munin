@@ -109,8 +109,13 @@ void basic_component::do_set_focus()
 {
     if (pimpl_->enabled_)
     {
+        bool old_focus = pimpl_->has_focus_;
         pimpl_->has_focus_ = true;
-        on_focus_set();
+        
+        if (!old_focus)
+        {
+            on_focus_set();
+        }
     }
 }
 

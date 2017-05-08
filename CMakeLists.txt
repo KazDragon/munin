@@ -106,6 +106,7 @@ if (GTEST_FOUND)
         test/algorithm_test.cpp
         test/basic_component/new_basic_component_test.cpp
         test/basic_component/unfocused_basic_component_test.cpp
+        test/basic_component/focused_basic_component_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 
