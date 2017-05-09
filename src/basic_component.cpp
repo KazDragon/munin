@@ -82,8 +82,11 @@ terminalpp::point basic_component::do_get_position() const
 // ==========================================================================
 void basic_component::do_set_size(terminalpp::extent const &size)
 {
-    pimpl_->bounds_.size = size;
-    on_size_changed();
+    if (size != pimpl_->bounds_.size)
+    {
+        pimpl_->bounds_.size = size;
+        on_size_changed();
+    }
 }
 
 // ==========================================================================
