@@ -58,6 +58,7 @@ set (MUNIN_VERSION 0.0.1)
 
 set (munin_SOURCES
     src/algorithm.cpp
+    src/basic_component.cpp
     src/component.cpp
     src/context.cpp
     src/horizontal_strip_layout.cpp
@@ -103,6 +104,12 @@ if (GTEST_FOUND)
 
     set (munin_test_SOURCES
         test/algorithm_test.cpp
+        test/basic_component/new_basic_component_test.cpp
+        test/basic_component/enabled_basic_component_test.cpp
+        test/basic_component/disabled_basic_component_test.cpp
+        test/basic_component/unfocused_basic_component_test.cpp
+        test/basic_component/focused_basic_component_test.cpp
+        test/basic_component/basic_component_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 

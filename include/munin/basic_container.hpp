@@ -133,20 +133,6 @@ protected :
     virtual bool do_has_focus() const override;
 
     //* =====================================================================
-    /// \brief Called by set_can_focus().  Derived classes must override this
-    /// function in order to set whether this component can be focussed in
-    /// a custom manner.
-    //* =====================================================================
-    virtual void do_set_can_focus(bool focus) override;
-
-    //* =====================================================================
-    /// \brief Called by can_focus().  Derived classes must override this
-    /// function in order to return whether this component can be focused in
-    /// a custom manner.
-    //* =====================================================================
-    virtual bool do_can_focus() const override;
-
-    //* =====================================================================
     /// \brief Called by set_focus().  Derived classes must override this
     /// function in order to set the focus to this component in a custom
     /// manner.
@@ -171,13 +157,6 @@ protected :
     /// this function in order to move the focus in a custom manner.
     //* =====================================================================
     virtual void do_focus_previous() override;
-
-    //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_focussed_component() override;
 
     //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this

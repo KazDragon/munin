@@ -74,16 +74,6 @@ public :
     bool has_focus() const;
 
     //* =====================================================================
-    /// \brief Sets whether this component can take focus.
-    //* =====================================================================
-    void set_can_focus(bool focus);
-
-    //* =====================================================================
-    /// \brief Returns whether this component can be focused.
-    //* =====================================================================
-    bool can_focus() const;
-
-    //* =====================================================================
     /// \brief Sets this component to have the focus.
     //* =====================================================================
     void set_focus();
@@ -108,13 +98,6 @@ public :
     /// its focus, simulating a container with one element.
     //* =====================================================================
     void focus_previous();
-
-    //* =====================================================================
-    /// \brief Returns component with focus at the deepest part of the
-    /// component heirarchy, or an empty shared_ptr<> if no component has
-    /// focus.
-    //* =====================================================================
-    std::shared_ptr<component> get_focussed_component();
 
     //* =====================================================================
     /// \brief Enables the component.
@@ -209,28 +192,6 @@ public :
     > on_preferred_size_changed;
 
     //* =====================================================================
-    /// \fn on_size_changed
-    /// \brief Certain components sizes change during their lifetime.
-    /// Connect to this signal in order to receive notifications about this.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void ()
-    > on_size_changed;
-
-    //* =====================================================================
-    /// \fn on_position_changed
-    /// \param from The position from which the component moved.
-    /// \param to   The position to which the component moved.
-    /// \brief Connect to this signal in order to receive notification about
-    /// when the component changes position.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void (terminalpp::point from, terminalpp::point to)
-    > on_position_changed;
-
-    //* =====================================================================
     /// \fn on_focus_set
     /// \brief Connect to this signal in order to receive notifications about
     /// when the component has gained focus.
@@ -319,20 +280,6 @@ protected :
     virtual bool do_has_focus() const = 0;
 
     //* =====================================================================
-    /// \brief Called by set_can_focus().  Derived classes must override this
-    /// function in order to set whether this component can be focussed in
-    /// a custom manner.
-    //* =====================================================================
-    virtual void do_set_can_focus(bool focus) = 0;
-
-    //* =====================================================================
-    /// \brief Called by can_focus().  Derived classes must override this
-    /// function in order to return whether this component can be focused in
-    /// a custom manner.
-    //* =====================================================================
-    virtual bool do_can_focus() const = 0;
-
-    //* =====================================================================
     /// \brief Called by set_focus().  Derived classes must override this
     /// function in order to set the focus to this component in a custom
     /// manner.
@@ -357,13 +304,6 @@ protected :
     /// this function in order to move the focus in a custom manner.
     //* =====================================================================
     virtual void do_focus_previous() = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_focussed_component() = 0;
 
     //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this

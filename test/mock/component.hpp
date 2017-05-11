@@ -47,20 +47,6 @@ public :
     MOCK_CONST_METHOD0(do_has_focus, bool ());
 
     //* =====================================================================
-    /// \brief Called by set_can_focus().  Derived classes must override this
-    /// function in order to set whether this component can be focussed in
-    /// a custom manner.
-    //* =====================================================================
-    MOCK_METHOD1(do_set_can_focus, void (bool));
-
-    //* =====================================================================
-    /// \brief Called by can_focus().  Derived classes must override this
-    /// function in order to return whether this component can be focused in
-    /// a custom manner.
-    //* =====================================================================
-    MOCK_CONST_METHOD0(do_can_focus, bool ());
-
-    //* =====================================================================
     /// \brief Called by set_focus().  Derived classes must override this
     /// function in order to set the focus to this component in a custom
     /// manner.
@@ -85,15 +71,6 @@ public :
     /// this function in order to move the focus in a custom manner.
     //* =====================================================================
     MOCK_METHOD0(do_focus_previous, void ());
-
-    //* =====================================================================
-    /// \brief Called by get_focussed_component().  Derived classes must
-    /// override this function in order to return the focussed component
-    /// in a custom manner.
-    //* =====================================================================
-    MOCK_METHOD0(
-        do_get_focussed_component, 
-        std::shared_ptr<munin::component> ());
 
     //* =====================================================================
     /// \brief Called by enable().  Derived classes must override this

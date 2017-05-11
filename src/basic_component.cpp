@@ -14,7 +14,6 @@ struct basic_component::impl
     // ======================================================================
     impl(basic_component &self)
         : self_(self)
-        , can_focus_(true)
         , has_focus_(false)
         , enabled_(true)
     {
@@ -38,10 +37,8 @@ struct basic_component::impl
     }
 
     basic_component                  &self_;
-    std::weak_ptr<component>          parent_;
     std::map<std::string, boost::any> attributes_;
     rectangle                         bounds_;
-    bool                              can_focus_;
     bool                              has_focus_;
     bool                              enabled_;
 };
@@ -66,10 +63,7 @@ basic_component::~basic_component()
 // ==========================================================================
 void basic_component::do_set_position(terminalpp::point const &position)
 {
-    auto old_position = pimpl_->bounds_.origin;
     pimpl_->bounds_.origin = position;
-
-    on_position_changed(old_position, position);
 }
 
 // ==========================================================================
@@ -86,7 +80,6 @@ terminalpp::point basic_component::do_get_position() const
 void basic_component::do_set_size(terminalpp::extent const &size)
 {
     pimpl_->bounds_.size = size;
-    on_size_changed();
 }
 
 // ==========================================================================
@@ -95,22 +88,6 @@ void basic_component::do_set_size(terminalpp::extent const &size)
 terminalpp::extent basic_component::do_get_size() const
 {
     return pimpl_->bounds_.size;
-}
-
-// ==========================================================================
-// DO_SET_CAN_FOCUS
-// ==========================================================================
-void basic_component::do_set_can_focus(bool focus)
-{
-    pimpl_->can_focus_ = focus;
-}
-
-// ==========================================================================
-// DO_CAN_FOCUS
-// ==========================================================================
-bool basic_component::do_can_focus() const
-{
-    return pimpl_->can_focus_;
 }
 
 // ==========================================================================
@@ -126,10 +103,15 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    if (can_focus())
+    if (pimpl_->enabled_)
     {
+        bool old_focus = pimpl_->has_focus_;
         pimpl_->has_focus_ = true;
-        on_focus_set();
+        
+        if (!old_focus)
+        {
+            on_focus_set();
+        }
     }
 }
 
@@ -138,8 +120,13 @@ void basic_component::do_set_focus()
 // ==========================================================================
 void basic_component::do_lose_focus()
 {
+    bool old_focus = pimpl_->has_focus_;
     pimpl_->has_focus_ = false;
-    on_focus_lost();
+    
+    if (old_focus)
+    {
+        on_focus_lost();
+    }
 }
 
 // ==========================================================================
@@ -147,7 +134,10 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-    pimpl_->toggle_focus();
+    if (pimpl_->enabled_)
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================
@@ -155,17 +145,10 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-    pimpl_->toggle_focus();
-}
-
-// ==========================================================================
-// DO_GET_FOCUSSED_COMPONENT
-// ==========================================================================
-std::shared_ptr<component> basic_component::do_get_focussed_component()
-{
-    return pimpl_->has_focus_
-      ? std::shared_ptr<component>(shared_from_this())
-      : std::shared_ptr<component>();
+    if (pimpl_->enabled_)
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================
