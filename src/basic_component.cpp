@@ -63,10 +63,7 @@ basic_component::~basic_component()
 // ==========================================================================
 void basic_component::do_set_position(terminalpp::point const &position)
 {
-    auto old_position = pimpl_->bounds_.origin;
     pimpl_->bounds_.origin = position;
-
-    on_position_changed(old_position, position);
 }
 
 // ==========================================================================
@@ -82,11 +79,7 @@ terminalpp::point basic_component::do_get_position() const
 // ==========================================================================
 void basic_component::do_set_size(terminalpp::extent const &size)
 {
-    if (size != pimpl_->bounds_.size)
-    {
-        pimpl_->bounds_.size = size;
-        on_size_changed();
-    }
+    pimpl_->bounds_.size = size;
 }
 
 // ==========================================================================

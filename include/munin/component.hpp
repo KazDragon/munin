@@ -192,28 +192,6 @@ public :
     > on_preferred_size_changed;
 
     //* =====================================================================
-    /// \fn on_size_changed
-    /// \brief Certain components sizes change during their lifetime.
-    /// Connect to this signal in order to receive notifications about this.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void ()
-    > on_size_changed;
-
-    //* =====================================================================
-    /// \fn on_position_changed
-    /// \param from The position from which the component moved.
-    /// \param to   The position to which the component moved.
-    /// \brief Connect to this signal in order to receive notification about
-    /// when the component changes position.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void (terminalpp::point from, terminalpp::point to)
-    > on_position_changed;
-
-    //* =====================================================================
     /// \fn on_focus_set
     /// \brief Connect to this signal in order to receive notifications about
     /// when the component has gained focus.

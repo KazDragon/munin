@@ -2,40 +2,24 @@
 #include <munin/basic_component.hpp>
 #include <gtest/gtest.h>
 
-TEST(setting_the_size_of_a_basic_component_to_a_new_value, sets_and_announces_that_value)
+TEST(the_size_of_a_basic_component, can_be_altered)
 {
     fake_basic_component component;
-    int size_changed_called = 0;
-
-    component.on_size_changed.connect(
-        [&]()
-        {
-            ++size_changed_called;
-        });
-        
-    terminalpp::extent expected_size = {10, 15};
+    
+    terminalpp::extent const expected_size = {10, 15};
     
     component.set_size(expected_size);
     
-    ASSERT_EQ(1, size_changed_called);
     ASSERT_EQ(expected_size, component.get_size());
 }
 
-TEST(settings_the_size_of_a_basic_component_to_the_same_value, does_not_announce_that_value)
+TEST(the_position_of_a_basic_component, can_be_altered)
 {
     fake_basic_component component;
-    int size_changed_called = 0;
-
-    component.on_size_changed.connect(
-        [&]()
-        {
-            ++size_changed_called;
-        });
-        
-    terminalpp::extent expected_size = {0, 0};
     
-    component.set_size(expected_size);
+    terminalpp::point const expected_position = {32, 42};
     
-    ASSERT_EQ(0, size_changed_called);
-    ASSERT_EQ(expected_size, component.get_size());
+    component.set_position(expected_position);
+    
+    ASSERT_EQ(expected_position, component.get_position());
 }
