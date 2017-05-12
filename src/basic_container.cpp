@@ -18,10 +18,9 @@ struct basic_container::impl
     // CONSTRUCTOR
     // ======================================================================
     impl(basic_container &self)
-        : self_(self)
-        , has_focus_(false)
-        , cursor_state_(false)
-        , enabled_(true)
+      : self_(self),
+        cursor_state_(false),
+        enabled_(true)
     {
     }
 
@@ -237,7 +236,7 @@ struct basic_container::impl
                     {
                         auto next_component = components_[next_index];
 
-                        if (next_component->can_focus())
+                        if (next_component->is_enabled())
                         {
                             next_component->focus_next();
                             focused = true;
@@ -265,7 +264,7 @@ struct basic_container::impl
         // subcomponent to focus its next component.
         for (auto const &current_component : components_)
         {
-            if (current_component->can_focus())
+            if (current_component->is_enabled())
             {
                 current_component->focus_next();
                 break;
@@ -305,7 +304,7 @@ struct basic_container::impl
                     {
                         auto last_component = components_[last_index - 1];
 
-                        if (last_component->can_focus())
+                        if (last_component->is_enabled())
                         {
                             // If the component is a container, this will focus
                             // the last component in that container.
@@ -340,7 +339,7 @@ struct basic_container::impl
         {
             auto last_component = components_[index - 1];
 
-            if (last_component->can_focus())
+            if (last_component->is_enabled())
             {
                 last_component->focus_previous();
                 break;
@@ -530,16 +529,6 @@ void basic_container::do_add_component(
           , std::weak_ptr<component>(comp)
           , std::placeholders::_1)));
 
-    // Register for callbacks for when the subcomponent's position
-    // changes.
-    component_connections.push_back(comp->on_position_changed.connect(
-        std::bind(
-            &basic_container::impl::subcomponent_position_change_handler
-          , pimpl_
-          , std::weak_ptr<component>(comp)
-          , std::placeholders::_1
-          , std::placeholders::_2)));
-
     // Register for callbacks for when the subcomponent's preferred size
     // changes.
     component_connections.push_back(comp->on_preferred_size_changed.connect(
@@ -663,41 +652,16 @@ bool basic_container::do_has_focus() const
 }
 
 // ==========================================================================
-// DO_SET_CAN_FOCUS
-// ==========================================================================
-void basic_container::do_set_can_focus(bool focus)
-{
-    // As this is controlled by contained components, this is
-    // completely ignored.
-}
-
-// ==========================================================================
-// DO_CAN_FOCUS
-// ==========================================================================
-bool basic_container::do_can_focus() const
-{
-    for (auto const &comp : pimpl_->components_)
-    {
-        if (comp->can_focus())
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-// ==========================================================================
 // DO_SET_FOCUS
 // ==========================================================================
 void basic_container::do_set_focus()
 {
-    if (can_focus())
+    if (is_enabled())
     {
         // Find the first component that can be focussed and focus it.
         for (auto const &current_component : pimpl_->components_)
         {
-            if (current_component->can_focus())
+            if (current_component->is_enabled())
             {
                 current_component->set_focus();
                 break;
@@ -753,25 +717,6 @@ void basic_container::do_focus_previous()
     {
         pimpl_->focus_previous_no_focus();
     }
-}
-
-// ==========================================================================
-// DO_GET_FOCUSSED_COMPONENT
-// ==========================================================================
-std::shared_ptr<component> basic_container::do_get_focussed_component()
-{
-    if (has_focus())
-    {
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                return current_component->get_focussed_component();
-            }
-        }
-    }
-
-    return {};
 }
 
 // ==========================================================================

@@ -59,6 +59,7 @@ set (MUNIN_VERSION 0.0.1)
 set (munin_SOURCES
     src/algorithm.cpp
     src/basic_component.cpp
+    src/basic_container.cpp
     src/component.cpp
     src/context.cpp
     src/filled_box.cpp
