@@ -61,6 +61,7 @@ set (munin_SOURCES
     src/basic_component.cpp
     src/basic_container.cpp
     src/component.cpp
+    src/container.cpp
     src/context.cpp
     src/filled_box.cpp
     src/horizontal_strip_layout.cpp
