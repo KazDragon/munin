@@ -37,10 +37,11 @@ public :
     ~container() override;
 
     //* =====================================================================
-    /// \brief Retrieves the number of components that this container
-    /// contains.
+    /// \brief Sets the container's current layout for a given layer
     //* =====================================================================
-    u32 get_number_of_components() const;
+    void set_layout(
+        std::unique_ptr<munin::layout> lyt,
+        u32                            layer = DEFAULT_LAYER);
 
     //* =====================================================================
     /// \brief Adds a component to the container.
@@ -58,6 +59,13 @@ public :
     //* =====================================================================
     void remove_component(std::shared_ptr<component> const &component);
 
+protected :
+    //* =====================================================================
+    /// \brief Retrieves the number of components that this container
+    /// contains.
+    //* =====================================================================
+    u32 get_number_of_components() const;
+
     //* =====================================================================
     /// \brief Retrieves a component from the container.
     //* =====================================================================
@@ -72,13 +80,6 @@ public :
     /// \brief Retrieves a component's layer from the container.
     //* =====================================================================
     u32 get_component_layer(u32 index) const;
-
-    //* =====================================================================
-    /// \brief Sets the container's current layout for a given layer
-    //* =====================================================================
-    void set_layout(
-        std::unique_ptr<munin::layout> lyt,
-        u32                            layer = DEFAULT_LAYER);
 
     //* =====================================================================
     /// \brief Retrieves the current layout from the container for a given
