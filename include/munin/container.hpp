@@ -34,7 +34,7 @@ public :
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~container();
+    ~container() override;
 
     //* =====================================================================
     /// \brief Retrieves the number of components that this container
@@ -170,9 +170,7 @@ protected :
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    virtual void do_draw(
-        context         &ctx
-      , rectangle const &region);
+    void do_draw(context &ctx, rectangle const &region) const override;
 
 private :
     struct impl;

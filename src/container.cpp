@@ -271,9 +271,7 @@ std::vector<u32> container::get_layout_layers() const
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void container::do_draw(
-    context         &ctx
-  , rectangle const &region)
+void container::do_draw(context &ctx, rectangle const &region) const
 {
     auto &cvs = ctx.get_canvas();
 
