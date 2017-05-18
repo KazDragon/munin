@@ -1,7 +1,6 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include <boost/asio/strand.hpp>
 #include <memory>
 
 namespace terminalpp {
@@ -19,7 +18,7 @@ public :
     //* =====================================================================
     /// \brief Constructor.
     //* =====================================================================
-    context(terminalpp::canvas_view &cvs, boost::asio::strand &strand);
+    context(terminalpp::canvas_view &cvs);
 
     //* =====================================================================
     /// \brief Destructor.
@@ -30,11 +29,6 @@ public :
     /// \brief Retrieve the canvas.
     //* =====================================================================
     terminalpp::canvas_view &get_canvas();
-
-    //* =====================================================================
-    /// \brief Retrieve the strand.
-    //* =====================================================================
-    boost::asio::strand &get_strand();
 
 private :
     class impl;

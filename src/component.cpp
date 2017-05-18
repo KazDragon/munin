@@ -134,14 +134,6 @@ void component::set_cursor_position(terminalpp::point const &position)
 }
 
 // ==========================================================================
-// SET_ATTRIBUTE
-// ==========================================================================
-void component::set_attribute(std::string const &name, boost::any const &attr)
-{
-    do_set_attribute(name, attr);
-}
-
-// ==========================================================================
 // LAYOUT
 // ==========================================================================
 void component::layout()

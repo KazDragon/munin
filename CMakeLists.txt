@@ -61,6 +61,7 @@ set (munin_SOURCES
     src/basic_component.cpp
     src/component.cpp
     src/context.cpp
+    src/filled_box.cpp
     src/horizontal_strip_layout.cpp
     src/layout.cpp
     src/window.cpp
@@ -110,6 +111,7 @@ if (GTEST_FOUND)
         test/basic_component/unfocused_basic_component_test.cpp
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp
+        test/filled_box/new_filled_box_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 
