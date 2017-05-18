@@ -10,6 +10,12 @@ TEST(a_new_filled_box, has_a_whitespace_fill)
     ASSERT_EQ(terminalpp::element(' '), filled_box.get_fill());
 }
 
+TEST(a_new_filled_box, has_a_singular_preferred_size)
+{
+    munin::filled_box filled_box;
+    ASSERT_EQ(terminalpp::extent(1, 1), filled_box.get_preferred_size());
+}
+
 TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
 {
     munin::filled_box filled_box;

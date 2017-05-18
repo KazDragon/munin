@@ -36,6 +36,7 @@ filled_box::~filled_box()
 void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 {
     pimpl_->preferred_size_ = preferred_size;
+    on_preferred_size_changed();
 }
 
 // ==========================================================================
