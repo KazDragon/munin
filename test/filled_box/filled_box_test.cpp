@@ -63,3 +63,30 @@ TEST(a_filled_box, draws_its_fill)
     ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);
     ASSERT_EQ(terminalpp::element(' '), canvas[1][1]);
 }
+
+TEST(a_filled_box, draws_only_within_given_region)
+{
+    munin::filled_box filled_box;
+    filled_box.set_fill('Y');
+    filled_box.set_size({2, 2});
+    
+    terminalpp::canvas canvas({3, 4});
+    terminalpp::canvas_view canvas_view(canvas);
+    canvas_view.offset_by({1, 1});
+    munin::context context(canvas_view);
+    
+    filled_box.draw(context, {{}, {1, 2}});
+    
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][0]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
+    ASSERT_EQ(terminalpp::element('Y'), canvas[1][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][2]);
+    ASSERT_EQ(terminalpp::element('Y'), canvas[1][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][3]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[1][3]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][3]);
+}
