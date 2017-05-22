@@ -204,13 +204,6 @@ protected :
     virtual void do_set_cursor_position(terminalpp::point const &position) override;
 
     //* =====================================================================
-    /// \brief Called by set_attribute().  Derived classes must override this
-    /// function in order to set an attribute in a custom manner.
-    //* =====================================================================
-    virtual void do_set_attribute(
-        std::string const &name, boost::any const &attr) override;
-
-    //* =====================================================================
     /// \brief Called by layout().  Derived classes must override this
     /// function in order to lay the component out.  If the component
     /// contains subcomponents, these must also be laid out.

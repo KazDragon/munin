@@ -5,14 +5,9 @@
 
 namespace munin {
 
-// Changing this boolean attribute to true will stop other attributes from
-// changing until the attribute is once again false.
-static const std::string ATTRIBUTE_LOCK = "Lock";
-
 //* =========================================================================
 /// \brief A class that models a box that is always completely filled with
-/// a given element.  It allows changing the attribute and glyph of the
-/// element independently.
+/// a given element.
 //* =========================================================================
 class MUNIN_EXPORT filled_box : public munin::basic_component
 {
@@ -20,12 +15,12 @@ public :
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    filled_box(terminalpp::element const &element);
+    filled_box(terminalpp::element const &element = ' ');
 
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~filled_box();
+    ~filled_box() override;
 
     //* =====================================================================
     /// \brief Sets the preferred size of this box.  The default is (1,1).
@@ -48,14 +43,7 @@ protected :
     /// this function in order to get the size of the component in a custom
     /// manner.
     //* =====================================================================
-    virtual terminalpp::extent do_get_preferred_size() const;
-
-    //* =====================================================================
-    /// \brief Called by set_attribute().  Derived classes must override this
-    /// function in order to set an attribute in a custom manner.
-    //* =====================================================================
-    virtual void do_set_attribute(
-        std::string const &name, boost::any const &attr);
+    terminalpp::extent do_get_preferred_size() const override;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
@@ -66,9 +54,7 @@ protected :
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    virtual void do_draw(
-        context         &ctx
-      , rectangle const &region);
+    void do_draw(context &ctx, rectangle const &region) const override;
 
 private :
     struct impl;

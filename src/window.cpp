@@ -6,6 +6,7 @@
 #include "munin/detail/lambda_visitor.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <terminalpp/terminalpp.hpp>
+#include <boost/asio/strand.hpp>
 #include <boost/format.hpp>
 
 namespace munin {
@@ -230,7 +231,7 @@ private :
         auto slices = create_repaint_slices();
 
         terminalpp::canvas_view canvas_view(canvas_);
-        context ctx(canvas_view, strand_);
+        context ctx(canvas_view);
 
         // Draw each slice on the canvas.
         for (auto const &region : slices)
@@ -306,7 +307,7 @@ window::window(
         std::ref(*this), 
         std::ref(content),
         std::ref(terminal),
-        std::ref(strand));
+        std::ref (strand));
 }
 
 // ==========================================================================

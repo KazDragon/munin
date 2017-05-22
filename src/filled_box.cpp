@@ -1,6 +1,5 @@
 #include "munin/filled_box.hpp"
 #include "munin/context.hpp"
-#include "odin/core.hpp"
 #include <terminalpp/canvas_view.hpp>
 
 namespace munin {
@@ -12,7 +11,6 @@ struct filled_box::impl
 {
     terminalpp::element element_;
     terminalpp::extent  preferred_size_;
-    bool                locked_;
 };
 
 // ==========================================================================
@@ -23,8 +21,6 @@ filled_box::filled_box(terminalpp::element const &element)
 {
     pimpl_->element_        = element;
     pimpl_->preferred_size_ = terminalpp::extent(1, 1);
-    pimpl_->locked_         = false;
-    set_can_focus(false);
 }
 
 // ==========================================================================
@@ -40,6 +36,7 @@ filled_box::~filled_box()
 void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 {
     pimpl_->preferred_size_ = preferred_size;
+    on_preferred_size_changed();
 }
 
 // ==========================================================================
@@ -68,70 +65,18 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 }
 
 // ==========================================================================
-// DO_SET_ATTRIBUTE
-// ==========================================================================
-void filled_box::do_set_attribute(std::string const &name, boost::any const &attr)
-{
-    bool attribute_changed = false;
-
-    if (name == ATTRIBUTE_LOCK)
-    {
-        auto lock = boost::any_cast<bool>(&attr);
-
-        if (lock != nullptr)
-        {
-            pimpl_->locked_ = *lock;
-        }
-    }
-
-    if (pimpl_->locked_)
-    {
-        return;
-    }
-
-    if (name == ATTRIBUTE_GLYPH)
-    {
-        auto gly = boost::any_cast<terminalpp::glyph>(&attr);
-
-        if (gly != nullptr)
-        {
-            pimpl_->element_.glyph_ = *gly;
-            attribute_changed = true;
-        }
-    }
-
-    if (name == ATTRIBUTE_PEN)
-    {
-        auto pen = boost::any_cast<terminalpp::attribute>(&attr);
-
-        if (pen != nullptr)
-        {
-            pimpl_->element_.attribute_ = *pen;
-            attribute_changed = true;
-        }
-    }
-
-    if (attribute_changed)
-    {
-        on_redraw({rectangle({}, get_size())});
-    }
-}
-
-// ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void filled_box::do_draw(
-    context         &ctx
-  , rectangle const &region)
+void filled_box::do_draw(context &ctx, rectangle const &region) const
 {
     auto &cvs = ctx.get_canvas();
 
-    for (odin::u32 row = region.origin.y;
-         row < odin::u32(region.origin.y + region.size.height);
+    for (terminalpp::u32 row = region.origin.y;
+         row < terminalpp::u32(region.origin.y + region.size.height);
          ++row)
     {
-        for (odin::u32 column = region.origin.x;
-             column < odin::u32(region.origin.x + region.size.width);
+        for (terminalpp::u32 column = region.origin.x;
+             column < terminalpp::u32(region.origin.x + region.size.width);
              ++column)
         {
             cvs[column][row] = pimpl_->element_;

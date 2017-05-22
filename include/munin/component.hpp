@@ -131,11 +131,6 @@ public :
     void set_cursor_position(terminalpp::point const &position);
 
     //* =====================================================================
-    /// \brief Sets an implementation-specific attribute of the component.
-    //* =====================================================================
-    void set_attribute(std::string const &name, boost::any const &attr);
-
-    //* =====================================================================
     /// \brief Tells the component to lay itself out.
     //* =====================================================================
     void layout();
@@ -343,13 +338,6 @@ protected :
     /// a custom manner.
     //* =====================================================================
     virtual void do_set_cursor_position(terminalpp::point const &position) = 0;
-
-    //* =====================================================================
-    /// \brief Called by set_attribute().  Derived classes must override this
-    /// function in order to set an attribute in a custom manner.
-    //* =====================================================================
-    virtual void do_set_attribute(
-        std::string const &name, boost::any const &attr) = 0;
 
     //* =====================================================================
     /// \brief Called by layout().  Derived classes must override this

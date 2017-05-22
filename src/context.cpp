@@ -34,21 +34,19 @@ namespace munin {
 class context::impl
 {
 public :
-    impl(terminalpp::canvas_view &cvs, boost::asio::strand &st)
-        : canvas_(cvs)
-        , strand_(st)
+    impl(terminalpp::canvas_view &cvs)
+      : canvas_(cvs)
     {
     }
 
     terminalpp::canvas_view &canvas_;
-    boost::asio::strand     &strand_;
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-context::context(terminalpp::canvas_view &cvs, boost::asio::strand &st)
-  : pimpl_(std::make_shared<impl>(std::ref(cvs), std::ref(st)))
+context::context(terminalpp::canvas_view &cvs)
+  : pimpl_(std::make_shared<impl>(std::ref(cvs)))
 {
 }
 
@@ -65,14 +63,6 @@ context::~context()
 terminalpp::canvas_view &context::get_canvas()
 {
     return pimpl_->canvas_;
-}
-
-// ==========================================================================
-// GET_STRAND
-// ==========================================================================
-boost::asio::strand &context::get_strand()
-{
-    return pimpl_->strand_;
 }
 
 }

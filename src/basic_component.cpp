@@ -36,11 +36,10 @@ struct basic_component::impl
         }
     }
 
-    basic_component                  &self_;
-    std::map<std::string, boost::any> attributes_;
-    rectangle                         bounds_;
-    bool                              has_focus_;
-    bool                              enabled_;
+    basic_component &self_;
+    rectangle        bounds_;
+    bool             has_focus_;
+    bool             enabled_;
 };
 
 // ==========================================================================
@@ -199,28 +198,6 @@ terminalpp::point basic_component::do_get_cursor_position() const
 // ==========================================================================
 void basic_component::do_set_cursor_position(terminalpp::point const &position)
 {
-}
-
-// ==========================================================================
-// GET_ATTRIBUTE
-// ==========================================================================
-boost::any basic_component::get_attribute(std::string const &name) const
-{
-    auto attr_iterator = pimpl_->attributes_.find(name);
-
-    return attr_iterator == pimpl_->attributes_.end()
-         ? boost::any()
-         : *attr_iterator;
-}
-
-// ==========================================================================
-// DO_SET_ATTRIBUTE
-// ==========================================================================
-void basic_component::do_set_attribute(
-    std::string const &name,
-    boost::any const  &attr)
-{
-    pimpl_->attributes_[name] = attr;
 }
 
 // ==========================================================================
