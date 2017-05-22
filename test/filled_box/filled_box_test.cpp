@@ -4,6 +4,11 @@
 #include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>
 
+TEST(make_fill, make_a_new_filled_box)
+{
+    std::shared_ptr<munin::filled_box> filled_box = munin::make_fill('F');
+}
+
 TEST(a_filled_box, can_have_its_preferred_size_set)
 {
     int called = 0;
