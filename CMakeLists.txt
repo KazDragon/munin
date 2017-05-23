@@ -115,7 +115,6 @@ if (GTEST_FOUND)
         test/basic_component/basic_component_test.cpp
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
-        test/basic_container/new_basic_container_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 

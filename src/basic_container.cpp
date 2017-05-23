@@ -850,21 +850,6 @@ void basic_container::do_set_cursor_position(terminalpp::point const &position)
 }
 
 // ==========================================================================
-// DO_SET_ATTRIBUTE
-// ==========================================================================
-void basic_container::do_set_attribute(
-    std::string const &name
-  , boost::any  const &attr)
-{
-    // There's no reason that a container should have any attributes set,
-    // so instead this is passed on to all contained components.
-    for (auto const &comp : pimpl_->components_)
-    {
-        comp->set_attribute(name, attr);
-    }
-}
-
-// ==========================================================================
 // DO_LAYOUT
 // ==========================================================================
 void basic_container::do_layout()
