@@ -59,7 +59,6 @@ set (MUNIN_VERSION 0.0.1)
 set (munin_SOURCES
     src/algorithm.cpp
     src/basic_component.cpp
-    src/basic_container.cpp
     src/component.cpp
     src/container.cpp
     src/context.cpp
@@ -113,6 +112,8 @@ if (GTEST_FOUND)
         test/basic_component/unfocused_basic_component_test.cpp
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp
+        test/container/container_test.cpp
+        test/container/one_element_container_test.cpp
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
         test/horizontal_strip_layout_test.cpp

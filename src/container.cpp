@@ -2,6 +2,7 @@
 #include "munin/algorithm.hpp"
 #include "munin/context.hpp"
 #include "munin/layout.hpp"
+#include "munin/rectangle.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
@@ -9,10 +10,10 @@
 namespace munin {
 
 namespace {
-    typedef std::pair<
-        std::shared_ptr<component>
-      , std::vector<boost::signals2::connection>
-    > component_connections_type;
+    using component_connections_type =
+        std::pair<
+            std::shared_ptr<component>,
+            std::vector<boost::signals2::connection>>;
 }
 
 // ==========================================================================
@@ -24,7 +25,6 @@ struct container::impl
     // CONSTRUCTOR
     // ======================================================================
     impl(container &self)
-        : self_(self)
     {
     }
 
@@ -35,6 +35,7 @@ struct container::impl
         std::weak_ptr<component> weak_subcomponent,
         std::vector<rectangle>   regions)
     {
+        /*
         auto subcomponent = weak_subcomponent.lock();
 
         if (subcomponent != NULL)
@@ -54,6 +55,7 @@ struct container::impl
             // This new information must be passed up the component heirarchy.
             self_.on_redraw(regions);
         }
+        */
     }
 
     // ======================================================================
@@ -63,19 +65,22 @@ struct container::impl
         std::weak_ptr<component> weak_subcomponent
       , terminalpp::point        position)
     {
+        /*
         auto subcomponent = weak_subcomponent.lock();
 
         if (subcomponent != NULL && subcomponent->has_focus())
         {
             self_.on_cursor_position_changed(self_.get_position() + position);
         }
+        */
     }
 
     // ======================================================================
     // ENSURE_COMPONENTS_SORTED
     // ======================================================================
-    void ensure_components_sorted()
+    void ensure_components_sorted() const
     {
+        /*
         if (dirty_)
         {
             components_.clear();
@@ -105,12 +110,18 @@ struct container::impl
 
             dirty_ = false;
         }
+        */
     }
 
+    munin::rectangle               bounds_;
+    std::unique_ptr<munin::layout> layout_;
+    
+    /*
     container                               &self_;
     bool                                     dirty_ = true;
     std::vector<std::shared_ptr<component>>  components_;
     std::vector<component_connections_type>  component_connections_;
+    */
 };
 
 // ==========================================================================
@@ -126,6 +137,7 @@ container::container()
 // ==========================================================================
 container::~container()
 {
+    /*
     for(auto &con : pimpl_->component_connections_)
     {
         for (auto &cnx : con.second)
@@ -133,14 +145,17 @@ container::~container()
             cnx.disconnect();
         }
     }
+    */
 }
 
 // ==========================================================================
-// GET_NUMBER_OF_COMPONENTS
+// SET_LAYOUT
 // ==========================================================================
-u32 container::get_number_of_components() const
+void container::set_layout(
+    std::unique_ptr<munin::layout> &&lyt
+  , u32                              layer /*= DEFAULT_LAYER*/)
 {
-    return do_get_number_of_components();
+    pimpl_->layout_ = std::move(lyt);
 }
 
 // ==========================================================================
@@ -151,7 +166,15 @@ void container::add_component(
   , boost::any                 const &layout_hint
   , u32                         layer)
 {
-    do_add_component(comp, layout_hint, layer);
+    if (pimpl_->layout_)
+    {
+        (*pimpl_->layout_)({}, {}, {});
+    }
+    
+    on_preferred_size_changed();
+    
+    /*
+    //do_add_component(comp, layout_hint, layer);
     pimpl_->dirty_ = true;
 
     component_connections_type component_connections;
@@ -182,6 +205,7 @@ void container::add_component(
 
     // A redraw of the container is required.
     on_redraw({ rectangle({}, get_size()) });
+    */
 }
 
 // ==========================================================================
@@ -189,6 +213,7 @@ void container::add_component(
 // ==========================================================================
 void container::remove_component(std::shared_ptr<component> const &comp)
 {
+    /*
     pimpl_->dirty_ = true;
 
     // Disconnect any signals for the component.
@@ -211,61 +236,335 @@ void container::remove_component(std::shared_ptr<component> const &comp)
         }
     }
 
-    do_remove_component(comp);
+    //do_remove_component(comp);
 
     // Now that the subcomponent has been removed, it becomes necessary
     // to re-lay the container out.
     on_layout_change();
+    */
 }
 
 // ==========================================================================
-// GET_COMPONENT
+// DO_SET_POSITION
 // ==========================================================================
-std::shared_ptr<component> container::get_component(u32 index) const
+void container::do_set_position(terminalpp::point const &position)
 {
-    return do_get_component(index);
+    pimpl_->bounds_.origin = position;
 }
 
 // ==========================================================================
-// GET_COMPONENT_HINT
+// DO_GET_POSITION
 // ==========================================================================
-boost::any container::get_component_hint(u32 index) const
+terminalpp::point container::do_get_position() const
 {
-    return do_get_component_hint(index);
+    return pimpl_->bounds_.origin;
 }
 
 // ==========================================================================
-// GET_COMPONENT_LAYER
+// DO_SET_SIZE
 // ==========================================================================
-u32 container::get_component_layer(u32 index) const
+void container::do_set_size(terminalpp::extent const &size)
 {
-    return do_get_component_layer(index);
+    pimpl_->bounds_.size = size;
+    //on_layout_change();
+} 
+
+// ==========================================================================
+// DO_GET_SIZE
+// ==========================================================================
+terminalpp::extent container::do_get_size() const
+{
+    return pimpl_->bounds_.size;
 }
 
 // ==========================================================================
-// SET_LAYOUT
+// DO_GET_PREFERRED_SIZE
 // ==========================================================================
-void container::set_layout(
-    std::unique_ptr<munin::layout> lyt
-  , u32                      layer /*= DEFAULT_LAYER*/)
+terminalpp::extent container::do_get_preferred_size() const
 {
-    do_set_layout(std::move(lyt), layer);
+    return {};
+    /*
+    // If there are any layouts, then find the union of their preferred
+    // sizes.  Otherwise, our current size is just fine.
+    if (pimpl_->layouts_.empty())
+    {
+        return get_size();
+    }
+
+    terminalpp::extent preferred_size(0, 0);
+
+    // Sort the components/hints into layers
+    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
+    typedef std::map<u32, std::vector<boost::any>>                 chmap;
+
+    clmap component_layers_map;
+    chmap component_hints_map;
+
+    // Iterate through the components, sorting them by layer
+    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
+    {
+        auto comp =  pimpl_->components_[index];
+        auto hint =  pimpl_->component_hints_[index];
+        auto layer = pimpl_->component_layers_[index];
+
+        component_layers_map[layer].push_back(comp);
+        component_hints_map[layer].push_back(hint);
+    }
+
+    // Iterate through the layers, layout out each.
+    for (auto &component_layer_pair : component_layers_map)
+    {
+        auto layer =      component_layer_pair.first;
+        auto components = component_layer_pair.second;
+        auto hints =      component_hints_map[layer];
+
+        auto lyt = get_layout(layer);
+
+        if (!lyt || components.size() == 0)
+        {
+            // Either there is no layout for this layer, or there are no
+            // components in this layer.  Hence no point in laying it out.
+            // Continue with the next layer.
+            continue;
+        }
+
+        auto lp_preferred_size = lyt->get_preferred_size(components, hints);
+
+        preferred_size.width =
+            (std::max)(preferred_size.width, lp_preferred_size.width);
+        preferred_size.height =
+            (std::max)(preferred_size.height, lp_preferred_size.height);
+    }
+
+    return preferred_size;
+    */
 }
 
 // ==========================================================================
-// GET_LAYOUT
+// DO_HAS_FOCUS
 // ==========================================================================
-boost::optional<munin::layout &> container::get_layout(u32 layer) const
+bool container::do_has_focus() const
 {
-    return do_get_layout(layer);
+    return false;
+    // return pimpl_->has_focus_;
 }
 
 // ==========================================================================
-// GET_LAYOUT_LAYERS
+// DO_SET_FOCUS
 // ==========================================================================
-std::vector<u32> container::get_layout_layers() const
+void container::do_set_focus()
 {
-    return do_get_layout_layers();
+    /*
+    if (is_enabled())
+    {
+        // Find the first component that can be focussed and focus it.
+        for (auto const &current_component : pimpl_->components_)
+        {
+            if (current_component->is_enabled())
+            {
+                current_component->set_focus();
+                break;
+            }
+        }
+
+        pimpl_->has_focus_ = true;
+        on_focus_set();
+    }
+    */
+}
+
+// ==========================================================================
+// DO_LOSE_FOCUS
+// ==========================================================================
+void container::do_lose_focus()
+{
+    /*
+    for (auto const &current_component : pimpl_->components_)
+    {
+        if (current_component->has_focus())
+        {
+            current_component->lose_focus();
+        }
+    }
+
+    pimpl_->has_focus_ = false;
+    */
+}
+
+// ==========================================================================
+// DO_FOCUS_NEXT
+// ==========================================================================
+void container::do_focus_next()
+{
+    /*
+    if (pimpl_->has_focus_)
+    {
+        pimpl_->focus_next_has_focus();
+    }
+    else
+    {
+        pimpl_->focus_next_no_focus();
+    }
+    */
+}
+
+// ==========================================================================
+// DO_FOCUS_PREVIOUS
+// ==========================================================================
+void container::do_focus_previous()
+{
+    /*
+    if (pimpl_->has_focus_)
+    {
+        pimpl_->focus_previous_has_focus();
+    }
+    else
+    {
+        pimpl_->focus_previous_no_focus();
+    }
+    */
+}
+
+// ==========================================================================
+// DO_ENABLE
+// ==========================================================================
+void container::do_enable()
+{
+    // pimpl_->enabled_ = true;
+}
+
+// ==========================================================================
+// DO_DISABLE
+// ==========================================================================
+void container::do_disable()
+{
+    // pimpl_->enabled_ = false;
+}
+
+// ==========================================================================
+// DO_IS_ENABLED
+// ==========================================================================
+bool container::do_is_enabled() const
+{
+    return false;
+    // return pimpl_->enabled_;
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_STATE
+// ==========================================================================
+bool container::do_get_cursor_state() const
+{
+    return false;
+    // return pimpl_->cursor_state_;
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+terminalpp::point container::do_get_cursor_position() const
+{
+    return {};
+    /*
+    // If we have no focus, then return the default position.
+    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
+    {
+        // Find the subcomponent that has focus and get its cursor
+        // position.  This must then be offset by the subcomponent's
+        // position within our container.
+        for (auto const &current_component : pimpl_->components_)
+        {
+            if (current_component->has_focus())
+            {
+                return current_component->get_position()
+                     + current_component->get_cursor_position();
+            }
+        }
+    }
+
+    // Either we do not have focus, or the currently focussed subcomponent
+    // does not have a cursor.  Return the default position.
+    return {};
+    */
+}
+
+// ==========================================================================
+// DO_SET_CURSOR_POSITIONG
+// ==========================================================================
+void container::do_set_cursor_position(terminalpp::point const &position)
+{
+    /*
+    // If we have no focus, then ignore this.
+    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
+    {
+        // Find the subcomponent that has focus and set its cursor
+        // position.  This must then be offset by the subcomponent's
+        // position within our container.
+        for (auto const &current_component : pimpl_->components_)
+        {
+            if (current_component->has_focus())
+            {
+                current_component->set_cursor_position(
+                    position - current_component->get_position());
+            }
+        }
+    }
+    */
+}
+
+// ==========================================================================
+// DO_LAYOUT
+// ==========================================================================
+void container::do_layout()
+{
+    /*
+    // Sort the components/hints into layers
+    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
+    typedef std::map<u32, std::vector<boost::any>>                 chmap;
+
+    clmap component_layers_map;
+    chmap component_hints_map;
+
+    // Iterate through the components, sorting them by layer
+    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
+    {
+        auto comp =  pimpl_->components_[index];
+        auto hint =  pimpl_->component_hints_[index];
+        auto layer = pimpl_->component_layers_[index];
+
+        component_layers_map[layer].push_back(comp);
+        component_hints_map[layer].push_back(hint);
+    }
+
+    auto size = get_size();
+
+    // Iterate through the layers, layout out each.
+    for (auto const &component_layer_pair : component_layers_map)
+    {
+        auto layer =      component_layer_pair.first;
+        auto components = component_layer_pair.second;
+        auto hints =      component_hints_map[layer];
+
+        auto lyt = get_layout(layer);
+
+        if (!lyt || components.size() == 0)
+        {
+            // Either there is no layout for this layer, or there are no
+            // components in this layer.  Hence no point in laying it out.
+            // Continue with the next layer.
+            continue;
+        }
+
+        (*lyt)(components, hints, size);
+    }
+
+    // Now that all the sizes are correct for this container, iterate through
+    // each subcomponent, and lay them out in turn.
+    for (auto const &comp : pimpl_->components_)
+    {
+        comp->layout();
+    }
+    */
 }
 
 // ==========================================================================
@@ -273,6 +572,7 @@ std::vector<u32> container::get_layout_layers() const
 // ==========================================================================
 void container::do_draw(context &ctx, rectangle const &region) const
 {
+    /*
     auto &cvs = ctx.get_canvas();
 
     // First, we obtain a list of components sorted by layer from lowest
@@ -312,6 +612,67 @@ void container::do_draw(context &ctx, rectangle const &region) const
             current_component->draw(ctx, draw_region.get());
         }
     }
+    */
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void container::do_event(boost::any const &event)
+{
+    /*
+    // We split the events into two types.  Mouse events are passed to
+    // whichever component is under the mouse click.  All other events are
+    // passed to the focussed component.
+    auto report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+
+    if (report != NULL)
+    {
+        for (auto const &current_component : pimpl_->components_)
+        {
+            auto position = current_component->get_position();
+            auto size =     current_component->get_size();
+
+            // Check to see if the reported position is within the component's
+            // bounds.
+            if (report->x_position_ >= position.x
+             && report->x_position_  < position.x + size.width
+             && report->y_position_ >= position.y
+             && report->y_position_  < position.y + size.height)
+            {
+                // Copy the mouse's report and adjust it so that the
+                // subcomponent's position is taken into account.
+                terminalpp::ansi::mouse::report subreport;
+                subreport.button_     = report->button_;
+                subreport.x_position_ = u8(report->x_position_ - position.x);
+                subreport.y_position_ = u8(report->y_position_ - position.y);
+
+                // Forward the event onto the component, then look no further.
+                current_component->event(subreport);
+                break;
+            }
+        }
+    }
+    else
+    {
+        for (auto const &current_component : pimpl_->components_)
+        {
+            if (current_component->has_focus())
+            {
+                current_component->event(event);
+                break;
+            }
+        }
+    }
+    */
+}
+
+// ==========================================================================
+// MAKE_CONTAINER
+// ==========================================================================
+std::shared_ptr<container> make_container()
+{
+    return std::make_shared<container>();
 }
 
 }

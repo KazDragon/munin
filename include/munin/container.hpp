@@ -40,8 +40,8 @@ public :
     /// \brief Sets the container's current layout for a given layer
     //* =====================================================================
     void set_layout(
-        std::unique_ptr<munin::layout> lyt,
-        u32                            layer = DEFAULT_LAYER);
+        std::unique_ptr<munin::layout> &&lyt,
+        u32                              layer = DEFAULT_LAYER);
 
     //* =====================================================================
     /// \brief Adds a component to the container.
@@ -59,108 +59,126 @@ public :
     //* =====================================================================
     void remove_component(std::shared_ptr<component> const &component);
 
-protected :
+private :
     //* =====================================================================
-    /// \brief Retrieves the number of components that this container
-    /// contains.
-    //* =====================================================================
-    u32 get_number_of_components() const;
-
-    //* =====================================================================
-    /// \brief Retrieves a component from the container.
-    //* =====================================================================
-    std::shared_ptr<component> get_component(u32 index) const;
-
-    //* =====================================================================
-    /// \brief Retrieves a component's hint from the container.
-    //* =====================================================================
-    boost::any get_component_hint(u32 index) const;
-
-    //* =====================================================================
-    /// \brief Retrieves a component's layer from the container.
-    //* =====================================================================
-    u32 get_component_layer(u32 index) const;
-
-    //* =====================================================================
-    /// \brief Retrieves the current layout from the container for a given
-    /// layer.
-    //* =====================================================================
-    boost::optional<munin::layout &> get_layout(
-        u32 layer = DEFAULT_LAYER) const;
-
-    //* =====================================================================
-    /// \brief Returns an array of layers that currently have layouts
-    //* =====================================================================
-    std::vector<u32> get_layout_layers() const;
-
-protected :
-    //* =====================================================================
-    /// \brief Called by get_number_of_components().  Derived classes must
-    /// override this function in order to retrieve the number of components
-    /// in this container in a custom manner.
-    //* =====================================================================
-    virtual u32 do_get_number_of_components() const = 0;
-
-    //* =====================================================================
-    /// \brief Called by add_component().  Derived classes must override
-    /// this function in order to add a component to the container in a
-    /// custom manner.
-    //* =====================================================================
-    virtual void do_add_component(
-        std::shared_ptr<component> const &comp,
-        boost::any                 const &hint,
-        u32                               layer) = 0;
-
-    //* =====================================================================
-    /// \brief Called by remove_component().  Derived classes must override
-    /// this function in order to add a component to the container in a
-    /// custom manner.
-    //* =====================================================================
-    virtual void do_remove_component(
-        std::shared_ptr<component> const &comp) = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_component().  Derived classes must override this
-    /// function in order to retrieve a component in a custom manner.
-    //* =====================================================================
-    virtual std::shared_ptr<component> do_get_component(
-        u32 index) const = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_component_hint().  Derived classes must
-    /// override this function in order to retrieve a component hint in a
-    /// custom manner.
-    //* =====================================================================
-    virtual boost::any do_get_component_hint(u32 index) const = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_component_layer().  Derived classes must
-    /// override this function in order to retrieve a component layer in a
-    /// custom manner.
-    //* =====================================================================
-    virtual u32 do_get_component_layer(u32 index) const = 0;
-
-    //* =====================================================================
-    /// \brief Called by set_layout.  Derived classes must override this
-    /// function in order to set a layout in a custom manner.
-    //* =====================================================================
-    virtual void do_set_layout(
-        std::unique_ptr<munin::layout> lyt
-      , u32                      layer) = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_layout.  Derived classes must override this
-    /// function in order to get the container's layout in a custom manner.
-    //* =====================================================================
-    virtual boost::optional<munin::layout &> do_get_layout(
-        u32 layer) const = 0;
-
-    //* =====================================================================
-    /// \brief Called by get_layout_layers.  Derived classes must override
-    /// this function in order to get the container's layout in a custom
+    /// \brief Called by set_position().  Derived classes must override this
+    /// function in order to set the position of the component in a custom
     /// manner.
     //* =====================================================================
-    virtual std::vector<u32> do_get_layout_layers() const = 0;
+    void do_set_position(terminalpp::point const &position) override;
+
+    //* =====================================================================
+    /// \brief Called by get_position().  Derived classes must override this
+    /// function in order to get the position of the component in a custom
+    /// manner.
+    //* =====================================================================
+    terminalpp::point do_get_position() const override;
+
+    //* =====================================================================
+    /// \brief Called by set_size().  Derived classes must override this
+    /// function in order to set the size of the component in a custom
+    /// manner.
+    //* =====================================================================
+    void do_set_size(terminalpp::extent const &size) override;
+
+    //* =====================================================================
+    /// \brief Called by get_size().  Derived classes must override this
+    /// function in order to get the size of the component in a custom
+    /// manner.
+    //* =====================================================================
+    terminalpp::extent do_get_size() const override;
+
+    //* =====================================================================
+    /// \brief Called by get_preferred_size().  Derived classes must override
+    /// this function in order to get the size of the component in a custom
+    /// manner.
+    //* =====================================================================
+    terminalpp::extent do_get_preferred_size() const override;
+
+    //* =====================================================================
+    /// \brief Called by has_focus().  Derived classes must override this
+    /// function in order to return whether this component has focus in a
+    /// custom manner.
+    //* =====================================================================
+    bool do_has_focus() const override;
+
+    //* =====================================================================
+    /// \brief Called by set_focus().  Derived classes must override this
+    /// function in order to set the focus to this component in a custom
+    /// manner.
+    //* =====================================================================
+    void do_set_focus() override;
+
+    //* =====================================================================
+    /// \brief Called by lose_focus().  Derived classes must override this
+    /// function in order to lose the focus from this component in a
+    /// custom manner.
+    //* =====================================================================
+    void do_lose_focus() override;
+
+    //* =====================================================================
+    /// \brief Called by focus_next().  Derived classes must override this
+    /// function in order to move the focus in a custom manner.
+    //* =====================================================================
+    void do_focus_next() override;
+
+    //* =====================================================================
+    /// \brief Called by focus_previous().  Derived classes must override
+    /// this function in order to move the focus in a custom manner.
+    //* =====================================================================
+    void do_focus_previous() override;
+
+    //* =====================================================================
+    /// \brief Called by enable().  Derived classes must override this
+    /// function in order to disable the component in a custom manner.
+    //* =====================================================================
+    void do_enable() override;
+
+    //* =====================================================================
+    /// \brief Called by disable().  Derived classes must override this
+    /// function in order to disable the component in a custom manner.
+    //* =====================================================================
+    void do_disable() override;
+
+    //* =====================================================================
+    /// \brief Called by is_enabled().  Derived classes must override this
+    /// function in order to return whether the component is disabled or not
+    /// in a custom manner.
+    //* =====================================================================
+    bool do_is_enabled() const override;
+
+    //* =====================================================================
+    /// \brief Called by event().  Derived classes must override this
+    /// function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(boost::any const &event) override;
+
+    //* =====================================================================
+    /// \brief Called by get_cursor_state().  Derived classes must override
+    /// this function in order to return the cursor state in a custom manner.
+    //* =====================================================================
+    bool do_get_cursor_state() const override;
+
+    //* =====================================================================
+    /// \brief Called by get_cursor_position().  Derived classes must
+    /// override this function in order to return the cursor position in
+    /// a custom manner.
+    //* =====================================================================
+    terminalpp::point do_get_cursor_position() const override;
+
+    //* =====================================================================
+    /// \brief Called by set_cursor_position().  Derived classes must
+    /// override this function in order to set the cursor position in
+    /// a custom manner.
+    //* =====================================================================
+    void do_set_cursor_position(terminalpp::point const &position) override;
+
+    //* =====================================================================
+    /// \brief Called by layout().  Derived classes must override this
+    /// function in order to lay the component out.  If the component
+    /// contains subcomponents, these must also be laid out.
+    //* =====================================================================
+    void do_layout() override;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
@@ -177,5 +195,12 @@ private :
     struct impl;
     std::shared_ptr<impl> pimpl_;
 };
+
+
+//* =========================================================================
+/// \brief Returns a newly created container
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<container> make_container();
 
 }

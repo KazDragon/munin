@@ -20,7 +20,7 @@ terminalpp::extent layout::get_preferred_size(
 void layout::operator()(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints,
-    terminalpp::extent                             size)
+    terminalpp::extent                             size) const
 {
     assert(hints.size() == 0 || hints.size() == components.size());
     do_layout(components, hints, size);
