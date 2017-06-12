@@ -29,6 +29,17 @@ struct container::impl
     }
 
     // ======================================================================
+    // LAYOUT_CONTAINER
+    // ======================================================================
+    void layout_container()
+    {
+        if (layout_)
+        {
+            (*layout_)(components_, {}, {});
+        }
+    }
+    
+    // ======================================================================
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
     void subcomponent_redraw_handler(
@@ -113,8 +124,9 @@ struct container::impl
         */
     }
 
-    munin::rectangle               bounds_;
-    std::unique_ptr<munin::layout> layout_;
+    munin::rectangle                        bounds_;
+    std::unique_ptr<munin::layout>          layout_;
+    std::vector<std::shared_ptr<component>> components_;
     
     /*
     container                               &self_;
@@ -156,6 +168,11 @@ void container::set_layout(
   , u32                              layer /*= DEFAULT_LAYER*/)
 {
     pimpl_->layout_ = std::move(lyt);
+    
+    if (!pimpl_->components_.empty())
+    {
+        pimpl_->layout_container();
+    }
 }
 
 // ==========================================================================
@@ -166,11 +183,8 @@ void container::add_component(
   , boost::any                 const &layout_hint
   , u32                         layer)
 {
-    if (pimpl_->layout_)
-    {
-        (*pimpl_->layout_)({}, {}, {});
-    }
-    
+    pimpl_->components_.push_back(comp);
+    pimpl_->layout_container();
     on_preferred_size_changed();
     
     /*
@@ -213,6 +227,13 @@ void container::add_component(
 // ==========================================================================
 void container::remove_component(std::shared_ptr<component> const &comp)
 {
+    pimpl_->components_.erase(std::find(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end(),
+        comp));
+    pimpl_->layout_container();
+    on_preferred_size_changed();
+    
     /*
     pimpl_->dirty_ = true;
 
@@ -266,7 +287,6 @@ terminalpp::point container::do_get_position() const
 void container::do_set_size(terminalpp::extent const &size)
 {
     pimpl_->bounds_.size = size;
-    //on_layout_change();
 } 
 
 // ==========================================================================

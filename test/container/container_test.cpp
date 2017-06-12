@@ -117,6 +117,25 @@ TEST_F(a_new_container, draws_nothing)
     ASSERT_EQ(terminalpp::element('?'), canvas[0][0]);
 }
 
+TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_component_is_added)
+{
+    auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
+
+    munin::container container;
+    container.set_layout(std::move(layout));
+}
+
+TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added)
+{
+    auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
+    auto component = std::make_shared<StrictMock<mock_component>>();
+
+    munin::container container;
+    container.add_component(component);
+    
+    EXPECT_CALL(*layout, do_layout(_, _, _));
+    container.set_layout(std::move(layout));
+}
 class a_container : public testing::Test
 {
 protected :
@@ -149,4 +168,34 @@ TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_added)
     
     container_.add_component(component);
     ASSERT_EQ(1, preferred_size_changed_count);
+}
+
+TEST_F(a_container, lays_out_the_container_when_a_component_is_removed)
+{
+    auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
+    auto component = std::make_shared<StrictMock<mock_component>>();
+
+    container_.add_component(component);
+
+    EXPECT_CALL(*layout, do_layout(
+        std::vector<std::shared_ptr<munin::component>>({component}),
+        _,
+        _));
+        
+    EXPECT_CALL(*layout, do_layout(
+        std::vector<std::shared_ptr<munin::component>>(), _, _));
+
+    container_.set_layout(std::move(layout));
+
+    container_.remove_component(component);
+}
+
+TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_removed)
+{
+    auto component = std::make_shared<StrictMock<mock_component>>();
+    
+    container_.add_component(component);
+    container_.remove_component(component);
+
+    ASSERT_EQ(2, preferred_size_changed_count);
 }
