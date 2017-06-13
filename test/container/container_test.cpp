@@ -127,7 +127,6 @@ TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_compone
 
 TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added)
 {
-    /*
     auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
     auto component = std::make_shared<StrictMock<mock_component>>();
 
@@ -136,8 +135,8 @@ TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added
     
     EXPECT_CALL(*layout, do_layout(_, _, _));
     container.set_layout(std::move(layout));
-    */
 }
+
 class a_container : public testing::Test
 {
 protected :
