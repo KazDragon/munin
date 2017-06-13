@@ -173,24 +173,17 @@ TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_added)
 
 TEST_F(a_container, lays_out_the_container_when_a_component_is_removed)
 {
-    /*
     auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
     auto component = std::make_shared<StrictMock<mock_component>>();
 
     container_.add_component(component);
 
-    EXPECT_CALL(*layout, do_layout(
-        std::vector<std::shared_ptr<munin::component>>({component}),
-        _,
-        _));
-        
-    EXPECT_CALL(*layout, do_layout(
-        std::vector<std::shared_ptr<munin::component>>(), _, _));
+    EXPECT_CALL(*layout, do_layout(_, _, _))
+        .Times(2);
 
     container_.set_layout(std::move(layout));
 
     container_.remove_component(component);
-    */
 }
 
 TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_removed)
