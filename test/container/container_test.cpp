@@ -155,14 +155,12 @@ protected :
 
 TEST_F(a_container, lays_out_the_container_when_a_component_is_added)
 {
-    /*
     auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
     auto component = std::make_shared<StrictMock<mock_component>>();
     
     EXPECT_CALL(*layout, do_layout(_, _, _));
     container_.set_layout(std::move(layout));
     container_.add_component(component);
-    */
 }
 
 TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_added)
