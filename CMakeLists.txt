@@ -65,6 +65,7 @@ set (munin_SOURCES
     src/filled_box.cpp
     src/horizontal_strip_layout.cpp
     src/layout.cpp
+    src/null_layout.cpp
     src/window.cpp
 )
 

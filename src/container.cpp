@@ -2,6 +2,7 @@
 #include "munin/algorithm.hpp"
 #include "munin/context.hpp"
 #include "munin/layout.hpp"
+#include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <boost/scope_exit.hpp>
@@ -33,10 +34,7 @@ struct container::impl
     // ======================================================================
     void layout_container()
     {
-        if (layout_)
-        {
-            (*layout_)(components_, {}, {});
-        }
+        (*layout_)(components_, {}, {});
     }
     
     // ======================================================================
@@ -125,7 +123,7 @@ struct container::impl
     }
 
     munin::rectangle                        bounds_;
-    std::unique_ptr<munin::layout>          layout_;
+    std::unique_ptr<munin::layout>          layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>> components_;
     
     /*
