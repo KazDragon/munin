@@ -132,13 +132,15 @@ if (GTEST_FOUND)
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp
         test/container/container_test.cpp
-        test/container/one_element_container_test.cpp
+        test/container/container_draw_test.cpp
+        test/container/container_layout_test.cpp
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
+        test/container/container_test.hpp
         test/mock/component.hpp
         test/mock/layout.hpp
     )

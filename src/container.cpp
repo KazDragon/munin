@@ -148,54 +148,9 @@ struct container::impl
         */
     }
 
-    // ======================================================================
-    // ENSURE_COMPONENTS_SORTED
-    // ======================================================================
-    void ensure_components_sorted() const
-    {
-        /*
-        if (dirty_)
-        {
-            components_.clear();
-            std::vector<u32> layers;
-
-            auto number_of_components = self_.get_number_of_components();
-
-            for (u32 index = 0; index < number_of_components; ++index)
-            {
-                auto comp       = self_.get_component(index);
-                auto comp_layer = self_.get_component_layer(index);
-
-                auto component_insert_position = components_.begin();
-                auto layer_insert_position =     layers.begin();
-
-                while (component_insert_position != components_.end()
-                    && layer_insert_position != layers.end()
-                    && comp_layer >= *layer_insert_position)
-                {
-                    ++component_insert_position;
-                    ++layer_insert_position;
-                }
-
-                components_.insert(component_insert_position, comp);
-                layers.insert(layer_insert_position, comp_layer);
-            }
-
-            dirty_ = false;
-        }
-        */
-    }
-
     munin::rectangle                        bounds_;
     std::unique_ptr<munin::layout>          layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>> components_;
-    
-    /*
-    container                               &self_;
-    bool                                     dirty_ = true;
-    std::vector<std::shared_ptr<component>>  components_;
-    std::vector<component_connections_type>  component_connections_;
-    */
 };
 
 // ==========================================================================
