@@ -26,6 +26,7 @@ struct container::impl
     // CONSTRUCTOR
     // ======================================================================
     impl(container &self)
+      : self_(self)
     {
     }
 
@@ -148,9 +149,11 @@ struct container::impl
         */
     }
 
-    munin::rectangle                        bounds_;
-    std::unique_ptr<munin::layout>          layout_ = make_null_layout();
-    std::vector<std::shared_ptr<component>> components_;
+    container                               &self_;
+    munin::rectangle                         bounds_;
+    std::unique_ptr<munin::layout>           layout_ = make_null_layout();
+    std::vector<std::shared_ptr<component>>  components_;
+    boost::optional<bool>                    last_focus_change;
 };
 
 // ==========================================================================
@@ -183,7 +186,7 @@ container::~container()
 void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 {
     pimpl_->layout_ = std::move(lyt);
-    
+
     if (!pimpl_->components_.empty())
     {
         pimpl_->layout_container();
@@ -334,23 +337,18 @@ bool container::do_has_focus() const
 // ==========================================================================
 void container::do_set_focus()
 {
-    /*
-    if (is_enabled())
-    {
-        // Find the first component that can be focussed and focus it.
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->is_enabled())
+    auto enabled_component =
+        std::find_if(pimpl_->components_.begin(), pimpl_->components_.end(),
+            [](auto const &component)
             {
-                current_component->set_focus();
-                break;
-            }
-        }
+                return component->is_enabled();
+            });
 
-        pimpl_->has_focus_ = true;
+    if (enabled_component != pimpl_->components_.end())
+    {
+        (*enabled_component)->set_focus();
         on_focus_set();
     }
-    */
 }
 
 // ==========================================================================
