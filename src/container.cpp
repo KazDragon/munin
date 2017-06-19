@@ -46,6 +46,62 @@ struct container::impl
     }
 
     // ======================================================================
+    // DRAW_COMPONENTS
+    // ======================================================================
+    void draw_components(context &ctx, rectangle const &region) const
+    {
+        for (auto const &comp : components_)
+        {
+            draw_component(comp, ctx, region);
+        }
+    }
+
+    // ======================================================================
+    // DRAW_COMPONENT
+    // ======================================================================
+    void draw_component(
+        std::shared_ptr<component> const &comp,
+        context &ctx,
+        rectangle const &region) const
+    {
+        auto const component_region = rectangle {
+            comp->get_position(),
+            comp->get_size()
+        };
+
+        auto draw_region = intersection(component_region, region);
+
+        if (draw_region)
+        {
+            // The draw region is currently relative to this container's
+            // origin.  It should be relative to the child's origin.
+            draw_region->origin -= component_region.origin;
+
+            // The canvas must have an offset applied to it so that the
+            // inner component can pretend that it is being drawn with its
+            // container being at position (0,0).
+            auto &cvs = ctx.get_canvas();
+
+            cvs.offset_by({
+                component_region.origin.x,
+                component_region.origin.y
+            });
+
+            // Ensure that the offset is unapplied before exit of this
+            // function.
+            BOOST_SCOPE_EXIT( (&cvs)(&component_region) )
+            {
+                cvs.offset_by({
+                    -component_region.origin.x,
+                    -component_region.origin.y
+                });
+            } BOOST_SCOPE_EXIT_END
+
+            comp->draw(ctx, draw_region.get());
+        }
+    }
+
+    // ======================================================================
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
     void subcomponent_redraw_handler(
@@ -307,61 +363,6 @@ terminalpp::extent container::do_get_size() const
 terminalpp::extent container::do_get_preferred_size() const
 {
     return pimpl_->get_preferred_size();
-    /*
-    // If there are any layouts, then find the union of their preferred
-    // sizes.  Otherwise, our current size is just fine.
-    if (pimpl_->layouts_.empty())
-    {
-        return get_size();
-    }
-
-    terminalpp::extent preferred_size(0, 0);
-
-    // Sort the components/hints into layers
-    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
-    typedef std::map<u32, std::vector<boost::any>>                 chmap;
-
-    clmap component_layers_map;
-    chmap component_hints_map;
-
-    // Iterate through the components, sorting them by layer
-    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
-    {
-        auto comp =  pimpl_->components_[index];
-        auto hint =  pimpl_->component_hints_[index];
-        auto layer = pimpl_->component_layers_[index];
-
-        component_layers_map[layer].push_back(comp);
-        component_hints_map[layer].push_back(hint);
-    }
-
-    // Iterate through the layers, layout out each.
-    for (auto &component_layer_pair : component_layers_map)
-    {
-        auto layer =      component_layer_pair.first;
-        auto components = component_layer_pair.second;
-        auto hints =      component_hints_map[layer];
-
-        auto lyt = get_layout(layer);
-
-        if (!lyt || components.size() == 0)
-        {
-            // Either there is no layout for this layer, or there are no
-            // components in this layer.  Hence no point in laying it out.
-            // Continue with the next layer.
-            continue;
-        }
-
-        auto lp_preferred_size = lyt->get_preferred_size(components, hints);
-
-        preferred_size.width =
-            (std::max)(preferred_size.width, lp_preferred_size.width);
-        preferred_size.height =
-            (std::max)(preferred_size.height, lp_preferred_size.height);
-    }
-
-    return preferred_size;
-    */
 }
 
 // ==========================================================================
@@ -596,47 +597,7 @@ void container::do_layout()
 // ==========================================================================
 void container::do_draw(context &ctx, rectangle const &region) const
 {
-    /*
-    auto &cvs = ctx.get_canvas();
-
-    // First, we obtain a list of components sorted by layer from lowest
-    // to highest.
-    pimpl_->ensure_components_sorted();
-
-    for (auto const &current_component : pimpl_->components_)
-    {
-        // The area we want to draw is the intersection of the region
-        // passed in above and the region of space that the component
-        // occupies.
-        rectangle component_region(
-            current_component->get_position()
-          , current_component->get_size());
-
-        auto draw_region = intersection(region, component_region);
-
-        if (draw_region.is_initialized())
-        {
-            // The draw region is currently relative to this container's
-            // origin.  It should be relative to the child's origin.
-            draw_region->origin -= component_region.origin;
-
-            // The canvas must have an offset applied to it so that the
-            // inner component can pretend that it is being drawn with its
-            // container being at position (0,0).
-            auto const position = current_component->get_position();
-            cvs.offset_by({position.x, position.y});
-
-            // Ensure that the offset is unapplied before exit of this
-            // function.
-            BOOST_SCOPE_EXIT( (&cvs)(&position) )
-            {
-                cvs.offset_by({-position.x, -position.y});
-            } BOOST_SCOPE_EXIT_END
-
-            current_component->draw(ctx, draw_region.get());
-        }
-    }
-    */
+    pimpl_->draw_components(ctx, region);
 }
 
 // ==========================================================================

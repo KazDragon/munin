@@ -80,6 +80,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/horizontal_strip_layout.hpp
     include/munin/layout.hpp
     include/munin/null_layout.hpp
+    include/munin/rectangle.hpp
     include/munin/window.hpp
 )
 
