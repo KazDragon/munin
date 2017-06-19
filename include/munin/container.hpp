@@ -10,13 +10,6 @@ namespace munin {
 
 class layout;
 
-BOOST_STATIC_CONSTANT(
-    u32, HIGHEST_LAYER = (std::numeric_limits<u32>::max)());
-BOOST_STATIC_CONSTANT(
-    u32, LOWEST_LAYER = (std::numeric_limits<u32>::min)());
-BOOST_STATIC_CONSTANT(
-    u32, DEFAULT_LAYER = (std::numeric_limits<u32>::max)() / 2);
-
 //* =========================================================================
 /// \brief A graphical element capable of containing and arranging other
 /// subcomponents.
@@ -37,11 +30,9 @@ public :
     ~container() override;
 
     //* =====================================================================
-    /// \brief Sets the container's current layout for a given layer
+    /// \brief Sets the container's layout.
     //* =====================================================================
-    void set_layout(
-        std::unique_ptr<munin::layout> &&lyt,
-        u32                              layer = DEFAULT_LAYER);
+    void set_layout(std::unique_ptr<munin::layout> &&lyt);
 
     //* =====================================================================
     /// \brief Adds a component to the container.
@@ -51,8 +42,7 @@ public :
     //* =====================================================================
     void add_component(
         std::shared_ptr<component> const &comp,
-        boost::any                 const &layout_hint = boost::any(),
-        u32                               layer = DEFAULT_LAYER);
+        boost::any                 const &layout_hint = boost::any());
 
     //* =====================================================================
     /// \brief Removes a component from the container.

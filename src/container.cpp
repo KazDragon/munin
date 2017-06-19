@@ -38,6 +38,14 @@ struct container::impl
     }
     
     // ======================================================================
+    // GET_PREFERRED_SIZE
+    // ======================================================================
+    terminalpp::extent get_preferred_size() const
+    {
+        return layout_->get_preferred_size(components_, {});
+    }
+
+    // ======================================================================
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
     void subcomponent_redraw_handler(
@@ -161,9 +169,7 @@ container::~container()
 // ==========================================================================
 // SET_LAYOUT
 // ==========================================================================
-void container::set_layout(
-    std::unique_ptr<munin::layout> &&lyt
-  , u32                              layer /*= DEFAULT_LAYER*/)
+void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 {
     pimpl_->layout_ = std::move(lyt);
     
@@ -178,8 +184,7 @@ void container::set_layout(
 // ==========================================================================
 void container::add_component(
     std::shared_ptr<component> const &comp
-  , boost::any                 const &layout_hint
-  , u32                         layer)
+  , boost::any                 const &layout_hint)
 {
     pimpl_->components_.push_back(comp);
     pimpl_->layout_container();
@@ -285,6 +290,7 @@ terminalpp::point container::do_get_position() const
 void container::do_set_size(terminalpp::extent const &size)
 {
     pimpl_->bounds_.size = size;
+    pimpl_->layout_container();
 } 
 
 // ==========================================================================
@@ -300,7 +306,7 @@ terminalpp::extent container::do_get_size() const
 // ==========================================================================
 terminalpp::extent container::do_get_preferred_size() const
 {
-    return {};
+    return pimpl_->get_preferred_size();
     /*
     // If there are any layouts, then find the union of their preferred
     // sizes.  Otherwise, our current size is just fine.

@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 using testing::StrictMock;
+using testing::Return;
 using testing::_;
 
 TEST(make_container, makes_a_new_container)
@@ -194,4 +195,28 @@ TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_removed)
     container_.remove_component(component);
 
     ASSERT_EQ(2, preferred_size_changed_count);
+}
+
+TEST_F(a_container, lays_out_the_container_when_its_size_is_changed)
+{
+    auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
+
+    EXPECT_CALL(*layout, do_layout(_, _, _));
+
+    container_.set_layout(std::move(layout));
+
+    container_.set_size({1, 1});
+}
+
+TEST_F(a_container, has_the_preferred_size_of_its_layout)
+{
+    auto layout = std::unique_ptr<StrictMock<mock_layout>>(new StrictMock<mock_layout>);
+    auto const expected_result = terminalpp::extent{42, 69};
+
+    EXPECT_CALL(*layout, do_get_preferred_size(_, _))
+        .WillOnce(Return(expected_result));
+
+    container_.set_layout(std::move(layout));
+
+    ASSERT_EQ(expected_result, container_.get_preferred_size());
 }
