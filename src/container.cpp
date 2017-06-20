@@ -10,12 +10,14 @@
 
 namespace munin {
 
+/*
 namespace {
     using component_connections_type =
         std::pair<
             std::shared_ptr<component>,
             std::vector<boost::signals2::connection>>;
 }
+*/
 
 // ==========================================================================
 // CONTAINER::IMPLEMENTATION STRUCTURE
@@ -153,7 +155,7 @@ struct container::impl
     munin::rectangle                         bounds_;
     std::unique_ptr<munin::layout>           layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>>  components_;
-    boost::optional<bool>                    last_focus_change;
+    bool                                     has_focus_ = false;
 };
 
 // ==========================================================================
@@ -328,8 +330,7 @@ terminalpp::extent container::do_get_preferred_size() const
 // ==========================================================================
 bool container::do_has_focus() const
 {
-    return false;
-    // return pimpl_->has_focus_;
+    return pimpl_->has_focus_;
 }
 
 // ==========================================================================
@@ -347,6 +348,7 @@ void container::do_set_focus()
     if (enabled_component != pimpl_->components_.end())
     {
         (*enabled_component)->set_focus();
+        pimpl_->has_focus_ = true;
         on_focus_set();
     }
 }
@@ -356,17 +358,19 @@ void container::do_set_focus()
 // ==========================================================================
 void container::do_lose_focus()
 {
-    /*
-    for (auto const &current_component : pimpl_->components_)
-    {
-        if (current_component->has_focus())
-        {
-            current_component->lose_focus();
-        }
-    }
+    auto focussed_component =
+        std::find_if(pimpl_->components_.begin(), pimpl_->components_.end(),
+            [](auto const &component)
+            {
+                return component->has_focus();
+            });
 
-    pimpl_->has_focus_ = false;
-    */
+    if (focussed_component != pimpl_->components_.end())
+    {
+        (*focussed_component)->lose_focus();
+        pimpl_->has_focus_ = false;
+        on_focus_lost();
+    }
 }
 
 // ==========================================================================
