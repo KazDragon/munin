@@ -33,14 +33,14 @@ TEST_F(a_new_container, has_empty_preferred_size)
     ASSERT_EQ(terminalpp::extent(0, 0), container_.get_preferred_size());
 }
 
-TEST_F(a_new_container, is_disabled)
+TEST_F(a_new_container, is_enabled)
 {
-    ASSERT_FALSE(container_.is_enabled());
+    ASSERT_TRUE(container_.is_enabled());
 }
 
-TEST_F(a_new_container, cannot_be_enabled)
+TEST_F(a_new_container, can_be_disabled)
 {
-    container_.enable();
+    container_.disable();
     ASSERT_FALSE(container_.is_enabled());
 }
 

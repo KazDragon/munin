@@ -8,6 +8,7 @@
 #include <gmock/gmock.h>
 
 using testing::_;
+using testing::InSequence;
 using testing::Return;
 using testing::StrictMock;
 
@@ -17,9 +18,12 @@ TEST_F(a_container, when_focus_is_set_gives_focus_to_the_first_component)
 
     container_.add_component(component);
 
-    EXPECT_CALL(*component, do_is_enabled())
-        .WillOnce(Return(true));
-    EXPECT_CALL(*component, do_set_focus());
+    {
+        InSequence s1;
+        EXPECT_CALL(*component, do_set_focus());
+        EXPECT_CALL(*component, do_has_focus())
+            .WillOnce(Return(true));
+    }
 
     container_.set_focus();
 
@@ -28,19 +32,24 @@ TEST_F(a_container, when_focus_is_set_gives_focus_to_the_first_component)
     ASSERT_EQ(0, focus_lost_count);
 }
 
-TEST_F(a_container, when_focus_is_set_skips_over_disabled_components)
+TEST_F(a_container, when_focus_is_set_skips_over_unfocusable_components)
 {
-    auto disabled_component = std::make_shared<StrictMock<mock_component>>();
-    auto enabled_component  = std::make_shared<StrictMock<mock_component>>();
+    auto unfocusable_component = std::make_shared<StrictMock<mock_component>>();
+    auto focusable_component  = std::make_shared<StrictMock<mock_component>>();
 
-    container_.add_component(disabled_component);
-    container_.add_component(enabled_component);
+    container_.add_component(unfocusable_component);
+    container_.add_component(focusable_component);
 
-    EXPECT_CALL(*disabled_component, do_is_enabled())
-        .WillOnce(Return(false));
-    EXPECT_CALL(*enabled_component, do_is_enabled())
-        .WillOnce(Return(true));
-    EXPECT_CALL(*enabled_component, do_set_focus());
+    {
+        InSequence s1;
+        EXPECT_CALL(*unfocusable_component, do_set_focus());
+        EXPECT_CALL(*unfocusable_component, do_has_focus())
+            .WillOnce(Return(false));
+
+        EXPECT_CALL(*focusable_component, do_set_focus());
+        EXPECT_CALL(*focusable_component, do_has_focus())
+            .WillOnce(Return(true));
+    }
 
     container_.set_focus();
 
@@ -49,14 +58,18 @@ TEST_F(a_container, when_focus_is_set_skips_over_disabled_components)
     ASSERT_EQ(0, focus_lost_count);
 }
 
-TEST_F(a_container, refuses_focus_if_all_components_are_disabled)
+TEST_F(a_container, refuses_focus_if_all_components_are_unfocusable)
 {
-    auto disabled_component = std::make_shared<StrictMock<mock_component>>();
+    auto unfocusable_component = std::make_shared<StrictMock<mock_component>>();
 
-    container_.add_component(disabled_component);
+    container_.add_component(unfocusable_component);
 
-    EXPECT_CALL(*disabled_component, do_is_enabled())
-        .WillOnce(Return(false));
+    {
+        InSequence s1;
+        EXPECT_CALL(*unfocusable_component, do_set_focus());
+        EXPECT_CALL(*unfocusable_component, do_has_focus())
+            .WillOnce(Return(false));
+    }
 
     container_.set_focus();
 
@@ -74,9 +87,13 @@ protected :
 
         container_.add_component(component_);
 
-        EXPECT_CALL(*component_, do_is_enabled())
-            .WillOnce(Return(true));
-        EXPECT_CALL(*component_, do_set_focus());
+        {
+            InSequence s1;
+            EXPECT_CALL(*component_, do_set_focus());
+            EXPECT_CALL(*component_, do_has_focus())
+                .WillOnce(Return(true));
+        }
+
         container_.set_focus();
 
         focus_set_count = 0;

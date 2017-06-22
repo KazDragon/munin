@@ -155,6 +155,7 @@ struct container::impl
     munin::rectangle                         bounds_;
     std::unique_ptr<munin::layout>           layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>>  components_;
+    bool                                     enabled_ = true;
     bool                                     has_focus_ = false;
 };
 
@@ -338,16 +339,17 @@ bool container::do_has_focus() const
 // ==========================================================================
 void container::do_set_focus()
 {
-    auto enabled_component =
-        std::find_if(pimpl_->components_.begin(), pimpl_->components_.end(),
-            [](auto const &component)
-            {
-                return component->is_enabled();
-            });
+    auto comp = std::find_if(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end(),
+        [](auto const &comp)
+        {
+            comp->set_focus();
+            return comp->has_focus();
+        });
 
-    if (enabled_component != pimpl_->components_.end())
+    if (comp != pimpl_->components_.end())
     {
-        (*enabled_component)->set_focus();
         pimpl_->has_focus_ = true;
         on_focus_set();
     }
@@ -412,7 +414,7 @@ void container::do_focus_previous()
 // ==========================================================================
 void container::do_enable()
 {
-    // pimpl_->enabled_ = true;
+    pimpl_->enabled_ = true;
 }
 
 // ==========================================================================
@@ -420,7 +422,7 @@ void container::do_enable()
 // ==========================================================================
 void container::do_disable()
 {
-    // pimpl_->enabled_ = false;
+    pimpl_->enabled_ = false;
 }
 
 // ==========================================================================
@@ -428,8 +430,7 @@ void container::do_disable()
 // ==========================================================================
 bool container::do_is_enabled() const
 {
-    return false;
-    // return pimpl_->enabled_;
+    return pimpl_->enabled_;
 }
 
 // ==========================================================================
