@@ -134,6 +134,7 @@ if (GTEST_FOUND)
         test/container/container_test.cpp
         test/container/container_draw_test.cpp
         test/container/container_focus_test.cpp
+        test/container/container_focus_next_test.cpp
         test/container/container_layout_test.cpp
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
