@@ -10,26 +10,26 @@ protected :
     {
         Test::SetUp();
 
-        container_.on_preferred_size_changed.connect(
+        container.on_preferred_size_changed.connect(
             [this]()
             {
                 ++preferred_size_changed_count;
             });
 
-        container_.on_focus_set.connect(
+        container.on_focus_set.connect(
             [this]()
             {
                 ++focus_set_count;
             });
 
-        container_.on_focus_lost.connect(
+        container.on_focus_lost.connect(
             [this]()
             {
                 ++focus_lost_count;
             });
     }
 
-    munin::container container_;
+    munin::container container;
 
     int preferred_size_changed_count = 0;
     int focus_set_count = 0;
@@ -46,43 +46,56 @@ class a_new_container : public container_test_base
 
 class a_container_with_one_component : public a_container
 {
-public :
-    a_container_with_one_component()
-      : component_(std::make_shared<mock_component>())
-    {
-    }
-
 protected :
     void SetUp() override
     {
         a_container::SetUp();
 
-        container_.add_component(component_);
+        container.add_component(component);
+        preferred_size_changed_count = 0;
     }
 
-    std::shared_ptr<mock_component> component_;
+    std::shared_ptr<mock_component> component =
+        std::make_shared<mock_component>();
+};
+
+class a_container_with_one_component_that_has_focus : public a_container_with_one_component
+{
+protected :
+    void SetUp() override
+    {
+        using testing::Return;
+
+        a_container_with_one_component::SetUp();
+
+        EXPECT_CALL(*component, do_set_focus());
+        EXPECT_CALL(*component, do_has_focus())
+            .WillOnce(Return(true));
+
+        container.set_focus();
+
+        assert(container.has_focus());
+
+        focus_set_count = 0;
+        preferred_size_changed_count = 0;
+    }
 };
 
 class a_container_with_two_components : public a_container
 {
-public :
-    a_container_with_two_components()
-      : component0_(std::make_shared<mock_component>()),
-        component1_(std::make_shared<mock_component>())
-    {
-    }
-
 protected :
     void SetUp() override
     {
         a_container::SetUp();
 
-        container_.add_component(component0_);
-        container_.add_component(component1_);
+        container.add_component(component0);
+        container.add_component(component1);
     }
 
-    std::shared_ptr<mock_component> component0_;
-    std::shared_ptr<mock_component> component1_;
+    std::shared_ptr<mock_component> component0 =
+        std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> component1=
+        std::make_shared<mock_component>();
 };
 
 class a_container_with_two_components_where_the_first_has_focus : public a_container_with_two_components
@@ -94,14 +107,16 @@ protected :
 
         a_container_with_two_components::SetUp();
 
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
 
-        container_.focus_next();
+        container.focus_next();
 
-        assert(container_.has_focus());
+        assert(container.has_focus());
+
         focus_set_count = 0;
+        preferred_size_changed_count = 0;
     }
 };
 
@@ -114,73 +129,71 @@ protected :
 
         a_container_with_two_components::SetUp();
 
-        EXPECT_CALL(*component1_, do_focus_previous());
-        EXPECT_CALL(*component1_, do_has_focus())
+        EXPECT_CALL(*component1, do_focus_previous());
+        EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(true));
 
-        container_.focus_previous();
+        container.focus_previous();
 
-        assert(container_.has_focus());
+        assert(container.has_focus());
         focus_set_count = 0;
     }
 };
 
-class a_container_with_three_components_where_the_first_has_focus : public a_container_with_two_components
+class a_container_with_three_components : public a_container_with_two_components
 {
-public :
-    a_container_with_three_components_where_the_first_has_focus()
-      : component2_(std::make_shared<mock_component>())
+protected :
+    void SetUp() override
     {
+        a_container_with_two_components::SetUp();
+
+        container.add_component(component2);
     }
 
+    std::shared_ptr<mock_component> component2 =
+        std::make_shared<mock_component>();
+};
+
+class a_container_with_three_components_where_the_first_has_focus : public a_container_with_three_components
+{
 protected :
     void SetUp() override
     {
         using testing::Return;
 
-        a_container_with_two_components::SetUp();
+        a_container_with_three_components::SetUp();
 
-        container_.add_component(component2_);
-
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
 
-        container_.focus_next();
+        container.focus_next();
 
-        assert(container_.has_focus());
+        assert(container.has_focus());
+
         focus_set_count = 0;
+        preferred_size_changed_count = 0;
     }
-
-    std::shared_ptr<mock_component> component2_;
 };
 
-class a_container_with_three_components_where_the_last_has_focus : public a_container_with_two_components
+class a_container_with_three_components_where_the_last_has_focus : public a_container_with_three_components
 {
-public :
-    a_container_with_three_components_where_the_last_has_focus()
-      : component2_(std::make_shared<mock_component>())
-    {
-    }
-
 protected :
     void SetUp() override
     {
         using testing::Return;
 
-        a_container_with_two_components::SetUp();
+        a_container_with_three_components::SetUp();
 
-        container_.add_component(component2_);
-
-        EXPECT_CALL(*component2_, do_focus_previous());
-        EXPECT_CALL(*component2_, do_has_focus())
+        EXPECT_CALL(*component2, do_focus_previous());
+        EXPECT_CALL(*component2, do_has_focus())
             .WillOnce(Return(true));
 
-        container_.focus_previous();
+        container.focus_previous();
 
-        assert(container_.has_focus());
+        assert(container.has_focus());
+
         focus_set_count = 0;
+        preferred_size_changed_count = 0;
     }
-
-    std::shared_ptr<mock_component> component2_;
 };

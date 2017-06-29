@@ -5,6 +5,7 @@
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
 #include <terminalpp/canvas_view.hpp>
+#include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
 
@@ -18,6 +19,39 @@ namespace {
             std::vector<boost::signals2::connection>>;
 }
 */
+
+namespace {
+
+template <class ForwardIterator, class IncrementFunction>
+static boost::optional<bool> increment_focus(
+    bool has_focus,
+    ForwardIterator &&begin,
+    ForwardIterator &&end,
+    IncrementFunction &&increment)
+{
+    if (has_focus)
+    {
+        begin = std::find_if(
+            begin,
+            end,
+            [](auto const &comp)
+            {
+                return comp->has_focus();
+            });
+        assert(begin != end);
+    }
+
+    if ((std::find_if(begin, end, increment) == end) == has_focus)
+    {
+        return !has_focus;
+    }
+    else
+    {
+        return {};
+    }
+}
+
+}
 
 // ==========================================================================
 // CONTAINER::IMPLEMENTATION STRUCTURE
@@ -339,19 +373,22 @@ bool container::do_has_focus() const
 // ==========================================================================
 void container::do_set_focus()
 {
-    auto comp = std::find_if(
-        pimpl_->components_.begin(),
-        pimpl_->components_.end(),
-        [](auto const &comp)
-        {
-            comp->set_focus();
-            return comp->has_focus();
-        });
-
-    if (comp != pimpl_->components_.end())
+    if (!pimpl_->has_focus_)
     {
-        pimpl_->has_focus_ = true;
-        on_focus_set();
+        if (increment_focus(
+            false,
+            pimpl_->components_.begin(),
+            pimpl_->components_.end(),
+            [](auto const &comp)
+            {
+                comp->set_focus();
+                return comp->has_focus();
+            }))
+        {
+            pimpl_->has_focus_ = true;
+            on_focus_set();
+        }
+
     }
 }
 
@@ -380,51 +417,28 @@ void container::do_lose_focus()
 // ==========================================================================
 void container::do_focus_next()
 {
-    if (pimpl_->has_focus_)
-    {
-        auto comp = std::find_if(
-            pimpl_->components_.begin(),
-            pimpl_->components_.end(),
-            [](auto const &comp)
-            {
-                return comp->has_focus();
-            });
-
-        assert(comp != pimpl_->components_.end());
-
-        (*comp)->focus_next();
-
-        if(!(*comp)->has_focus())
+    auto focus_change = increment_focus(
+        pimpl_->has_focus_,
+        pimpl_->components_.begin(),
+        pimpl_->components_.end(),
+        [](auto const &comp)
         {
-            if (std::find_if(
-                ++comp,
-                pimpl_->components_.end(),
-                [](auto const &comp)
-                {
-                    comp->focus_next();
-                    return comp->has_focus();
-                }) == pimpl_->components_.end())
-            {
-                pimpl_->has_focus_ = false;
-                on_focus_lost();
-            }
-        }
-    }
-    else
-    {
-        auto comp = std::find_if(
-            pimpl_->components_.begin(),
-            pimpl_->components_.end(),
-            [](auto const &comp)
-            {
-                comp->focus_next();
-                return comp->has_focus();
-            });
+            comp->focus_next();
+            return comp->has_focus();
+        });
 
-        if (comp != pimpl_->components_.end())
+    if (focus_change)
+    {
+        if (*focus_change)
         {
             pimpl_->has_focus_ = true;
             on_focus_set();
+        }
+        else
+        {
+            pimpl_->has_focus_ = false;
+            on_focus_lost();
+
         }
     }
 }
@@ -434,51 +448,27 @@ void container::do_focus_next()
 // ==========================================================================
 void container::do_focus_previous()
 {
-    if (pimpl_->has_focus_)
-    {
-        auto comp = std::find_if(
-            pimpl_->components_.rbegin(),
-            pimpl_->components_.rend(),
-            [](auto const &comp)
-            {
-                return comp->has_focus();
-            });
-
-        assert(comp != pimpl_->components_.rend());
-
-        (*comp)->focus_previous();
-
-        if(!(*comp)->has_focus())
+    auto focus_change = increment_focus(
+        pimpl_->has_focus_,
+        pimpl_->components_.rbegin(),
+        pimpl_->components_.rend(),
+        [](auto const &comp)
         {
-            if (std::find_if(
-                ++comp,
-                pimpl_->components_.rend(),
-                [](auto const &comp)
-                {
-                    comp->focus_previous();
-                    return comp->has_focus();
-                }) == pimpl_->components_.rend())
-            {
-                pimpl_->has_focus_ = false;
-                on_focus_lost();
-            }
-        }
-    }
-    else
-    {
-        auto comp = std::find_if(
-            pimpl_->components_.rbegin(),
-            pimpl_->components_.rend(),
-            [](auto const &comp)
-            {
-                comp->focus_previous();
-                return comp->has_focus();
-            });
+            comp->focus_previous();
+            return comp->has_focus();
+        });
 
-        if (comp != pimpl_->components_.rend())
+    if (focus_change)
+    {
+        pimpl_->has_focus_ = *focus_change;
+
+        if (pimpl_->has_focus_)
         {
-            pimpl_->has_focus_ = true;
             on_focus_set();
+        }
+        else
+        {
+            on_focus_lost();
         }
     }
 }

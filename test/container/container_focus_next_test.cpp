@@ -7,14 +7,14 @@ TEST_F(a_container_with_one_component, calls_focus_next_on_subcomponent_on_focus
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component_, do_focus_next());
-        EXPECT_CALL(*component_, do_has_focus())
+        EXPECT_CALL(*component, do_focus_next());
+        EXPECT_CALL(*component, do_has_focus())
             .WillOnce(Return(true));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_TRUE(container_.has_focus());
+    ASSERT_TRUE(container.has_focus());
     ASSERT_EQ(1, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -23,14 +23,14 @@ TEST_F(a_container_with_one_component, that_refuses_focus_refuses_focus_on_focus
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component_, do_focus_next());
-        EXPECT_CALL(*component_, do_has_focus())
+        EXPECT_CALL(*component, do_focus_next());
+        EXPECT_CALL(*component, do_has_focus())
             .WillOnce(Return(false));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_FALSE(container_.has_focus());
+    ASSERT_FALSE(container.has_focus());
     ASSERT_EQ(0, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -39,18 +39,18 @@ TEST_F(a_container_with_two_components, skips_components_that_refuse_focus_next_
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1_, do_focus_next());
-        EXPECT_CALL(*component1_, do_has_focus())
+        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(true));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_TRUE(container_.has_focus());
+    ASSERT_TRUE(container.has_focus());
     ASSERT_EQ(1, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -59,16 +59,16 @@ TEST_F(a_container_with_two_components_where_the_first_has_focus, does_not_yield
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_TRUE(container_.has_focus());
+    ASSERT_TRUE(container.has_focus());
     ASSERT_EQ(0, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -77,20 +77,20 @@ TEST_F(a_container_with_two_components_where_the_first_has_focus, calls_next_foc
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1_, do_focus_next());
-        EXPECT_CALL(*component1_, do_has_focus())
+        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(true));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_TRUE(container_.has_focus());
+    ASSERT_TRUE(container.has_focus());
     ASSERT_EQ(0, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -99,24 +99,24 @@ TEST_F(a_container_with_three_components_where_the_first_has_focus, skips_compon
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1_, do_focus_next());
-        EXPECT_CALL(*component1_, do_has_focus())
+        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component2_, do_focus_next());
-        EXPECT_CALL(*component2_, do_has_focus())
+        EXPECT_CALL(*component2, do_focus_next());
+        EXPECT_CALL(*component2, do_has_focus())
             .WillOnce(Return(true));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_TRUE(container_.has_focus());
+    ASSERT_TRUE(container.has_focus());
     ASSERT_EQ(0, focus_set_count);
     ASSERT_EQ(0, focus_lost_count);
 }
@@ -125,20 +125,20 @@ TEST_F(a_container_with_two_components_where_the_first_has_focus, loses_focus_on
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0_, do_focus_next());
-        EXPECT_CALL(*component0_, do_has_focus())
+        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1_, do_focus_next());
-        EXPECT_CALL(*component1_, do_has_focus())
+        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(false));
     }
 
-    container_.focus_next();
+    container.focus_next();
 
-    ASSERT_FALSE(container_.has_focus());
+    ASSERT_FALSE(container.has_focus());
     ASSERT_EQ(0, focus_set_count);
     ASSERT_EQ(1, focus_lost_count);
 }
