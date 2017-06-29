@@ -1,4 +1,6 @@
+#pragma once
 #include <munin/component.hpp>
+#include <munin/context.hpp>
 #include <gmock/gmock.h>
 
 class mock_component : public munin::component

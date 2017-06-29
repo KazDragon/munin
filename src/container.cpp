@@ -164,7 +164,7 @@ struct container::impl
 // ==========================================================================
 container::container()
 {
-    pimpl_ = std::make_shared<impl>(ref(*this));
+    pimpl_ = std::make_shared<impl>(std::ref(*this));
 }
 
 // ==========================================================================

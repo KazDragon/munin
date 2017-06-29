@@ -16,7 +16,6 @@ class layout;
 //* =========================================================================
 class MUNIN_EXPORT container
     : public component
-    , public std::enable_shared_from_this<container>
 {
 public :
     //* =====================================================================
