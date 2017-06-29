@@ -126,13 +126,13 @@ struct container::impl
 
             // Ensure that the offset is unapplied before exit of this
             // function.
-            BOOST_SCOPE_EXIT( (&cvs)(&component_region) )
+            BOOST_SCOPE_EXIT_ALL(&cvs, &component_region)
             {
                 cvs.offset_by({
                     -component_region.origin.x,
                     -component_region.origin.y
                 });
-            } BOOST_SCOPE_EXIT_END
+            };
 
             comp->draw(ctx, draw_region.get());
         }
@@ -169,6 +169,53 @@ struct container::impl
     }
 
     // ======================================================================
+    // SUBCOMPONENT_FOCUS_SET_HANDLER
+    // ======================================================================
+    void subcomponent_focus_set_handler(
+        std::weak_ptr<component> const &weak_comp)
+    {
+        if (!in_focus_operation_)
+        {
+            auto comp = std::find_if(
+                components_.begin(),
+                components_.end(),
+                [orig = weak_comp.lock()](auto const &comp)
+            {
+                return comp != orig && comp->has_focus();
+            });
+
+            if (comp != components_.end())
+            {
+                in_focus_operation_ = true;
+
+                BOOST_SCOPE_EXIT_ALL(this)
+                {
+                    in_focus_operation_ = false;
+                };
+
+                (*comp)->lose_focus();
+            }
+            else
+            {
+                has_focus_ = true;
+                self_.on_focus_set();
+            }
+        }
+    }
+
+    // ======================================================================
+    // SUBCOMPONENT_FOCUS_LOST_HANDLER
+    // ======================================================================
+    void subcomponent_focus_lost_handler()
+    {
+        if (!in_focus_operation_)
+        {
+            has_focus_ = false;
+            self_.on_focus_lost();
+        }
+    }
+
+    // ======================================================================
     // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
     // ======================================================================
     void subcomponent_cursor_position_change_handler(
@@ -191,6 +238,7 @@ struct container::impl
     std::vector<std::shared_ptr<component>>  components_;
     bool                                     enabled_ = true;
     bool                                     has_focus_ = false;
+    bool                                     in_focus_operation_ = false;
 };
 
 // ==========================================================================
@@ -237,6 +285,18 @@ void container::add_component(
     std::shared_ptr<component> const &comp
   , boost::any                 const &layout_hint)
 {
+    comp->on_focus_set.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)]
+        {
+            pimpl_->subcomponent_focus_set_handler(wcomp);
+        });
+
+    comp->on_focus_lost.connect(
+        [this]
+        {
+            pimpl_->subcomponent_focus_lost_handler();
+        });
+
     pimpl_->components_.push_back(comp);
     pimpl_->layout_container();
     on_preferred_size_changed();
@@ -373,6 +433,13 @@ bool container::do_has_focus() const
 // ==========================================================================
 void container::do_set_focus()
 {
+    pimpl_->in_focus_operation_ = true;
+
+    BOOST_SCOPE_EXIT_ALL(this)
+    {
+        pimpl_->in_focus_operation_ = false;
+    };
+
     if (!pimpl_->has_focus_)
     {
         if (increment_focus(
@@ -397,6 +464,13 @@ void container::do_set_focus()
 // ==========================================================================
 void container::do_lose_focus()
 {
+    pimpl_->in_focus_operation_ = true;
+
+    BOOST_SCOPE_EXIT_ALL(this)
+    {
+        pimpl_->in_focus_operation_ = false;
+    };
+
     auto focussed_component =
         std::find_if(pimpl_->components_.begin(), pimpl_->components_.end(),
             [](auto const &component)
@@ -417,6 +491,13 @@ void container::do_lose_focus()
 // ==========================================================================
 void container::do_focus_next()
 {
+    pimpl_->in_focus_operation_ = true;
+
+    BOOST_SCOPE_EXIT_ALL(this)
+    {
+        pimpl_->in_focus_operation_ = false;
+    };
+
     auto focus_change = increment_focus(
         pimpl_->has_focus_,
         pimpl_->components_.begin(),
@@ -448,6 +529,13 @@ void container::do_focus_next()
 // ==========================================================================
 void container::do_focus_previous()
 {
+    pimpl_->in_focus_operation_ = true;
+
+    BOOST_SCOPE_EXIT_ALL(this)
+    {
+        pimpl_->in_focus_operation_ = false;
+    };
+
     auto focus_change = increment_focus(
         pimpl_->has_focus_,
         pimpl_->components_.rbegin(),

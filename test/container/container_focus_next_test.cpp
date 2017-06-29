@@ -1,13 +1,15 @@
 #include "container_test.hpp"
 
 using testing::InSequence;
+using testing::Invoke;
 using testing::Return;
 
 TEST_F(a_container_with_one_component, calls_focus_next_on_subcomponent_on_focus_next)
 {
     {
         InSequence s1;
-        EXPECT_CALL(*component, do_focus_next());
+        EXPECT_CALL(*component, do_focus_next())
+            .WillOnce(Invoke(std::ref(component->on_focus_set)));
         EXPECT_CALL(*component, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -43,7 +45,8 @@ TEST_F(a_container_with_two_components, skips_components_that_refuse_focus_next_
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_focus_next())
+            .WillOnce(Invoke(std::ref(component1->on_focus_set)));
         EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -79,11 +82,13 @@ TEST_F(a_container_with_two_components_where_the_first_has_focus, calls_next_foc
         InSequence s1;
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_focus_next())
+            .WillOnce(Invoke(std::ref(component0->on_focus_lost)));
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component1, do_focus_next());
+        EXPECT_CALL(*component1, do_focus_next())
+            .WillOnce(Invoke(std::ref(component1->on_focus_set)));
         EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -101,7 +106,8 @@ TEST_F(a_container_with_three_components_where_the_first_has_focus, skips_compon
         InSequence s1;
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_focus_next())
+            .WillOnce(Invoke(std::ref(component0->on_focus_lost)));
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
@@ -109,7 +115,8 @@ TEST_F(a_container_with_three_components_where_the_first_has_focus, skips_compon
         EXPECT_CALL(*component1, do_has_focus())
             .WillOnce(Return(false));
 
-        EXPECT_CALL(*component2, do_focus_next());
+        EXPECT_CALL(*component2, do_focus_next())
+            .WillOnce(Invoke(std::ref(component2->on_focus_set)));
         EXPECT_CALL(*component2, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -127,7 +134,8 @@ TEST_F(a_container_with_two_components_where_the_first_has_focus, loses_focus_on
         InSequence s1;
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(true));
-        EXPECT_CALL(*component0, do_focus_next());
+        EXPECT_CALL(*component0, do_focus_next())
+            .WillOnce(Invoke(std::ref(component0->on_focus_lost)));
         EXPECT_CALL(*component0, do_has_focus())
             .WillOnce(Return(false));
 
