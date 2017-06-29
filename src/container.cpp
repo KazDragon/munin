@@ -434,16 +434,53 @@ void container::do_focus_next()
 // ==========================================================================
 void container::do_focus_previous()
 {
-    /*
     if (pimpl_->has_focus_)
     {
-        pimpl_->focus_previous_has_focus();
+        auto comp = std::find_if(
+            pimpl_->components_.rbegin(),
+            pimpl_->components_.rend(),
+            [](auto const &comp)
+            {
+                return comp->has_focus();
+            });
+
+        assert(comp != pimpl_->components_.rend());
+
+        (*comp)->focus_previous();
+
+        if(!(*comp)->has_focus())
+        {
+            if (std::find_if(
+                ++comp,
+                pimpl_->components_.rend(),
+                [](auto const &comp)
+                {
+                    comp->focus_previous();
+                    return comp->has_focus();
+                }) == pimpl_->components_.rend())
+            {
+                pimpl_->has_focus_ = false;
+                on_focus_lost();
+            }
+        }
     }
     else
     {
-        pimpl_->focus_previous_no_focus();
+        auto comp = std::find_if(
+            pimpl_->components_.rbegin(),
+            pimpl_->components_.rend(),
+            [](auto const &comp)
+            {
+                comp->focus_previous();
+                return comp->has_focus();
+            });
+
+        if (comp != pimpl_->components_.rend())
+        {
+            pimpl_->has_focus_ = true;
+            on_focus_set();
+        }
     }
-    */
 }
 
 // ==========================================================================
