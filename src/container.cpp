@@ -4,6 +4,7 @@
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
+#include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
@@ -61,6 +62,29 @@ static boost::optional<bool> increment_focus(
     {
         return {};
     }
+}
+
+template <class ForwardIterator>
+static ForwardIterator find_component_at_point(
+    ForwardIterator begin,
+    ForwardIterator end,
+    terminalpp::point const &location)
+{
+    return std::find_if(
+        begin,
+        end,
+        [&location](auto const &comp)
+        {
+            auto const &position = comp->get_position();
+            auto const &size     = comp->get_size();
+
+            // Check to see if the reported position is within the component's
+            // bounds.
+            return (location.x >= position.x
+                 && location.x  < position.x + size.width
+                 && location.y >= position.y
+                 && location.y < position.y + size.height);
+        });
 }
 
 }
@@ -249,12 +273,66 @@ struct container::impl
     // ======================================================================
     void do_event(boost::any const &event)
     {
+        // We split incoming events into two types:
+        // * Common events (e.g. keypressed, etc.) are passed on to the
+        //   subcomponent with focus.
+        // * Mouse events are passed on to the subcomponent at the location
+        //   of the event, and the co-ordinates of the event are passed on
+        //   relative to the subcomponent's location.
+        auto const *report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+
+        if (report == nullptr)
+        {
+            handle_common_event(event);
+        }
+        else
+        {
+            handle_mouse_event(*report);
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_COMMON_EVENT
+    // ======================================================================
+    void handle_common_event(boost::any const &event)
+    {
         auto comp = find_first_focussed_component(
             components_.begin(), components_.end());
 
         if (comp != components_.end())
         {
+            auto *mouse_event =
+                boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+
+            if (mouse_event)
+            {
+                (*comp)->get_position();
+            }
+
             (*comp)->event(event);
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(terminalpp::ansi::mouse::report const &report)
+    {
+        auto const &comp = find_component_at_point(
+            components_.begin(),
+            components_.end(),
+            terminalpp::point(report.x_position_, report.y_position_));
+
+        if (comp != components_.end())
+        {
+            auto const &position = (*comp)->get_position();
+
+            (*comp)->event(
+                terminalpp::ansi::mouse::report {
+                    report.button_,
+                    report.x_position_ - position.x,
+                    report.y_position_ - position.y
+                });
         }
     }
 
@@ -738,52 +816,6 @@ void container::do_draw(context &ctx, rectangle const &region) const
 void container::do_event(boost::any const &event)
 {
     pimpl_->do_event(event);
-
-    /*
-    // We split the events into two types.  Mouse events are passed to
-    // whichever component is under the mouse click.  All other events are
-    // passed to the focussed component.
-    auto report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-
-    if (report != NULL)
-    {
-        for (auto const &current_component : pimpl_->components_)
-        {
-            auto position = current_component->get_position();
-            auto size =     current_component->get_size();
-
-            // Check to see if the reported position is within the component's
-            // bounds.
-            if (report->x_position_ >= position.x
-             && report->x_position_  < position.x + size.width
-             && report->y_position_ >= position.y
-             && report->y_position_  < position.y + size.height)
-            {
-                // Copy the mouse's report and adjust it so that the
-                // subcomponent's position is taken into account.
-                terminalpp::ansi::mouse::report subreport;
-                subreport.button_     = report->button_;
-                subreport.x_position_ = u8(report->x_position_ - position.x);
-                subreport.y_position_ = u8(report->y_position_ - position.y);
-
-                // Forward the event onto the component, then look no further.
-                current_component->event(subreport);
-                break;
-            }
-        }
-    }
-    else
-    {
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                current_component->event(event);
-                break;
-            }
-        }
-    }
-    */
 }
 
 // ==========================================================================

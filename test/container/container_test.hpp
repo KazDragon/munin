@@ -94,7 +94,7 @@ protected :
 
     std::shared_ptr<mock_component> component0 =
         std::make_shared<mock_component>();
-    std::shared_ptr<mock_component> component1=
+    std::shared_ptr<mock_component> component1 =
         std::make_shared<mock_component>();
 };
 
