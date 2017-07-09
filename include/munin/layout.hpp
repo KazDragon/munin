@@ -1,6 +1,6 @@
 #pragma once
 
-#include "munin/core.hpp"
+#include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
 #include <boost/any.hpp>
 #include <memory>
