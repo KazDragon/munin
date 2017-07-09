@@ -56,18 +56,38 @@ endif()
 
 set (MUNIN_VERSION 0.0.1)
 
-set (munin_SOURCES
+set (MUNIN_SOURCE_FILES
     src/algorithm.cpp
     src/basic_component.cpp
     src/component.cpp
+    src/container.cpp
     src/context.cpp
     src/filled_box.cpp
     src/horizontal_strip_layout.cpp
     src/layout.cpp
+    src/null_layout.cpp
     src/window.cpp
 )
 
-add_library(munin ${munin_SOURCES})
+set (MUNIN_INCLUDE_FILES
+    include/munin/detail/lambda_visitor.hpp
+    include/munin/algorithm.hpp
+    include/munin/basic_component.hpp
+    include/munin/component.hpp
+    include/munin/container.hpp
+    include/munin/context.hpp
+    include/munin/filled_box.hpp
+    include/munin/horizontal_strip_layout.hpp
+    include/munin/layout.hpp
+    include/munin/null_layout.hpp
+    include/munin/rectangle.hpp
+    include/munin/window.hpp
+)
+
+add_library(munin
+    ${MUNIN_SOURCE_FILES}
+    ${MUNIN_INCLUDE_FILES}
+)
 
 generate_export_header(munin
     EXPORT_FILE_NAME
@@ -103,7 +123,7 @@ target_compile_features(munin
 if (GTEST_FOUND)
     enable_testing()
 
-    set (munin_test_SOURCES
+    set (MUNIN_TEST_SOURCE_FILES
         test/algorithm_test.cpp
         test/basic_component/new_basic_component_test.cpp
         test/basic_component/enabled_basic_component_test.cpp
@@ -111,13 +131,27 @@ if (GTEST_FOUND)
         test/basic_component/unfocused_basic_component_test.cpp
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp
+        test/container/container_test.cpp
+        test/container/container_draw_test.cpp
+        test/container/container_focus_test.cpp
+        test/container/container_focus_next_test.cpp
+        test/container/container_focus_previous_test.cpp
+        test/container/container_subcomponent_focus_test.cpp
+        test/container/container_layout_test.cpp
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
         test/horizontal_strip_layout_test.cpp
     )
 
+    set (MUNIN_TEST_INCLUDE_FILES
+        test/container/container_test.hpp
+        test/mock/component.hpp
+        test/mock/layout.hpp
+    )
+
     add_executable(munin_tester
-        ${munin_test_SOURCES}
+        ${MUNIN_TEST_SOURCE_FILES}
+        ${MUNIN_TEST_INCLUDE_FILES}
     )
 
     target_include_directories(munin_tester

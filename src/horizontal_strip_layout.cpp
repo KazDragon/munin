@@ -34,7 +34,7 @@ terminalpp::extent horizontal_strip_layout::do_get_preferred_size(
 void horizontal_strip_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints,
-    terminalpp::extent                             size)
+    terminalpp::extent                             size) const
 {
     auto y_coord = terminalpp::u32(0);
 

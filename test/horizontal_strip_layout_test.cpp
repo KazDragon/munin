@@ -25,8 +25,7 @@ TEST(a_horizontal_strip_layout_with_no_components, has_a_preferred_size_of_zero)
 TEST(a_horizontal_strip_layout_with_one_component, has_a_preferred_size_of_that_component)
 {
     static constexpr terminalpp::extent comp_preferred_size{80, 24}; 
-    std::shared_ptr<StrictMock<component>> comp = 
-        std::make_shared<StrictMock<component>>();
+    auto comp = std::make_shared<StrictMock<mock_component>>();
     std::shared_ptr<munin::component> mcomp = comp;
 
     EXPECT_CALL(*comp, do_get_preferred_size())
@@ -46,11 +45,11 @@ TEST(
     static constexpr terminalpp::extent comp1_preferred_size{60, 13};
     static constexpr terminalpp::extent expected_preferred_size{80, 37};
     
-    auto comp0 = std::make_shared<StrictMock<component>>();
+    auto comp0 = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp0, do_get_preferred_size())
         .WillOnce(Return(comp0_preferred_size));
         
-    auto comp1 = std::make_shared<StrictMock<component>>();
+    auto comp1 = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp1, do_get_preferred_size())
         .WillOnce(Return(comp1_preferred_size));
         
@@ -72,7 +71,7 @@ TEST(a_horizontal_strip_layout_with_one_component, fills_width_but_not_height_wi
     static constexpr terminalpp::extent layout_size{100, 40};
     static constexpr terminalpp::extent expected_size{100, 24};
 
-    auto comp = std::make_shared<StrictMock<component>>();
+    auto comp = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp, do_get_preferred_size())
         .WillOnce(Return(comp_preferred_size));
 
@@ -95,15 +94,15 @@ TEST(a_horizontal_strip_layout_with_multiple_components, plots_components_below_
     static constexpr terminalpp::point expected1_pos{0, 24};
     static constexpr terminalpp::point expected2_pos{0, 48};
     
-    auto comp0 = std::make_shared<StrictMock<component>>();
+    auto comp0 = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp0, do_get_preferred_size())
         .WillOnce(Return(comp_preferred_size));
 
-    auto comp1 = std::make_shared<StrictMock<component>>();
+    auto comp1 = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp1, do_get_preferred_size())
         .WillOnce(Return(comp_preferred_size));
 
-    auto comp2 = std::make_shared<StrictMock<component>>();
+    auto comp2 = std::make_shared<StrictMock<mock_component>>();
     EXPECT_CALL(*comp2, do_get_preferred_size())
         .WillOnce(Return(comp_preferred_size));
         

@@ -39,7 +39,7 @@ public :
     void operator()(
         std::vector<std::shared_ptr<component>> const &components,
         std::vector<boost::any>                 const &hints,
-        terminalpp::extent                             size);
+        terminalpp::extent                             size) const;
 
 protected :
     //* =====================================================================
@@ -64,7 +64,7 @@ protected :
     virtual void do_layout(
         std::vector<std::shared_ptr<component> > const &components,
         std::vector<boost::any>                  const &hints,
-        terminalpp::extent                              size) = 0;
+        terminalpp::extent                              size) const = 0;
 };
 
 }
