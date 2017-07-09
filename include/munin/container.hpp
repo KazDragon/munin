@@ -2,7 +2,6 @@
 
 #include "munin/export.hpp"
 #include "munin/component.hpp"
-#include "munin/core.hpp"
 #include <boost/optional.hpp>
 #include <vector>
 
