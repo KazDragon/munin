@@ -73,7 +73,7 @@ struct container::impl
     {
         (*layout_)(components_, {}, {});
     }
-    
+
     // ======================================================================
     // GET_PREFERRED_SIZE
     // ======================================================================
@@ -141,11 +141,11 @@ struct container::impl
     // ======================================================================
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
+    /*
     void subcomponent_redraw_handler(
         std::weak_ptr<component> weak_subcomponent,
         std::vector<rectangle>   regions)
     {
-        /*
         auto subcomponent = weak_subcomponent.lock();
 
         if (subcomponent != NULL)
@@ -165,8 +165,8 @@ struct container::impl
             // This new information must be passed up the component heirarchy.
             self_.on_redraw(regions);
         }
-        */
     }
+    */
 
     // ======================================================================
     // SUBCOMPONENT_FOCUS_SET_HANDLER
@@ -218,19 +218,19 @@ struct container::impl
     // ======================================================================
     // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
     // ======================================================================
+    /*
     void subcomponent_cursor_position_change_handler(
         std::weak_ptr<component> weak_subcomponent
       , terminalpp::point        position)
     {
-        /*
         auto subcomponent = weak_subcomponent.lock();
 
         if (subcomponent != NULL && subcomponent->has_focus())
         {
             self_.on_cursor_position_changed(self_.get_position() + position);
         }
-        */
     }
+    */
 
     container                               &self_;
     munin::rectangle                         bounds_;
@@ -271,11 +271,7 @@ container::~container()
 void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 {
     pimpl_->layout_ = std::move(lyt);
-
-    if (!pimpl_->components_.empty())
-    {
-        pimpl_->layout_container();
-    }
+    pimpl_->layout_container();
 }
 
 // ==========================================================================
@@ -300,7 +296,7 @@ void container::add_component(
     pimpl_->components_.push_back(comp);
     pimpl_->layout_container();
     on_preferred_size_changed();
-    
+
     /*
     //do_add_component(comp, layout_hint, layer);
     pimpl_->dirty_ = true;
@@ -347,7 +343,7 @@ void container::remove_component(std::shared_ptr<component> const &comp)
         comp));
     pimpl_->layout_container();
     on_preferred_size_changed();
-    
+
     /*
     pimpl_->dirty_ = true;
 
@@ -402,7 +398,7 @@ void container::do_set_size(terminalpp::extent const &size)
 {
     pimpl_->bounds_.size = size;
     pimpl_->layout_container();
-} 
+}
 
 // ==========================================================================
 // DO_GET_SIZE

@@ -29,7 +29,8 @@ TEST_F(a_container, lays_out_the_container_when_a_component_is_added)
     auto layout = std::unique_ptr<mock_layout>(new mock_layout);
     auto component = std::make_shared<mock_component>();
 
-    EXPECT_CALL(*layout, do_layout(_, _, _));
+    EXPECT_CALL(*layout, do_layout(_, _, _))
+        .Times(2);
     container.set_layout(std::move(layout));
     container.add_component(component);
 }
@@ -61,10 +62,10 @@ TEST_F(a_container, lays_out_the_container_when_its_size_is_changed)
 {
     auto layout = std::unique_ptr<mock_layout>(new mock_layout);
 
-    EXPECT_CALL(*layout, do_layout(_, _, _));
+    EXPECT_CALL(*layout, do_layout(_, _, _))
+        .Times(2);
 
     container.set_layout(std::move(layout));
-
     container.set_size({1, 1});
 }
 
