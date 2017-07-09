@@ -118,7 +118,7 @@ public :
     /// function in order to set an attribute in a custom manner.
     //* =====================================================================
     MOCK_METHOD2(
-        do_set_attribute, 
+        do_set_attribute,
         void (std::string const &, boost::any const &));
 
     //* =====================================================================
