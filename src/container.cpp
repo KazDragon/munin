@@ -682,8 +682,13 @@ bool container::do_is_enabled() const
 // ==========================================================================
 bool container::do_get_cursor_state() const
 {
-    return false;
-    // return pimpl_->cursor_state_;
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
+
+    return comp == pimpl_->components_.end()
+         ? false
+         : (*comp)->get_cursor_state();
 }
 
 // ==========================================================================
@@ -691,28 +696,13 @@ bool container::do_get_cursor_state() const
 // ==========================================================================
 terminalpp::point container::do_get_cursor_position() const
 {
-    return {};
-    /*
-    // If we have no focus, then return the default position.
-    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
-    {
-        // Find the subcomponent that has focus and get its cursor
-        // position.  This must then be offset by the subcomponent's
-        // position within our container.
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                return current_component->get_position()
-                     + current_component->get_cursor_position();
-            }
-        }
-    }
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
 
-    // Either we do not have focus, or the currently focussed subcomponent
-    // does not have a cursor.  Return the default position.
-    return {};
-    */
+    return comp == pimpl_->components_.end()
+         ? terminalpp::point{}
+         : (*comp)->get_position() + (*comp)->get_cursor_position();
 }
 
 // ==========================================================================

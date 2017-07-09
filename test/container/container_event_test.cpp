@@ -80,27 +80,8 @@ using mouse_report_test_data = std::tuple<
     terminalpp::ansi::mouse::report,    // Report as received by component
     terminalpp::ansi::mouse::report>;   // Expected forwarded report
 
-class containers_forwarding_mouse_events
-  : public TestWithParam<mouse_report_test_data>
-{
-protected :
-    void SetUp() override
-    {
-        container.add_component(component);
-
-        EXPECT_CALL(*component, do_set_focus());
-        EXPECT_CALL(*component, do_has_focus())
-            .WillOnce(Return(true));
-
-        container.set_focus();
-
-        assert(container.has_focus());
-    }
-
-    munin::container container;
-    std::shared_ptr<mock_component> component =
-        std::make_shared<mock_component>();
-};
+using containers_forwarding_mouse_events =
+    containers_with_a_component<mouse_report_test_data>;
 
 TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_component_position)
 {

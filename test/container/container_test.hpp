@@ -197,3 +197,39 @@ protected :
         preferred_size_changed_count = 0;
     }
 };
+
+template <class TestData>
+class containers_with_a_component
+  : public testing::TestWithParam<TestData>
+{
+protected :
+    void SetUp() override
+    {
+        testing::TestWithParam<TestData>::SetUp();
+        container.add_component(component);
+    }
+
+    munin::container container;
+    std::shared_ptr<mock_component> component =
+        std::make_shared<mock_component>();
+};
+
+template <class TestData>
+class containers_with_a_focussed_component
+  : public containers_with_a_component<TestData>
+{
+protected :
+    void SetUp() override
+    {
+        using testing::Return;
+
+        containers_with_a_component<TestData>::SetUp();
+        EXPECT_CALL(*this->component, do_set_focus());
+        EXPECT_CALL(*this->component, do_has_focus())
+            .WillOnce(Return(true));
+
+        this->container.set_focus();
+
+        assert(this->container.has_focus());
+    }
+};
