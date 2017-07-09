@@ -129,7 +129,7 @@ TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_com
 INSTANTIATE_TEST_CASE_P(
     test,
     containers_forwarding_mouse_events,
-    ValuesIn({
+    ValuesIn(std::vector<mouse_report_test_data>{
         mouse_report_test_data {
             {0, 0},
             {20, 20},
