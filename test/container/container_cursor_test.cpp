@@ -104,3 +104,60 @@ TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first
     ASSERT_TRUE(container.get_cursor_state());
     ASSERT_EQ(terminalpp::point(10, 12), container.get_cursor_position());
 }
+
+TEST_F(a_container_with_one_component, does_nothing_when_setting_cursor_position)
+{
+    container.set_cursor_position({0, 0});
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, sets_the_cursor_position_of_the_focussed_subcomponent_when_setting_cursor_position)
+{
+    static terminalpp::point const cursor_position = {5, 5};
+
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    EXPECT_CALL(*component, do_get_position())
+        .WillRepeatedly(Return(terminalpp::point(0, 0)));
+
+    EXPECT_CALL(*component, do_set_cursor_position(cursor_position));
+
+    container.set_cursor_position(cursor_position);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, sets_the_cursor_position_of_the_focussed_subcomponent_relative_to_the_component_position)
+{
+    static terminalpp::point const component_position = {3, 4};
+    static terminalpp::point const cursor_position    = {5, 5};
+    static terminalpp::point const expected_position  = {2, 1};
+
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    EXPECT_CALL(*component, do_get_position())
+        .WillRepeatedly(Return(component_position));
+
+    EXPECT_CALL(*component, do_set_cursor_position(expected_position));
+
+    container.set_cursor_position(cursor_position);
+}
+
+TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first_component_when_setting_cursor_position)
+{
+    static terminalpp::point const component_position = {3, 4};
+    static terminalpp::point const cursor_position    = {5, 5};
+    static terminalpp::point const expected_position  = {2, 1};
+
+    EXPECT_CALL(*component0, do_has_focus())
+        .WillRepeatedly(Return(false));
+
+    EXPECT_CALL(*component1, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    EXPECT_CALL(*component1, do_get_position())
+        .WillRepeatedly(Return(component_position));
+
+    EXPECT_CALL(*component1, do_set_cursor_position(expected_position));
+
+    container.set_cursor_position(cursor_position);
+}

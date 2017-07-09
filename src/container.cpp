@@ -706,27 +706,22 @@ terminalpp::point container::do_get_cursor_position() const
 }
 
 // ==========================================================================
-// DO_SET_CURSOR_POSITIONG
+// DO_SET_CURSOR_POSITION
 // ==========================================================================
 void container::do_set_cursor_position(terminalpp::point const &position)
 {
-    /*
-    // If we have no focus, then ignore this.
-    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
+    // Note: Setting the cursor position on a container doesn't really
+    // make too much sense, but an implementation is required to fulfil the
+    // component interface.  Our default implementation sets the relative
+    // cursor position in the focussed component.
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
+
+    if (comp != pimpl_->components_.end())
     {
-        // Find the subcomponent that has focus and set its cursor
-        // position.  This must then be offset by the subcomponent's
-        // position within our container.
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                current_component->set_cursor_position(
-                    position - current_component->get_position());
-            }
-        }
+        (*comp)->set_cursor_position(position - (*comp)->get_position());
     }
-    */
 }
 
 // ==========================================================================
