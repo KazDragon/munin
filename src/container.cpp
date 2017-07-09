@@ -301,14 +301,6 @@ struct container::impl
 
         if (comp != components_.end())
         {
-            auto *mouse_event =
-                boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-
-            if (mouse_event)
-            {
-                (*comp)->get_position();
-            }
-
             (*comp)->event(event);
         }
     }
