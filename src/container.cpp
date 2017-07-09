@@ -22,26 +22,38 @@ namespace {
 
 namespace {
 
+template <class ForwardIterator>
+static ForwardIterator find_first_focussed_component(
+    ForwardIterator begin,
+    ForwardIterator end)
+{
+    return std::find_if(
+        begin,
+        end,
+        [](auto const &comp)
+        {
+            return comp->has_focus();
+        });
+}
+
 template <class ForwardIterator, class IncrementFunction>
 static boost::optional<bool> increment_focus(
     bool has_focus,
-    ForwardIterator &&begin,
-    ForwardIterator &&end,
+    ForwardIterator begin,
+    ForwardIterator end,
     IncrementFunction &&increment)
 {
     if (has_focus)
     {
-        begin = std::find_if(
-            begin,
-            end,
-            [](auto const &comp)
-            {
-                return comp->has_focus();
-            });
+        begin = find_first_focussed_component(begin, end);
         assert(begin != end);
     }
 
-    if ((std::find_if(begin, end, increment) == end) == has_focus)
+    if ((std::find_if(
+             begin,
+             end,
+             std::forward<IncrementFunction>(increment))
+         == end) == has_focus)
     {
         return !has_focus;
     }
@@ -231,6 +243,20 @@ struct container::impl
         }
     }
     */
+
+    // ======================================================================
+    // DO_EVENT
+    // ======================================================================
+    void do_event(boost::any const &event)
+    {
+        auto comp = find_first_focussed_component(
+            components_.begin(), components_.end());
+
+        if (comp != components_.end())
+        {
+            (*comp)->event(event);
+        }
+    }
 
     container                               &self_;
     munin::rectangle                         bounds_;
@@ -711,6 +737,8 @@ void container::do_draw(context &ctx, rectangle const &region) const
 // ==========================================================================
 void container::do_event(boost::any const &event)
 {
+    pimpl_->do_event(event);
+
     /*
     // We split the events into two types.  Mouse events are passed to
     // whichever component is under the mouse click.  All other events are

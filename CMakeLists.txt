@@ -31,7 +31,7 @@ find_package(GTest)
 
 if (GTEST_FOUND)
     find_package(GMock REQUIRED)
-    
+
     # For GTest, it is necessary to link with the appropriate local threading
     # library.
     find_package(Threads)
@@ -133,6 +133,7 @@ if (GTEST_FOUND)
         test/basic_component/basic_component_test.cpp
         test/container/container_test.cpp
         test/container/container_draw_test.cpp
+        test/container/container_event_test.cpp
         test/container/container_focus_test.cpp
         test/container/container_focus_next_test.cpp
         test/container/container_focus_previous_test.cpp
@@ -158,7 +159,7 @@ if (GTEST_FOUND)
         PRIVATE
             ${GTEST_INCLUDE_DIR}
     )
-    
+
     target_link_libraries(munin_tester
         munin
         terminalpp-core
