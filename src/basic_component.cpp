@@ -106,7 +106,7 @@ void basic_component::do_set_focus()
     {
         bool old_focus = pimpl_->has_focus_;
         pimpl_->has_focus_ = true;
-        
+
         if (!old_focus)
         {
             on_focus_set();
@@ -121,7 +121,7 @@ void basic_component::do_lose_focus()
 {
     bool old_focus = pimpl_->has_focus_;
     pimpl_->has_focus_ = false;
-    
+
     if (old_focus)
     {
         on_focus_lost();
@@ -198,14 +198,6 @@ terminalpp::point basic_component::do_get_cursor_position() const
 // ==========================================================================
 void basic_component::do_set_cursor_position(terminalpp::point const &position)
 {
-}
-
-// ==========================================================================
-// DO_LAYOUT
-// ==========================================================================
-void basic_component::do_layout()
-{
-    // By default, components are single entities and don't need laying out.
 }
 
 // ==========================================================================

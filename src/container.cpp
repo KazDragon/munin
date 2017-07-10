@@ -757,61 +757,6 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 }
 
 // ==========================================================================
-// DO_LAYOUT
-// ==========================================================================
-void container::do_layout()
-{
-    /*
-    // Sort the components/hints into layers
-    typedef std::map<u32, std::vector<std::shared_ptr<component>>> clmap;
-    typedef std::map<u32, std::vector<boost::any>>                 chmap;
-
-    clmap component_layers_map;
-    chmap component_hints_map;
-
-    // Iterate through the components, sorting them by layer
-    for (u32 index = 0; index < pimpl_->components_.size(); ++index)
-    {
-        auto comp =  pimpl_->components_[index];
-        auto hint =  pimpl_->component_hints_[index];
-        auto layer = pimpl_->component_layers_[index];
-
-        component_layers_map[layer].push_back(comp);
-        component_hints_map[layer].push_back(hint);
-    }
-
-    auto size = get_size();
-
-    // Iterate through the layers, layout out each.
-    for (auto const &component_layer_pair : component_layers_map)
-    {
-        auto layer =      component_layer_pair.first;
-        auto components = component_layer_pair.second;
-        auto hints =      component_hints_map[layer];
-
-        auto lyt = get_layout(layer);
-
-        if (!lyt || components.size() == 0)
-        {
-            // Either there is no layout for this layer, or there are no
-            // components in this layer.  Hence no point in laying it out.
-            // Continue with the next layer.
-            continue;
-        }
-
-        (*lyt)(components, hints, size);
-    }
-
-    // Now that all the sizes are correct for this container, iterate through
-    // each subcomponent, and lay them out in turn.
-    for (auto const &comp : pimpl_->components_)
-    {
-        comp->layout();
-    }
-    */
-}
-
-// ==========================================================================
 // DO_DRAW
 // ==========================================================================
 void container::do_draw(context &ctx, rectangle const &region) const
