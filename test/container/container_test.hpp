@@ -27,6 +27,18 @@ protected :
             {
                 ++focus_lost_count;
             });
+            
+        container.on_cursor_position_changed.connect(
+            [this]()
+            {
+                ++cursor_position_changed_count;
+            });
+            
+        container.on_cursor_state_changed.connect(
+            [this]()
+            {
+                ++cursor_state_changed_count;
+            });
     }
 
     munin::container container;
@@ -34,6 +46,8 @@ protected :
     int preferred_size_changed_count = 0;
     int focus_set_count = 0;
     int focus_lost_count = 0;
+    int cursor_position_changed_count = 0;
+    int cursor_state_changed_count = 0;
 };
 
 class a_container : public container_test_base
@@ -195,5 +209,41 @@ protected :
 
         focus_set_count = 0;
         preferred_size_changed_count = 0;
+    }
+};
+
+template <class TestData>
+class containers_with_a_component
+  : public testing::TestWithParam<TestData>
+{
+protected :
+    void SetUp() override
+    {
+        testing::TestWithParam<TestData>::SetUp();
+        container.add_component(component);
+    }
+
+    munin::container container;
+    std::shared_ptr<mock_component> component =
+        std::make_shared<mock_component>();
+};
+
+template <class TestData>
+class containers_with_a_focussed_component
+  : public containers_with_a_component<TestData>
+{
+protected :
+    void SetUp() override
+    {
+        using testing::Return;
+
+        containers_with_a_component<TestData>::SetUp();
+        EXPECT_CALL(*this->component, do_set_focus());
+        EXPECT_CALL(*this->component, do_has_focus())
+            .WillOnce(Return(true));
+
+        this->container.set_focus();
+
+        assert(this->container.has_focus());
     }
 };

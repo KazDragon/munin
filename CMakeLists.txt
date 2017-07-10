@@ -132,6 +132,7 @@ if (GTEST_FOUND)
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp
         test/container/container_test.cpp
+        test/container/container_cursor_test.cpp
         test/container/container_draw_test.cpp
         test/container/container_event_test.cpp
         test/container/container_focus_test.cpp

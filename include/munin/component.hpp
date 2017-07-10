@@ -213,7 +213,7 @@ public :
     //* =====================================================================
     boost::signals2::signal
     <
-        void (bool)
+        void ()
     > on_cursor_state_changed;
 
     //* =====================================================================
@@ -223,7 +223,7 @@ public :
     //* =====================================================================
     boost::signals2::signal
     <
-        void (terminalpp::point)
+        void ()
     > on_cursor_position_changed;
 
 protected :

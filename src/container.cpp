@@ -252,21 +252,32 @@ struct container::impl
     }
 
     // ======================================================================
-    // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
+    // SUBCOMPONENT_CURSOR_STATE_CHANGE_HANDLER
     // ======================================================================
-    /*
-    void subcomponent_cursor_position_change_handler(
-        std::weak_ptr<component> weak_subcomponent
-      , terminalpp::point        position)
+    void subcomponent_cursor_state_change_handler(
+        std::weak_ptr<component> weak_subcomponent)
     {
         auto subcomponent = weak_subcomponent.lock();
 
-        if (subcomponent != NULL && subcomponent->has_focus())
+        if (subcomponent && subcomponent->has_focus())
         {
-            self_.on_cursor_position_changed(self_.get_position() + position);
+            self_.on_cursor_state_changed();
         }
     }
-    */
+    
+    // ======================================================================
+    // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
+    // ======================================================================
+    void subcomponent_cursor_position_change_handler(
+        std::weak_ptr<component> weak_subcomponent)
+    {
+        auto subcomponent = weak_subcomponent.lock();
+
+        if (subcomponent && subcomponent->has_focus())
+        {
+            self_.on_cursor_position_changed();
+        }
+    }
 
     // ======================================================================
     // DO_EVENT
@@ -387,6 +398,18 @@ void container::add_component(
         [this]
         {
             pimpl_->subcomponent_focus_lost_handler();
+        });
+
+    comp->on_cursor_state_changed.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)]
+        {
+            pimpl_->subcomponent_cursor_state_change_handler(wcomp);
+        });
+        
+    comp->on_cursor_position_changed.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)]
+        {
+            pimpl_->subcomponent_cursor_position_change_handler(wcomp);
         });
 
     pimpl_->components_.push_back(comp);
@@ -682,8 +705,13 @@ bool container::do_is_enabled() const
 // ==========================================================================
 bool container::do_get_cursor_state() const
 {
-    return false;
-    // return pimpl_->cursor_state_;
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
+
+    return comp == pimpl_->components_.end()
+         ? false
+         : (*comp)->get_cursor_state();
 }
 
 // ==========================================================================
@@ -691,52 +719,32 @@ bool container::do_get_cursor_state() const
 // ==========================================================================
 terminalpp::point container::do_get_cursor_position() const
 {
-    return {};
-    /*
-    // If we have no focus, then return the default position.
-    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
-    {
-        // Find the subcomponent that has focus and get its cursor
-        // position.  This must then be offset by the subcomponent's
-        // position within our container.
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                return current_component->get_position()
-                     + current_component->get_cursor_position();
-            }
-        }
-    }
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
 
-    // Either we do not have focus, or the currently focussed subcomponent
-    // does not have a cursor.  Return the default position.
-    return {};
-    */
+    return comp == pimpl_->components_.end()
+         ? terminalpp::point{}
+         : (*comp)->get_position() + (*comp)->get_cursor_position();
 }
 
 // ==========================================================================
-// DO_SET_CURSOR_POSITIONG
+// DO_SET_CURSOR_POSITION
 // ==========================================================================
 void container::do_set_cursor_position(terminalpp::point const &position)
 {
-    /*
-    // If we have no focus, then ignore this.
-    if (pimpl_->has_focus_ && pimpl_->cursor_state_)
+    // Note: Setting the cursor position on a container doesn't really
+    // make too much sense, but an implementation is required to fulfil the
+    // component interface.  Our default implementation sets the relative
+    // cursor position in the focussed component.
+    auto comp = find_first_focussed_component(
+        pimpl_->components_.begin(),
+        pimpl_->components_.end());
+
+    if (comp != pimpl_->components_.end())
     {
-        // Find the subcomponent that has focus and set its cursor
-        // position.  This must then be offset by the subcomponent's
-        // position within our container.
-        for (auto const &current_component : pimpl_->components_)
-        {
-            if (current_component->has_focus())
-            {
-                current_component->set_cursor_position(
-                    position - current_component->get_position());
-            }
-        }
+        (*comp)->set_cursor_position(position - (*comp)->get_position());
     }
-    */
 }
 
 // ==========================================================================
