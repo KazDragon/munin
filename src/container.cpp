@@ -254,19 +254,16 @@ struct container::impl
     // ======================================================================
     // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
     // ======================================================================
-    /*
     void subcomponent_cursor_position_change_handler(
-        std::weak_ptr<component> weak_subcomponent
-      , terminalpp::point        position)
+        std::weak_ptr<component> weak_subcomponent)
     {
         auto subcomponent = weak_subcomponent.lock();
 
-        if (subcomponent != NULL && subcomponent->has_focus())
+        if (subcomponent && subcomponent->has_focus())
         {
-            self_.on_cursor_position_changed(self_.get_position() + position);
+            self_.on_cursor_position_changed();
         }
     }
-    */
 
     // ======================================================================
     // DO_EVENT
@@ -387,6 +384,12 @@ void container::add_component(
         [this]
         {
             pimpl_->subcomponent_focus_lost_handler();
+        });
+
+    comp->on_cursor_position_changed.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)]
+        {
+            pimpl_->subcomponent_cursor_position_change_handler(wcomp);
         });
 
     pimpl_->components_.push_back(comp);

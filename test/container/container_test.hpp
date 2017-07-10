@@ -27,6 +27,18 @@ protected :
             {
                 ++focus_lost_count;
             });
+            
+        container.on_cursor_position_changed.connect(
+            [this]()
+            {
+                ++cursor_position_changed_count;
+            });
+            
+        container.on_cursor_state_changed.connect(
+            [this]()
+            {
+                ++cursor_state_changed_count;
+            });
     }
 
     munin::container container;
@@ -34,6 +46,8 @@ protected :
     int preferred_size_changed_count = 0;
     int focus_set_count = 0;
     int focus_lost_count = 0;
+    int cursor_position_changed_count = 0;
+    int cursor_state_changed_count = 0;
 };
 
 class a_container : public container_test_base

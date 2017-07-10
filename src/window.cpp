@@ -43,13 +43,13 @@ public :
             }));
 
         connections_.push_back(content_->on_cursor_state_changed.connect(
-            [this](auto const &)
+            [this]()
             {
                 this->schedule_repaint();
             }));
 
         connections_.push_back(content_->on_cursor_position_changed.connect(
-            [this](auto const &)
+            [this]()
             {
                 this->schedule_repaint();
             }));
