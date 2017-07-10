@@ -252,6 +252,20 @@ struct container::impl
     }
 
     // ======================================================================
+    // SUBCOMPONENT_CURSOR_STATE_CHANGE_HANDLER
+    // ======================================================================
+    void subcomponent_cursor_state_change_handler(
+        std::weak_ptr<component> weak_subcomponent)
+    {
+        auto subcomponent = weak_subcomponent.lock();
+
+        if (subcomponent && subcomponent->has_focus())
+        {
+            self_.on_cursor_state_changed();
+        }
+    }
+    
+    // ======================================================================
     // SUBCOMPONENT_CURSOR_POSITION_CHANGE_HANDLER
     // ======================================================================
     void subcomponent_cursor_position_change_handler(
@@ -386,6 +400,12 @@ void container::add_component(
             pimpl_->subcomponent_focus_lost_handler();
         });
 
+    comp->on_cursor_state_changed.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)]
+        {
+            pimpl_->subcomponent_cursor_state_change_handler(wcomp);
+        });
+        
     comp->on_cursor_position_changed.connect(
         [this, wcomp = std::weak_ptr<component>(comp)]
         {
