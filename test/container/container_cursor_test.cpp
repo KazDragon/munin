@@ -1,6 +1,7 @@
 #include "container_test.hpp"
 #include <tuple>
 
+using testing::InSequence;
 using testing::Return;
 using testing::TestWithParam;
 using testing::ValuesIn;
@@ -162,62 +163,218 @@ TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first
     container.set_cursor_position(cursor_position);
 }
 
-TEST_F(a_container_with_one_component, does_not_call_cursor_position_change_event_when_cursor_position_of_subcomponent_changes)
+TEST_F(a_container_with_one_component, does_not_emit_cursor_position_change_event_when_cursor_position_of_subcomponent_changes)
 {
     EXPECT_CALL(*component, do_has_focus())
         .WillRepeatedly(Return(false));
-        
+
     component->on_cursor_position_changed();
     ASSERT_EQ(0, cursor_position_changed_count);
 }
 
-TEST_F(a_container_with_one_component_that_has_focus, calls_cursor_position_change_event_when_cursor_position_of_subcomponent_changes)
+TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_position_change_event_when_cursor_position_of_subcomponent_changes)
 {
     EXPECT_CALL(*component, do_has_focus())
         .WillRepeatedly(Return(true));
-        
+
     component->on_cursor_position_changed();
     ASSERT_EQ(1, cursor_position_changed_count);
 }
 
-TEST_F(a_container_with_two_components_where_the_first_has_focus, does_not_call_cursor_position_change_when_unfocused_component_changes_cursor_position)
+TEST_F(a_container_with_two_components_where_the_first_has_focus, does_not_emit_cursor_position_change_when_unfocused_component_changes_cursor_position)
 {
     EXPECT_CALL(*component0, do_has_focus())
         .WillRepeatedly(Return(true));
-        
+
     EXPECT_CALL(*component1, do_has_focus())
         .WillRepeatedly(Return(false));
-        
+
     component1->on_cursor_position_changed();
     ASSERT_EQ(0, cursor_position_changed_count);
 }
 
-TEST_F(a_container_with_one_component, does_not_call_cursor_state_changed_event_when_cursor_state_of_subcomponent_changes)
+TEST_F(a_container_with_one_component, does_not_emit_cursor_state_changed_event_when_cursor_state_of_subcomponent_changes)
 {
     EXPECT_CALL(*component, do_has_focus())
         .WillRepeatedly(Return(false));
-        
+
     component->on_cursor_state_changed();
     ASSERT_EQ(0, cursor_state_changed_count);
 }
 
-TEST_F(a_container_with_one_component_that_has_focus, calls_cursor_state_changed_event_when_subcomponent_cursor_state_changes)
+TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_state_changed_event_when_subcomponent_cursor_state_changes)
 {
     EXPECT_CALL(*component, do_has_focus())
         .WillRepeatedly(Return(true));
-        
+
     component->on_cursor_state_changed();
     ASSERT_EQ(1, cursor_state_changed_count);
 }
 
-TEST_F(a_container_with_two_components_where_the_first_has_focus, does_not_call_cursor_state_changed_event_when_unfocused_component_changes_cursor_state)
+TEST_F(a_container_with_two_components_where_the_first_has_focus, does_not_emit_cursor_state_changed_event_when_unfocused_component_changes_cursor_state)
 {
     EXPECT_CALL(*component0, do_has_focus())
         .WillRepeatedly(Return(true));
-        
+
     EXPECT_CALL(*component1, do_has_focus())
         .WillRepeatedly(Return(false));
-        
+
     component1->on_cursor_state_changed();
     ASSERT_EQ(0, cursor_state_changed_count);
+}
+
+TEST_F(a_container_with_one_component, does_not_emit_cursor_events_when_subcomponent_refuses_focus)
+{
+    EXPECT_CALL(*component, do_set_focus());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
+    container.set_focus();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component, emits_cursor_events_when_subcomponent_accepts_focus)
+{
+    EXPECT_CALL(*component, do_set_focus());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.set_focus();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component, does_not_emit_cursor_events_when_subcomponent_refuses_next_focus)
+{
+    EXPECT_CALL(*component, do_focus_next());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
+    container.focus_next();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component, emits_cursor_events_when_subcomponent_accepts_next_focus)
+{
+    EXPECT_CALL(*component, do_focus_next());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.focus_next();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, does_not_emit_cursor_events_when_subcomponent_does_not_yield_next_focus)
+{
+    EXPECT_CALL(*component, do_focus_next());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.focus_next();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_events_when_subcomponent_yields_next_focus)
+{
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    {
+        InSequence s1;
+        EXPECT_CALL(*component, do_focus_next());
+        EXPECT_CALL(*component, do_has_focus())
+            .WillRepeatedly(Return(false));
+    }
+
+    container.focus_next();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
+}
+
+//
+
+TEST_F(a_container_with_one_component, does_not_emit_cursor_events_when_subcomponent_refuses_previous_focus)
+{
+    EXPECT_CALL(*component, do_focus_previous());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
+    container.focus_previous();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component, emits_cursor_events_when_subcomponent_accepts_previous_focus)
+{
+    EXPECT_CALL(*component, do_focus_previous());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.focus_previous();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, does_not_emit_cursor_events_when_subcomponent_does_not_yield_previous_focus)
+{
+    EXPECT_CALL(*component, do_focus_previous());
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.focus_previous();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_events_when_subcomponent_yields_previous_focus)
+{
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    {
+        InSequence s1;
+        EXPECT_CALL(*component, do_focus_previous());
+        EXPECT_CALL(*component, do_has_focus())
+            .WillRepeatedly(Return(false));
+    }
+
+    container.focus_previous();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component, does_not_emit_cursor_events_when_losing_focus)
+{
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
+    container.lose_focus();
+
+    ASSERT_EQ(0, cursor_state_changed_count);
+    ASSERT_EQ(0, cursor_position_changed_count);
+}
+
+TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_events_when_losing_focus)
+{
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(true));
+
+    container.lose_focus();
+
+    ASSERT_EQ(1, cursor_state_changed_count);
+    ASSERT_EQ(1, cursor_position_changed_count);
 }

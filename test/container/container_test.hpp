@@ -27,18 +27,27 @@ protected :
             {
                 ++focus_lost_count;
             });
-            
+
         container.on_cursor_position_changed.connect(
             [this]()
             {
                 ++cursor_position_changed_count;
             });
-            
+
         container.on_cursor_state_changed.connect(
             [this]()
             {
                 ++cursor_state_changed_count;
             });
+    }
+
+    void ResetCounters()
+    {
+        preferred_size_changed_count = 0;
+        focus_set_count = 0;
+        focus_lost_count = 0;
+        cursor_position_changed_count = 0;
+        cursor_state_changed_count = 0;
     }
 
     munin::container container;
@@ -66,7 +75,7 @@ protected :
         a_container::SetUp();
 
         container.add_component(component);
-        preferred_size_changed_count = 0;
+        ResetCounters();
     }
 
     std::shared_ptr<mock_component> component =
@@ -89,9 +98,7 @@ protected :
         container.set_focus();
 
         assert(container.has_focus());
-
-        focus_set_count = 0;
-        preferred_size_changed_count = 0;
+        ResetCounters();
     }
 };
 
@@ -128,9 +135,7 @@ protected :
         container.focus_next();
 
         assert(container.has_focus());
-
-        focus_set_count = 0;
-        preferred_size_changed_count = 0;
+        ResetCounters();
     }
 };
 
@@ -150,7 +155,7 @@ protected :
         container.focus_previous();
 
         assert(container.has_focus());
-        focus_set_count = 0;
+        ResetCounters();
     }
 };
 
@@ -184,9 +189,7 @@ protected :
         container.focus_next();
 
         assert(container.has_focus());
-
-        focus_set_count = 0;
-        preferred_size_changed_count = 0;
+        ResetCounters();
     }
 };
 
@@ -206,9 +209,7 @@ protected :
         container.focus_previous();
 
         assert(container.has_focus());
-
-        focus_set_count = 0;
-        preferred_size_changed_count = 0;
+        ResetCounters();
     }
 };
 
