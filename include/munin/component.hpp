@@ -131,11 +131,6 @@ public :
     void set_cursor_position(terminalpp::point const &position);
 
     //* =====================================================================
-    /// \brief Tells the component to lay itself out.
-    //* =====================================================================
-    void layout();
-
-    //* =====================================================================
     /// \brief Draws the component.
     ///
     /// \param cvs the context in which the component should draw itself.
@@ -163,17 +158,6 @@ public :
     <
         void (std::vector<rectangle> const &regions)
     > on_redraw;
-
-    //* =====================================================================
-    /// \fn on_layout_change
-    /// \brief Certain component, such as containers, make requests that we
-    /// update the overall layout should be done.  Connect to this signal
-    /// in order to receive notifications about this.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void ()
-    > on_layout_change;
 
     //* =====================================================================
     /// \fn on_preferred_size_changed
@@ -338,13 +322,6 @@ protected :
     /// a custom manner.
     //* =====================================================================
     virtual void do_set_cursor_position(terminalpp::point const &position) = 0;
-
-    //* =====================================================================
-    /// \brief Called by layout().  Derived classes must override this
-    /// function in order to lay the component out.  If the component
-    /// contains subcomponents, these must also be laid out.
-    //* =====================================================================
-    virtual void do_layout() = 0;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function

@@ -162,13 +162,6 @@ private :
     void do_set_cursor_position(terminalpp::point const &position) override;
 
     //* =====================================================================
-    /// \brief Called by layout().  Derived classes must override this
-    /// function in order to lay the component out.  If the component
-    /// contains subcomponents, these must also be laid out.
-    //* =====================================================================
-    void do_layout() override;
-
-    //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.

@@ -59,12 +59,6 @@ public :
             {
                 this->preferred_size_change_handler();
             }));
-
-        connections_.push_back(content_->on_layout_change.connect(
-            [this]
-            {
-                this->schedule_layout();
-            }));
     }
 
     // ======================================================================
@@ -136,20 +130,6 @@ private :
         {
             strand_.post([sp=shared_from_this()]{sp->do_repaint();});
             repaint_scheduled_ = true;
-        }
-    }
-
-    // ======================================================================
-    // SCHEDULE_LAYOUT
-    // ======================================================================
-    void schedule_layout()
-    {
-        // As with schedule_repaint, we don't need to schedule a layout
-        // if there's one already scheduled.
-        if (!layout_scheduled_)
-        {
-            strand_.post([sp=shared_from_this()]{sp->do_layout();});
-            layout_scheduled_ = true;
         }
     }
 
@@ -264,18 +244,6 @@ private :
         repaint_scheduled_ = false;
     }
 
-    // ======================================================================
-    // DO_LAYOUT
-    // ======================================================================
-    void do_layout()
-    {
-        content_->layout();
-        layout_scheduled_ = false;
-
-        redraw_handler({
-            rectangle(content_->get_position(), content_->get_size())});
-    }
-
     window                       &self_;
     bool                          self_valid_;
 
@@ -303,7 +271,7 @@ window::window(
     boost::asio::io_service::strand  &strand)
 {
     pimpl_ = std::make_shared<impl>(
-        std::ref(*this), 
+        std::ref(*this),
         std::ref(content),
         std::ref(terminal),
         std::ref (strand));
@@ -323,7 +291,6 @@ window::~window()
 void window::set_size(terminalpp::extent size)
 {
     pimpl_->get_content()->set_size(size);
-    pimpl_->get_content()->on_layout_change();
 }
 
 // ==========================================================================
