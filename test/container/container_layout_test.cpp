@@ -2,6 +2,8 @@
 #include "../mock/layout.hpp"
 
 using testing::_;
+using testing::InSequence;
+using testing::Invoke;
 using testing::Return;
 
 TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_component_is_added)
@@ -27,12 +29,37 @@ TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added
 TEST_F(a_container, lays_out_the_container_when_a_component_is_added)
 {
     auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto hint = std::string{"hint"};
     auto component = std::make_shared<mock_component>();
+    auto size = terminalpp::extent{80, 24};
 
-    EXPECT_CALL(*layout, do_layout(_, _, _))
-        .Times(2);
+    {
+        InSequence s1;
+        EXPECT_CALL(*layout, do_layout(_, _, _));
+        EXPECT_CALL(*layout, do_layout(_, _, _))
+            .WillOnce(Invoke(
+                [playout = layout.get(), component, hint, size](
+                    auto const &components,
+                    auto const &hints,
+                    auto const &lyt_size)
+                {
+                    ASSERT_EQ(1u, components.size());
+                    ASSERT_EQ(component, components[0]);
+                    ASSERT_EQ(1u, hints.size());
+                    
+                    auto const *phint = 
+                        boost::any_cast<decltype(hint)>(&hints[0]);
+                        
+                    ASSERT_TRUE(phint != nullptr);
+                    ASSERT_EQ(hint, *phint);
+                    
+                    ASSERT_EQ(size, lyt_size);
+                }));
+    }
+    
+    container.set_size(size);
     container.set_layout(std::move(layout));
-    container.add_component(component);
+    container.add_component(component, hint);
 }
 
 TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_added)
