@@ -50,7 +50,7 @@ TEST_F(a_container, lays_out_the_container_when_a_component_is_added)
             
         EXPECT_CALL(*layout, do_layout(_, _, _))
             .WillOnce(Invoke(
-                [playout = layout.get(), component, hint, size](
+                [playout = layout.get(), &component, hint, size](
                     auto const &components,
                     auto const &hints,
                     auto const &lyt_size)
