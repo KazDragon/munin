@@ -107,7 +107,7 @@ struct container::impl
     // ======================================================================
     void layout_container()
     {
-        (*layout_)(components_, {}, {});
+        (*layout_)(components_, hints_, bounds_.size);
     }
 
     // ======================================================================
@@ -115,7 +115,7 @@ struct container::impl
     // ======================================================================
     terminalpp::extent get_preferred_size() const
     {
-        return layout_->get_preferred_size(components_, {});
+        return layout_->get_preferred_size(components_, hints_);
     }
 
     // ======================================================================
@@ -343,6 +343,7 @@ struct container::impl
     munin::rectangle                         bounds_;
     std::unique_ptr<munin::layout>           layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>>  components_;
+    std::vector<boost::any>                  hints_;
     bool                                     enabled_ = true;
     bool                                     has_focus_ = false;
     bool                                     in_focus_operation_ = false;
@@ -413,6 +414,7 @@ void container::add_component(
         });
 
     pimpl_->components_.push_back(comp);
+    pimpl_->hints_.push_back(layout_hint);
     pimpl_->layout_container();
     on_preferred_size_changed();
 
@@ -456,10 +458,16 @@ void container::add_component(
 // ==========================================================================
 void container::remove_component(std::shared_ptr<component> const &comp)
 {
-    pimpl_->components_.erase(std::find(
-        pimpl_->components_.begin(),
-        pimpl_->components_.end(),
-        comp));
+    for (auto index = 0; index < pimpl_->components_.size(); ++index)
+    {
+        if (pimpl_->components_[index] == comp)
+        {
+            pimpl_->components_.erase(pimpl_->components_.begin() + index);
+            pimpl_->hints_.erase(pimpl_->hints_.begin() + index);
+            
+        }
+    }
+    
     pimpl_->layout_container();
     on_preferred_size_changed();
 
