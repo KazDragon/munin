@@ -115,7 +115,7 @@ struct container::impl
     // ======================================================================
     terminalpp::extent get_preferred_size() const
     {
-        return layout_->get_preferred_size(components_, {});
+        return layout_->get_preferred_size(components_, hints_);
     }
 
     // ======================================================================
