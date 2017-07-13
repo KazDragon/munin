@@ -15,7 +15,6 @@ struct basic_component::impl
     impl(basic_component &self)
         : self_(self)
         , has_focus_(false)
-        , enabled_(true)
     {
     }
 
@@ -39,7 +38,6 @@ struct basic_component::impl
     basic_component &self_;
     rectangle        bounds_;
     bool             has_focus_;
-    bool             enabled_;
 };
 
 // ==========================================================================
@@ -102,15 +100,12 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    if (pimpl_->enabled_)
-    {
-        bool old_focus = pimpl_->has_focus_;
-        pimpl_->has_focus_ = true;
+    bool old_focus = pimpl_->has_focus_;
+    pimpl_->has_focus_ = true;
 
-        if (!old_focus)
-        {
-            on_focus_set();
-        }
+    if (!old_focus)
+    {
+        on_focus_set();
     }
 }
 
@@ -133,10 +128,7 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-    if (pimpl_->enabled_)
-    {
-        pimpl_->toggle_focus();
-    }
+    pimpl_->toggle_focus();
 }
 
 // ==========================================================================
@@ -144,34 +136,7 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-    if (pimpl_->enabled_)
-    {
-        pimpl_->toggle_focus();
-    }
-}
-
-// ==========================================================================
-// DO_ENABLE
-// ==========================================================================
-void basic_component::do_enable()
-{
-    pimpl_->enabled_ = true;
-}
-
-// ==========================================================================
-// DO_DISABLE
-// ==========================================================================
-void basic_component::do_disable()
-{
-    pimpl_->enabled_ = false;
-}
-
-// ==========================================================================
-// DO_IS_ENABLED
-// ==========================================================================
-bool basic_component::do_is_enabled() const
-{
-    return pimpl_->enabled_;
+    pimpl_->toggle_focus();
 }
 
 // ==========================================================================

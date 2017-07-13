@@ -9,8 +9,7 @@ namespace munin {
 /// and do_get_preferred_size() remain unimplemented.
 //* =========================================================================
 class MUNIN_EXPORT basic_component
-  : public component,
-    public std::enable_shared_from_this<basic_component>
+  : public component
 {
 public :
     //* =====================================================================
@@ -84,25 +83,6 @@ protected :
     /// this function in order to move the focus in a custom manner.
     //* =====================================================================
     void do_focus_previous() override;
-
-    //* =====================================================================
-    /// \brief Called by enable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    void do_enable() override;
-
-    //* =====================================================================
-    /// \brief Called by disable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    void do_disable() override;
-
-    //* =====================================================================
-    /// \brief Called by is_enabled().  Derived classes must override this
-    /// function in order to return whether the component is disabled or not
-    /// in a custom manner.
-    //* =====================================================================
-    bool do_is_enabled() const override;
 
     //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
