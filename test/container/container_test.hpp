@@ -80,8 +80,6 @@ class a_container_with_one_component : public a_container
 protected :
     void SetUp() override
     {
-        using testing::Return;
-
         a_container::SetUp();
 
         container.add_component(component);
