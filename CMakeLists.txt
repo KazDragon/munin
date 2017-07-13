@@ -138,6 +138,7 @@ if (GTEST_FOUND)
         test/container/container_focus_test.cpp
         test/container/container_focus_next_test.cpp
         test/container/container_focus_previous_test.cpp
+        test/container/container_redraw_test.cpp
         test/container/container_subcomponent_focus_test.cpp
         test/container/container_layout_test.cpp
         test/filled_box/new_filled_box_test.cpp

@@ -12,14 +12,10 @@
 
 namespace munin {
 
-/*
 namespace {
-    using component_connections_type =
-        std::pair<
-            std::shared_ptr<component>,
-            std::vector<boost::signals2::connection>>;
+    using component_connections =
+        std::vector<boost::signals2::connection>;
 }
-*/
 
 namespace {
 
@@ -177,7 +173,6 @@ struct container::impl
     // ======================================================================
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
-    /*
     void subcomponent_redraw_handler(
         std::weak_ptr<component> weak_subcomponent,
         std::vector<rectangle>   regions)
@@ -202,7 +197,6 @@ struct container::impl
             self_.on_redraw(regions);
         }
     }
-    */
 
     // ======================================================================
     // SUBCOMPONENT_FOCUS_SET_HANDLER
@@ -344,6 +338,7 @@ struct container::impl
     std::unique_ptr<munin::layout>           layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>>  components_;
     std::vector<boost::any>                  hints_;
+    std::vector<component_connections>       component_connections_;
     bool                                     enabled_ = true;
     bool                                     has_focus_ = false;
     bool                                     in_focus_operation_ = false;
@@ -389,32 +384,42 @@ void container::add_component(
     std::shared_ptr<component> const &comp
   , boost::any                 const &layout_hint)
 {
-    comp->on_focus_set.connect(
+    component_connections cnx;
+
+    cnx.push_back(comp->on_focus_set.connect(
         [this, wcomp = std::weak_ptr<component>(comp)]
         {
             pimpl_->subcomponent_focus_set_handler(wcomp);
-        });
+        }));
 
-    comp->on_focus_lost.connect(
+    cnx.push_back(comp->on_focus_lost.connect(
         [this]
         {
             pimpl_->subcomponent_focus_lost_handler();
-        });
+        }));
 
-    comp->on_cursor_state_changed.connect(
+    cnx.push_back(comp->on_cursor_state_changed.connect(
         [this, wcomp = std::weak_ptr<component>(comp)]
         {
             pimpl_->subcomponent_cursor_state_change_handler(wcomp);
-        });
+        }));
 
-    comp->on_cursor_position_changed.connect(
+    cnx.push_back(comp->on_cursor_position_changed.connect(
         [this, wcomp = std::weak_ptr<component>(comp)]
         {
             pimpl_->subcomponent_cursor_position_change_handler(wcomp);
-        });
+        }));
 
+    cnx.push_back(comp->on_redraw.connect(
+        [this, wcomp = std::weak_ptr<component>(comp)](
+            auto const &redraw_regions)
+        {
+            pimpl_->subcomponent_redraw_handler(wcomp, redraw_regions);
+        }));
+    
     pimpl_->components_.push_back(comp);
     pimpl_->hints_.push_back(layout_hint);
+    pimpl_->component_connections_.push_back(cnx);
     pimpl_->layout_container();
     on_preferred_size_changed();
 
@@ -465,6 +470,16 @@ void container::remove_component(std::shared_ptr<component> const &comp)
             pimpl_->components_.erase(pimpl_->components_.begin() + index);
             pimpl_->hints_.erase(pimpl_->hints_.begin() + index);
             
+            std::for_each(
+                pimpl_->component_connections_[index].begin(),
+                pimpl_->component_connections_[index].end(),
+                [](auto &cnx)
+                {
+                    cnx.disconnect();
+                });
+            
+            pimpl_->component_connections_.erase(
+                pimpl_->component_connections_.begin() + index);
         }
     }
     
