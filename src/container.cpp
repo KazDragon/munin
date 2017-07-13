@@ -470,7 +470,7 @@ void container::remove_component(std::shared_ptr<component> const &comp)
             pimpl_->components_.erase(pimpl_->components_.begin() + index);
             pimpl_->hints_.erase(pimpl_->hints_.begin() + index);
             
-            for_each(
+            std::for_each(
                 pimpl_->component_connections_[index].begin(),
                 pimpl_->component_connections_[index].end(),
                 [](auto &cnx)
