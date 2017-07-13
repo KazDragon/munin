@@ -39,6 +39,12 @@ protected :
             {
                 ++cursor_state_changed_count;
             });
+            
+        container.on_redraw.connect(
+            [this](auto const &)
+            {
+                ++redraw_count;
+            });
     }
 
     void ResetCounters()
@@ -48,6 +54,7 @@ protected :
         focus_lost_count = 0;
         cursor_position_changed_count = 0;
         cursor_state_changed_count = 0;
+        redraw_count = 0;
     }
 
     munin::container container;
@@ -57,6 +64,7 @@ protected :
     int focus_lost_count = 0;
     int cursor_position_changed_count = 0;
     int cursor_state_changed_count = 0;
+    int redraw_count = 0;
 };
 
 class a_container : public container_test_base
