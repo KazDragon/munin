@@ -108,6 +108,9 @@ TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first
 
 TEST_F(a_container_with_one_component, does_nothing_when_setting_cursor_position)
 {
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
     container.set_cursor_position({0, 0});
 }
 
@@ -370,8 +373,13 @@ TEST_F(a_container_with_one_component, does_not_emit_cursor_events_when_losing_f
 
 TEST_F(a_container_with_one_component_that_has_focus, emits_cursor_events_when_losing_focus)
 {
-    EXPECT_CALL(*component, do_has_focus())
-        .WillRepeatedly(Return(true));
+    {
+        InSequence s1;
+        EXPECT_CALL(*component, do_has_focus())
+            .WillRepeatedly(Return(true));
+        EXPECT_CALL(*component, do_lose_focus())
+            .Times(1);
+    }
 
     container.lose_focus();
 

@@ -39,7 +39,7 @@ protected :
             {
                 ++cursor_state_changed_count;
             });
-            
+
         container.on_redraw.connect(
             [this](auto const &)
             {
@@ -80,9 +80,12 @@ class a_container_with_one_component : public a_container
 protected :
     void SetUp() override
     {
+        using testing::Return;
+
         a_container::SetUp();
 
         container.add_component(component);
+
         ResetCounters();
     }
 
@@ -95,13 +98,17 @@ class a_container_with_one_component_that_has_focus : public a_container_with_on
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         a_container_with_one_component::SetUp();
 
-        EXPECT_CALL(*component, do_set_focus());
-        EXPECT_CALL(*component, do_has_focus())
-            .WillOnce(Return(true));
+        {
+            InSequence s1;
+            EXPECT_CALL(*component, do_set_focus());
+            EXPECT_CALL(*component, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         container.set_focus();
 
@@ -132,13 +139,17 @@ class a_container_with_two_components_where_the_first_has_focus : public a_conta
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         a_container_with_two_components::SetUp();
 
-        EXPECT_CALL(*component0, do_focus_next());
-        EXPECT_CALL(*component0, do_has_focus())
-            .WillOnce(Return(true));
+        {
+            InSequence s1;
+            EXPECT_CALL(*component0, do_focus_next());
+            EXPECT_CALL(*component0, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         container.focus_next();
 
@@ -152,13 +163,17 @@ class a_container_with_two_components_where_the_last_has_focus : public a_contai
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         a_container_with_two_components::SetUp();
 
-        EXPECT_CALL(*component1, do_focus_previous());
-        EXPECT_CALL(*component1, do_has_focus())
-            .WillOnce(Return(true));
+        {
+            InSequence s1;
+            EXPECT_CALL(*component1, do_focus_previous());
+            EXPECT_CALL(*component1, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         container.focus_previous();
 
@@ -186,13 +201,17 @@ class a_container_with_three_components_where_the_first_has_focus : public a_con
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         a_container_with_three_components::SetUp();
 
-        EXPECT_CALL(*component0, do_focus_next());
-        EXPECT_CALL(*component0, do_has_focus())
-            .WillOnce(Return(true));
+        {
+            InSequence s1;
+            EXPECT_CALL(*component0, do_focus_next());
+            EXPECT_CALL(*component0, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         container.focus_next();
 
@@ -206,13 +225,17 @@ class a_container_with_three_components_where_the_last_has_focus : public a_cont
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         a_container_with_three_components::SetUp();
 
-        EXPECT_CALL(*component2, do_focus_previous());
-        EXPECT_CALL(*component2, do_has_focus())
-            .WillOnce(Return(true));
+        {
+            InSequence s1;
+            EXPECT_CALL(*component2, do_focus_previous());
+            EXPECT_CALL(*component2, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         container.focus_previous();
 
@@ -244,12 +267,17 @@ class containers_with_a_focussed_component
 protected :
     void SetUp() override
     {
+        using testing::InSequence;
         using testing::Return;
 
         containers_with_a_component<TestData>::SetUp();
-        EXPECT_CALL(*this->component, do_set_focus());
-        EXPECT_CALL(*this->component, do_has_focus())
-            .WillOnce(Return(true));
+
+        {
+            InSequence s1;
+            EXPECT_CALL(*this->component, do_set_focus());
+            EXPECT_CALL(*this->component, do_has_focus())
+                .WillOnce(Return(true));
+        }
 
         this->container.set_focus();
 

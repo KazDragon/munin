@@ -13,6 +13,9 @@ TEST_F(a_container_with_one_component, does_not_forward_events_to_the_subcompone
 {
     // Because the component does not have focus, it does not make sense for
     // the component to receive the events.
+    EXPECT_CALL(*component, do_has_focus())
+        .WillRepeatedly(Return(false));
+
     container.event('X');
 }
 
