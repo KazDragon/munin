@@ -126,8 +126,6 @@ if (GTEST_FOUND)
     set (MUNIN_TEST_SOURCE_FILES
         test/algorithm_test.cpp
         test/basic_component/new_basic_component_test.cpp
-        test/basic_component/enabled_basic_component_test.cpp
-        test/basic_component/disabled_basic_component_test.cpp
         test/basic_component/unfocused_basic_component_test.cpp
         test/basic_component/focused_basic_component_test.cpp
         test/basic_component/basic_component_test.cpp

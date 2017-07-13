@@ -339,7 +339,6 @@ struct container::impl
     std::vector<std::shared_ptr<component>>  components_;
     std::vector<boost::any>                  hints_;
     std::vector<component_connections>       component_connections_;
-    bool                                     enabled_ = true;
     bool                                     has_focus_ = false;
     bool                                     in_focus_operation_ = false;
 };
@@ -706,30 +705,6 @@ void container::do_focus_previous()
         on_cursor_position_changed();
         on_cursor_state_changed();
     }
-}
-
-// ==========================================================================
-// DO_ENABLE
-// ==========================================================================
-void container::do_enable()
-{
-    pimpl_->enabled_ = true;
-}
-
-// ==========================================================================
-// DO_DISABLE
-// ==========================================================================
-void container::do_disable()
-{
-    pimpl_->enabled_ = false;
-}
-
-// ==========================================================================
-// DO_IS_ENABLED
-// ==========================================================================
-bool container::do_is_enabled() const
-{
-    return pimpl_->enabled_;
 }
 
 // ==========================================================================

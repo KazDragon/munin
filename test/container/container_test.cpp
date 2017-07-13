@@ -26,17 +26,6 @@ TEST_F(a_new_container, has_empty_preferred_size)
     ASSERT_EQ(terminalpp::extent(0, 0), container.get_preferred_size());
 }
 
-TEST_F(a_new_container, is_enabled)
-{
-    ASSERT_TRUE(container.is_enabled());
-}
-
-TEST_F(a_new_container, can_be_disabled)
-{
-    container.disable();
-    ASSERT_FALSE(container.is_enabled());
-}
-
 TEST_F(a_new_container, cannot_gain_focus)
 {
     container.set_focus();

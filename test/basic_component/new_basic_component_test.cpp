@@ -20,12 +20,6 @@ TEST(a_new_basic_component, does_not_have_focus)
     ASSERT_FALSE(comp.has_focus());
 }
 
-TEST(a_new_basic_component, is_enabled)
-{
-    fake_basic_component comp;
-    ASSERT_TRUE(comp.is_enabled());
-}
-
 TEST(a_new_basic_component, has_no_cursor)
 {
     fake_basic_component comp;
