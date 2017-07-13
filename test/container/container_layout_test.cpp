@@ -12,6 +12,8 @@ TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_compone
     auto layout = std::unique_ptr<mock_layout>(new mock_layout);
 
     munin::container container;
+
+    EXPECT_CALL(*layout, do_layout(_, _, _));
     container.set_layout(std::move(layout));
 }
 
@@ -84,11 +86,16 @@ TEST_F(a_container, has_the_preferred_size_of_its_layout)
 
     auto const expected_result = terminalpp::extent{42, 69};
 
-    EXPECT_CALL(*layout, do_get_preferred_size(_, _))
-        .WillOnce(Return(expected_result));
+    {
+        InSequence s1;
+        EXPECT_CALL(*layout, do_layout(_, _, _));
+        EXPECT_CALL(*layout, do_get_preferred_size(_, _))
+            .WillOnce(Return(expected_result));
+    }
 
     container.add_component(component, hint);
     container.set_layout(std::move(layout));
+
 
     ASSERT_EQ(expected_result, container.get_preferred_size());
 }
