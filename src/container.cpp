@@ -13,11 +13,9 @@
 namespace munin {
 
 namespace {
-    using component_connections =
-        std::vector<boost::signals2::connection>;
-}
-
-namespace {
+    
+using component_connections =
+    std::vector<boost::signals2::connection>;
 
 template <class ForwardIterator>
 static ForwardIterator find_first_focussed_component(
@@ -356,15 +354,6 @@ container::container()
 // ==========================================================================
 container::~container()
 {
-    /*
-    for(auto &con : pimpl_->component_connections_)
-    {
-        for (auto &cnx : con.second)
-        {
-            cnx.disconnect();
-        }
-    }
-    */
 }
 
 // ==========================================================================
@@ -421,40 +410,6 @@ void container::add_component(
     pimpl_->component_connections_.push_back(cnx);
     pimpl_->layout_container();
     on_preferred_size_changed();
-
-    /*
-    //do_add_component(comp, layout_hint, layer);
-    pimpl_->dirty_ = true;
-
-    component_connections_type component_connections;
-    component_connections.first = comp;
-
-    // Subscribe to the component's redraw event.
-    component_connections.second.push_back(
-        comp->on_redraw.connect(
-            std::bind(
-                &container::impl::subcomponent_redraw_handler
-              , pimpl_
-              , std::weak_ptr<component>(comp)
-              , std::placeholders::_1)));
-
-    component_connections.second.push_back(
-        comp->on_cursor_position_changed.connect(
-            std::bind(
-                &container::impl::subcomponent_cursor_position_change_handler
-              , pimpl_
-              , std::weak_ptr<component>(comp)
-              , std::placeholders::_1)));
-
-    component_connections.second.push_back(
-        comp->on_layout_change.connect([this]{on_layout_change();}));
-
-    pimpl_->component_connections_.push_back(component_connections);
-    on_layout_change();
-
-    // A redraw of the container is required.
-    on_redraw({ rectangle({}, get_size()) });
-    */
 }
 
 // ==========================================================================
@@ -484,36 +439,6 @@ void container::remove_component(std::shared_ptr<component> const &comp)
     
     pimpl_->layout_container();
     on_preferred_size_changed();
-
-    /*
-    pimpl_->dirty_ = true;
-
-    // Disconnect any signals for the component.
-    for (auto cur = std::begin(pimpl_->component_connections_);
-         cur != std::end(pimpl_->component_connections_);
-        )
-    {
-        if (cur->first == comp)
-        {
-            for (auto &cnx : cur->second)
-            {
-                cnx.disconnect();
-            }
-
-            cur = pimpl_->component_connections_.erase(cur);
-        }
-        else
-        {
-            ++cur;
-        }
-    }
-
-    //do_remove_component(comp);
-
-    // Now that the subcomponent has been removed, it becomes necessary
-    // to re-lay the container out.
-    on_layout_change();
-    */
 }
 
 // ==========================================================================
