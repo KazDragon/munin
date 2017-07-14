@@ -66,6 +66,7 @@ set (MUNIN_SOURCE_FILES
     src/horizontal_strip_layout.cpp
     src/layout.cpp
     src/null_layout.cpp
+    src/vertical_strip_layout.cpp
     src/window.cpp
 )
 
@@ -81,6 +82,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/layout.hpp
     include/munin/null_layout.hpp
     include/munin/rectangle.hpp
+    include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
 )
 
@@ -142,6 +144,7 @@ if (GTEST_FOUND)
         test/filled_box/new_filled_box_test.cpp
         test/filled_box/filled_box_test.cpp
         test/horizontal_strip_layout_test.cpp
+        test/vertical_strip_layout_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
