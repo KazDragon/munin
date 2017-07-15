@@ -34,7 +34,7 @@ public :
 
     //* =====================================================================
     /// \brief Adds a component to the container.
-    /// \param component The component to add to the container
+    /// \param comp The component to add to the container
     /// \param layout_hint A hint to be passed to the container's current
     ///        layout.
     //* =====================================================================
