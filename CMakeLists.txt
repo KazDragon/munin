@@ -48,7 +48,7 @@ find_package(Doxygen)
 include(GenerateExportHeader)
 
 # Add nlohmann_json for easy JSON support.
-set (JSON_BuildTests OFF)
+set (BuildTests OFF)
 add_subdirectory(json)
 
 if (MUNIN_SANITIZE)
