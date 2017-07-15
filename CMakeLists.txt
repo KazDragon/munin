@@ -39,6 +39,9 @@ if (GTEST_FOUND)
     enable_testing()
 endif()
 
+# For producing automatically-generated documentation, we use Doxygen
+find_package(Doxygen)
+
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
@@ -54,7 +57,10 @@ if (MUNIN_COVERAGE)
     list(APPEND CMAKE_EXE_LINKER_FLAGS "--coverage")
 endif()
 
-set (MUNIN_VERSION 0.0.1)
+set (MUNIN_VERSION_MAJOR 0)
+set (MUNIN_VERSION_MINOR 0)
+set (MUNIN_VERSION_PATCH 1)
+set (MUNIN_VERSION "${MUNIN_VERSION_MAJOR}.${MUNIN_VERSION_MINOR}.${MUNIN_VERSION_PATCH}")
 
 set (MUNIN_SOURCE_FILES
     src/algorithm.cpp
@@ -174,3 +180,20 @@ if (GTEST_FOUND)
 
     add_test(munin_test munin_tester)
 endif()
+
+if (DOXYGEN_FOUND)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target("${CMAKE_PROJECT_NAME}_doc"
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY
+            ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT
+            "Generate API documentation with Doxygen" VERBATIM
+    )
+endif()
+
