@@ -127,4 +127,12 @@ void component::event(boost::any const &ev)
     do_event(ev);
 }
 
+// ==========================================================================
+// TO_JSON
+// ==========================================================================
+nlohmann::json component::to_json() const
+{
+    return do_to_json();
+}
+
 }

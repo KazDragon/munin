@@ -4,6 +4,7 @@
 #include "munin/rectangle.hpp"
 #include <terminalpp/point.hpp>
 #include <terminalpp/extent.hpp>
+#include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
@@ -132,6 +133,11 @@ public :
     /// what it will do with it.
     //* =====================================================================
     void event(boost::any const &event);
+
+    //* =====================================================================
+    /// \brief Returns details about the component in JSON format.
+    //* =====================================================================
+    nlohmann::json to_json() const;
 
     //* =====================================================================
     /// \fn on_redraw
@@ -307,6 +313,13 @@ protected :
     /// function in order to handle events in a custom manner.
     //* =====================================================================
     virtual void do_event(boost::any const &event) = 0;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    virtual nlohmann::json do_to_json() const = 0;
 };
 
 }

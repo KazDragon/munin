@@ -8,7 +8,7 @@ namespace munin {
 /// \brief A class whose layout operations are no-ops.  It never lays out
 /// any component, and its preferred size is always 0.
 //* =========================================================================
-class MUNIN_EXPORT null_layout
+class MUNIN_EXPORT null_layout final
     : public layout
 {
 protected :

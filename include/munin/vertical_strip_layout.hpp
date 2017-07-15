@@ -20,7 +20,7 @@ namespace munin {
 /// |+-+-----+ |
 /// +----------+
 //* =========================================================================
-class MUNIN_EXPORT vertical_strip_layout
+class MUNIN_EXPORT vertical_strip_layout final
     : public layout
 {
 protected :

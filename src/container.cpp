@@ -13,7 +13,7 @@
 namespace munin {
 
 namespace {
-    
+
 using component_connections =
     std::vector<boost::signals2::connection>;
 
@@ -404,7 +404,7 @@ void container::add_component(
         {
             pimpl_->subcomponent_redraw_handler(wcomp, redraw_regions);
         }));
-    
+
     pimpl_->components_.push_back(comp);
     pimpl_->hints_.push_back(layout_hint);
     pimpl_->component_connections_.push_back(cnx);
@@ -423,7 +423,7 @@ void container::remove_component(std::shared_ptr<component> const &comp)
         {
             pimpl_->components_.erase(pimpl_->components_.begin() + index);
             pimpl_->hints_.erase(pimpl_->hints_.begin() + index);
-            
+
             std::for_each(
                 pimpl_->component_connections_[index].begin(),
                 pimpl_->component_connections_[index].end(),
@@ -431,12 +431,12 @@ void container::remove_component(std::shared_ptr<component> const &comp)
                 {
                     cnx.disconnect();
                 });
-            
+
             pimpl_->component_connections_.erase(
                 pimpl_->component_connections_.begin() + index);
         }
     }
-    
+
     pimpl_->layout_container();
     on_preferred_size_changed();
 }
@@ -701,6 +701,14 @@ void container::do_event(boost::any const &event)
 std::shared_ptr<container> make_container()
 {
     return std::make_shared<container>();
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json container::do_to_json() const
+{
+    return {};
 }
 
 }

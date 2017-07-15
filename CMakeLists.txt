@@ -47,6 +47,10 @@ find_package(Doxygen)
 # should be included.
 include(GenerateExportHeader)
 
+# Add nlohmann_json for easy JSON support.
+set (JSON_BuildTests OFF)
+add_subdirectory(json)
+
 if (MUNIN_SANITIZE)
     list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
     list(APPEND CMAKE_EXE_LINKER_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
@@ -120,6 +124,7 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        nlohmann_json
         ${Boost_SYSTEM_LIBRARY}
 )
 
