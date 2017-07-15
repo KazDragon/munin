@@ -29,7 +29,11 @@ struct rectangle
     {
     }
 
+    /// \brief The origin (top-left point) of the rectangle.
     terminalpp::point  origin;
+
+    /// \brief The size (amount the rectangle extends right and down) of
+    /// the rectangle.
     terminalpp::extent size;
 };
 

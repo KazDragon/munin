@@ -1,5 +1,5 @@
 #pragma once
-#include "../mock/component.hpp"
+#include "mock/component.hpp"
 #include <munin/container.hpp>
 #include <gtest/gtest.h>
 

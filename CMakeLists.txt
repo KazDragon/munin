@@ -132,31 +132,31 @@ if (GTEST_FOUND)
     enable_testing()
 
     set (MUNIN_TEST_SOURCE_FILES
-        test/algorithm_test.cpp
-        test/basic_component/new_basic_component_test.cpp
-        test/basic_component/unfocused_basic_component_test.cpp
-        test/basic_component/focused_basic_component_test.cpp
-        test/basic_component/basic_component_test.cpp
-        test/container/container_test.cpp
-        test/container/container_cursor_test.cpp
-        test/container/container_draw_test.cpp
-        test/container/container_event_test.cpp
-        test/container/container_focus_test.cpp
-        test/container/container_focus_next_test.cpp
-        test/container/container_focus_previous_test.cpp
-        test/container/container_redraw_test.cpp
-        test/container/container_subcomponent_focus_test.cpp
-        test/container/container_layout_test.cpp
-        test/filled_box/new_filled_box_test.cpp
-        test/filled_box/filled_box_test.cpp
-        test/horizontal_strip_layout_test.cpp
-        test/vertical_strip_layout_test.cpp
+        test/src/algorithm/algorithm_test.cpp
+        test/src/basic_component/new_basic_component_test.cpp
+        test/src/basic_component/unfocused_basic_component_test.cpp
+        test/src/basic_component/focused_basic_component_test.cpp
+        test/src/basic_component/basic_component_test.cpp
+        test/src/container/container_test.cpp
+        test/src/container/container_cursor_test.cpp
+        test/src/container/container_draw_test.cpp
+        test/src/container/container_event_test.cpp
+        test/src/container/container_focus_test.cpp
+        test/src/container/container_focus_next_test.cpp
+        test/src/container/container_focus_previous_test.cpp
+        test/src/container/container_redraw_test.cpp
+        test/src/container/container_subcomponent_focus_test.cpp
+        test/src/container/container_layout_test.cpp
+        test/src/filled_box/new_filled_box_test.cpp
+        test/src/filled_box/filled_box_test.cpp
+        test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
-        test/container/container_test.hpp
-        test/mock/component.hpp
-        test/mock/layout.hpp
+        test/src/container/container_test.hpp
+        test/include/mock/component.hpp
+        test/include/mock/layout.hpp
     )
 
     add_executable(munin_tester
@@ -166,6 +166,7 @@ if (GTEST_FOUND)
 
     target_include_directories(munin_tester
         PRIVATE
+            ${PROJECT_SOURCE_DIR}/test/include
             ${GTEST_INCLUDE_DIR}
     )
 

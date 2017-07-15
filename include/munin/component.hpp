@@ -118,7 +118,7 @@ public :
     //* =====================================================================
     /// \brief Draws the component.
     ///
-    /// \param cvs the context in which the component should draw itself.
+    /// \param ctx the context in which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
