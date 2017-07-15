@@ -19,7 +19,7 @@ namespace munin {
 /// |+-------+ |
 /// +----------+
 //* =========================================================================
-class MUNIN_EXPORT horizontal_strip_layout
+class MUNIN_EXPORT horizontal_strip_layout final
     : public layout
 {
 protected :
