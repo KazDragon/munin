@@ -26,7 +26,9 @@ TEST(the_position_of_a_basic_component, can_be_altered)
 
 TEST(a_basic_component, reports_attributes_as_json)
 {
-    fake_basic_component component;
+    fake_basic_component basic;
+    munin::component &component = basic;
+
     terminalpp::point position{57, 50};
     terminalpp::extent size{3, 4};
 

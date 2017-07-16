@@ -55,6 +55,16 @@ void horizontal_strip_layout::do_layout(
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json horizontal_strip_layout::do_to_json() const
+{
+    return {
+        { "type", "horizontal_strip_layout" }
+    };
+}
+
+// ==========================================================================
 // MAKE_HORIZONTAL_STRIP_LAYOUT
 // ==========================================================================
 std::unique_ptr<layout> make_horizontal_strip_layout()
