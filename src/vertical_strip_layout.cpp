@@ -50,7 +50,17 @@ void vertical_strip_layout::do_layout(
 }
 
 // ==========================================================================
-// MAKE_vertical_STRIP_LAYOUT
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json vertical_strip_layout::do_to_json() const
+{
+    return {
+        { "type", "vertical_strip_layout" }
+    };
+}
+
+// ==========================================================================
+// MAKE_VERTICAL_STRIP_LAYOUT
 // ==========================================================================
 std::unique_ptr<layout> make_vertical_strip_layout()
 {

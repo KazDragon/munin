@@ -155,6 +155,7 @@ if (GTEST_FOUND)
         test/src/filled_box/new_filled_box_test.cpp
         test/src/filled_box/filled_box_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
     )
 
