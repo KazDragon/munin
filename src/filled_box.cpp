@@ -85,6 +85,18 @@ void filled_box::do_draw(context &ctx, rectangle const &region) const
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json filled_box::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "filled_box" }
+    ])"_json;
+
+    return basic_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
 // MAKE_FILLED_BOX
 // ==========================================================================
 std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill)

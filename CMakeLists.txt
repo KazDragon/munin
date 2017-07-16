@@ -78,10 +78,11 @@ set (MUNIN_SOURCE_FILES
     src/null_layout.cpp
     src/vertical_strip_layout.cpp
     src/window.cpp
+
+    src/detail/json_adaptors.cpp
 )
 
 set (MUNIN_INCLUDE_FILES
-    include/munin/detail/lambda_visitor.hpp
     include/munin/algorithm.hpp
     include/munin/basic_component.hpp
     include/munin/component.hpp
@@ -94,6 +95,9 @@ set (MUNIN_INCLUDE_FILES
     include/munin/rectangle.hpp
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
+
+    include/munin/detail/json_adaptors.hpp
+    include/munin/detail/lambda_visitor.hpp
 )
 
 add_library(munin
