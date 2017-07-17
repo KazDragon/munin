@@ -1,5 +1,5 @@
 #include "munin/horizontal_strip_layout.hpp"
-#include "munin/container.hpp"
+#include "munin/component.hpp"
 #include <algorithm>
 #include <numeric>
 
