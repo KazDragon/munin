@@ -1,5 +1,7 @@
 #include "munin/horizontal_strip_layout.hpp"
 #include "munin/container.hpp"
+#include <algorithm>
+#include <numeric>
 
 namespace munin {
 
@@ -12,20 +14,22 @@ terminalpp::extent horizontal_strip_layout::do_get_preferred_size(
 {
     // The preferred size of the whole component is the maximum width of
     // the components and the sum of the preferred heights of the components.
-    terminalpp::extent maximum_preferred_size(0, 0);
-
-    for (auto const &comp : components)
+    return std::accumulate(
+        components.begin(),
+        components.end(),
+        terminalpp::extent{},
+        [](auto preferred_size, auto const &comp)
     {
-        auto preferred_size = comp->get_preferred_size();
+        auto const &comp_preferred_size = comp->get_preferred_size();
+        
+        preferred_size.width = (std::max)(
+            preferred_size.width
+          , comp_preferred_size.width);
 
-        maximum_preferred_size.width = (std::max)(
-            maximum_preferred_size.width
-          , preferred_size.width);
-
-        maximum_preferred_size.height += preferred_size.height;
-    }
-
-    return maximum_preferred_size;
+        preferred_size.height += comp_preferred_size.height;
+        
+        return preferred_size;
+    });
 }
 
 // ==========================================================================
@@ -38,15 +42,16 @@ void horizontal_strip_layout::do_layout(
 {
     auto y_coord = terminalpp::u32(0);
 
-    for (auto &comp : components)
-    {
-        auto preferred_size = comp->get_preferred_size();
-
-        comp->set_position(terminalpp::point(0, y_coord));
-        comp->set_size(terminalpp::extent(size.width, preferred_size.height));
-
-        y_coord += preferred_size.height;
-    }
+    std::for_each(components.begin(), components.end(),
+        [&y_coord, size](auto const &comp)
+        {
+            auto preferred_size = comp->get_preferred_size();
+    
+            comp->set_position(terminalpp::point(0, y_coord));
+            comp->set_size(terminalpp::extent(size.width, preferred_size.height));
+    
+            y_coord += preferred_size.height;
+        });
 }
 
 // ==========================================================================
@@ -59,4 +64,3 @@ std::unique_ptr<layout> make_horizontal_strip_layout()
 }
 
 }
-
