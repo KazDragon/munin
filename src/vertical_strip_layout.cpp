@@ -55,7 +55,7 @@ void vertical_strip_layout::do_layout(
 }
 
 // ==========================================================================
-// MAKE_vertical_STRIP_LAYOUT
+// MAKE_VERTICAL_STRIP_LAYOUT
 // ==========================================================================
 std::unique_ptr<layout> make_vertical_strip_layout()
 {
