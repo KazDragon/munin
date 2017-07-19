@@ -29,7 +29,7 @@ public :
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    explicit grid_layout(terminalpp::extent size);
+    explicit grid_layout(terminalpp::extent dimensions);
 
 protected :
     //* =====================================================================
@@ -52,7 +52,7 @@ protected :
         terminalpp::extent                           size) const override;
         
 private :
-    terminalpp::extent size_;
+    terminalpp::extent dimensions_;
 };
 
 //* =========================================================================

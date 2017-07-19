@@ -4,11 +4,38 @@
 
 namespace munin {
 
+namespace {
+    
+// ==========================================================================
+// INCREMENT_OF_DIMENSION
+// ==========================================================================
+terminalpp::point increment_of_dimension(
+    terminalpp::point current_dimension,
+    terminalpp::extent const &dimensions)
+{
+    ++current_dimension.x;
+    
+    if ((current_dimension.x % dimensions.width) == 0)
+    {
+        current_dimension.x = 0;
+        ++current_dimension.y;
+    }
+    
+    if ((current_dimension.y % dimensions.height) == 0)
+    {
+        current_dimension.y = 0;
+    }
+    
+    return current_dimension;
+}
+
+}
+
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-grid_layout::grid_layout(terminalpp::extent size)
-  : size_(size)
+grid_layout::grid_layout(terminalpp::extent dimensions)
+  : dimensions_(dimensions)
 {
 }
 
@@ -35,8 +62,8 @@ terminalpp::extent grid_layout::do_get_preferred_size(
     });
 
     return {
-        max_preferred_sizes.width  * size_.width,
-        max_preferred_sizes.height * size_.height
+        max_preferred_sizes.width  * dimensions_.width,
+        max_preferred_sizes.height * dimensions_.height
     };
 }
 
@@ -48,6 +75,80 @@ void grid_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
+    terminalpp::extent const component_size = {
+        size.width / dimensions_.width,
+        size.height / dimensions_.height
+    };
+
+    terminalpp::extent const total_excess = {
+        size.width % dimensions_.width,
+        size.height % dimensions_.height
+    };
+
+    terminalpp::point current_dimension;
+    
+    for (auto &component : components)
+    {
+        auto const next_dimension = 
+            increment_of_dimension(current_dimension, dimensions_);
+
+        auto current_component_position = terminalpp::point{        
+            component_size.width * current_dimension.x,
+            component_size.height * current_dimension.y
+        };
+        
+        auto current_component_size = terminalpp::extent{
+            component_size.width,
+            component_size.height
+        };
+        
+        if (current_dimension.x <= total_excess.width)
+        {
+            current_component_position.x += current_dimension.x;
+            
+            if (current_dimension.x != total_excess.width)
+            {
+                ++current_component_size.width;
+            }
+        }
+
+        if (current_dimension.y <= total_excess.height)
+        {
+            current_component_position.y += current_dimension.y;
+            
+            if (current_dimension.y != total_excess.height)
+            {
+                ++current_component_size.height;
+            }
+        }
+        
+        component->set_position(current_component_position);
+        component->set_size(current_component_size);
+        
+        current_dimension = next_dimension;
+    }
+    
+    /*
+    terminalpp::point current_dimension;
+    for (auto const &preferred_size : preferred_sizes)
+    {
+
+        
+        result.push_back(
+            {
+                {
+                    size_per_view.width * current_dimension.x,
+                    size_per_view.height * current_dimension.y
+                },
+                {
+                }
+            });
+        
+        current_dimension = next_dimension;
+    }
+    
+    return result;
+    */
 }
 
 // ==========================================================================
