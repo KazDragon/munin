@@ -255,6 +255,24 @@ INSTANTIATE_TEST_CASE_P(
                 bounds_data{ {5,  12}, {5, 5} },
                 bounds_data{ {10, 12}, {4, 5} }
             }
-        }        
+        },        
+        grid_layout_test_data{
+            {3, 1},
+            {10, 5},
+            {
+                bounds_data{ {0,  0},  {4, 5} },
+                bounds_data{ {4,  0},  {3, 5} },
+                bounds_data{ {7,  0},  {3, 5} }
+            }
+        },
+        grid_layout_test_data{
+            {1, 3},
+            {5, 10},
+            {
+                bounds_data{ {0,  0},  {5, 4} },
+                bounds_data{ {0,  4},  {5, 3} },
+                bounds_data{ {0,  7},  {5, 3} }
+            }
+        }
     })
 );

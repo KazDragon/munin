@@ -86,69 +86,40 @@ void grid_layout::do_layout(
     };
 
     terminalpp::point current_dimension;
-    
+
     for (auto &component : components)
     {
-        auto const next_dimension = 
-            increment_of_dimension(current_dimension, dimensions_);
-
         auto current_component_position = terminalpp::point{        
             component_size.width * current_dimension.x,
             component_size.height * current_dimension.y
         };
         
+        current_component_position.x += 
+            std::min(current_dimension.x, total_excess.width);
+        current_component_position.y += 
+            std::min(current_dimension.y, total_excess.height);
+
         auto current_component_size = terminalpp::extent{
             component_size.width,
             component_size.height
         };
         
-        if (current_dimension.x <= total_excess.width)
+        if (current_dimension.x < total_excess.width)
         {
-            current_component_position.x += current_dimension.x;
-            
-            if (current_dimension.x != total_excess.width)
-            {
-                ++current_component_size.width;
-            }
+            ++current_component_size.width;
         }
 
-        if (current_dimension.y <= total_excess.height)
+        if (current_dimension.y < total_excess.height)
         {
-            current_component_position.y += current_dimension.y;
-            
-            if (current_dimension.y != total_excess.height)
-            {
-                ++current_component_size.height;
-            }
+            ++current_component_size.height;
         }
-        
+
         component->set_position(current_component_position);
         component->set_size(current_component_size);
         
-        current_dimension = next_dimension;
+        current_dimension = 
+            increment_of_dimension(current_dimension, dimensions_);
     }
-    
-    /*
-    terminalpp::point current_dimension;
-    for (auto const &preferred_size : preferred_sizes)
-    {
-
-        
-        result.push_back(
-            {
-                {
-                    size_per_view.width * current_dimension.x,
-                    size_per_view.height * current_dimension.y
-                },
-                {
-                }
-            });
-        
-        current_dimension = next_dimension;
-    }
-    
-    return result;
-    */
 }
 
 // ==========================================================================
