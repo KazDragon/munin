@@ -49,7 +49,7 @@ protected :
     void do_layout(
         std::vector<std::shared_ptr<component>> const &components,
         std::vector<boost::any>                 const &hints,
-        terminalpp::extent                           size) const override;
+        terminalpp::extent                             size) const override;
         
 private :
     terminalpp::extent dimensions_;
