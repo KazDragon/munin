@@ -21,7 +21,40 @@ Munin requires a C++14 compiler, Terminal++ and the Boost Libraries.  It also us
 
 # Features / Roadmap / Progress
 
-TODO
+## v0.1 - Fundamentals
+Implement the fundamentals of the library, providing the basis for further development of the library.
+1. [x] Component - the base class of all UI components
+2. [x] Container/Layout - a component that can contain and arrange other components
+3. [ ] A sampling of common layouts 
+ * [x] Null Layout - a layout that doesn't.
+ * [x] Vertical Strip Layout - a layout that arranges components in vertical strips
+ * [x] Horizontal Strip Layout - a layout that arranges components in horizontal strips
+ * [x] Grid Layout - a layout that arranges components in equally-sized cells.
+ * [ ] Aligned Layout - a layout that arranges components with horizontal and vertical alignment (e.g. top-left, right-center)
+ * [ ] Compass Layout - a layout that arranges components according to compass points (e.g. North, South, Centre)
+ 4. [ ] A sampling of common components
+ * [x] Filled Box - a component that simply paints a single repeated character
+ * [ ] Brush - a component that paints a repeated character pattern.
+ * [ ] Image - a component that paints a static "image" once.
+ * [ ] Window - a top-level object that contains and draws components onto a canvas.
+ 
+ ## v0.2 - Frames
+ Implement the ability to frame components
+ 1. [ ] Composite Component - a component that is made of many other components, but presents the interface of being just one component.
+ 2. [ ] Solid Frame - a frame made of solid characters.
+ 3. [ ] Named Frame - a frame that displays text in addition to the solid characters.
+ 
+ ## v0.3 - Buttons
+ Implement clickable buttons
+ 1. [ ] Button - a normal click button
+ 2. [ ] Toggle Button - a button that can be toggled on [x] and off [ ].
+ 
+ ## v0.4 - Text Areas
+ TBD
+ 
+ ## v0.5 - Lists
+ TBD
+
 
 # Status
 
