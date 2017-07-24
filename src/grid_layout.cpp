@@ -1,11 +1,12 @@
 #include "munin/grid_layout.hpp"
 #include "munin/component.hpp"
+#include "munin/detail/json_adaptors.hpp"
 #include <numeric>
 
 namespace munin {
 
 namespace {
-    
+
 // ==========================================================================
 // INCREMENT_OF_DIMENSION
 // ==========================================================================
@@ -14,18 +15,18 @@ terminalpp::point increment_of_dimension(
     terminalpp::extent const &dimensions)
 {
     ++current_dimension.x;
-    
+
     if ((current_dimension.x % dimensions.width) == 0)
     {
         current_dimension.x = 0;
         ++current_dimension.y;
     }
-    
+
     if ((current_dimension.y % dimensions.height) == 0)
     {
         current_dimension.y = 0;
     }
-    
+
     return current_dimension;
 }
 
@@ -57,7 +58,7 @@ terminalpp::extent grid_layout::do_get_preferred_size(
             component_preferred_size.width, preferred_size.width);
         preferred_size.height = std::max(
             component_preferred_size.height, preferred_size.height);
-            
+
         return preferred_size;
     });
 
@@ -89,21 +90,21 @@ void grid_layout::do_layout(
 
     for (auto &component : components)
     {
-        auto current_component_position = terminalpp::point{        
+        auto current_component_position = terminalpp::point{
             component_size.width * current_dimension.x,
             component_size.height * current_dimension.y
         };
-        
-        current_component_position.x += 
+
+        current_component_position.x +=
             std::min(current_dimension.x, total_excess.width);
-        current_component_position.y += 
+        current_component_position.y +=
             std::min(current_dimension.y, total_excess.height);
 
         auto current_component_size = terminalpp::extent{
             component_size.width,
             component_size.height
         };
-        
+
         if (current_dimension.x < total_excess.width)
         {
             ++current_component_size.width;
@@ -116,14 +117,25 @@ void grid_layout::do_layout(
 
         component->set_position(current_component_position);
         component->set_size(current_component_size);
-        
-        current_dimension = 
+
+        current_dimension =
             increment_of_dimension(current_dimension, dimensions_);
     }
 }
 
 // ==========================================================================
-// MAKE_HORIZONTAL_STRIP_LAYOUT
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json grid_layout::do_to_json() const
+{
+    return {
+        { "type",       "grid_layout" },
+        { "dimensions", detail::to_json(dimensions_) }
+    };
+}
+
+// ==========================================================================
+// MAKE_GRID_LAYOUT
 // ==========================================================================
 std::unique_ptr<layout> make_grid_layout(terminalpp::extent size)
 {

@@ -40,7 +40,7 @@ void vertical_strip_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
-    auto x_coord = terminalpp::u32(0);
+    auto x_coord = terminalpp::coordinate_type(0);
 
     std::for_each(components.begin(), components.end(),
         [&x_coord, size](auto const &comp)
@@ -52,6 +52,16 @@ void vertical_strip_layout::do_layout(
     
             x_coord += preferred_size.width;
         });
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json vertical_strip_layout::do_to_json() const
+{
+    return {
+        { "type", "vertical_strip_layout" }
+    };
 }
 
 // ==========================================================================

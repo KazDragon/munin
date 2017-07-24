@@ -144,4 +144,11 @@ public :
     /// function in order to handle events in a custom manner.
     //* =====================================================================
     MOCK_METHOD1(do_event, void (boost::any const &));
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    MOCK_CONST_METHOD0(do_to_json, nlohmann::json ());
 };

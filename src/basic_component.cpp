@@ -1,4 +1,5 @@
 #include "munin/basic_component.hpp"
+#include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <map>
 
@@ -181,6 +182,22 @@ void basic_component::do_event(boost::any const &event)
             set_focus();
         }
     }
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json basic_component::do_to_json() const
+{
+    return {
+        {"type",            "basic_component"},
+        {"position",        detail::to_json(get_position())},
+        {"size",            detail::to_json(get_size())},
+        {"preferred_size",  detail::to_json(get_preferred_size())},
+        {"has_focus",       has_focus()},
+        {"cursor_state",    get_cursor_state()},
+        {"cursor_position", detail::to_json(get_cursor_position())}
+    };
 }
 
 }

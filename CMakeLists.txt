@@ -47,6 +47,10 @@ find_package(Doxygen)
 # should be included.
 include(GenerateExportHeader)
 
+# Add nlohmann_json for easy JSON support.
+option(BuildTests "JSON Unit Tests" OFF)
+add_subdirectory(json)
+
 if (MUNIN_SANITIZE)
     list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
     list(APPEND CMAKE_EXE_LINKER_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
@@ -75,10 +79,11 @@ set (MUNIN_SOURCE_FILES
     src/null_layout.cpp
     src/vertical_strip_layout.cpp
     src/window.cpp
+
+    src/detail/json_adaptors.cpp
 )
 
 set (MUNIN_INCLUDE_FILES
-    include/munin/detail/lambda_visitor.hpp
     include/munin/algorithm.hpp
     include/munin/basic_component.hpp
     include/munin/component.hpp
@@ -92,6 +97,9 @@ set (MUNIN_INCLUDE_FILES
     include/munin/rectangle.hpp
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
+
+    include/munin/detail/json_adaptors.hpp
+    include/munin/detail/lambda_visitor.hpp
 )
 
 add_library(munin
@@ -120,6 +128,7 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        nlohmann_json
         ${Boost_SYSTEM_LIBRARY}
 )
 
@@ -146,6 +155,7 @@ if (GTEST_FOUND)
         test/src/container/container_focus_test.cpp
         test/src/container/container_focus_next_test.cpp
         test/src/container/container_focus_previous_test.cpp
+        test/src/container/container_json_test.cpp
         test/src/container/container_redraw_test.cpp
         test/src/container/container_subcomponent_focus_test.cpp
         test/src/container/container_layout_test.cpp
@@ -153,6 +163,7 @@ if (GTEST_FOUND)
         test/src/filled_box/filled_box_test.cpp
         test/src/grid_layout/grid_layout_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
     )
 
