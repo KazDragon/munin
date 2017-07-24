@@ -8,7 +8,6 @@
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <boost/optional.hpp>
-#include <boost/range/adaptor/indexed.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
 
@@ -722,10 +721,9 @@ nlohmann::json container::do_to_json() const
 
     auto &subcomponents = json["subcomponents"];
 
-    using boost::adaptors::indexed;
-    for (const auto &subcomponent : pimpl_->components_ | indexed(0))
+    for (auto index = size_t{0}; index < pimpl_->components_.size(); ++index)
     {
-        subcomponents[subcomponent.index()] = subcomponent.value()->to_json();
+        subcomponents[index] = pimpl_->components_[index]->to_json();
     }
 
     return json;

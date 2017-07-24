@@ -2,7 +2,6 @@
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <algorithm>
-#include <boost/range/adaptor/indexed.hpp>
 
 namespace munin {
 
