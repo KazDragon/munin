@@ -11,10 +11,10 @@ TEST(munin_algorithm, test_rectangle_intersection_same)
     auto intersection = munin::intersection(lhs, rhs);
     ASSERT_TRUE(intersection.is_initialized());
 
-    ASSERT_EQ(terminalpp::s32(1), intersection->origin.x);
-    ASSERT_EQ(terminalpp::s32(2), intersection->origin.y);
-    ASSERT_EQ(terminalpp::s32(3), intersection->size.width);
-    ASSERT_EQ(terminalpp::s32(4), intersection->size.height);
+    ASSERT_EQ(terminalpp::coordinate_type(1), intersection->origin.x);
+    ASSERT_EQ(terminalpp::coordinate_type(2), intersection->origin.y);
+    ASSERT_EQ(terminalpp::coordinate_type(3), intersection->size.width);
+    ASSERT_EQ(terminalpp::coordinate_type(4), intersection->size.height);
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_no_overlap)

@@ -20,21 +20,25 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
 {
     munin::filled_box filled_box;
     filled_box.set_size({2, 2});
-    
+
     terminalpp::canvas canvas({3, 3});
-    
-    for (terminalpp::u32 row = 0; row < canvas.size().height; ++row)
+
+    for (terminalpp::coordinate_type row = 0;
+         row < canvas.size().height;
+         ++row)
     {
-        for (terminalpp::u32 col = 0; col < canvas.size().width; ++col)
+        for (terminalpp::coordinate_type col = 0;
+             col < canvas.size().width;
+             ++col)
         {
             canvas[col][row] = 'X';
         }
     }
-    
+
     terminalpp::canvas_view cv{canvas};
     munin::context ctx(cv);
     filled_box.draw(ctx, {{}, filled_box.get_size()});
-    
+
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);

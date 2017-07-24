@@ -36,7 +36,7 @@ void vertical_strip_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
-    auto x_coord = terminalpp::u32(0);
+    auto x_coord = terminalpp::coordinate_type(0);
 
     for (auto &comp : components)
     {

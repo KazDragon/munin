@@ -71,12 +71,12 @@ void filled_box::do_draw(context &ctx, rectangle const &region) const
 {
     auto &cvs = ctx.get_canvas();
 
-    for (terminalpp::u32 row = region.origin.y;
-         row < terminalpp::u32(region.origin.y + region.size.height);
+    for (terminalpp::coordinate_type row = region.origin.y;
+         row < region.origin.y + region.size.height;
          ++row)
     {
-        for (terminalpp::u32 column = region.origin.x;
-             column < terminalpp::u32(region.origin.x + region.size.width);
+        for (terminalpp::coordinate_type column = region.origin.x;
+             column < region.origin.x + region.size.width;
              ++column)
         {
             cvs[column][row] = pimpl_->element_;

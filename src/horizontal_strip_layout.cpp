@@ -36,7 +36,7 @@ void horizontal_strip_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
-    auto y_coord = terminalpp::u32(0);
+    auto y_coord = terminalpp::coordinate_type(0);
 
     for (auto &comp : components)
     {
