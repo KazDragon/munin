@@ -155,6 +155,7 @@ if (GTEST_FOUND)
         test/src/container/container_focus_test.cpp
         test/src/container/container_focus_next_test.cpp
         test/src/container/container_focus_previous_test.cpp
+        test/src/container/container_json_test.cpp
         test/src/container/container_redraw_test.cpp
         test/src/container/container_subcomponent_focus_test.cpp
         test/src/container/container_layout_test.cpp

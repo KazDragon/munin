@@ -4,6 +4,7 @@
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
+#include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <boost/optional.hpp>
@@ -708,7 +709,15 @@ std::shared_ptr<container> make_container()
 // ==========================================================================
 nlohmann::json container::do_to_json() const
 {
-    return {};
+    return {
+        { "type",            "container" },
+        { "position",        detail::to_json(get_position()) },
+        { "size",            detail::to_json(get_size()) },
+        { "preferred_size",  detail::to_json(get_preferred_size()) },
+        { "has_focus",       false },
+        { "cursor_state",    false },
+        { "cursor_position", detail::to_json(get_cursor_position()) },
+    };
 }
 
 }
