@@ -33,7 +33,7 @@ nlohmann::json null_layout::do_to_json() const
 }
 
 // ==========================================================================
-// MAKE_NULL_STRIP_LAYOUT
+// MAKE_NULL_LAYOUT
 // ==========================================================================
 std::unique_ptr<layout> make_null_layout()
 {
