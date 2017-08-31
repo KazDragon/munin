@@ -67,6 +67,7 @@ set (MUNIN_VERSION_PATCH 1)
 set (MUNIN_VERSION "${MUNIN_VERSION_MAJOR}.${MUNIN_VERSION_MINOR}.${MUNIN_VERSION_PATCH}")
 
 set (MUNIN_SOURCE_FILES
+    src/aligned_layout.cpp
     src/algorithm.cpp
     src/basic_component.cpp
     src/component.cpp
@@ -128,6 +129,7 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        terminalpp-core
         nlohmann_json
         ${Boost_SYSTEM_LIBRARY}
 )
@@ -165,6 +167,8 @@ if (GTEST_FOUND)
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+
+        test/src/aligned_layout/aligned_layout_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
