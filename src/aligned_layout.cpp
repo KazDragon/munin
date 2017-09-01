@@ -12,8 +12,8 @@ static terminalpp::extent calculate_component_size(
     terminalpp::extent const &preferred_component_size)
 {
     return {
-        std::min(preferred_component_size.width, container_size.width),
-        std::min(preferred_component_size.height, container_size.height)
+        (std::min)(preferred_component_size.width, container_size.width),
+        (std::min)(preferred_component_size.height, container_size.height)
     };
 }
 
@@ -34,16 +34,14 @@ static terminalpp::point calculate_component_position(
         break;
 
     case horizontal_alignment::right :
-        position.x = component_size.width > container_size.width
-                   ? 0
-                   : container_size.width - component_size.width;
+        position.x = 
+            (std::max)(container_size.width - component_size.width, 0);
         break;
 
     case horizontal_alignment::centre :
     default :
-        position.x = component_size.width > container_size.width
-                   ? 0
-                   : ((container_size.width - component_size.width) / 2);
+        position.x =
+            (std::max)(container_size.width - component_size.width, 0) / 2;
         break;
     };
 
@@ -54,20 +52,35 @@ static terminalpp::point calculate_component_position(
         break;
 
     case vertical_alignment::bottom :
-        position.y = component_size.height > container_size.height
-                   ? 0
-                   : container_size.height - component_size.height;
+        position.y =
+            (std::max)(container_size.height - component_size.height, 0);
         break;
 
     case vertical_alignment::centre :
     default :
-        position.y = component_size.height > container_size.height
-                   ? 0
-                   : ((container_size.height - component_size.height) / 2);
+        position.y =
+            (std::max)(container_size.height - component_size.height, 0) / 2;
         break;
     };
     
     return position;
+}
+
+// ==========================================================================
+// CALCULATE_ALIGNMENT
+// ==========================================================================
+static alignment calculate_alignment(boost::any const &hint)
+{
+    auto const *alignment_hint =
+        boost::any_cast<alignment>(&hint);
+
+    // By default, components are centre-aligned.
+    return alignment_hint != nullptr
+         ? *alignment_hint
+         : alignment {
+               horizontal_alignment::centre, 
+               vertical_alignment::centre 
+           };
 }
 
 // ==========================================================================
@@ -110,24 +123,11 @@ void aligned_layout::do_layout(
         auto const &comp = components[index];
         auto const &hint = hints[index];
 
-        auto const *alignment_hint =
-            boost::any_cast<alignment>(&hint);
-
-        // By default, components are centre-aligned.
-        auto const component_alignment =
-            alignment_hint != nullptr
-          ? *alignment_hint
-          : alignment {
-                horizontal_alignment::centre, 
-                vertical_alignment::centre 
-            };
-
-        auto const preferred_component_size = comp->get_preferred_size();
         auto const component_size = calculate_component_size(
             size, comp->get_preferred_size());
 
         auto const component_position = calculate_component_position(
-            size, component_size, component_alignment);
+            size, component_size, calculate_alignment(hint));
 
         comp->set_position(component_position);
         comp->set_size(component_size);

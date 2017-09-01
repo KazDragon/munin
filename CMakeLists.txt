@@ -129,7 +129,6 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         terminalpp
-        terminalpp-core
         nlohmann_json
         ${Boost_SYSTEM_LIBRARY}
 )
@@ -146,6 +145,7 @@ if (GTEST_FOUND)
 
     set (MUNIN_TEST_SOURCE_FILES
         test/src/algorithm/algorithm_test.cpp
+        test/src/aligned_layout/aligned_layout_test.cpp
         test/src/basic_component/new_basic_component_test.cpp
         test/src/basic_component/unfocused_basic_component_test.cpp
         test/src/basic_component/focused_basic_component_test.cpp
@@ -167,8 +167,6 @@ if (GTEST_FOUND)
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
-
-        test/src/aligned_layout/aligned_layout_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
