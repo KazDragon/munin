@@ -5,14 +5,78 @@
 namespace munin {
 
 // ==========================================================================
+// CALCULATE_COMPONENT_SIZE
+// ==========================================================================
+static terminalpp::extent calculate_component_size(
+    terminalpp::extent const &container_size,
+    terminalpp::extent const &preferred_component_size)
+{
+    return {
+        std::min(preferred_component_size.width, container_size.width),
+        std::min(preferred_component_size.height, container_size.height)
+    };
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_POSITION
+// ==========================================================================
+static terminalpp::point calculate_component_position(
+    terminalpp::extent const &container_size,
+    terminalpp::extent const &component_size,
+    alignment const &component_alignment)
+{
+    terminalpp::point position;
+    
+    switch (component_alignment.horizontal)
+    {
+    case horizontal_alignment::left :
+        position.x = 0;
+        break;
+
+    case horizontal_alignment::right :
+        position.x = component_size.width > container_size.width
+                   ? 0
+                   : container_size.width - component_size.width;
+        break;
+
+    case horizontal_alignment::centre :
+    default :
+        position.x = component_size.width > container_size.width
+                   ? 0
+                   : ((container_size.width - component_size.width) / 2);
+        break;
+    };
+
+    switch (component_alignment.vertical)
+    {
+    case vertical_alignment::top :
+        position.y = 0;
+        break;
+
+    case vertical_alignment::bottom :
+        position.y = component_size.height > container_size.height
+                   ? 0
+                   : container_size.height - component_size.height;
+        break;
+
+    case vertical_alignment::centre :
+    default :
+        position.y = component_size.height > container_size.height
+                   ? 0
+                   : ((container_size.height - component_size.height) / 2);
+        break;
+    };
+    
+    return position;
+}
+
+// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent aligned_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints) const
 {
-    return {};
-    /*
     // The preferred size of this component is the largest preferred
     // extents of all components.
     terminalpp::extent maximum_preferred_size(0, 0);
@@ -22,16 +86,15 @@ terminalpp::extent aligned_layout::do_get_preferred_size(
         auto preferred_size = comp->get_preferred_size();
 
         maximum_preferred_size.width = (std::max)(
-            maximum_preferred_size.width
-          , preferred_size.width);
+            maximum_preferred_size.width,
+            preferred_size.width);
 
         maximum_preferred_size.height = (std::max)(
-            maximum_preferred_size.height
-          , preferred_size.height);
+            maximum_preferred_size.height,
+            preferred_size.height);
     }
 
     return maximum_preferred_size;
-    */
 }
 
 // ==========================================================================
@@ -51,62 +114,23 @@ void aligned_layout::do_layout(
             boost::any_cast<alignment>(&hint);
 
         // By default, components are centre-aligned.
-        alignment component_alignment = {
-            horizontal_alignment::centre,
-            vertical_alignment::centre
-        };
+        auto const component_alignment =
+            alignment_hint != nullptr
+          ? *alignment_hint
+          : alignment {
+                horizontal_alignment::centre, 
+                vertical_alignment::centre 
+            };
 
-        if (alignment_hint != nullptr)
-        {
-            component_alignment = *alignment_hint;
-        }
+        auto const preferred_component_size = comp->get_preferred_size();
+        auto const component_size = calculate_component_size(
+            size, comp->get_preferred_size());
 
-        auto comp_size = comp->get_preferred_size();
+        auto const component_position = calculate_component_position(
+            size, component_size, component_alignment);
 
-        terminalpp::point position;
-
-        switch (component_alignment.horizontal)
-        {
-        case horizontal_alignment::left :
-            position.x = 0;
-            break;
-
-        case horizontal_alignment::right :
-            position.x = comp_size.width > size.width
-                       ? 0
-                       : size.width - comp_size.width;
-            break;
-
-        case horizontal_alignment::centre :
-        default :
-            position.x = comp_size.width > size.width
-                       ? 0
-                       : ((size.width - comp_size.width) / 2);
-            break;
-        };
-
-        switch (component_alignment.vertical)
-        {
-        case vertical_alignment::top :
-            position.y = 0;
-            break;
-
-        case vertical_alignment::bottom :
-            position.y = comp_size.height > size.height
-                       ? 0
-                       : size.height - comp_size.height;
-            break;
-
-        case vertical_alignment::centre :
-        default :
-            position.y = comp_size.height > size.height
-                       ? 0
-                       : ((size.height - comp_size.height) / 2);
-            break;
-        };
-
-        comp->set_position(position);
-        comp->set_size(comp_size);
+        comp->set_position(component_position);
+        comp->set_size(component_size);
     }
 }
 
