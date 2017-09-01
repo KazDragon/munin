@@ -67,6 +67,7 @@ set (MUNIN_VERSION_PATCH 1)
 set (MUNIN_VERSION "${MUNIN_VERSION_MAJOR}.${MUNIN_VERSION_MINOR}.${MUNIN_VERSION_PATCH}")
 
 set (MUNIN_SOURCE_FILES
+    src/aligned_layout.cpp
     src/algorithm.cpp
     src/basic_component.cpp
     src/component.cpp
@@ -144,6 +145,7 @@ if (GTEST_FOUND)
 
     set (MUNIN_TEST_SOURCE_FILES
         test/src/algorithm/algorithm_test.cpp
+        test/src/aligned_layout/aligned_layout_test.cpp
         test/src/basic_component/new_basic_component_test.cpp
         test/src/basic_component/unfocused_basic_component_test.cpp
         test/src/basic_component/focused_basic_component_test.cpp

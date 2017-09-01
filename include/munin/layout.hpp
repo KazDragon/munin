@@ -68,9 +68,9 @@ protected :
     /// manner.
     //* =====================================================================
     virtual void do_layout(
-        std::vector<std::shared_ptr<component> > const &components,
-        std::vector<boost::any>                  const &hints,
-        terminalpp::extent                              size) const = 0;
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints,
+        terminalpp::extent                             size) const = 0;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this
