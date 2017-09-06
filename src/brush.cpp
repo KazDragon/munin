@@ -12,7 +12,6 @@ namespace munin {
 // ==========================================================================
 struct brush::impl
 {
-    terminalpp::extent preferred_size_;
     std::vector<terminalpp::string> pattern_;
 };
 
@@ -38,7 +37,6 @@ brush::brush(terminalpp::string pattern)
 brush::brush(std::vector<terminalpp::string> pattern)
     : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->preferred_size_ = terminalpp::extent(1, 1);
     pimpl_->pattern_ = std::move(pattern);
 }
 
@@ -50,20 +48,21 @@ brush::~brush()
 }
 
 // ==========================================================================
-// SET_PREFERRED_SIZE
-// ==========================================================================
-void brush::set_preferred_size(terminalpp::extent preferred_size)
-{
-    pimpl_->preferred_size_ = preferred_size;
-    on_preferred_size_changed();
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent brush::do_get_preferred_size() const
 {
-    return pimpl_->preferred_size_;
+    return pimpl_->pattern_.empty()
+         ? terminalpp::extent(1, 1)
+         : terminalpp::extent(
+               std::max_element(
+                   pimpl_->pattern_.begin(),
+                   pimpl_->pattern_.end(),
+                   [](auto const &lhs, auto const &rhs)
+                   {
+                       return lhs.size() < rhs.size();
+                   })->size(),
+               pimpl_->pattern_.size());
 }
 
 // ==========================================================================

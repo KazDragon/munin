@@ -11,6 +11,28 @@ TEST(a_new_brush, has_a_singular_preferred_size)
     ASSERT_EQ(terminalpp::extent(1, 1), brush.get_preferred_size());
 }
 
+TEST(a_new_brush_with_a_single_line_pattern, has_a_preferred_size_with_the_width_of_that_line)
+{
+    using namespace terminalpp::literals;
+    auto const pattern = "abcde"_ts;
+    munin::brush brush(pattern);
+    
+    ASSERT_EQ(terminalpp::extent(pattern.size(), 1), brush.get_preferred_size());
+}
+
+TEST(a_new_brush_with_a_multi_line_pattern, has_a_preferred_size_with_the_width_of_the_longest_line_and_height_of_the_number_of_lines)
+{
+    using namespace terminalpp::literals;
+    auto const pattern = std::vector<terminalpp::string> {
+        "abcde"_ts,
+        "abcdefg"_ts
+    };
+    
+    munin::brush brush(pattern);
+    
+    ASSERT_EQ(terminalpp::extent(pattern[1].size(), 2), brush.get_preferred_size());
+}
+
 TEST(a_new_brush, draws_whitespace_on_the_canvas)
 {
     munin::brush brush;
@@ -181,3 +203,4 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[4][5]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[5][5]);
 }
+

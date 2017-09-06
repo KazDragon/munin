@@ -37,11 +37,6 @@ public :
     //* =====================================================================
     ~brush() override;
 
-    //* =====================================================================
-    /// \brief Sets the preferred size of this brush.  The default is (1,1).
-    //* =====================================================================
-    void set_preferred_size(terminalpp::extent preferred_size);
-
 protected :
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
