@@ -2,7 +2,6 @@
 #include <munin/context.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
-#include <terminalpp/string.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_brush, has_a_singular_preferred_size)

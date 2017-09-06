@@ -37,6 +37,21 @@ public :
     //* =====================================================================
     ~brush() override;
 
+    //* =====================================================================
+    /// \brief Sets the pattern to the default pattern (i.e. whitespace)
+    //* =====================================================================
+    void set_pattern();
+    
+    //* =====================================================================
+    /// \brief Sets the pattern to the given one-line pattern
+    //* =====================================================================
+    void set_pattern(terminalpp::string const &pattern);
+    
+    //* =====================================================================
+    /// \brief Sets the pattern to the given multi-line pattern
+    //* =====================================================================
+    void set_pattern(std::vector<terminalpp::string> const &pattern);
+    
 protected :
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override

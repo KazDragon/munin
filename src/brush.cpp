@@ -48,6 +48,31 @@ brush::~brush()
 }
 
 // ==========================================================================
+// SET_PATTERN
+// ==========================================================================
+void brush::set_pattern()
+{
+    set_pattern(" ");
+}
+
+// ==========================================================================
+// SET_PATTERN
+// ==========================================================================
+void brush::set_pattern(terminalpp::string const &pattern)
+{
+    set_pattern(std::vector<terminalpp::string>{pattern});
+}
+
+// ==========================================================================
+// SET_PATTERN
+// ==========================================================================
+void brush::set_pattern(std::vector<terminalpp::string> const &pattern)
+{
+    pimpl_->pattern_ = pattern;
+    on_preferred_size_changed();
+}
+
+// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent brush::do_get_preferred_size() const
