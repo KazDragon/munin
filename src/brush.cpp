@@ -118,15 +118,21 @@ void brush::do_draw(context &ctx, rectangle const &region) const
 // ==========================================================================
 nlohmann::json brush::do_to_json() const
 {
-    /*
     nlohmann::json patch = R"([
         { "op": "replace", "path": "/type", "value": "brush" }
     ])"_json;
 
-    return basic_component::do_to_json().patch(patch);
-    */
+    auto json = basic_component::do_to_json().patch(patch);
     
-    return basic_component::do_to_json();
+    json["pattern"]["size"] = pimpl_->pattern_.size();
+    
+    for (size_t index = 0; index < pimpl_->pattern_.size(); ++index)
+    {
+        json["pattern"]["content"][index] = 
+            terminalpp::to_string(pimpl_->pattern_[index]);
+    }
+    
+    return json;
 }
 
 // ==========================================================================

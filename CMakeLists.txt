@@ -153,6 +153,7 @@ if (GTEST_FOUND)
         test/src/basic_component/focused_basic_component_test.cpp
         test/src/basic_component/basic_component_test.cpp
         test/src/brush/brush_test.cpp
+        test/src/brush/brush_json_test.cpp
         test/src/brush/new_brush_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
