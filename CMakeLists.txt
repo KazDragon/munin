@@ -70,6 +70,7 @@ set (MUNIN_SOURCE_FILES
     src/aligned_layout.cpp
     src/algorithm.cpp
     src/basic_component.cpp
+    src/brush.cpp
     src/component.cpp
     src/container.cpp
     src/context.cpp
@@ -87,6 +88,7 @@ set (MUNIN_SOURCE_FILES
 set (MUNIN_INCLUDE_FILES
     include/munin/algorithm.hpp
     include/munin/basic_component.hpp
+    include/munin/brush.hpp
     include/munin/component.hpp
     include/munin/container.hpp
     include/munin/context.hpp
@@ -150,6 +152,9 @@ if (GTEST_FOUND)
         test/src/basic_component/unfocused_basic_component_test.cpp
         test/src/basic_component/focused_basic_component_test.cpp
         test/src/basic_component/basic_component_test.cpp
+        test/src/brush/brush_test.cpp
+        test/src/brush/brush_json_test.cpp
+        test/src/brush/new_brush_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
         test/src/container/container_draw_test.cpp
@@ -191,7 +196,7 @@ if (GTEST_FOUND)
         terminalpp-core
         ${GMOCK_LIBRARY}
         ${GTEST_LIBRARY}
-        ${GTEST_MAIN_LIBRARY}
+        ${GMOCK_MAIN_LIBRARY}
         ${CMAKE_THREAD_LIBS_INIT}
     )
 
