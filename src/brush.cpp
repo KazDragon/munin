@@ -101,11 +101,12 @@ void brush::do_draw(context &ctx, rectangle const &region) const
          row < region.origin.y + region.size.height;
          ++row)
     {
+        auto const fill_row = row % pimpl_->pattern_.size();
+
         for (terminalpp::coordinate_type column = region.origin.x;
              column < region.origin.x + region.size.width;
              ++column)
         {
-            auto const fill_row = row % pimpl_->pattern_.size();
             auto const fill_column = column % pimpl_->pattern_[fill_row].size();
             
             cvs[column][row] = pimpl_->pattern_[fill_row][fill_column];

@@ -24,13 +24,13 @@ public :
     /// \brief Constructor
     /// Initialises the brush with the passed single-line pattern.
     //* =====================================================================
-    brush(terminalpp::string pattern);
+    explicit brush(terminalpp::string pattern);
     
     //* =====================================================================
     /// \brief Constructor
     /// Initialises the brush with the passed multi-line pattern.
     //* =====================================================================
-    brush(std::vector<terminalpp::string> pattern);
+    explicit brush(std::vector<terminalpp::string> pattern);
 
     //* =====================================================================
     /// \brief Destructor
