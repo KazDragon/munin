@@ -1,5 +1,6 @@
 #include "munin/image.hpp"
 #include "munin/context.hpp"
+#include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <algorithm>
 #include <utility>
@@ -162,13 +163,13 @@ void image::do_draw(context &ctx, rectangle const &region) const
 // ==========================================================================
 nlohmann::json image::do_to_json() const
 {
-    /*
     nlohmann::json patch = R"([
         { "op": "replace", "path": "/type", "value": "image" }
     ])"_json;
 
     auto json = basic_component::do_to_json().patch(patch);
     
+    json["fill"] = detail::to_json(pimpl_->fill_);
     json["content"]["size"] = pimpl_->content_.size();
     
     for (size_t index = 0; index < pimpl_->content_.size(); ++index)
@@ -178,8 +179,6 @@ nlohmann::json image::do_to_json() const
     }
     
     return json;
-    */
-    return basic_component::do_to_json();
 }
 
 // ==========================================================================
