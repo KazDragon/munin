@@ -14,8 +14,50 @@ namespace munin {
 struct image::impl
 {
     std::vector<terminalpp::string> content_;
-    //terminalpp::element fill_;
+    terminalpp::element fill_;
 };
+
+// ==========================================================================
+// DRAW_FILL_LINE
+// ==========================================================================
+static void draw_fill_line(
+    terminalpp::canvas_view &cvs,
+    terminalpp::point const &origin,
+    terminalpp::coordinate_type const &width,
+    terminalpp::element const &fill)
+{
+    for (terminalpp::coordinate_type column = origin.x;
+         column < origin.x + width;
+         ++column)
+    {
+        cvs[column][origin.y] = fill;
+    }
+}
+
+// ==========================================================================
+// DRAW_CONTENT_LINE
+// ==========================================================================
+static void draw_content_line(
+    terminalpp::canvas_view &cvs,
+    terminalpp::point const &origin,
+    terminalpp::coordinate_type const &content_start,
+    terminalpp::coordinate_type const &line_width,
+    terminalpp::string const &content,
+    terminalpp::element const &fill)
+{
+    for (auto column = origin.x; column < origin.x + line_width; ++column)
+    {
+        bool const column_has_content =
+            column >= content_start
+         && column <  content_start + content.size();
+         
+        cvs[column][origin.y] = 
+            column_has_content
+          ? content[column - content_start]
+          : fill;
+    }
+}
+
 
 // ==========================================================================
 // CONSTRUCTOR
@@ -23,6 +65,7 @@ struct image::impl
 image::image(terminalpp::element fill)
   : pimpl_(std::make_shared<impl>())
 {
+    pimpl_->fill_ = fill;
 }
 
 // ==========================================================================
@@ -74,25 +117,43 @@ terminalpp::extent image::do_get_preferred_size() const
 // ==========================================================================
 void image::do_draw(context &ctx, rectangle const &region) const
 {
-    /*
     auto &cvs = ctx.get_canvas();
 
+    auto const size = get_size();
+    auto const content_size = get_preferred_size();
+
+    auto const content_basis = terminalpp::point {
+        (size.width - content_size.width) / 2,
+        (size.height - content_size.height) / 2
+    };
+    
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
          ++row)
     {
-        auto const fill_row = row % pimpl_->content_.size();
+        bool const row_has_content = 
+            row >= content_basis.y
+         && row < content_basis.y + pimpl_->content_.size();
 
-        for (terminalpp::coordinate_type column = region.origin.x;
-             column < region.origin.x + region.size.width;
-             ++column)
+        if (row_has_content)
         {
-            auto const fill_column = column % pimpl_->content_[fill_row].size();
-            
-            cvs[column][row] = pimpl_->content_[fill_row][fill_column];
+            draw_content_line(
+                cvs,
+                { region.origin.x, row },
+                content_basis.x,
+                region.size.width,
+                pimpl_->content_[row - content_basis.y],
+                pimpl_->fill_);
+        }
+        else
+        {
+            draw_fill_line(
+                cvs, 
+                { region.origin.x, row },
+                region.size.width,
+                pimpl_->fill_);
         }
     }
-    */
 }
 
 // ==========================================================================
