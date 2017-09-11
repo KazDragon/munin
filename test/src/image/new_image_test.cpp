@@ -173,19 +173,15 @@ TEST(a_new_image_with_a_single_line_content, draws_that_content_centred_with_whi
     ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
 }
 
-/*
-TEST(a_new_image_with_a_multi_line_content, draws_that_content_repeatedly)
+TEST(a_new_image_with_a_single_line_content_and_fill, draws_that_content_centred_with_filled_background)
 {
     using namespace terminalpp::literals;
-    std::vector<terminalpp::string> content = {
-        "ab"_ts,
-        "cd"_ts
-    };
-    
-    munin::image image(content);
-    image.set_size({4, 4});
+    terminalpp::string content = "abc"_ts;
 
-    terminalpp::canvas canvas({6, 6});
+    munin::image image(content, 'Z');
+    image.set_size({5, 3});
+
+    terminalpp::canvas canvas({5, 3});
 
     for (terminalpp::coordinate_type row = 0;
          row < canvas.size().height;
@@ -200,50 +196,146 @@ TEST(a_new_image_with_a_multi_line_content, draws_that_content_repeatedly)
     }
 
     terminalpp::canvas_view cv{canvas};
-    cv.offset_by({1, 1});
     munin::context ctx(cv);
     image.draw(ctx, {{}, image.get_size()});
 
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[3][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[4][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][0]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[4][0]);
 
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][1]);
     ASSERT_EQ(terminalpp::element{'a'}, canvas[1][1]);
     ASSERT_EQ(terminalpp::element{'b'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'a'}, canvas[3][1]);
-    ASSERT_EQ(terminalpp::element{'b'}, canvas[4][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{'c'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[4][1]);
 
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[2][2]);
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[3][2]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[4][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][2]);
-
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][3]);
-    ASSERT_EQ(terminalpp::element{'a'}, canvas[1][3]);
-    ASSERT_EQ(terminalpp::element{'b'}, canvas[2][3]);
-    ASSERT_EQ(terminalpp::element{'a'}, canvas[3][3]);
-    ASSERT_EQ(terminalpp::element{'b'}, canvas[4][3]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][3]);
-
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][4]);
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[1][4]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[2][4]);
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[3][4]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[4][4]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][4]);
-
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][5]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][5]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][5]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[3][5]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[4][5]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[5][5]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{'Z'}, canvas[4][2]);
 }
-*/
+
+TEST(a_new_image_with_multi_line_content, draws_that_content_centred_with_whitespace_background)
+{
+    using namespace terminalpp::literals;
+    std::vector<terminalpp::string> content = {
+        "ab"_ts,
+        "d"_ts,
+        "efg"_ts
+    };
+    
+    munin::image image(content);
+    image.set_size({5, 5});
+
+    terminalpp::canvas canvas({5, 5});
+
+    for (terminalpp::coordinate_type row = 0;
+         row < canvas.size().height;
+         ++row)
+    {
+        for (terminalpp::coordinate_type col = 0;
+             col < canvas.size().width;
+             ++col)
+        {
+            canvas[col][row] = 'X';
+        }
+    }
+
+    terminalpp::canvas_view cv{canvas};
+    munin::context ctx(cv);
+    image.draw(ctx, {{}, image.get_size()});
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][0]);
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'a'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'b'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][1]);
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'d'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][3]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[1][3]);
+    ASSERT_EQ(terminalpp::element{'f'}, canvas[2][3]);
+    ASSERT_EQ(terminalpp::element{'g'}, canvas[3][3]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][3]);
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][4]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][4]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][4]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][4]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][4]);
+}
+
+TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_with_fill_background)
+{
+    using namespace terminalpp::literals;
+    std::vector<terminalpp::string> content = {
+        "ab"_ts,
+        "d"_ts,
+        "efg"_ts
+    };
+    
+    munin::image image(content, 'T');
+    image.set_size({5, 5});
+
+    terminalpp::canvas canvas({5, 5});
+
+    for (terminalpp::coordinate_type row = 0;
+         row < canvas.size().height;
+         ++row)
+    {
+        for (terminalpp::coordinate_type col = 0;
+             col < canvas.size().width;
+             ++col)
+        {
+            canvas[col][row] = 'X';
+        }
+    }
+
+    terminalpp::canvas_view cv{canvas};
+    munin::context ctx(cv);
+    image.draw(ctx, {{}, image.get_size()});
+
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[4][0]);
+
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'a'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'b'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[4][1]);
+
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'d'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[4][2]);
+
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[0][3]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[1][3]);
+    ASSERT_EQ(terminalpp::element{'f'}, canvas[2][3]);
+    ASSERT_EQ(terminalpp::element{'g'}, canvas[3][3]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[4][3]);
+
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[0][4]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[1][4]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[2][4]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[3][4]);
+    ASSERT_EQ(terminalpp::element{'T'}, canvas[4][4]);
+}

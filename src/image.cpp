@@ -85,6 +85,7 @@ image::image(
   : pimpl_(std::make_shared<impl>())
 {
     pimpl_->content_ = content;
+    pimpl_->fill_ = fill;
 }
 
 // ==========================================================================
