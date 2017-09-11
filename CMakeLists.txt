@@ -173,6 +173,7 @@ if (GTEST_FOUND)
         test/src/grid_layout/grid_layout_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
         test/src/image/image_json_test.cpp
+        test/src/image/image_test.cpp
         test/src/image/new_image_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp

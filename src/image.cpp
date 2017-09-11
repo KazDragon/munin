@@ -19,6 +19,19 @@ struct image::impl
 };
 
 // ==========================================================================
+// GET_CONTENT_BASIS
+// ==========================================================================
+static terminalpp::point get_content_basis(
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
+{
+    return {
+        (component_size.width - content_size.width) / 2,
+        (component_size.height - content_size.height) / 2
+    };
+}
+
+// ==========================================================================
 // DRAW_FILL_LINE
 // ==========================================================================
 static void draw_fill_line(
@@ -51,8 +64,8 @@ static void draw_content_line(
         bool const column_has_content =
             column >= content_start
          && column <  content_start + content.size();
-         
-        cvs[column][origin.y] = 
+
+        cvs[column][origin.y] =
             column_has_content
           ? content[column - content_start]
           : fill;
@@ -81,7 +94,7 @@ image::image(terminalpp::string content, terminalpp::element fill)
 // CONSTRUCTOR
 // ==========================================================================
 image::image(
-    std::vector<terminalpp::string> content, 
+    std::vector<terminalpp::string> content,
     terminalpp::element fill)
   : pimpl_(std::make_shared<impl>())
 {
@@ -115,6 +128,64 @@ terminalpp::extent image::do_get_preferred_size() const
 }
 
 // ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content()
+{
+    /*
+    auto const size = get_size();
+    auto const content_size = get_preferred_size();
+    */
+
+    pimpl_->content_.clear();
+
+    /*
+    on_preferred_size_changed();
+
+    auto const content_basis = terminalpp::point {
+        (size.width - content_size.width) / 2,
+        (size.height - content_size.height) / 2
+    };
+
+    auto const redraw_size = terminalpp::extent {
+        (std::min)(content_size.width, size.width),
+        (std::min)(content_size.height, size.height),
+    };
+
+    on_redraw({{content_basis, redraw_size}});
+    */
+}
+
+// ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content(terminalpp::string const &content)
+{
+    pimpl_->content_.clear();
+    pimpl_->content_.push_back(content);
+
+    auto const size = get_size();
+    auto const content_size = get_preferred_size();
+    auto const content_basis = get_content_basis(size, content_size);
+
+    auto const redraw_size = terminalpp::extent {
+        (std::min)(content_size.width, size.width),
+        (std::min)(content_size.height, size.height),
+    };
+
+    on_preferred_size_changed();
+    on_redraw({{content_basis, redraw_size}});
+}
+
+// ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content(std::vector<terminalpp::string> const &content)
+{
+    pimpl_->content_ = content;
+}
+
+// ==========================================================================
 // DO_DRAW
 // ==========================================================================
 void image::do_draw(context &ctx, rectangle const &region) const
@@ -123,17 +194,13 @@ void image::do_draw(context &ctx, rectangle const &region) const
 
     auto const size = get_size();
     auto const content_size = get_preferred_size();
+    auto const content_basis = get_content_basis(size, content_size);
 
-    auto const content_basis = terminalpp::point {
-        (size.width - content_size.width) / 2,
-        (size.height - content_size.height) / 2
-    };
-    
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
          ++row)
     {
-        bool const row_has_content = 
+        bool const row_has_content =
             row >= content_basis.y
          && row < content_basis.y + pimpl_->content_.size();
 
@@ -150,7 +217,7 @@ void image::do_draw(context &ctx, rectangle const &region) const
         else
         {
             draw_fill_line(
-                cvs, 
+                cvs,
                 { region.origin.x, row },
                 region.size.width,
                 pimpl_->fill_);
@@ -168,16 +235,16 @@ nlohmann::json image::do_to_json() const
     ])"_json;
 
     auto json = basic_component::do_to_json().patch(patch);
-    
+
     json["fill"] = detail::to_json(pimpl_->fill_);
     json["content"]["size"] = pimpl_->content_.size();
-    
+
     for (size_t index = 0; index < pimpl_->content_.size(); ++index)
     {
-        json["content"]["content"][index] = 
+        json["content"]["content"][index] =
             terminalpp::to_string(pimpl_->content_[index]);
     }
-    
+
     return json;
 }
 

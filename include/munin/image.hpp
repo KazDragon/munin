@@ -24,9 +24,9 @@ public :
     /// Initialises the image with the passed single-line content.
     //* =====================================================================
     explicit image(
-        terminalpp::string content, 
+        terminalpp::string content,
         terminalpp::element fill = ' ');
-    
+
     //* =====================================================================
     /// \brief Constructor
     /// Initialises the image with the passed multi-line content.
@@ -41,20 +41,20 @@ public :
     ~image() override;
 
     //* =====================================================================
-    /// \brief Sets the pattern to the default pattern (i.e. whitespace)
+    /// \brief Sets the content to the default content (i.e. fill only)
     //* =====================================================================
-    //void set_pattern();
-    
+    void set_content();
+
     //* =====================================================================
-    /// \brief Sets the pattern to the given one-line pattern
+    /// \brief Sets the content to the given one-line content
     //* =====================================================================
-    //void set_pattern(terminalpp::string const &pattern);
-    
+    void set_content(terminalpp::string const &content);
+
     //* =====================================================================
-    /// \brief Sets the pattern to the given multi-line pattern
+    /// \brief Sets the content to the given multi-line content
     //* =====================================================================
-    //void set_pattern(std::vector<terminalpp::string> const &pattern);
-    
+    void set_content(std::vector<terminalpp::string> const &content);
+
 protected :
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
