@@ -107,3 +107,27 @@ TEST_F(an_image_with_single_line_content, redraws_old_image_area_when_setting_co
     ASSERT_EQ(1u, redraw_regions_.size());
     ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
+
+TEST_F(an_image_with_single_line_content, redraws_new_image_area_when_setting_content_to_larger_content)
+{
+    image_.set_content("xtestx");
+    
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(6, 1), preferred_size_);
+    
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({0, 1}, {6, 1}), redraw_regions_[0]);
+}
+
+TEST_F(an_image_with_single_line_content, redraws_old_image_area_when_setting_content_to_smaller_content)
+{
+    image_.set_content("es");
+    
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(2, 1), preferred_size_);
+    
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+}
