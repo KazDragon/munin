@@ -1,0 +1,79 @@
+#include <munin/image.hpp>
+#include <munin/context.hpp>
+#include <terminalpp/canvas.hpp>
+#include <terminalpp/canvas_view.hpp>
+#include <gtest/gtest.h>
+
+class an_image_to_be_redrawn : public testing::Test
+{
+protected :
+    void SetUp() override
+    {
+        image_.set_size({6, 4});
+        
+        image_.on_preferred_size_changed.connect(
+            [this]
+            {
+                ++preferred_size_changed_called_;
+                preferred_size_ = image_.get_preferred_size();
+            });
+            
+        image_.on_redraw.connect(
+            [this](auto const &regions)
+            {
+                ++redraw_called_;
+                redraw_regions_ = regions;
+            });
+    }
+    
+    munin::image image_;
+    
+    int preferred_size_changed_called_ = 0;
+    terminalpp::extent preferred_size_;
+    
+    int redraw_called_ = 0;
+    std::vector<munin::rectangle> redraw_regions_;
+};
+
+class an_image_with_empty_content : public an_image_to_be_redrawn
+{
+};
+
+TEST_F(an_image_with_empty_content, redraws_nothing_when_setting_content_to_empty)
+{
+    image_.set_content();
+
+    ASSERT_EQ(0, preferred_size_changed_called_);
+    ASSERT_EQ(0, redraw_called_);
+}
+
+TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_to_single_line)
+{
+    using namespace terminalpp::literals;
+    image_.set_content("test"_ts);
+    
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(4, 1), preferred_size_);
+
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+}
+
+TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_to_multi_line)
+{
+    using namespace terminalpp::literals;
+    std::vector<terminalpp::string> const content = {
+        "test",
+        "test"
+    };
+    
+    image_.set_content(content);
+    
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(4, 2), preferred_size_);
+
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+}

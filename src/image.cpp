@@ -183,6 +183,18 @@ void image::set_content(terminalpp::string const &content)
 void image::set_content(std::vector<terminalpp::string> const &content)
 {
     pimpl_->content_ = content;
+
+    auto const size = get_size();
+    auto const content_size = get_preferred_size();
+    auto const content_basis = get_content_basis(size, content_size);
+
+    auto const redraw_size = terminalpp::extent {
+        (std::min)(content_size.width, size.width),
+        (std::min)(content_size.height, size.height),
+    };
+
+    on_preferred_size_changed();
+    on_redraw({{content_basis, redraw_size}});
 }
 
 // ==========================================================================
