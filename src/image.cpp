@@ -132,28 +132,24 @@ terminalpp::extent image::do_get_preferred_size() const
 // ==========================================================================
 void image::set_content()
 {
-    /*
-    auto const size = get_size();
-    auto const content_size = get_preferred_size();
-    */
-
+    auto const old_size = get_size();
+    auto const old_content_size = get_preferred_size();
+    auto const old_content_basis = get_content_basis(
+        old_size, old_content_size);
+    auto const old_redraw_size = terminalpp::extent {
+        (std::min)(old_content_size.width, old_size.width),
+        (std::min)(old_content_size.height, old_size.height),
+    };
+ 
     pimpl_->content_.clear();
 
-    /*
-    on_preferred_size_changed();
-
-    auto const content_basis = terminalpp::point {
-        (size.width - content_size.width) / 2,
-        (size.height - content_size.height) / 2
-    };
-
-    auto const redraw_size = terminalpp::extent {
-        (std::min)(content_size.width, size.width),
-        (std::min)(content_size.height, size.height),
-    };
-
-    on_redraw({{content_basis, redraw_size}});
-    */
+    if (old_content_size != get_preferred_size())
+    {
+        on_preferred_size_changed();
+        on_redraw({
+            {old_content_basis, old_redraw_size}
+        });
+    }
 }
 
 // ==========================================================================

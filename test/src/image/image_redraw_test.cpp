@@ -3,10 +3,19 @@
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>
+#include <utility>
 
 class an_image_to_be_redrawn : public testing::Test
 {
 protected :
+    an_image_to_be_redrawn() = default;
+    
+    template <class T>
+    an_image_to_be_redrawn(T &&t)
+      : image_(std::forward<T>(t))
+    {
+    }
+    
     void SetUp() override
     {
         image_.set_size({6, 4});
@@ -76,4 +85,25 @@ TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
     ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+}
+
+class an_image_with_single_line_content : public an_image_to_be_redrawn
+{
+protected :
+    an_image_with_single_line_content()
+      : an_image_to_be_redrawn("test")
+    {
+    }
+};
+
+TEST_F(an_image_with_single_line_content, redraws_old_image_area_when_setting_content_to_empty)
+{
+    image_.set_content();
+    
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(0, 0), preferred_size_);
+    
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
