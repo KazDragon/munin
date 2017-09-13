@@ -11,7 +11,7 @@ protected :
     an_image_to_be_redrawn() = default;
 
     template <class T>
-    an_image_to_be_redrawn(T &&t)
+    explicit an_image_to_be_redrawn(T &&t)
       : image_(std::forward<T>(t))
     {
     }
