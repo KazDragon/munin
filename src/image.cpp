@@ -32,6 +32,58 @@ static terminalpp::point get_content_basis(
 }
 
 // ==========================================================================
+// GET_CONTENT_EXTENT
+// ==========================================================================
+static terminalpp::extent get_content_extent(
+        terminalpp::extent const &component_size,
+        terminalpp::extent const &content_size)
+{
+    return {
+        (std::min)(content_size.width, component_size.width),
+        (std::min)(content_size.height, component_size.height)
+    };
+}
+
+// ==========================================================================
+// GET_CONTENT_BOUNDS
+// ==========================================================================
+static munin::rectangle get_content_bounds(
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
+{
+    return {
+        get_content_basis(component_size, content_size),
+        get_content_extent(component_size, content_size)
+    };
+}
+
+// ==========================================================================
+// HAS_ZERO_DIMENSION
+// ==========================================================================
+static bool has_zero_dimension(munin::rectangle const &bounds)
+{
+    return bounds.size.width == 0 || bounds.size.height == 0;
+}
+
+// ==========================================================================
+// ADD_REDRAW_REGION
+// ==========================================================================
+static void add_redraw_region(
+    std::vector<munin::rectangle> &redraw_regions,
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
+{
+    auto const content_bounds {
+        get_content_bounds(component_size, content_size)
+    };
+
+    if (!has_zero_dimension(content_bounds))
+    {
+        redraw_regions.push_back(content_bounds);
+    }
+}
+
+// ==========================================================================
 // DRAW_FILL_LINE
 // ==========================================================================
 static void draw_fill_line(
@@ -71,7 +123,6 @@ static void draw_content_line(
           : fill;
     }
 }
-
 
 // ==========================================================================
 // CONSTRUCTOR
@@ -139,23 +190,16 @@ terminalpp::extent image::do_get_preferred_size() const
 // ==========================================================================
 void image::set_content()
 {
-    auto const old_size = get_size();
-    auto const old_content_size = get_preferred_size();
-    auto const old_content_basis = get_content_basis(
-        old_size, old_content_size);
-    auto const old_redraw_size = terminalpp::extent {
-        (std::min)(old_content_size.width, old_size.width),
-        (std::min)(old_content_size.height, old_size.height),
+    auto const old_content_bounds {
+        get_content_bounds(get_size(), get_preferred_size())
     };
 
     pimpl_->content_.clear();
 
-    if (old_content_size != get_preferred_size())
+    if (!has_zero_dimension(old_content_bounds))
     {
         on_preferred_size_changed();
-        on_redraw({
-            {old_content_basis, old_redraw_size}
-        });
+        on_redraw({old_content_bounds});
     }
 }
 
@@ -164,39 +208,7 @@ void image::set_content()
 // ==========================================================================
 void image::set_content(terminalpp::string const &content)
 {
-    auto const size = get_size();
-    auto const old_content_size = get_preferred_size();
-    auto const old_content_basis = get_content_basis(
-        size, old_content_size);
-    auto const old_redraw_size = terminalpp::extent {
-        (std::min)(old_content_size.width, size.width),
-        (std::min)(old_content_size.height, size.height),
-    };
-
-    pimpl_->content_.clear();
-
-    if (!content.empty())
-    {
-        pimpl_->content_.push_back(content);
-    }
-
-    auto const new_content_size = get_preferred_size();
-    auto const new_content_basis = get_content_basis(size, new_content_size);
-
-    auto const redraw_basis = terminalpp::point {
-        (std::min)(old_content_basis.x, new_content_basis.x),
-        new_content_basis.y
-    };
-
-    auto const redraw_size = terminalpp::extent {
-        (std::min)(
-            (std::max)(old_content_size.width, new_content_size.width),
-            size.width),
-        (std::min)(new_content_size.height, size.height),
-    };
-
-    on_preferred_size_changed();
-    on_redraw({{redraw_basis, redraw_size}});
+    set_content(std::vector<terminalpp::string>{content});
 }
 
 // ==========================================================================
@@ -204,19 +216,24 @@ void image::set_content(terminalpp::string const &content)
 // ==========================================================================
 void image::set_content(std::vector<terminalpp::string> const &content)
 {
-    pimpl_->content_ = content;
+    // Special cases: setting content to an empty vector or a vector
+    // of an empty string is equivalent to setting an empty content.
+    if (content.empty()
+     || (content.size() == 1u && content[0].empty()))
+    {
+        set_content();
+        return;
+    }
 
+    std::vector<munin::rectangle> redraw_regions;
     auto const size = get_size();
-    auto const content_size = get_preferred_size();
-    auto const content_basis = get_content_basis(size, content_size);
 
-    auto const redraw_size = terminalpp::extent {
-        (std::min)(content_size.width, size.width),
-        (std::min)(content_size.height, size.height),
-    };
+    add_redraw_region(redraw_regions, size, get_preferred_size());
+    pimpl_->content_ = content;
+    add_redraw_region(redraw_regions, size, get_preferred_size());
 
     on_preferred_size_changed();
-    on_redraw({{content_basis, redraw_size}});
+    on_redraw(redraw_regions);
 }
 
 // ==========================================================================
