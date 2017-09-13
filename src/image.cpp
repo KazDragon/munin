@@ -77,9 +77,8 @@ static void draw_content_line(
 // CONSTRUCTOR
 // ==========================================================================
 image::image(terminalpp::element fill)
-  : pimpl_(std::make_shared<impl>())
+  : image("", fill)
 {
-    pimpl_->fill_ = fill;
 }
 
 // ==========================================================================
@@ -98,7 +97,15 @@ image::image(
     terminalpp::element fill)
   : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->content_ = content;
+    // There is a special case for "empty" content, where the content is
+    // a single empty string.  In this case, it is not stored, and is as if
+    // there were no content at all.
+    if (!content.empty()
+     && !(content.size() == 1 && content[0].empty()))
+    {
+        pimpl_->content_ = content;
+    }
+
     pimpl_->fill_ = fill;
 }
 
@@ -140,7 +147,7 @@ void image::set_content()
         (std::min)(old_content_size.width, old_size.width),
         (std::min)(old_content_size.height, old_size.height),
     };
- 
+
     pimpl_->content_.clear();
 
     if (old_content_size != get_preferred_size())
@@ -165,9 +172,13 @@ void image::set_content(terminalpp::string const &content)
         (std::min)(old_content_size.width, size.width),
         (std::min)(old_content_size.height, size.height),
     };
-    
+
     pimpl_->content_.clear();
-    pimpl_->content_.push_back(content);
+
+    if (!content.empty())
+    {
+        pimpl_->content_.push_back(content);
+    }
 
     auto const new_content_size = get_preferred_size();
     auto const new_content_basis = get_content_basis(size, new_content_size);
@@ -176,7 +187,7 @@ void image::set_content(terminalpp::string const &content)
         (std::min)(old_content_basis.x, new_content_basis.x),
         new_content_basis.y
     };
-    
+
     auto const redraw_size = terminalpp::extent {
         (std::min)(
             (std::max)(old_content_size.width, new_content_size.width),

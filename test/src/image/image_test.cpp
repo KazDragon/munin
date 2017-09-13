@@ -152,3 +152,36 @@ TEST(an_image_with_its_content_set_to_multi_line, draws_lines_on_the_canvas)
     ASSERT_EQ(terminalpp::element{' '}, canvas[4][3]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[5][3]);
 }
+
+TEST(an_image, sets_its_content_empty_when_set_to_an_empty_string)
+{
+    munin::image image("test");
+    image.set_size({4, 1});
+
+    image.set_content("");
+
+    ASSERT_EQ(terminalpp::extent(0, 0), image.get_preferred_size());
+
+    terminalpp::canvas canvas({4, 1});
+
+    for (terminalpp::coordinate_type row = 0;
+         row < canvas.size().height;
+         ++row)
+    {
+        for (terminalpp::coordinate_type col = 0;
+             col < canvas.size().width;
+             ++col)
+        {
+            canvas[col][row] = 'X';
+        }
+    }
+
+    terminalpp::canvas_view cv{canvas};
+    munin::context ctx(cv);
+    image.draw(ctx, {{}, image.get_size()});
+
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
+}

@@ -16,12 +16,19 @@ TEST(a_new_image_with_a_fill, has_a_zero_preferred_size)
     ASSERT_EQ(terminalpp::extent(0, 0), image.get_preferred_size());
 }
 
+TEST(a_new_image_with_single_line_empty_content, has_a_zero_preferred_size)
+{
+    using namespace terminalpp::literals;
+    munin::image image(""_ts);
+    ASSERT_EQ(terminalpp::extent(0, 0), image.get_preferred_size());
+}
+
 TEST(a_new_image_with_single_line_content, has_a_preferred_size_with_the_width_of_that_line)
 {
     using namespace terminalpp::literals;
     auto const content = "abcde"_ts;
     munin::image image(content);
-    
+
     ASSERT_EQ(terminalpp::extent(content.size(), 1), image.get_preferred_size());
 }
 
@@ -30,8 +37,15 @@ TEST(a_new_image_with_single_line_content_and_a_fill, has_a_preferred_size_with_
     using namespace terminalpp::literals;
     auto const content = "abcde"_ts;
     munin::image image(content, terminalpp::element('Y'));
-    
+
     ASSERT_EQ(terminalpp::extent(content.size(), 1), image.get_preferred_size());
+}
+
+TEST(a_new_image_with_empty_multi_line_content, has_a_zero_preferred_size)
+{
+    munin::image image(std::vector<terminalpp::string>{});
+
+    ASSERT_EQ(terminalpp::extent(0, 0), image.get_preferred_size());
 }
 
 TEST(a_new_image_with_multi_line_content, has_a_preferred_size_with_the_width_of_the_longest_line_and_height_of_the_number_of_lines)
@@ -41,9 +55,9 @@ TEST(a_new_image_with_multi_line_content, has_a_preferred_size_with_the_width_of
         "abcde"_ts,
         "abcdefg"_ts
     };
-    
+
     munin::image image(content);
-    
+
     ASSERT_EQ(terminalpp::extent(content[1].size(), 2), image.get_preferred_size());
 }
 
@@ -54,9 +68,9 @@ TEST(a_new_image_with_multi_line_content_and_a_fill, has_a_preferred_size_with_t
         "abcde"_ts,
         "abcdefg"_ts
     };
-    
+
     munin::image image(content, 'Z');
-    
+
     ASSERT_EQ(terminalpp::extent(content[1].size(), 2), image.get_preferred_size());
 }
 
@@ -132,7 +146,7 @@ TEST(a_new_image_with_a_single_line_content, draws_that_content_centred_with_whi
 {
     using namespace terminalpp::literals;
     terminalpp::string content = "abc"_ts;
-    
+
     munin::image image(content);
     image.set_size({5, 3});
 
@@ -226,7 +240,7 @@ TEST(a_new_image_with_multi_line_content, draws_that_content_centred_with_whites
         "d"_ts,
         "efg"_ts
     };
-    
+
     munin::image image(content);
     image.set_size({5, 5});
 
@@ -287,7 +301,7 @@ TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_w
         "d"_ts,
         "efg"_ts
     };
-    
+
     munin::image image(content, 'T');
     image.set_size({5, 5});
 
