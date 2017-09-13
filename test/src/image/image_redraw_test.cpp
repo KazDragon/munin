@@ -148,3 +148,57 @@ TEST_F(an_image_with_single_line_content, redraws_old_area_and_new_area_when_set
     ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
     ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[1]);
 }
+
+class an_image_with_multi_line_content : public an_image_to_be_redrawn
+{
+protected :
+    an_image_with_multi_line_content()
+      : an_image_to_be_redrawn(std::vector<terminalpp::string>{
+            "test",
+            "test"
+        })
+    {
+    }
+};
+
+TEST_F(an_image_with_multi_line_content, redraws_old_area_when_setting_content_empty)
+{
+    image_.set_content();
+
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(0, 0), preferred_size_);
+
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+}
+
+TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_content_to_single_line)
+{
+    image_.set_content("test");
+
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(4, 1), preferred_size_);
+
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(2u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[1]);
+}
+
+TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_content_to_multi_line)
+{
+    std::vector<terminalpp::string> content {
+        "xtestx",
+        "xtestx"
+    };
+    image_.set_content(content);
+
+    ASSERT_EQ(1, preferred_size_changed_called_);
+    ASSERT_EQ(terminalpp::extent(6, 2), preferred_size_);
+
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(2u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(munin::rectangle({0, 1}, {6, 2}), redraw_regions_[1]);
+}
