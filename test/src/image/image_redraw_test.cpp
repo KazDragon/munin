@@ -44,6 +44,16 @@ protected :
     std::vector<munin::rectangle> redraw_regions_;
 };
 
+TEST_F(an_image_to_be_redrawn, redraws_entire_image_when_setting_fill)
+{
+    image_.set_fill('?');
+
+    ASSERT_EQ(0, preferred_size_changed_called_);
+    ASSERT_EQ(1, redraw_called_);
+    ASSERT_EQ(1u, redraw_regions_.size());
+    ASSERT_EQ(munin::rectangle({0, 0}, {6, 4}), redraw_regions_[0]);
+}
+
 class an_image_with_empty_content : public an_image_to_be_redrawn
 {
 };

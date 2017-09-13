@@ -185,3 +185,48 @@ TEST(an_image, sets_its_content_empty_when_set_to_an_empty_string)
     ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
 }
+
+TEST(an_image, can_have_its_fill_set)
+{
+    munin::image image("test");
+    image.set_size({6, 3});
+
+    image.set_fill('!');
+
+    terminalpp::canvas canvas({6, 3});
+
+    for (terminalpp::coordinate_type row = 0;
+         row < canvas.size().height;
+         ++row)
+    {
+        for (terminalpp::coordinate_type col = 0;
+             col < canvas.size().width;
+             ++col)
+        {
+            canvas[col][row] = 'X';
+        }
+    }
+
+    terminalpp::canvas_view cv{canvas};
+    munin::context ctx(cv);
+    image.draw(ctx, {{}, image.get_size()});
+
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[4][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[5][0]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'t'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'s'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'t'}, canvas[4][1]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[4][2]);
+    ASSERT_EQ(terminalpp::element{'!'}, canvas[5][2]);
+}

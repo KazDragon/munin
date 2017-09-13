@@ -41,17 +41,22 @@ public :
     ~image() override;
 
     //* =====================================================================
-    /// \brief Sets the content to the default content (i.e. fill only)
+    /// \brief Sets the background fill of the content.
+    //* =====================================================================
+    void set_fill(terminalpp::element const &fill);
+
+    //* =====================================================================
+    /// \brief Sets the content to the default content (i.e. fill only).
     //* =====================================================================
     void set_content();
 
     //* =====================================================================
-    /// \brief Sets the content to the given one-line content
+    /// \brief Sets the content to the given one-line content.
     //* =====================================================================
     void set_content(terminalpp::string const &content);
 
     //* =====================================================================
-    /// \brief Sets the content to the given multi-line content
+    /// \brief Sets the content to the given multi-line content.
     //* =====================================================================
     void set_content(std::vector<terminalpp::string> const &content);
 
