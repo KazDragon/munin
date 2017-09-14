@@ -15,7 +15,7 @@ TEST(a_new_brush_with_a_single_line_pattern, has_a_preferred_size_with_the_width
     using namespace terminalpp::literals;
     auto const pattern = "abcde"_ts;
     munin::brush brush(pattern);
-    
+
     ASSERT_EQ(terminalpp::extent(pattern.size(), 1), brush.get_preferred_size());
 }
 
@@ -26,9 +26,9 @@ TEST(a_new_brush_with_a_multi_line_pattern, has_a_preferred_size_with_the_width_
         "abcde"_ts,
         "abcdefg"_ts
     };
-    
+
     munin::brush brush(pattern);
-    
+
     ASSERT_EQ(terminalpp::extent(pattern[1].size(), 2), brush.get_preferred_size());
 }
 
@@ -70,7 +70,7 @@ TEST(a_new_brush_with_a_single_line_pattern, draws_that_pattern_repeatedly)
 {
     using namespace terminalpp::literals;
     terminalpp::string pattern = "abc"_ts;
-    
+
     munin::brush brush(pattern);
     brush.set_size({6, 2});
 
@@ -119,7 +119,7 @@ TEST(a_new_brush_with_a_single_line_pattern, draws_that_pattern_repeatedly)
     ASSERT_EQ(terminalpp::element{'b'}, canvas[5][2]);
     ASSERT_EQ(terminalpp::element{'c'}, canvas[6][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[7][2]);
-    
+
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][3]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
@@ -137,7 +137,7 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
         "ab"_ts,
         "cd"_ts
     };
-    
+
     munin::brush brush(pattern);
     brush.set_size({4, 4});
 
@@ -203,3 +203,26 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[5][5]);
 }
 
+TEST(make_brush_with_no_arguments, makes_a_new_brush)
+{
+    std::shared_ptr<munin::brush> brush = munin::make_brush();
+    ASSERT_EQ(terminalpp::extent(1, 1), brush->get_preferred_size());
+}
+
+TEST(make_brush_with_a_string_argument, makes_a_single_line_brush)
+{
+    using namespace terminalpp::literals;
+    std::shared_ptr<munin::brush> brush = munin::make_brush("test"_ts);
+    ASSERT_EQ(terminalpp::extent(4, 1), brush->get_preferred_size());
+}
+
+TEST(make_brush_with_a_vector_argument, makes_a_multi_line_brush)
+{
+    std::vector<terminalpp::string> pattern = {
+        "ab",
+        "cd"
+    };
+
+    std::shared_ptr<munin::brush> brush = munin::make_brush(pattern);
+    ASSERT_EQ(terminalpp::extent(2, 2), brush->get_preferred_size());
+}

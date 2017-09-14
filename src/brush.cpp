@@ -70,6 +70,7 @@ void brush::set_pattern(std::vector<terminalpp::string> const &pattern)
 {
     pimpl_->pattern_ = pattern;
     on_preferred_size_changed();
+    on_redraw({{{}, get_size()}});
 }
 
 // ==========================================================================
@@ -108,7 +109,7 @@ void brush::do_draw(context &ctx, rectangle const &region) const
              ++column)
         {
             auto const fill_column = column % pimpl_->pattern_[fill_row].size();
-            
+
             cvs[column][row] = pimpl_->pattern_[fill_row][fill_column];
         }
     }
@@ -124,15 +125,15 @@ nlohmann::json brush::do_to_json() const
     ])"_json;
 
     auto json = basic_component::do_to_json().patch(patch);
-    
+
     json["pattern"]["size"] = pimpl_->pattern_.size();
-    
+
     for (size_t index = 0; index < pimpl_->pattern_.size(); ++index)
     {
-        json["pattern"]["content"][index] = 
+        json["pattern"]["content"][index] =
             terminalpp::to_string(pimpl_->pattern_[index]);
     }
-    
+
     return json;
 }
 
@@ -144,5 +145,20 @@ std::shared_ptr<brush> make_brush()
     return std::make_shared<brush>();
 }
 
+// ==========================================================================
+// MAKE_BRUSH
+// ==========================================================================
+std::shared_ptr<brush> make_brush(terminalpp::string pattern)
+{
+    return std::make_shared<brush>(std::move(pattern));
 }
 
+// ==========================================================================
+// MAKE_BRUSH
+// ==========================================================================
+std::shared_ptr<brush> make_brush(std::vector<terminalpp::string> pattern)
+{
+    return std::make_shared<brush>(std::move(pattern));
+}
+
+}
