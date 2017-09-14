@@ -203,20 +203,20 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[5][5]);
 }
 
-TEST(make_brush_with_no_arguments, makes_a_new_brush)
+TEST(make_brush_with_no_pattern, makes_a_new_default_brush)
 {
     std::shared_ptr<munin::brush> brush = munin::make_brush();
     ASSERT_EQ(terminalpp::extent(1, 1), brush->get_preferred_size());
 }
 
-TEST(make_brush_with_a_string_argument, makes_a_single_line_brush)
+TEST(make_brush_with_a_string_pattern, makes_a_single_line_brush)
 {
     using namespace terminalpp::literals;
     std::shared_ptr<munin::brush> brush = munin::make_brush("test"_ts);
     ASSERT_EQ(terminalpp::extent(4, 1), brush->get_preferred_size());
 }
 
-TEST(make_brush_with_a_vector_argument, makes_a_multi_line_brush)
+TEST(make_brush_with_a_vector_pattern, makes_a_multi_line_brush)
 {
     std::vector<terminalpp::string> pattern = {
         "ab",

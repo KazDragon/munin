@@ -353,3 +353,27 @@ TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_w
     ASSERT_EQ(terminalpp::element{'T'}, canvas[3][4]);
     ASSERT_EQ(terminalpp::element{'T'}, canvas[4][4]);
 }
+
+TEST(make_image_with_no_content, makes_a_new_default_image)
+{
+    std::shared_ptr<munin::image> image = munin::make_image();
+    ASSERT_EQ(terminalpp::extent(0, 0), image->get_preferred_size());
+}
+
+TEST(make_image_with_a_string_content, makes_a_single_line_image)
+{
+    using namespace terminalpp::literals;
+    std::shared_ptr<munin::image> image = munin::make_image("test"_ts);
+    ASSERT_EQ(terminalpp::extent(4, 1), image->get_preferred_size());
+}
+
+TEST(make_image_with_a_vector_content, makes_a_multi_line_image)
+{
+    std::vector<terminalpp::string> pattern = {
+        "ab",
+        "cd"
+    };
+
+    std::shared_ptr<munin::image> image = munin::make_image(pattern);
+    ASSERT_EQ(terminalpp::extent(2, 2), image->get_preferred_size());
+}

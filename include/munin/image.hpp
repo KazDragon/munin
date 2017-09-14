@@ -92,9 +92,23 @@ private :
 };
 
 //* =========================================================================
-/// \brief Returns a newly created image with the default pattern.
+/// \brief Returns a newly created image with the default content.
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<image> make_image();
+
+//* =========================================================================
+/// \brief Returns a newly created image with the specified single-line
+/// content.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<image> make_image(terminalpp::string content);
+
+//* =========================================================================
+/// \brief Returns a newly created image with the specified multi-line
+/// content.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<image> make_image(std::vector<terminalpp::string> content);
 
 }
