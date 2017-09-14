@@ -316,5 +316,21 @@ std::shared_ptr<image> make_image()
     return std::make_shared<image>();
 }
 
+// ==========================================================================
+// MAKE_IMAGE
+// ==========================================================================
+std::shared_ptr<image> make_image(terminalpp::string content)
+{
+    return std::make_shared<image>(std::move(content));
+}
+
+// ==========================================================================
+// MAKE_IMAGE
+// ==========================================================================
+std::shared_ptr<image> make_image(std::vector<terminalpp::string> content)
+{
+    return std::make_shared<image>(std::move(content));
+}
+
 }
 
