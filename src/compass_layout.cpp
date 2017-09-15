@@ -21,6 +21,11 @@ void compass_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
+    auto used_north = 0;
+    auto used_south = 0;
+    auto used_west  = 0;
+    auto used_east  = 0;
+
     for (auto index = 0u; index < components.size(); ++index)
     {
         auto const &component      = components[index];
@@ -28,33 +33,40 @@ void compass_layout::do_layout(
         auto const hint            = hint_any ? *hint_any : heading::centre;
         auto const &preferred_size = component->get_preferred_size();
 
+        auto const remaining_height = size.height - used_north - used_south;
+        auto const remaining_width  = size.width - used_west - used_east;
+
         switch (hint)
         {
             default :
                 // fall-through
             case heading::centre :
-                component->set_position({0, 0});
-                component->set_size(size);
+                component->set_position({used_west, used_north});
+                component->set_size({remaining_width, remaining_height});
                 break;
 
             case heading::north :
-                component->set_position({0, 0});
-                component->set_size({size.width, preferred_size.height});
+                component->set_position({used_west, 0});
+                component->set_size({remaining_width, preferred_size.height});
+                used_north = preferred_size.height;
                 break;
 
             case heading::south :
-                component->set_position({0, size.height - preferred_size.height});
-                component->set_size({size.width, preferred_size.height});
+                component->set_position({used_west, size.height - preferred_size.height});
+                component->set_size({remaining_width, preferred_size.height});
+                used_south = preferred_size.height;
                 break;
 
             case heading::west :
-                component->set_position({0, 0});
-                component->set_size({preferred_size.width, size.height});
+                component->set_position({0, used_north});
+                component->set_size({preferred_size.width, remaining_height});
+                used_west = preferred_size.width;
                 break;
 
             case heading::east :
-                component->set_position({size.width - preferred_size.width, 0});
-                component->set_size({preferred_size.width, size.height});
+                component->set_position({size.width - preferred_size.width, used_north});
+                component->set_size({preferred_size.width, remaining_height});
+                used_east = preferred_size.width;
                 break;
         }
 

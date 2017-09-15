@@ -113,3 +113,164 @@ INSTANTIATE_TEST_CASE_P(
         }
     })
 );
+
+INSTANTIATE_TEST_CASE_P(
+    centre_components_occupy_unused_space,
+    compass_layouts,
+    ValuesIn(
+    {
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 0, 0 }, { 10, 5 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 0, 5 }, { 10, 5 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 0, 5 }, { 10, 5 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 0, 0 }, { 10, 5 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 0 }, { 5, 10 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 5, 0 }, { 5, 10 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 5, 0 }, { 5, 10 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 0, 0 }, { 5, 10 } }
+            }},
+            { 10, 10 }
+        },
+    })
+);
+
+INSTANTIATE_TEST_CASE_P(
+    order_of_insertion_takes_priority,
+    compass_layouts,
+    ValuesIn(
+    {
+    /*
+        +------------+
+        |+----------+|
+        ||    N     ||
+        |+--+----+--+|
+        ||  |    |  ||
+        ||  |    |  ||
+        ||W | C  | E||
+        ||  |    |  ||
+        ||  |    |  ||
+        ||  |    |  ||
+        |+--+----+--+|
+        ||    S     ||
+        |+----------+|
+        +------------+
+    */
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 0, 0 }, { 12, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 0, 9 }, { 12, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 9, 3 }, { 3, 6 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 3 }, { 3, 6 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 3, 3 }, { 6, 6 } }
+            }},
+            { 12, 12 }
+        },
+
+    /*
+        +------------+
+        |+--+----+--+|
+        ||  | N  |  ||
+        ||  +----+  ||
+        ||  |    |  ||
+        ||  |    |  ||
+        ||W | C  | E||
+        ||  |    |  ||
+        ||  |    |  ||
+        ||  |    |  ||
+        ||  +----+  ||
+        ||  | S  |  ||
+        |+--+----+--+|
+        +------------+
+    */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 0 }, { 3, 12 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 9, 0 }, { 3, 12 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 3, 0 }, { 6, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 3, 9 }, { 6, 3 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 3, 3 }, { 6, 6 } }
+            }},
+            { 12, 12 }
+        },
+    })
+);
