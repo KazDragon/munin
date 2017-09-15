@@ -5,29 +5,34 @@
 namespace munin {
 
 //* =========================================================================
-/// \brief A class that knows how to lay components out in a container in
-/// a grid of cells of equal size.
+/// \brief A class that knows how to lay components out in a container in the
+/// manner of a compass, pinning components to the edge associated with the
+/// heading.  Each component is given its preferred dimension away from that
+/// edge and fills the dimension along the edge.  A special heading of
+/// "centre" fills the remaining space.
 ///
-/// +------------+
-/// |+--++--++--+|
-/// ||  ||  ||  ||
-/// |+--++--++--+|
-/// |+--++--++--+|
-/// ||  ||  ||  ||  3x3 grid
-/// |+--++--++--+|
-/// |+--++--++--+|
-/// ||  ||  ||  ||
-/// |+--++--++--+|
-/// +------------+
+/// Note: this can be sensitive to insertion order.
+///
+/// +------------+ +---+----+---+
+/// |   NORTH    | | W | C  | E |
+/// +------------+ | E | E  | A |
+/// |            | | S | N  | S |
+/// |   CENTRE   | | T | TR | T |
+/// |            | |   |  E |   |
+/// +------------+ +---+----+---+
+///
 //* =========================================================================
-class MUNIN_EXPORT grid_layout final
+class MUNIN_EXPORT compass_layout final
     : public layout
 {
-public :
-    //* =====================================================================
-    /// \brief Constructor
-    //* =====================================================================
-    explicit grid_layout(terminalpp::extent dimensions);
+    enum class heading
+    {
+        centre,
+        north,
+        south,
+        east,
+        west
+    };
 
 protected :
     //* =====================================================================
@@ -61,9 +66,9 @@ private :
 };
 
 //* =========================================================================
-/// \brief Returns a newly created grid strip layout
+/// \brief Returns a newly created compass layout
 //* =========================================================================
 MUNIN_EXPORT
-std::unique_ptr<layout> make_grid_layout(terminalpp::extent size);
+std::unique_ptr<layout> make_compass_layout();
 
 }
