@@ -25,6 +25,7 @@ namespace munin {
 class MUNIN_EXPORT compass_layout final
     : public layout
 {
+public :
     enum class heading
     {
         centre,

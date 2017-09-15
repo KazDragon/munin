@@ -21,6 +21,12 @@ void compass_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
+    for (auto &component : components)
+    {
+        component->get_preferred_size();
+        component->set_position({0, 0});
+        component->set_size(size);
+    }
 }
 
 // ==========================================================================
