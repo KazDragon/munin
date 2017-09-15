@@ -21,11 +21,43 @@ void compass_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
-    for (auto &component : components)
+    for (auto index = 0u; index < components.size(); ++index)
     {
-        component->get_preferred_size();
-        component->set_position({0, 0});
-        component->set_size(size);
+        auto const &component      = components[index];
+        auto const *hint_any       = boost::any_cast<heading>(&hints[index]);
+        auto const hint            = hint_any ? *hint_any : heading::centre;
+        auto const &preferred_size = component->get_preferred_size();
+
+        switch (hint)
+        {
+            default :
+                // fall-through
+            case heading::centre :
+                component->set_position({0, 0});
+                component->set_size(size);
+                break;
+
+            case heading::north :
+                component->set_position({0, 0});
+                component->set_size({size.width, preferred_size.height});
+                break;
+
+            case heading::south :
+                component->set_position({0, size.height - preferred_size.height});
+                component->set_size({size.width, preferred_size.height});
+                break;
+
+            case heading::west :
+                component->set_position({0, 0});
+                component->set_size({preferred_size.width, size.height});
+                break;
+
+            case heading::east :
+                component->set_position({size.width - preferred_size.width, 0});
+                component->set_size({preferred_size.width, size.height});
+                break;
+        }
+
     }
 }
 

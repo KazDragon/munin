@@ -40,8 +40,8 @@ TEST_P(compass_layouts, place_components_at_these_positions)
 
     std::vector<std::shared_ptr<munin::component>> components;
     std::vector<boost::any> hints;
-    
-    for (auto const &component_datum : component_data) 
+
+    for (auto const &component_datum : component_data)
     {
         auto const &preferred_size     = std::get<0>(component_datum);
         auto const &hint               = std::get<1>(component_datum);
@@ -52,13 +52,13 @@ TEST_P(compass_layouts, place_components_at_these_positions)
             .WillRepeatedly(Return(preferred_size));
         EXPECT_CALL(*component, do_set_position(expected_placement.origin));
         EXPECT_CALL(*component, do_set_size(expected_placement.size));
-        
+
         components.push_back(component);
         hints.push_back(hint);
     }
 
     auto lyt = munin::make_compass_layout();
-    
+
     (*lyt)(components, hints, container_size);
 }
 
@@ -67,14 +67,48 @@ INSTANTIATE_TEST_CASE_P(
     compass_layouts,
     ValuesIn(
     {
-        compass_layout_test_data {
-            {
-                compass_layout_component_data {
-                    { 5, 5 }, 
-                    boost::any(munin::compass_layout::heading::centre),
-                    { { 0, 0 }, { 10, 10 } }
-                }
-            },
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 0, 0 }, { 10, 10 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 0, 0 }, { 10, 5 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 0, 5 }, { 10, 5 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 0 }, { 5, 10 } }
+            }},
+            { 10, 10 }
+        },
+
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 5, 5 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 5, 0 }, { 5, 10 } }
+            }},
             { 10, 10 }
         }
     })
