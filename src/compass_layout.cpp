@@ -1,7 +1,128 @@
 #include "munin/compass_layout.hpp"
 #include "munin/component.hpp"
+#include <utility>
 
 namespace munin {
+
+namespace {
+
+struct used_headings
+{
+    used_headings(terminalpp::extent size)
+      : size_(std::move(size))
+    {
+    }
+
+    terminalpp::coordinate_type north = 0;
+    terminalpp::coordinate_type south = 0;
+    terminalpp::coordinate_type east  = 0;
+    terminalpp::coordinate_type west  = 0;
+
+    terminalpp::coordinate_type remaining_width() const
+    {
+        return size_.width - west - east;
+    }
+
+    terminalpp::coordinate_type remaining_height() const
+    {
+        return size_.height - north - south;
+    }
+
+private :
+    terminalpp::extent size_;
+};
+
+// ==========================================================================
+// LAYOUT_CENTRE_COMPONENT
+// ==========================================================================
+static void layout_centre_component(
+    component &comp,
+    used_headings const &headings)
+{
+    comp.set_position({headings.west, headings.north});
+    comp.set_size({headings.remaining_width(), headings.remaining_height()});
+}
+
+// ==========================================================================
+// LAYOUT_NORTH_COMPONENT
+// ==========================================================================
+static void layout_north_component(
+    component &comp,
+    used_headings &headings)
+{
+    auto const height = (std::min)(
+        comp.get_preferred_size().height,
+        headings.remaining_height());
+
+    comp.set_position({headings.west, 0});
+    comp.set_size({headings.remaining_width(), height});
+
+    headings.north = height;
+}
+
+// ==========================================================================
+// LAYOUT_SOUTH_COMPONENT
+// ==========================================================================
+static void layout_south_component(
+    component &comp,
+    used_headings &headings)
+{
+    auto const preferred_size   = comp.get_preferred_size();
+    auto const remaining_height = headings.remaining_height();
+    auto const remaining_width  = headings.remaining_width();
+    auto const height = (std::min)(preferred_size.height, remaining_height);
+
+    comp.set_position({
+        headings.west,
+        (std::max)(
+            (headings.north + remaining_height) - preferred_size.height,
+            0)
+    });
+    comp.set_size({remaining_width, height});
+
+    headings.south = height;
+}
+
+// ==========================================================================
+// LAYOUT_WEST_COMPONENT
+// ==========================================================================
+static void layout_west_component(
+    component &comp,
+    used_headings &headings)
+{
+    auto const width = (std::min)(
+        comp.get_preferred_size().width,
+        headings.remaining_width());
+
+    comp.set_position({0, headings.north});
+    comp.set_size({width, headings.remaining_height()});
+
+    headings.west = width;
+}
+
+// ==========================================================================
+// LAYOUT_EAST_COMPONENT
+// ==========================================================================
+static void layout_east_component(
+    component &comp,
+    used_headings &headings)
+{
+    auto const preferred_size   = comp.get_preferred_size();
+    auto const remaining_height = headings.remaining_height();
+    auto const remaining_width  = headings.remaining_width();
+    auto const width = (std::min)(preferred_size.width, remaining_width);
+
+    comp.set_position({
+        (std::max)(
+            (headings.west + remaining_width) - preferred_size.width,
+            0),
+        headings.north});
+    comp.set_size({width, remaining_height});
+
+    headings.east = width;
+}
+
+}
 
 // ==========================================================================
 // DO_GET_PREFERRED_SIZE
@@ -21,66 +142,36 @@ void compass_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
-    auto used_north = 0;
-    auto used_south = 0;
-    auto used_west  = 0;
-    auto used_east  = 0;
+    used_headings headings(size);
 
     for (auto index = 0u; index < components.size(); ++index)
     {
-        auto const &component      = components[index];
-        auto const *hint_any       = boost::any_cast<heading>(&hints[index]);
-        auto const hint            = hint_any ? *hint_any : heading::centre;
-        auto const &preferred_size = component->get_preferred_size();
-
-        auto const remaining_height =
-            (std::max)(size.height - used_north - used_south, 0);
-        auto const remaining_width  =
-            (std::max)(size.width - used_west - used_east, 0);
+        auto &comp           = *components[index];
+        auto const *hint_any = boost::any_cast<heading>(&hints[index]);
+        auto const hint      = hint_any ? *hint_any : heading::centre;
 
         switch (hint)
         {
             default :
                 // fall-through
             case heading::centre :
-                component->set_position({used_west, used_north});
-                component->set_size({remaining_width, remaining_height});
+                layout_centre_component(comp, headings);
                 break;
 
             case heading::north :
-                component->set_position({used_west, 0});
-                component->set_size({
-                    remaining_width,
-                    (std::min)(preferred_size.height, remaining_height)});
-                used_north = preferred_size.height;
+                layout_north_component(comp, headings);
                 break;
 
             case heading::south :
-                component->set_position({
-                    used_west,
-                    (std::max)(size.height - preferred_size.height, 0)});
-                component->set_size({
-                    remaining_width,
-                    (std::min)(preferred_size.height, remaining_height)});
-                used_south = preferred_size.height;
+                layout_south_component(comp, headings);
                 break;
 
             case heading::west :
-                component->set_position({0, used_north});
-                component->set_size({
-                    (std::min)(preferred_size.width, remaining_width),
-                    remaining_height});
-                used_west = preferred_size.width;
+                layout_west_component(comp, headings);
                 break;
 
             case heading::east :
-                component->set_position({
-                    (std::max)(size.width - preferred_size.width, 0),
-                    used_north});
-                component->set_size({
-                    (std::min)(preferred_size.width, remaining_width),
-                    remaining_height});
-                used_east = preferred_size.width;
+                layout_east_component(comp, headings);
                 break;
         }
 

@@ -368,7 +368,51 @@ INSTANTIATE_TEST_CASE_P(
                 { { 12, 12 }, { 0, 0 } }
             }},
             { 12, 12 }
-        }
+        },
 
+    /*
+        +------------+
+        |+--+----+--+|
+        ||          ||
+        ||          ||
+        ||          ||
+        ||          ||
+        ||    E     ||  And everything else is underneath
+        ||          ||
+        ||          ||
+        ||          ||
+        ||          ||
+        ||          ||
+        |+--+----+--+|
+        +------------+
+    */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 12, 12 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 0, 0 }, { 12, 12 } }
+            },
+            compass_layout_component_data {
+                { 12, 12 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 0 }, { 0, 12 } }
+            },
+            compass_layout_component_data {
+                { 12, 12 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 0, 0 }, { 0, 12 } }
+            },
+            compass_layout_component_data {
+                { 12, 12 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 0, 0 }, { 0, 0 } }
+            },
+            compass_layout_component_data {
+                { 12, 12 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 0, 12 }, { 0, 0 } }
+            }},
+            { 12, 12 }
+        }
     })
 );
