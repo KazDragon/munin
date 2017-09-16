@@ -33,8 +33,10 @@ void compass_layout::do_layout(
         auto const hint            = hint_any ? *hint_any : heading::centre;
         auto const &preferred_size = component->get_preferred_size();
 
-        auto const remaining_height = size.height - used_north - used_south;
-        auto const remaining_width  = size.width - used_west - used_east;
+        auto const remaining_height =
+            (std::max)(size.height - used_north - used_south, 0);
+        auto const remaining_width  =
+            (std::max)(size.width - used_west - used_east, 0);
 
         switch (hint)
         {
@@ -47,25 +49,37 @@ void compass_layout::do_layout(
 
             case heading::north :
                 component->set_position({used_west, 0});
-                component->set_size({remaining_width, preferred_size.height});
+                component->set_size({
+                    remaining_width,
+                    (std::min)(preferred_size.height, remaining_height)});
                 used_north = preferred_size.height;
                 break;
 
             case heading::south :
-                component->set_position({used_west, size.height - preferred_size.height});
-                component->set_size({remaining_width, preferred_size.height});
+                component->set_position({
+                    used_west,
+                    (std::max)(size.height - preferred_size.height, 0)});
+                component->set_size({
+                    remaining_width,
+                    (std::min)(preferred_size.height, remaining_height)});
                 used_south = preferred_size.height;
                 break;
 
             case heading::west :
                 component->set_position({0, used_north});
-                component->set_size({preferred_size.width, remaining_height});
+                component->set_size({
+                    (std::min)(preferred_size.width, remaining_width),
+                    remaining_height});
                 used_west = preferred_size.width;
                 break;
 
             case heading::east :
-                component->set_position({size.width - preferred_size.width, used_north});
-                component->set_size({preferred_size.width, remaining_height});
+                component->set_position({
+                    (std::max)(size.width - preferred_size.width, 0),
+                    used_north});
+                component->set_size({
+                    (std::min)(preferred_size.width, remaining_width),
+                    remaining_height});
                 used_east = preferred_size.width;
                 break;
         }
