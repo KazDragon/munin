@@ -142,6 +142,7 @@ void compass_layout::do_layout(
     std::vector<boost::any>                 const &hints,
     terminalpp::extent                             size) const
 {
+    std::vector<component*> centre_components;
     used_headings headings(size);
 
     for (auto index = 0u; index < components.size(); ++index)
@@ -155,7 +156,7 @@ void compass_layout::do_layout(
             default :
                 // fall-through
             case heading::centre :
-                layout_centre_component(comp, headings);
+                centre_components.push_back(&comp);
                 break;
 
             case heading::north :
@@ -174,7 +175,11 @@ void compass_layout::do_layout(
                 layout_east_component(comp, headings);
                 break;
         }
+    }
 
+    for (auto *comp : centre_components)
+    {
+        layout_centre_component(*comp, headings);
     }
 }
 
