@@ -30,12 +30,12 @@ Implement the fundamentals of the library, providing the basis for further devel
  * [x] Vertical Strip Layout - a layout that arranges components in vertical strips
  * [x] Horizontal Strip Layout - a layout that arranges components in horizontal strips
  * [x] Grid Layout - a layout that arranges components in equally-sized cells.
- * [ ] Aligned Layout - a layout that arranges components with horizontal and vertical alignment (e.g. top-left, right-center)
+ * [x] Aligned Layout - a layout that arranges components with horizontal and vertical alignment (e.g. top-left, right-center)
  * [ ] Compass Layout - a layout that arranges components according to compass points (e.g. North, South, Centre)
  4. [ ] A sampling of common components
  * [x] Filled Box - a component that simply paints a single repeated character
- * [ ] Brush - a component that paints a repeated character pattern.
- * [ ] Image - a component that paints a static "image" once.
+ * [x] Brush - a component that paints a repeated character pattern.
+ * [x] Image - a component that paints a static "image" once.
  * [ ] Window - a top-level object that contains and draws components onto a canvas.
  
  ## v0.2 - Frames
