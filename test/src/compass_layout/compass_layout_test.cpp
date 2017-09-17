@@ -16,6 +16,12 @@ TEST(compass_layout_test, reports_attributes_as_json)
     ASSERT_EQ("compass_layout", json["type"]);
 }
 
+TEST(a_compass_layout_with_no_elements, has_a_zero_preferred_size)
+{
+    munin::compass_layout layout;
+    ASSERT_EQ(terminalpp::extent(0, 0), layout.get_preferred_size({}, {}));
+}
+
 using compass_layout_component_data = std::tuple<
     terminalpp::extent, // preferred size
     boost::any,         // layout hint
@@ -24,8 +30,10 @@ using compass_layout_component_data = std::tuple<
 
 using compass_layout_test_data = std::tuple<
     std::vector<compass_layout_component_data>, // component data
-    terminalpp::extent                          // container size
+    terminalpp::extent,                         // container size
+    terminalpp::extent                          // preferred_size
 >;
+
 
 class compass_layouts
   : public testing::TestWithParam<compass_layout_test_data>
@@ -35,8 +43,9 @@ class compass_layouts
 TEST_P(compass_layouts, place_components_at_these_positions)
 {
     auto const &param = GetParam();
-    auto const &component_data = std::get<0>(param);
-    auto const &container_size = std::get<1>(param);
+    auto const &component_data          = std::get<0>(param);
+    auto const &container_size          = std::get<1>(param);
+    auto const &expected_preferred_size = std::get<2>(param);
 
     std::vector<std::shared_ptr<munin::component>> components;
     std::vector<boost::any> hints;
@@ -59,6 +68,7 @@ TEST_P(compass_layouts, place_components_at_these_positions)
 
     auto lyt = munin::make_compass_layout();
 
+    ASSERT_EQ(expected_preferred_size, lyt->get_preferred_size(components, hints));
     (*lyt)(components, hints, container_size);
 }
 
@@ -73,7 +83,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 0 }, { 10, 10 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 5 }
         },
 
         compass_layout_test_data {{
@@ -82,7 +93,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::north),
                 { { 0, 0 }, { 10, 5 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 5 }
         },
 
         compass_layout_test_data {{
@@ -91,7 +103,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::south),
                 { { 0, 5 }, { 10, 5 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 5 }
         },
 
         compass_layout_test_data {{
@@ -100,7 +113,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::west),
                 { { 0, 0 }, { 5, 10 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 5 }
         },
 
         compass_layout_test_data {{
@@ -109,7 +123,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::east),
                 { { 5, 0 }, { 5, 10 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 5 }
         }
     })
 );
@@ -130,7 +145,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 5 }, { 10, 5 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 10 }
         },
 
         compass_layout_test_data {{
@@ -144,7 +160,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 0 }, { 10, 5 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 5, 10 }
         },
 
         compass_layout_test_data {{
@@ -158,7 +175,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 5, 0 }, { 5, 10 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 10, 5 }
         },
 
         compass_layout_test_data {{
@@ -172,7 +190,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 0 }, { 5, 10 } }
             }},
-            { 10, 10 }
+            { 10, 10 },
+            { 10, 5 }
         },
     })
 );
@@ -188,7 +207,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 0 }, { 2, 2 } }
             }},
-            { 2, 2 }
+            { 2, 2 },
+            { 3, 3 }
         },
 
         compass_layout_test_data {{
@@ -197,7 +217,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::north),
                 { { 0, 0 }, { 2, 2 } }
             }},
-            { 2, 2 }
+            { 2, 2 },
+            { 3, 3 }
         },
 
         compass_layout_test_data {{
@@ -206,7 +227,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::south),
                 { { 0, 0 }, { 2, 2 } }
             }},
-            { 2, 2 }
+            { 2, 2 },
+            { 3, 3 }
         },
 
         compass_layout_test_data {{
@@ -215,7 +237,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::west),
                 { { 0, 0 }, { 2, 2 } }
             }},
-            { 2, 2 }
+            { 2, 2 },
+            { 3, 3 }
         },
 
         compass_layout_test_data {{
@@ -224,7 +247,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::east),
                 { { 0, 0 }, { 2, 2 } }
             }},
-            { 2, 2 }
+            { 2, 2 },
+            { 3, 3 }
         }
     })
 );
@@ -277,7 +301,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 3, 3 }, { 6, 6 } }
             }},
-            { 12, 12 }
+            { 12, 12 },
+            { 11, 11 }
         },
 
     /*
@@ -322,7 +347,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 3, 3 }, { 6, 6 } }
             }},
-            { 12, 12 }
+            { 12, 12 },
+            { 11, 11 }
         },
 
     /*
@@ -367,7 +393,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 12, 12 }, { 0, 0 } }
             }},
-            { 12, 12 }
+            { 12, 12 },
+            { 36, 36 }
         },
 
     /*
@@ -412,7 +439,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::centre),
                 { { 0, 12 }, { 0, 0 } }
             }},
-            { 12, 12 }
+            { 12, 12 },
+            { 36, 36 }
         }
     })
 );
@@ -448,7 +476,8 @@ INSTANTIATE_TEST_CASE_P(
                 boost::any(munin::compass_layout::heading::west),
                 { { 0, 3 }, { 3, 6 } }
             }},
-            { 12, 12 }
+            { 12, 12 },
+            { 11, 11 }
         }
     })
 );

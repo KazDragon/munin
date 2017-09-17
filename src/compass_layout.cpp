@@ -8,7 +8,7 @@ namespace {
 
 struct used_headings
 {
-    used_headings(terminalpp::extent size)
+    explicit used_headings(terminalpp::extent size = {})
       : size_(std::move(size))
     {
     }
@@ -131,7 +131,58 @@ terminalpp::extent compass_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints) const
 {
-    return {};
+    used_headings headings;
+
+    terminalpp::extent centre_usage;
+
+    for (auto index = 0u; index < components.size(); ++index)
+    {
+        auto &comp            = *components[index];
+        auto const *hint_any  = boost::any_cast<heading>(&hints[index]);
+        auto const hint       = hint_any ? *hint_any : heading::centre;
+        auto const &preferred_size = comp.get_preferred_size();
+
+        switch (hint)
+        {
+            default :
+                // Fall-through
+            case heading::centre :
+                centre_usage.width =
+                    (std::max)(centre_usage.width, preferred_size.width);
+                centre_usage.height =
+                    (std::max)(centre_usage.height, preferred_size.height);
+                break;
+
+            case heading::north :
+                headings.north = preferred_size.height;
+                centre_usage.width =
+                    (std::max)(centre_usage.width, preferred_size.width);
+                break;
+
+            case heading::south :
+                headings.south = preferred_size.height;
+                centre_usage.width =
+                    (std::max)(centre_usage.width, preferred_size.width);
+                break;
+
+            case heading::west :
+                headings.west = preferred_size.width;
+                centre_usage.height =
+                    (std::max)(centre_usage.height, preferred_size.height);
+                break;
+
+            case heading::east :
+                headings.east = preferred_size.width;
+                centre_usage.height =
+                    (std::max)(centre_usage.height, preferred_size.height);
+                break;
+        }
+    }
+
+    return {
+        headings.west + headings.east + centre_usage.width,
+        headings.north + headings.south + centre_usage.height
+    };
 }
 
 // ==========================================================================
