@@ -26,9 +26,7 @@ struct alignment
 
 //* =========================================================================
 /// \brief A class that knows how to lay components out in a container in
-/// a aligned-like manner.  Each cell of the aligned has an identical size.
-/// Components added to the aligned will be displayed left-to-right, top-to-
-/// bottom.
+/// a aligned manner.
 //* =========================================================================
 class MUNIN_EXPORT aligned_layout : public layout
 {

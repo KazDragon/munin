@@ -71,6 +71,7 @@ set (MUNIN_SOURCE_FILES
     src/algorithm.cpp
     src/basic_component.cpp
     src/brush.cpp
+    src/compass_layout.cpp
     src/component.cpp
     src/container.cpp
     src/context.cpp
@@ -158,6 +159,7 @@ if (GTEST_FOUND)
         test/src/brush/brush_json_test.cpp
         test/src/brush/brush_redraw_test.cpp
         test/src/brush/new_brush_test.cpp
+        test/src/compass_layout/compass_layout_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
         test/src/container/container_draw_test.cpp
