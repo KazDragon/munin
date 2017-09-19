@@ -2,9 +2,12 @@
 
 #include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
+#include <memory>
+/*
 #include <boost/asio/io_service.hpp>
 #include <boost/signals2/signal.hpp>
 #include <string>
+*/
 
 namespace terminalpp {
     class terminal;
@@ -24,6 +27,23 @@ public :
     /// \brief Constructor
     /// \param content A component that this window displays.  May not be
     ///        null.
+    //* =====================================================================
+    explicit window(std::shared_ptr<component> content);
+    
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~window();
+    
+    //* =====================================================================
+    /// \brief Sets the size of the window and the content therein.
+    //* =====================================================================
+    void set_size(terminalpp::extent size);
+
+private :
+    class impl;
+    std::shared_ptr<impl> pimpl_;
+#if 0    
     /// \param terminal a terminal that is used to display this window.
     /// \param strand A boost::asio::strand in which all asynchronous calls
     /// will be run.
@@ -33,16 +53,6 @@ public :
         terminalpp::terminal             &terminal,
         boost::asio::io_service::strand  &strand);
 
-    //* =====================================================================
-    /// \brief Destructor
-    //* =====================================================================
-    ~window();
-
-    //* =====================================================================
-    /// \brief Sets the size of the window.  Following this, the contents
-    /// of the window are re-laid out.
-    //* =====================================================================
-    void set_size(terminalpp::extent size);
 
     //* =====================================================================
     /// \brief Sets the title of the window.
@@ -73,9 +83,7 @@ public :
         void (std::string const &paint_data)
     > on_repaint;
 
-private :
-    class impl;
-    std::shared_ptr<impl> pimpl_;
+#endif    
 };
 
 }

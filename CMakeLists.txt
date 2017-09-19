@@ -181,6 +181,7 @@ if (GTEST_FOUND)
         test/src/image/new_image_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+        test/src/window/window_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES

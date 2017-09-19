@@ -1,4 +1,6 @@
 #include "munin/window.hpp"
+#include "munin/component.hpp"
+/*
 #include "munin/algorithm.hpp"
 #include "munin/container.hpp"
 #include "munin/context.hpp"
@@ -7,12 +9,43 @@
 #include <terminalpp/terminalpp.hpp>
 #include <boost/asio/strand.hpp>
 #include <boost/format.hpp>
+*/
 
 namespace munin {
 
 // ==========================================================================
 // WINDOW IMPLEMENTATION STRUCTURE
 // ==========================================================================
+struct window::impl
+{
+    std::shared_ptr<component> content_;    
+};
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+window::window(std::shared_ptr<component> content)
+  : pimpl_(std::make_shared<impl>())
+{
+    pimpl_->content_ = std::move(content);
+}
+
+// ==========================================================================
+// DESTRUCTOR
+// ==========================================================================
+window::~window()
+{
+}
+
+// ==========================================================================
+// SET_SIZE
+// ==========================================================================
+void window::set_size(terminalpp::extent size)
+{
+    pimpl_->content_->set_size(size);
+}
+
+#if 0
 class window::impl
     : public std::enable_shared_from_this<window::impl>
 {
@@ -316,6 +349,7 @@ void window::data(std::string const &data)
 {
     pimpl_->data(data);
 }
+#endif
 
 }
 
