@@ -1,13 +1,8 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include <terminalpp/extent.hpp>
+#include <terminalpp/terminal.hpp>
 #include <memory>
-/*
-#include <boost/asio/io_service.hpp>
-#include <boost/signals2/signal.hpp>
-#include <string>
-*/
 
 namespace terminalpp {
     class terminal;
@@ -25,10 +20,14 @@ class MUNIN_EXPORT window
 public :
     //* =====================================================================
     /// \brief Constructor
+    /// \param terminal A terminal that the window draws on.  May not be
+    ///        null.
     /// \param content A component that this window displays.  May not be
     ///        null.
     //* =====================================================================
-    explicit window(std::shared_ptr<component> content);
+    explicit window(
+        std::shared_ptr<terminalpp::terminal> terminal,
+        std::shared_ptr<component> content);
     
     //* =====================================================================
     /// \brief Destructor
@@ -39,6 +38,13 @@ public :
     /// \brief Sets the size of the window and the content therein.
     //* =====================================================================
     void set_size(terminalpp::extent size);
+
+    //* =====================================================================
+    /// \brief Sends data that has been received from the client.  This is
+    /// expected to be in ANSI format, and will be converted to events that
+    /// are passed down into the focussed component.
+    //* =====================================================================
+    void data(std::string const &text);
 
 private :
     class impl;
@@ -63,13 +69,6 @@ private :
     /// \brief Enables mouse tracking for the window.
     //* =====================================================================
     void enable_mouse_tracking();
-
-    //* =====================================================================
-    /// \brief Sends data that has been received from the client.  This is
-    /// expected to be in ANSI format, and will be converted to events that
-    /// are passed down into the focussed component.
-    //* =====================================================================
-    void data(std::string const &data);
 
     //* =====================================================================
     /// \fn on_repaint

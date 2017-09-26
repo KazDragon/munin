@@ -1,10 +1,10 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
+#include "munin/detail/lambda_visitor.hpp"
 /*
 #include "munin/algorithm.hpp"
 #include "munin/container.hpp"
 #include "munin/context.hpp"
-#include "munin/detail/lambda_visitor.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <terminalpp/terminalpp.hpp>
 #include <boost/asio/strand.hpp>
@@ -18,15 +18,19 @@ namespace munin {
 // ==========================================================================
 struct window::impl
 {
+    std::shared_ptr<terminalpp::terminal> terminal_;
     std::shared_ptr<component> content_;    
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-window::window(std::shared_ptr<component> content)
+window::window(
+    std::shared_ptr<terminalpp::terminal> terminal,
+    std::shared_ptr<component> content)
   : pimpl_(std::make_shared<impl>())
 {
+    pimpl_->terminal_ = std::move(terminal);
     pimpl_->content_ = std::move(content);
 }
 
@@ -43,6 +47,23 @@ window::~window()
 void window::set_size(terminalpp::extent size)
 {
     pimpl_->content_->set_size(size);
+}
+
+// ==========================================================================
+// DATA
+// ==========================================================================
+void window::data(std::string const &text)
+{
+    static auto const visitor =  detail::make_lambda_visitor(
+        [this](auto const &ev) 
+        { 
+            pimpl_->content_->event(ev); 
+        });
+
+    for (auto const &event : pimpl_->terminal_->read(text))
+    {
+        boost::apply_visitor(visitor, event);
+    }
 }
 
 #if 0
