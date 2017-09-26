@@ -1,11 +1,12 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include <terminalpp/terminal.hpp>
+#include <terminalpp/extent.hpp>
+#include <boost/signals2/signal.hpp>
 #include <memory>
 
 namespace terminalpp {
-    class terminal;
+    class canvas;
 }
 
 namespace munin {
@@ -20,14 +21,10 @@ class MUNIN_EXPORT window
 public :
     //* =====================================================================
     /// \brief Constructor
-    /// \param terminal A terminal that the window draws on.  May not be
-    ///        null.
     /// \param content A component that this window displays.  May not be
     ///        null.
     //* =====================================================================
-    explicit window(
-        std::shared_ptr<terminalpp::terminal> terminal,
-        std::shared_ptr<component> content);
+    explicit window(std::shared_ptr<component> content);
     
     //* =====================================================================
     /// \brief Destructor
@@ -40,49 +37,29 @@ public :
     void set_size(terminalpp::extent size);
 
     //* =====================================================================
-    /// \brief Sends data that has been received from the client.  This is
-    /// expected to be in ANSI format, and will be converted to events that
-    /// are passed down into the focussed component.
+    /// \brief Send an event to the window.  This will be passed straight to
+    /// the content.
     //* =====================================================================
-    void data(std::string const &text);
-
-private :
-    class impl;
-    std::shared_ptr<impl> pimpl_;
-#if 0    
-    /// \param terminal a terminal that is used to display this window.
-    /// \param strand A boost::asio::strand in which all asynchronous calls
-    /// will be run.
-    //* =====================================================================
-    window(
-        std::shared_ptr<component> const &content,
-        terminalpp::terminal             &terminal,
-        boost::asio::io_service::strand  &strand);
-
+    void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Sets the title of the window.
+    /// \brief Paints the content onto the given canvas.
     //* =====================================================================
-    void set_title(std::string const &title);
+    void repaint(terminalpp::canvas &cvs);
 
     //* =====================================================================
-    /// \brief Enables mouse tracking for the window.
-    //* =====================================================================
-    void enable_mouse_tracking();
-
-    //* =====================================================================
-    /// \fn on_repaint
-    /// \param paint_data A sequence of characters that contain the ANSI-
-    /// compliant bytes necessary to repaint the window.
-    /// \brief Connect to this signal in order to receive notification about
-    /// when the window has repainted and the data for how to repaint it.
+    /// \fn on_repaint_request
+    /// \brief Connect to this signal in order to receive notifications that
+    /// the content of the window has been changed and required repainting.
     //* =====================================================================
     boost::signals2::signal
     <
-        void (std::string const &paint_data)
-    > on_repaint;
-
-#endif    
+        void ()
+    > on_repaint_request;
+    
+private :
+    class impl;
+    std::shared_ptr<impl> pimpl_;
 };
 
 }

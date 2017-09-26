@@ -182,12 +182,15 @@ if (GTEST_FOUND)
         test/src/null_layout/null_layout_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/window/window_test.cpp
+        test/src/window/window_repaint_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
         test/src/container/container_test.hpp
+        test/src/window/window_test.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp
+        test/include/mock/terminal.hpp
     )
 
     add_executable(munin_tester

@@ -1,3 +1,4 @@
+#pragma once
 #include <terminalpp/terminal.hpp>
 #include <iosfwd>
 #include <gmock/gmock.h>
@@ -100,21 +101,21 @@ public :
 // TODO: put these in Terminal++
 namespace terminalpp {
 
-std::ostream &operator<<(std::ostream &out, virtual_key const &vk)
+inline std::ostream &operator<<(std::ostream &out, virtual_key const &vk)
 {
     return out << "vk"; 
 }
 
 namespace ansi { 
     
-std::ostream &operator<<(std::ostream &out, control_sequence const &cseq)
+inline std::ostream &operator<<(std::ostream &out, control_sequence const &cseq)
 {
     return out << "cseq";
 }
 
 namespace mouse {
 
-std::ostream &operator<<(std::ostream &out, report const &rep)
+inline std::ostream &operator<<(std::ostream &out, report const &rep)
 {
     return out << "mouse";
 }

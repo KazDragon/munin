@@ -1,15 +1,5 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
-#include "munin/detail/lambda_visitor.hpp"
-/*
-#include "munin/algorithm.hpp"
-#include "munin/container.hpp"
-#include "munin/context.hpp"
-#include <terminalpp/canvas_view.hpp>
-#include <terminalpp/terminalpp.hpp>
-#include <boost/asio/strand.hpp>
-#include <boost/format.hpp>
-*/
 
 namespace munin {
 
@@ -18,20 +8,45 @@ namespace munin {
 // ==========================================================================
 struct window::impl
 {
-    std::shared_ptr<terminalpp::terminal> terminal_;
-    std::shared_ptr<component> content_;    
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
+    impl(window &self)
+      : self_(self)
+    {
+    }
+    
+    // ======================================================================
+    // REQUEST_REPAINT
+    // ======================================================================
+    void request_repaint()
+    {
+        if (!repaint_requested_)
+        {
+            repaint_requested_ = true;
+            self_.on_repaint_request();
+        }
+    }
+    
+    
+    window &self_;
+    std::shared_ptr<component> content_;
+    bool repaint_requested_ = false;
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-window::window(
-    std::shared_ptr<terminalpp::terminal> terminal,
-    std::shared_ptr<component> content)
-  : pimpl_(std::make_shared<impl>())
+window::window(std::shared_ptr<component> content)
+  : pimpl_(std::make_shared<impl>(std::ref(*this)))
 {
-    pimpl_->terminal_ = std::move(terminal);
     pimpl_->content_ = std::move(content);
+    
+    pimpl_->content_->on_redraw.connect(
+        [this](auto const &)
+        {
+            pimpl_->request_repaint();
+        });
 }
 
 // ==========================================================================
@@ -50,20 +65,19 @@ void window::set_size(terminalpp::extent size)
 }
 
 // ==========================================================================
-// DATA
+// EVENT
 // ==========================================================================
-void window::data(std::string const &text)
+void window::event(boost::any const &ev)
 {
-    static auto const visitor =  detail::make_lambda_visitor(
-        [this](auto const &ev) 
-        { 
-            pimpl_->content_->event(ev); 
-        });
+    pimpl_->content_->event(ev);
+}
 
-    for (auto const &event : pimpl_->terminal_->read(text))
-    {
-        boost::apply_visitor(visitor, event);
-    }
+// ==========================================================================
+// REPAINT
+// ==========================================================================
+void window::repaint(terminalpp::canvas &cvs)
+{
+    pimpl_->repaint_requested_ = false;
 }
 
 #if 0
