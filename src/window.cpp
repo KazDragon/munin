@@ -1,5 +1,6 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
+#include "munin/context.hpp"
 
 namespace munin {
 
@@ -75,7 +76,7 @@ void window::event(boost::any const &ev)
 // ==========================================================================
 // REPAINT
 // ==========================================================================
-void window::repaint(terminalpp::canvas &cvs)
+void window::repaint(context &cvs)
 {
     pimpl_->repaint_requested_ = false;
 }

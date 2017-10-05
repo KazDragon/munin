@@ -5,13 +5,10 @@
 #include <boost/signals2/signal.hpp>
 #include <memory>
 
-namespace terminalpp {
-    class canvas;
-}
-
 namespace munin {
 
 class component;
+class context;
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
@@ -43,9 +40,9 @@ public :
     void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Paints the content onto the given canvas.
+    /// \brief Paints the content onto the given context.
     //* =====================================================================
-    void repaint(terminalpp::canvas &cvs);
+    void repaint(context &cvs);
 
     //* =====================================================================
     /// \fn on_repaint_request
