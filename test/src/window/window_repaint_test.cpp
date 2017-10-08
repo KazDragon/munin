@@ -84,7 +84,7 @@ protected :
             .WillByDefault(WithArgs<1>(Invoke(
                 [this](auto const &region)
                 {
-                    increment_elements_within(region);
+                    this->increment_elements_within(region);
                 })));
     }
     
