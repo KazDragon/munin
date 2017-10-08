@@ -122,7 +122,7 @@ protected :
     munin::context context_;
 };
 
-terminalpp::extent const repainting_a_window::window_size;
+constexpr terminalpp::extent const repainting_a_window::window_size;
 
 TEST_F(repainting_a_window, of_size_zero_does_not_paint_any_data)
 {
