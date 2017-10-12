@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(munin)
+project(MUNIN VERSION 0.0.1)
+
 cmake_policy(VERSION 3.2)
 
 if (POLICY CMP0063)
@@ -18,7 +19,7 @@ find_package(Boost
 # Terminal++ is required for this library.
 find_package(Terminalpp 1.2.7 REQUIRED)
 
-# Due to the strange requirements for Google Test, it is assumed to have been
+# Due to the strange requirements for Google Mock, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
 # equivalent of the following script before building Munin
 #
@@ -60,11 +61,6 @@ if (MUNIN_COVERAGE)
     list(APPEND CMAKE_CXX_FLAGS "--coverage -g -O0")
     list(APPEND CMAKE_EXE_LINKER_FLAGS "--coverage")
 endif()
-
-set (MUNIN_VERSION_MAJOR 0)
-set (MUNIN_VERSION_MINOR 0)
-set (MUNIN_VERSION_PATCH 1)
-set (MUNIN_VERSION "${MUNIN_VERSION_MAJOR}.${MUNIN_VERSION_MINOR}.${MUNIN_VERSION_PATCH}")
 
 set (MUNIN_SOURCE_FILES
     src/aligned_layout.cpp
@@ -128,6 +124,7 @@ set_target_properties(munin
 target_include_directories(munin
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/munin-${MUNIN_VERSION}>
         "${Boost_INCLUDE_DIRS}"
 )
 
@@ -232,3 +229,61 @@ if (DOXYGEN_FOUND)
     )
 endif()
 
+install(
+    TARGETS
+        munin
+    EXPORT
+        munin-config
+    ARCHIVE DESTINATION
+        lib/munin-${MUNIN_VERSION}
+    LIBRARY DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+install(
+    DIRECTORY
+        include/
+    DESTINATION
+        include/munin-${MUNIN_VERSION}
+)
+
+export(
+    EXPORT
+        munin-config
+    FILE
+        "${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake"
+)
+
+install(
+    EXPORT
+        munin-config
+    DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
+    VERSION
+        "${MUNIN_VERSION}"
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
+    DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+# Add customizations for packaging
+set(CPACK_PACKAGE_NAME "Munin")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Munin")
+set(CPACK_PACKAGE_VENDOR "Matthew Chaplain")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_VERSION_MAJOR ${MUNIN_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${MUNIN_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${MUNIN_VERSION_PATCH})
+include(CPack)
