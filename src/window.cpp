@@ -95,4 +95,15 @@ void window::repaint(context &ctx)
     }
 }
 
+// ==========================================================================
+// TO_JSON
+// ==========================================================================
+nlohmann::json window::to_json() const
+{
+    return {
+        { "type",    "window" },
+        { "content", pimpl_->content_->to_json() }
+    };
+}
+
 }
