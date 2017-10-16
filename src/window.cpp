@@ -1,6 +1,7 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
 #include "munin/context.hpp"
+#include "munin/detail/json_adaptors.hpp"
 
 namespace munin {
 
@@ -93,6 +94,18 @@ void window::repaint(context &ctx)
     {
         pimpl_->content_->draw(ctx, region);
     }
+}
+
+// ==========================================================================
+// TO_JSON
+// ==========================================================================
+nlohmann::json window::to_json() const
+{
+    return {
+        { "type",    "window" },
+        { "content", pimpl_->content_->to_json() },
+        { "size",    detail::to_json(pimpl_->size_) }
+    };
 }
 
 }

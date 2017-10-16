@@ -2,6 +2,7 @@
 
 #include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
+#include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
@@ -45,6 +46,12 @@ public :
     //* =====================================================================
     void repaint(context &cvs);
 
+    //* =====================================================================
+    /// \brief Returns a JSON representation of the current state of the
+    /// window and its content.
+    //* =====================================================================
+    nlohmann::json to_json() const;
+    
     //* =====================================================================
     /// \fn on_repaint_request
     /// \brief Connect to this signal in order to receive notifications that
