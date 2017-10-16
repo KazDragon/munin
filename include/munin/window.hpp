@@ -1,8 +1,8 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include <nlohmann/json.hpp>
 #include <terminalpp/extent.hpp>
+#include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
