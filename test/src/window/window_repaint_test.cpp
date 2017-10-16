@@ -108,7 +108,6 @@ protected :
             for (auto x = region.origin.x; x < region.origin.x + region.size.width; ++x)
             {
                 ++canvas_[x][y].glyph_.character_;
-                printf("inc %d, %d = %d\n", x, y, canvas_[x][y].glyph_.character_);
             }
         }
     }
