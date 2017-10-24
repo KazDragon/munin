@@ -85,7 +85,7 @@ void window::event(boost::any const &ev)
 // ==========================================================================
 // REPAINT
 // ==========================================================================
-void window::repaint(context &ctx)
+std::string window::repaint(context &ctx)
 {
     std::vector<rectangle> repaint_regions;
     repaint_regions.swap(pimpl_->repaint_regions_);
@@ -94,6 +94,8 @@ void window::repaint(context &ctx)
     {
         pimpl_->content_->draw(ctx, region);
     }
+    
+    return "";
 }
 
 // ==========================================================================

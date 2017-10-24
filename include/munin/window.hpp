@@ -42,9 +42,10 @@ public :
     void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Paints the content onto the given context.
+    /// \brief Returns a string that represents the change in state of the
+    /// window since the last repaint.
     //* =====================================================================
-    void repaint(context &cvs);
+    std::string repaint(context &cvs);
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the

@@ -1,7 +1,9 @@
 #include "window_test.hpp"
 #include <munin/context.hpp>
+#include <terminalpp/ansi_terminal.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
+#include <terminalpp/screen.hpp>
 #include <gtest/gtest.h>
 
 using testing::Invoke;
@@ -216,4 +218,36 @@ TEST_F(repainting_a_window, after_a_repaint_with_two_discrete_regions_repaints_o
             ASSERT_EQ(0, canvas_[x][y].glyph_.character_);
         }
     }
+}
+
+TEST_F(repainting_a_window, with_no_changes_returns_empty_paint_data)
+{
+    window_->set_size(window_size);
+    window_->repaint(context_);
+    reset_canvas(canvas_);
+    
+    content_->on_redraw({{{}, {}}});
+    std::string paint_data = window_->repaint(context_);
+
+    ASSERT_EQ("", paint_data);
+}
+
+TEST_F(repainting_a_window, with_one_change_returns_paint_data_for_that_region)
+{
+    // TODO: this specifies an implementation.  Instead, it should mock a
+    // screen-like interface.
+    terminalpp::ansi_terminal terminal;
+    terminalpp::screen screen;
+    
+    window_->set_size(window_size);
+    window_->repaint(context_);
+    reset_canvas(canvas_);
+    screen.draw(terminal, canvas_);
+    
+    content_->on_redraw({{{}, {1, 1}}});
+    std::string expected_data = screen.draw(terminal, canvas_);
+    std::string paint_data = window_->repaint(context_);
+ 
+    // TODO: in the current state, this should break.
+    ASSERT_EQ(expected_data, paint_data);
 }
