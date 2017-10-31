@@ -2,6 +2,8 @@
 #include "munin/component.hpp"
 #include "munin/context.hpp"
 #include "munin/detail/json_adaptors.hpp"
+#include <terminalpp/screen.hpp>
+#include <terminalpp/terminal.hpp>
 
 namespace munin {
 
@@ -41,6 +43,8 @@ struct window::impl
     terminalpp::extent size_;
     
     std::vector<rectangle> repaint_regions_;
+
+    terminalpp::screen screen_;
 };
 
 // ==========================================================================
@@ -85,7 +89,7 @@ void window::event(boost::any const &ev)
 // ==========================================================================
 // REPAINT
 // ==========================================================================
-std::string window::repaint(context &ctx)
+std::string window::repaint(context &ctx, terminalpp::canvas &cvs, terminalpp::terminal &term)
 {
     std::vector<rectangle> repaint_regions;
     repaint_regions.swap(pimpl_->repaint_regions_);
@@ -95,7 +99,7 @@ std::string window::repaint(context &ctx)
         pimpl_->content_->draw(ctx, region);
     }
     
-    return "";
+    return pimpl_->screen_.draw(term, cvs);
 }
 
 // ==========================================================================
