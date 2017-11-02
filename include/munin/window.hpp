@@ -1,7 +1,9 @@
 #pragma once
 
 #include "munin/export.hpp"
+#include <terminalpp/canvas.hpp>
 #include <terminalpp/extent.hpp>
+#include <terminalpp/terminal.hpp>
 #include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
@@ -42,9 +44,11 @@ public :
     void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Paints the content onto the given context.
+    /// \brief Returns a string that represents the change in state of the
+    /// window since the last repaint.
     //* =====================================================================
-    void repaint(context &cvs);
+    std::string repaint(
+        context &ctx, terminalpp::canvas &cvs, terminalpp::terminal &term);
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the
