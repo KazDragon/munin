@@ -1,18 +1,18 @@
 #pragma once
 
 #include "munin/export.hpp"
+#include <terminalpp/canvas.hpp>
 #include <terminalpp/extent.hpp>
-#include <boost/asio/io_service.hpp>
+#include <terminalpp/terminal.hpp>
+#include <json.hpp>
+#include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
-#include <string>
-
-namespace terminalpp {
-    class terminal;
-}
+#include <memory>
 
 namespace munin {
 
 class component;
+class context;
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
@@ -24,55 +24,48 @@ public :
     /// \brief Constructor
     /// \param content A component that this window displays.  May not be
     ///        null.
-    /// \param terminal a terminal that is used to display this window.
-    /// \param strand A boost::asio::strand in which all asynchronous calls
-    /// will be run.
     //* =====================================================================
-    window(
-        std::shared_ptr<component> const &content,
-        terminalpp::terminal             &terminal,
-        boost::asio::io_service::strand  &strand);
-
+    explicit window(std::shared_ptr<component> content);
+    
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
     ~window();
-
+    
     //* =====================================================================
-    /// \brief Sets the size of the window.  Following this, the contents
-    /// of the window are re-laid out.
+    /// \brief Sets the size of the window and the content therein.
     //* =====================================================================
     void set_size(terminalpp::extent size);
 
     //* =====================================================================
-    /// \brief Sets the title of the window.
+    /// \brief Send an event to the window.  This will be passed straight to
+    /// the content.
     //* =====================================================================
-    void set_title(std::string const &title);
+    void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Enables mouse tracking for the window.
+    /// \brief Returns a string that represents the change in state of the
+    /// window since the last repaint.
     //* =====================================================================
-    void enable_mouse_tracking();
+    std::string repaint(
+        context &ctx, terminalpp::canvas &cvs, terminalpp::terminal &term);
 
     //* =====================================================================
-    /// \brief Sends data that has been received from the client.  This is
-    /// expected to be in ANSI format, and will be converted to events that
-    /// are passed down into the focussed component.
+    /// \brief Returns a JSON representation of the current state of the
+    /// window and its content.
     //* =====================================================================
-    void data(std::string const &data);
-
+    nlohmann::json to_json() const;
+    
     //* =====================================================================
-    /// \fn on_repaint
-    /// \param paint_data A sequence of characters that contain the ANSI-
-    /// compliant bytes necessary to repaint the window.
-    /// \brief Connect to this signal in order to receive notification about
-    /// when the window has repainted and the data for how to repaint it.
+    /// \fn on_repaint_request
+    /// \brief Connect to this signal in order to receive notifications that
+    /// the content of the window has been changed and required repainting.
     //* =====================================================================
     boost::signals2::signal
     <
-        void (std::string const &paint_data)
-    > on_repaint;
-
+        void ()
+    > on_repaint_request;
+    
 private :
     class impl;
     std::shared_ptr<impl> pimpl_;

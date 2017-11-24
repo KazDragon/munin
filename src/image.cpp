@@ -1,39 +1,163 @@
 #include "munin/image.hpp"
 #include "munin/context.hpp"
-#include "odin/core.hpp"
-#include "terminalpp/canvas_view.hpp"
-#include "terminalpp/string.hpp"
+#include "munin/detail/json_adaptors.hpp"
+#include <terminalpp/canvas_view.hpp>
 #include <algorithm>
 #include <utility>
+
+using namespace terminalpp::literals;
 
 namespace munin {
 
 // ==========================================================================
-// IMAGE::IMPLEMENTATION STRUCTURE
+// BRUSH::IMPLEMENTATION STRUCTURE
 // ==========================================================================
-struct image::impl : boost::noncopyable
+struct image::impl
 {
-    std::vector<terminalpp::string> elements_;
+    std::vector<terminalpp::string> content_;
+    terminalpp::element fill_;
 };
 
 // ==========================================================================
-// CONSTRUCTOR
+// GET_CONTENT_BASIS
 // ==========================================================================
-image::image(std::vector<terminalpp::string> const &elements)
-  : pimpl_(std::make_shared<impl>())
+static terminalpp::point get_content_basis(
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
 {
-    pimpl_->elements_ = elements;
-    set_can_focus(false);
+    return {
+        (component_size.width - content_size.width) / 2,
+        (component_size.height - content_size.height) / 2
+    };
+}
+
+// ==========================================================================
+// GET_CONTENT_EXTENT
+// ==========================================================================
+static terminalpp::extent get_content_extent(
+        terminalpp::extent const &component_size,
+        terminalpp::extent const &content_size)
+{
+    return {
+        (std::min)(content_size.width, component_size.width),
+        (std::min)(content_size.height, component_size.height)
+    };
+}
+
+// ==========================================================================
+// GET_CONTENT_BOUNDS
+// ==========================================================================
+static munin::rectangle get_content_bounds(
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
+{
+    return {
+        get_content_basis(component_size, content_size),
+        get_content_extent(component_size, content_size)
+    };
+}
+
+// ==========================================================================
+// HAS_ZERO_DIMENSION
+// ==========================================================================
+static bool has_zero_dimension(munin::rectangle const &bounds)
+{
+    return bounds.size.width == 0 || bounds.size.height == 0;
+}
+
+// ==========================================================================
+// ADD_REDRAW_REGION
+// ==========================================================================
+static void add_redraw_region(
+    std::vector<munin::rectangle> &redraw_regions,
+    terminalpp::extent const &component_size,
+    terminalpp::extent const &content_size)
+{
+    auto const content_bounds {
+        get_content_bounds(component_size, content_size)
+    };
+
+    if (!has_zero_dimension(content_bounds))
+    {
+        redraw_regions.push_back(content_bounds);
+    }
+}
+
+// ==========================================================================
+// DRAW_FILL_LINE
+// ==========================================================================
+static void draw_fill_line(
+    terminalpp::canvas_view &cvs,
+    terminalpp::point const &origin,
+    terminalpp::coordinate_type const &width,
+    terminalpp::element const &fill)
+{
+    for (terminalpp::coordinate_type column = origin.x;
+         column < origin.x + width;
+         ++column)
+    {
+        cvs[column][origin.y] = fill;
+    }
+}
+
+// ==========================================================================
+// DRAW_CONTENT_LINE
+// ==========================================================================
+static void draw_content_line(
+    terminalpp::canvas_view &cvs,
+    terminalpp::point const &origin,
+    terminalpp::coordinate_type const &content_start,
+    terminalpp::coordinate_type const &line_width,
+    terminalpp::string const &content,
+    terminalpp::element const &fill)
+{
+    for (auto column = origin.x; column < origin.x + line_width; ++column)
+    {
+        bool const column_has_content =
+            column >= content_start
+         && column <  content_start + content.size();
+
+        cvs[column][origin.y] =
+            column_has_content
+          ? content[column - content_start]
+          : fill;
+    }
 }
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-image::image(terminalpp::string const &elements)
+image::image(terminalpp::element fill)
+  : image("", fill)
+{
+}
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+image::image(terminalpp::string content, terminalpp::element fill)
+  : image(std::vector<terminalpp::string>{content}, fill)
+{
+}
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+image::image(
+    std::vector<terminalpp::string> content,
+    terminalpp::element fill)
   : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->elements_ = {elements};
-    set_can_focus(false);
+    // There is a special case for "empty" content, where the content is
+    // a single empty string.  In this case, it is not stored, and is as if
+    // there were no content at all.
+    if (!content.empty()
+     && !(content.size() == 1 && content[0].empty()))
+    {
+        pimpl_->content_ = content;
+    }
+
+    pimpl_->fill_ = fill;
 }
 
 // ==========================================================================
@@ -44,89 +168,168 @@ image::~image()
 }
 
 // ==========================================================================
-// SET_IMAGE
-// ==========================================================================
-void image::set_image(std::vector<terminalpp::string> const &elements)
-{
-    pimpl_->elements_ = elements;
-    on_preferred_size_changed();
-    on_redraw({rectangle({}, get_size())});
-}
-
-// ==========================================================================
-// SET_IMAGE
-// ==========================================================================
-void image::set_image(terminalpp::string const &element)
-{
-    set_image(std::vector<terminalpp::string>{element});
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent image::do_get_preferred_size() const
 {
-    terminalpp::extent preferred_size;
-    preferred_size.height = pimpl_->elements_.size();
+    return pimpl_->content_.empty()
+         ? terminalpp::extent()
+         : terminalpp::extent(
+               std::max_element(
+                   pimpl_->content_.begin(),
+                   pimpl_->content_.end(),
+                   [](auto const &lhs, auto const &rhs)
+                   {
+                       return lhs.size() < rhs.size();
+                   })->size(),
+               pimpl_->content_.size());
+}
 
-    for (auto const &row : pimpl_->elements_)
+// ==========================================================================
+// SET_FILL
+// ==========================================================================
+void image::set_fill(terminalpp::element const &fill)
+{
+    pimpl_->fill_ = fill;
+    on_redraw({{{0, 0}, get_size()}});
+}
+
+// ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content()
+{
+    auto const old_content_bounds {
+        get_content_bounds(get_size(), get_preferred_size())
+    };
+
+    pimpl_->content_.clear();
+
+    if (!has_zero_dimension(old_content_bounds))
     {
-        preferred_size.width = (std::max)(
-            odin::u32(preferred_size.width)
-          , odin::u32(row.size()));
+        on_preferred_size_changed();
+        on_redraw({old_content_bounds});
+    }
+}
+
+// ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content(terminalpp::string const &content)
+{
+    set_content(std::vector<terminalpp::string>{content});
+}
+
+// ==========================================================================
+// SET_CONTENT
+// ==========================================================================
+void image::set_content(std::vector<terminalpp::string> const &content)
+{
+    // Special cases: setting content to an empty vector or a vector
+    // of an empty string is equivalent to setting an empty content.
+    if (content.empty()
+     || (content.size() == 1u && content[0].empty()))
+    {
+        set_content();
+        return;
     }
 
-    return preferred_size;
+    std::vector<munin::rectangle> redraw_regions;
+    auto const size = get_size();
+
+    add_redraw_region(redraw_regions, size, get_preferred_size());
+    pimpl_->content_ = content;
+    add_redraw_region(redraw_regions, size, get_preferred_size());
+
+    on_preferred_size_changed();
+    on_redraw(redraw_regions);
 }
 
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void image::do_draw(
-    context         &ctx
-  , rectangle const &region)
+void image::do_draw(context &ctx, rectangle const &region) const
 {
-    static terminalpp::element const default_element(' ');
     auto &cvs = ctx.get_canvas();
 
-    for (odin::u32 row = region.origin.y;
-         row < odin::u32(region.origin.y + region.size.height);
+    auto const size = get_size();
+    auto const content_size = get_preferred_size();
+    auto const content_basis = get_content_basis(size, content_size);
+
+    for (terminalpp::coordinate_type row = region.origin.y;
+         row < region.origin.y + region.size.height;
          ++row)
     {
-        for (odin::u32 column = region.origin.x;
-             column < odin::u32(region.origin.x + region.size.width);
-             ++column)
+        bool const row_has_content =
+            row >= content_basis.y
+         && row < content_basis.y + pimpl_->content_.size();
+
+        if (row_has_content)
         {
-            if (row < pimpl_->elements_.size()
-             && column < pimpl_->elements_[row].size())
-            {
-                cvs[column][row] = pimpl_->elements_[row][column];
-            }
-            else
-            {
-                cvs[column][row] = default_element;
-            }
+            draw_content_line(
+                cvs,
+                { region.origin.x, row },
+                content_basis.x,
+                region.size.width,
+                pimpl_->content_[row - content_basis.y],
+                pimpl_->fill_);
+        }
+        else
+        {
+            draw_fill_line(
+                cvs,
+                { region.origin.x, row },
+                region.size.width,
+                pimpl_->fill_);
         }
     }
 }
 
 // ==========================================================================
-// MAKE_IMAGE
+// DO_TO_JSON
 // ==========================================================================
-MUNIN_EXPORT
-std::shared_ptr<image> make_image(
-    std::vector<terminalpp::string> const &elements)
+nlohmann::json image::do_to_json() const
 {
-    return std::make_shared<image>(elements);
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "image" }
+    ])"_json;
+
+    auto json = basic_component::do_to_json().patch(patch);
+
+    json["fill"] = detail::to_json(pimpl_->fill_);
+    json["content"]["size"] = pimpl_->content_.size();
+
+    for (size_t index = 0; index < pimpl_->content_.size(); ++index)
+    {
+        json["content"]["content"][index] =
+            terminalpp::to_string(pimpl_->content_[index]);
+    }
+
+    return json;
 }
 
 // ==========================================================================
 // MAKE_IMAGE
 // ==========================================================================
-MUNIN_EXPORT
-std::shared_ptr<image> make_image(terminalpp::string const &elements)
+std::shared_ptr<image> make_image()
 {
-    return std::make_shared<image>(elements);
+    return std::make_shared<image>();
+}
+
+// ==========================================================================
+// MAKE_IMAGE
+// ==========================================================================
+std::shared_ptr<image> make_image(terminalpp::string content)
+{
+    return std::make_shared<image>(std::move(content));
+}
+
+// ==========================================================================
+// MAKE_IMAGE
+// ==========================================================================
+std::shared_ptr<image> make_image(std::vector<terminalpp::string> content)
+{
+    return std::make_shared<image>(std::move(content));
 }
 
 }

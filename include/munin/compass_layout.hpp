@@ -4,41 +4,66 @@
 
 namespace munin {
 
-BOOST_STATIC_CONSTANT(odin::u32, COMPASS_LAYOUT_CENTRE = 0);
-BOOST_STATIC_CONSTANT(odin::u32, COMPASS_LAYOUT_NORTH  = 1);
-BOOST_STATIC_CONSTANT(odin::u32, COMPASS_LAYOUT_EAST   = 2);
-BOOST_STATIC_CONSTANT(odin::u32, COMPASS_LAYOUT_SOUTH  = 3);
-BOOST_STATIC_CONSTANT(odin::u32, COMPASS_LAYOUT_WEST   = 4);
-
 //* =========================================================================
-/// \brief A class that can lay out its components according to basic compass
-/// directions.  Components can be laid out to the north, east, south, west,
-/// and centre.  Components to the north and south are given their
-/// preferred height while having the width of the containing component, and
-/// components to the west and east are given their preferred width, while
-/// having the height of the containing component.
+/// \brief A class that knows how to lay components out in a container in the
+/// manner of a compass, pinning components to the edge associated with the
+/// heading.  Each component is given its preferred dimension away from that
+/// edge and fills the dimension along the edge.  A special heading of
+/// "centre" fills the remaining space.
+///
+/// Note: this can be sensitive to insertion order.
+///
+/// +------------+ +---+----+---+
+/// |   NORTH    | | W | C  | E |
+/// +------------+ | E | E  | A |
+/// |            | | S | N  | S |
+/// |   CENTRE   | | T | TR | T |
+/// |            | |   |  E |   |
+/// +------------+ +---+----+---+
+///
 //* =========================================================================
-class MUNIN_EXPORT compass_layout : public layout
+class MUNIN_EXPORT compass_layout final
+    : public layout
 {
+public :
+    enum class heading
+    {
+        centre,
+        north,
+        south,
+        east,
+        west
+    };
+
 protected :
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
     /// this function in order to retrieve the preferred size of the layout
     /// in a custom manner.
     //* =====================================================================
-    virtual terminalpp::extent do_get_preferred_size(
-        std::vector<std::shared_ptr<component>> const &components
-      , std::vector<boost::any>                 const &hints) const override;
+    terminalpp::extent do_get_preferred_size(
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints) const override;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
     /// function in order to lay a container's components out in a custom
     /// manner.
     //* =====================================================================
-    virtual void do_layout(
-        std::vector<std::shared_ptr<component>> const &components
-      , std::vector<boost::any>                 const &hints
-      , terminalpp::extent                             size) override;
+    void do_layout(
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints,
+        terminalpp::extent                             size) const override;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
+
+private :
+    terminalpp::extent dimensions_;
 };
 
 //* =========================================================================

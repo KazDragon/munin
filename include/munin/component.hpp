@@ -4,6 +4,7 @@
 #include "munin/rectangle.hpp"
 #include <terminalpp/point.hpp>
 #include <terminalpp/extent.hpp>
+#include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
@@ -100,21 +101,6 @@ public :
     void focus_previous();
 
     //* =====================================================================
-    /// \brief Enables the component.
-    //* =====================================================================
-    void enable();
-
-    //* =====================================================================
-    /// \brief Disables the component.
-    //* =====================================================================
-    void disable();
-
-    //* =====================================================================
-    /// \brief Returns whether the component is enabled or not.
-    //* =====================================================================
-    bool is_enabled() const;
-
-    //* =====================================================================
     /// \brief Returns true if this component has a visible cursor, false
     /// otherwise.
     //* =====================================================================
@@ -131,14 +117,9 @@ public :
     void set_cursor_position(terminalpp::point const &position);
 
     //* =====================================================================
-    /// \brief Tells the component to lay itself out.
-    //* =====================================================================
-    void layout();
-
-    //* =====================================================================
     /// \brief Draws the component.
     ///
-    /// \param cvs the context in which the component should draw itself.
+    /// \param ctx the context in which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
@@ -154,6 +135,11 @@ public :
     void event(boost::any const &event);
 
     //* =====================================================================
+    /// \brief Returns details about the component in JSON format.
+    //* =====================================================================
+    nlohmann::json to_json() const;
+
+    //* =====================================================================
     /// \fn on_redraw
     /// \param regions The regions of the component that requires redrawing.
     /// \brief Connect to this signal in order to receive notifications about
@@ -163,17 +149,6 @@ public :
     <
         void (std::vector<rectangle> const &regions)
     > on_redraw;
-
-    //* =====================================================================
-    /// \fn on_layout_change
-    /// \brief Certain component, such as containers, make requests that we
-    /// update the overall layout should be done.  Connect to this signal
-    /// in order to receive notifications about this.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void ()
-    > on_layout_change;
 
     //* =====================================================================
     /// \fn on_preferred_size_changed
@@ -213,7 +188,7 @@ public :
     //* =====================================================================
     boost::signals2::signal
     <
-        void (bool)
+        void ()
     > on_cursor_state_changed;
 
     //* =====================================================================
@@ -223,7 +198,7 @@ public :
     //* =====================================================================
     boost::signals2::signal
     <
-        void (terminalpp::point)
+        void ()
     > on_cursor_position_changed;
 
 protected :
@@ -301,25 +276,6 @@ protected :
     virtual void do_focus_previous() = 0;
 
     //* =====================================================================
-    /// \brief Called by enable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    virtual void do_enable() = 0;
-
-    //* =====================================================================
-    /// \brief Called by disable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    virtual void do_disable() = 0;
-
-    //* =====================================================================
-    /// \brief Called by is_enabled().  Derived classes must override this
-    /// function in order to return whether the component is disabled or not
-    /// in a custom manner.
-    //* =====================================================================
-    virtual bool do_is_enabled() const = 0;
-
-    //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
     /// this function in order to return the cursor state in a custom manner.
     //* =====================================================================
@@ -340,13 +296,6 @@ protected :
     virtual void do_set_cursor_position(terminalpp::point const &position) = 0;
 
     //* =====================================================================
-    /// \brief Called by layout().  Derived classes must override this
-    /// function in order to lay the component out.  If the component
-    /// contains subcomponents, these must also be laid out.
-    //* =====================================================================
-    virtual void do_layout() = 0;
-
-    //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.
@@ -364,6 +313,13 @@ protected :
     /// function in order to handle events in a custom manner.
     //* =====================================================================
     virtual void do_event(boost::any const &event) = 0;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    virtual nlohmann::json do_to_json() const = 0;
 };
 
 }

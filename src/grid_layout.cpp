@@ -1,40 +1,42 @@
 #include "munin/grid_layout.hpp"
-#include "munin/container.hpp"
+#include "munin/component.hpp"
+#include "munin/detail/json_adaptors.hpp"
+#include <numeric>
 
 namespace munin {
 
+namespace {
+
 // ==========================================================================
-// GRID_LAYOUT::IMPLEMENTATION STRUCTURE
+// INCREMENT_OF_DIMENSION
 // ==========================================================================
-struct grid_layout::impl
+terminalpp::point increment_of_dimension(
+    terminalpp::point current_dimension,
+    terminalpp::extent const &dimensions)
 {
-    // ======================================================================
-    // CONSTRUCTOR
-    // ======================================================================
-    impl()
-        : rows_(0)
-        , columns_(0)
+    ++current_dimension.x;
+
+    if ((current_dimension.x % dimensions.width) == 0)
     {
+        current_dimension.x = 0;
+        ++current_dimension.y;
     }
 
-    odin::u32 rows_;
-    odin::u32 columns_;
-};
+    if ((current_dimension.y % dimensions.height) == 0)
+    {
+        current_dimension.y = 0;
+    }
+
+    return current_dimension;
+}
+
+}
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-grid_layout::grid_layout(odin::u32 rows, odin::u32 columns)
-    : pimpl_(std::make_shared<impl>())
-{
-    pimpl_->rows_    = rows;
-    pimpl_->columns_ = columns;
-}
-
-// ==========================================================================
-// DESTRUCTOR
-// ==========================================================================
-grid_layout::~grid_layout()
+grid_layout::grid_layout(terminalpp::extent dimensions)
+  : dimensions_(dimensions)
 {
 }
 
@@ -45,28 +47,25 @@ terminalpp::extent grid_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints) const
 {
-    // The preferred size of the whole component is the maximum preferred
-    // width and the maximum preferred height of all components,
-    // multiplied appropriately by the rows and columns
-    terminalpp::extent maximum_preferred_size(0, 0);
-
-    for (auto comp : components)
+    auto max_preferred_sizes = std::accumulate(
+        components.begin(),
+        components.end(),
+        terminalpp::extent{},
+        [this](auto preferred_size, auto const &component)
     {
-        auto preferred_size = comp->get_preferred_size();
+        auto const &component_preferred_size = component->get_preferred_size();
+        preferred_size.width  = std::max(
+            component_preferred_size.width, preferred_size.width);
+        preferred_size.height = std::max(
+            component_preferred_size.height, preferred_size.height);
 
-        maximum_preferred_size.width = (std::max)(
-            maximum_preferred_size.width
-          , preferred_size.width);
+        return preferred_size;
+    });
 
-        maximum_preferred_size.height = (std::max)(
-            maximum_preferred_size.height
-          , preferred_size.height);
-    }
-
-    maximum_preferred_size.width  *= pimpl_->columns_;
-    maximum_preferred_size.height *= pimpl_->rows_;
-
-    return maximum_preferred_size;
+    return {
+        max_preferred_sizes.width  * dimensions_.width,
+        max_preferred_sizes.height * dimensions_.height
+    };
 }
 
 // ==========================================================================
@@ -75,35 +74,72 @@ terminalpp::extent grid_layout::do_get_preferred_size(
 void grid_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints,
-    terminalpp::extent                             size)
+    terminalpp::extent                             size) const
 {
-    for (odin::u32 index = 0; index < components.size(); ++index)
+    terminalpp::extent const component_size = {
+        size.width / dimensions_.width,
+        size.height / dimensions_.height
+    };
+
+    terminalpp::extent const total_excess = {
+        size.width % dimensions_.width,
+        size.height % dimensions_.height
+    };
+
+    terminalpp::point current_dimension;
+
+    for (auto &component : components)
     {
-        auto comp = components[index];
+        auto current_component_position = terminalpp::point{
+            component_size.width * current_dimension.x,
+            component_size.height * current_dimension.y
+        };
 
-        // Work out the row/column of the current component.
-        odin::u32 row    = index / pimpl_->columns_;
-        odin::u32 column = index % pimpl_->columns_;
+        current_component_position.x +=
+            std::min(current_dimension.x, total_excess.width);
+        current_component_position.y +=
+            std::min(current_dimension.y, total_excess.height);
 
-        // Naive: will have missing pixels and off-by-one errors
-        comp->set_position(
-            terminalpp::point(
-                (size.width / pimpl_->columns_) * column
-              , (size.height / pimpl_->rows_) * row));
+        auto current_component_size = terminalpp::extent{
+            component_size.width,
+            component_size.height
+        };
 
-        comp->set_size(
-            terminalpp::extent(
-                size.width  / pimpl_->columns_
-              , size.height / pimpl_->rows_));
+        if (current_dimension.x < total_excess.width)
+        {
+            ++current_component_size.width;
+        }
+
+        if (current_dimension.y < total_excess.height)
+        {
+            ++current_component_size.height;
+        }
+
+        component->set_position(current_component_position);
+        component->set_size(current_component_size);
+
+        current_dimension =
+            increment_of_dimension(current_dimension, dimensions_);
     }
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json grid_layout::do_to_json() const
+{
+    return {
+        { "type",       "grid_layout" },
+        { "dimensions", detail::to_json(dimensions_) }
+    };
 }
 
 // ==========================================================================
 // MAKE_GRID_LAYOUT
 // ==========================================================================
-std::unique_ptr<layout> make_grid_layout(odin::u32 rows, odin::u32 columns)
+std::unique_ptr<layout> make_grid_layout(terminalpp::extent size)
 {
-    return std::unique_ptr<layout>(new grid_layout(rows, columns));
+    return std::unique_ptr<layout>(new grid_layout(size));
 }
 
 }

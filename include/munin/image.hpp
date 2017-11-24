@@ -1,48 +1,64 @@
 #pragma once
 
 #include "munin/basic_component.hpp"
+#include <terminalpp/string.hpp>
 #include <vector>
-
-namespace terminalpp {
-    class string;
-}
 
 namespace munin {
 
 //* =========================================================================
-/// \brief A class that models a single-line text control with a frame
-/// bordering it.
+/// \brief A class that models a box that is always filled with a centred
+/// pattern.
 //* =========================================================================
 class MUNIN_EXPORT image : public munin::basic_component
 {
 public :
     //* =====================================================================
     /// \brief Constructor
-    /// \param elements - a multidimentional array with each element
-    /// representing one horizontal line of the image.
+    /// By default, the image shows only the background fill.
     //* =====================================================================
-    image(std::vector<terminalpp::string> const &elements);
+    explicit image(terminalpp::element fill = ' ');
 
     //* =====================================================================
     /// \brief Constructor
-    /// \param elements - an array representing a single-lined image.
+    /// Initialises the image with the passed single-line content.
     //* =====================================================================
-    image(terminalpp::string const &elements);
+    explicit image(
+        terminalpp::string content,
+        terminalpp::element fill = ' ');
 
     //* =====================================================================
-    /// \brief Sets the image displayed
+    /// \brief Constructor
+    /// Initialises the image with the passed multi-line content.
     //* =====================================================================
-    void set_image(std::vector<terminalpp::string> const &elements);
-
-    //* =====================================================================
-    /// \brief Sets the image displayed
-    //* =====================================================================
-    void set_image(terminalpp::string const &elements);
+    explicit image(
+        std::vector<terminalpp::string> content,
+        terminalpp::element fill = ' ');
 
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~image();
+    ~image() override;
+
+    //* =====================================================================
+    /// \brief Sets the background fill of the content.
+    //* =====================================================================
+    void set_fill(terminalpp::element const &fill);
+
+    //* =====================================================================
+    /// \brief Sets the content to the default content (i.e. fill only).
+    //* =====================================================================
+    void set_content();
+
+    //* =====================================================================
+    /// \brief Sets the content to the given one-line content.
+    //* =====================================================================
+    void set_content(terminalpp::string const &content);
+
+    //* =====================================================================
+    /// \brief Sets the content to the given multi-line content.
+    //* =====================================================================
+    void set_content(std::vector<terminalpp::string> const &content);
 
 protected :
     //* =====================================================================
@@ -50,7 +66,7 @@ protected :
     /// this function in order to get the size of the component in a custom
     /// manner.
     //* =====================================================================
-    virtual terminalpp::extent do_get_preferred_size() const;
+    terminalpp::extent do_get_preferred_size() const override;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
@@ -61,9 +77,14 @@ protected :
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    virtual void do_draw(
-        context         &ctx
-      , rectangle const &region);
+    void do_draw(context &ctx, rectangle const &region) const override;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
 
 private :
     struct impl;
@@ -71,16 +92,23 @@ private :
 };
 
 //* =========================================================================
-/// \brief Returns a newly created image
+/// \brief Returns a newly created image with the default content.
 //* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<image> make_image(
-    std::vector<terminalpp::string> const &elements);
+std::shared_ptr<image> make_image();
 
 //* =========================================================================
-/// \brief Returns a newly created image
+/// \brief Returns a newly created image with the specified single-line
+/// content.
 //* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<image> make_image(terminalpp::string const &elements);
+std::shared_ptr<image> make_image(terminalpp::string content);
+
+//* =========================================================================
+/// \brief Returns a newly created image with the specified multi-line
+/// content.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<image> make_image(std::vector<terminalpp::string> content);
 
 }

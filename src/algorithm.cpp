@@ -1,5 +1,4 @@
 #include "munin/algorithm.hpp"
-#include "munin/core.hpp"
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <algorithm>
@@ -84,7 +83,9 @@ static std::vector<rectangle> cut_slices(
 
     for (auto &&current_rectangle : rectangles)
     {
-        for (s32 row = 0; row < current_rectangle.size.height; ++row)
+        for (terminalpp::coordinate_type row = 0;
+             row < current_rectangle.size.height;
+             ++row)
         {
             slices.push_back(
                 rectangle{{ current_rectangle.origin.x
@@ -272,11 +273,11 @@ void copy_region(
   , terminalpp::canvas      const &source
   , terminalpp::canvas_view       &destination)
 {
-    for (s32 y_coord = region.origin.y;
+    for (terminalpp::coordinate_type y_coord = region.origin.y;
          y_coord < region.origin.y + region.size.height;
          ++y_coord)
     {
-        for (s32 x_coord = region.origin.x;
+        for (terminalpp::coordinate_type x_coord = region.origin.x;
              x_coord < region.origin.x + region.size.width;
              ++x_coord)
         {

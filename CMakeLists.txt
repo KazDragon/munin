@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(munin)
+project(MUNIN VERSION 0.0.1)
+
 cmake_policy(VERSION 3.2)
 
 if (POLICY CMP0063)
@@ -16,9 +17,9 @@ find_package(Boost
         system)
 
 # Terminal++ is required for this library.
-find_package(Terminalpp REQUIRED)
+find_package(Terminalpp 1.2.7 REQUIRED)
 
-# Due to the strange requirements for Google Test, it is assumed to have been
+# Due to the strange requirements for Google Mock, it is assumed to have been
 # built in the "gtest" directory.  For this, it is required to run the moral
 # equivalent of the following script before building Munin
 #
@@ -31,7 +32,7 @@ find_package(GTest)
 
 if (GTEST_FOUND)
     find_package(GMock REQUIRED)
-    
+
     # For GTest, it is necessary to link with the appropriate local threading
     # library.
     find_package(Threads)
@@ -39,10 +40,17 @@ if (GTEST_FOUND)
     enable_testing()
 endif()
 
+# For producing automatically-generated documentation, we use Doxygen
+find_package(Doxygen)
+
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
 include(GenerateExportHeader)
+
+# Add nlohmann_json for easy JSON support.
+option(BuildTests "JSON Unit Tests" OFF)
+add_subdirectory(json)
 
 if (MUNIN_SANITIZE)
     list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
@@ -54,34 +62,46 @@ if (MUNIN_COVERAGE)
     list(APPEND CMAKE_EXE_LINKER_FLAGS "--coverage")
 endif()
 
-set (MUNIN_VERSION 0.0.1)
-
 set (MUNIN_SOURCE_FILES
+    src/aligned_layout.cpp
     src/algorithm.cpp
     src/basic_component.cpp
+    src/brush.cpp
+    src/compass_layout.cpp
     src/component.cpp
     src/container.cpp
     src/context.cpp
     src/filled_box.cpp
+    src/grid_layout.cpp
     src/horizontal_strip_layout.cpp
+    src/image.cpp
     src/layout.cpp
     src/null_layout.cpp
+    src/vertical_strip_layout.cpp
     src/window.cpp
+
+    src/detail/json_adaptors.cpp
 )
 
 set (MUNIN_INCLUDE_FILES
-    include/munin/detail/lambda_visitor.hpp
     include/munin/algorithm.hpp
     include/munin/basic_component.hpp
+    include/munin/brush.hpp
     include/munin/component.hpp
     include/munin/container.hpp
     include/munin/context.hpp
     include/munin/filled_box.hpp
+    include/munin/grid_layout.hpp
     include/munin/horizontal_strip_layout.hpp
+    include/munin/image.hpp
     include/munin/layout.hpp
     include/munin/null_layout.hpp
     include/munin/rectangle.hpp
+    include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
+
+    include/munin/detail/json_adaptors.hpp
+    include/munin/detail/lambda_visitor.hpp
 )
 
 add_library(munin
@@ -104,12 +124,14 @@ set_target_properties(munin
 target_include_directories(munin
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include/munin-${MUNIN_VERSION}>
         "${Boost_INCLUDE_DIRS}"
 )
 
 target_link_libraries(munin
     PUBLIC
         terminalpp
+        nlohmann_json
         ${Boost_SYSTEM_LIBRARY}
 )
 
@@ -124,29 +146,49 @@ if (GTEST_FOUND)
     enable_testing()
 
     set (MUNIN_TEST_SOURCE_FILES
-        test/algorithm_test.cpp
-        test/basic_component/new_basic_component_test.cpp
-        test/basic_component/enabled_basic_component_test.cpp
-        test/basic_component/disabled_basic_component_test.cpp
-        test/basic_component/unfocused_basic_component_test.cpp
-        test/basic_component/focused_basic_component_test.cpp
-        test/basic_component/basic_component_test.cpp
-        test/container/container_test.cpp
-        test/container/container_draw_test.cpp
-        test/container/container_focus_test.cpp
-        test/container/container_focus_next_test.cpp
-        test/container/container_focus_previous_test.cpp
-        test/container/container_subcomponent_focus_test.cpp
-        test/container/container_layout_test.cpp
-        test/filled_box/new_filled_box_test.cpp
-        test/filled_box/filled_box_test.cpp
-        test/horizontal_strip_layout_test.cpp
+        test/src/algorithm/algorithm_test.cpp
+        test/src/aligned_layout/aligned_layout_test.cpp
+        test/src/basic_component/new_basic_component_test.cpp
+        test/src/basic_component/unfocused_basic_component_test.cpp
+        test/src/basic_component/focused_basic_component_test.cpp
+        test/src/basic_component/basic_component_test.cpp
+        test/src/brush/brush_test.cpp
+        test/src/brush/brush_json_test.cpp
+        test/src/brush/brush_redraw_test.cpp
+        test/src/brush/new_brush_test.cpp
+        test/src/compass_layout/compass_layout_test.cpp
+        test/src/container/container_test.cpp
+        test/src/container/container_cursor_test.cpp
+        test/src/container/container_draw_test.cpp
+        test/src/container/container_event_test.cpp
+        test/src/container/container_focus_test.cpp
+        test/src/container/container_focus_next_test.cpp
+        test/src/container/container_focus_previous_test.cpp
+        test/src/container/container_json_test.cpp
+        test/src/container/container_redraw_test.cpp
+        test/src/container/container_subcomponent_focus_test.cpp
+        test/src/container/container_layout_test.cpp
+        test/src/filled_box/new_filled_box_test.cpp
+        test/src/filled_box/filled_box_test.cpp
+        test/src/grid_layout/grid_layout_test.cpp
+        test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/image/image_json_test.cpp
+        test/src/image/image_test.cpp
+        test/src/image/image_redraw_test.cpp
+        test/src/image/new_image_test.cpp
+        test/src/null_layout/null_layout_test.cpp
+        test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+        test/src/window/window_json_test.cpp
+        test/src/window/window_test.cpp
+        test/src/window/window_repaint_test.cpp
     )
 
     set (MUNIN_TEST_INCLUDE_FILES
-        test/container/container_test.hpp
-        test/mock/component.hpp
-        test/mock/layout.hpp
+        test/src/container/container_test.hpp
+        test/src/window/window_test.hpp
+        test/include/mock/component.hpp
+        test/include/mock/layout.hpp
+        test/include/mock/terminal.hpp
     )
 
     add_executable(munin_tester
@@ -156,17 +198,93 @@ if (GTEST_FOUND)
 
     target_include_directories(munin_tester
         PRIVATE
+            ${PROJECT_SOURCE_DIR}/test/include
             ${GTEST_INCLUDE_DIR}
     )
-    
+
     target_link_libraries(munin_tester
         munin
         terminalpp-core
         ${GMOCK_LIBRARY}
         ${GTEST_LIBRARY}
-        ${GTEST_MAIN_LIBRARY}
+        ${GMOCK_MAIN_LIBRARY}
         ${CMAKE_THREAD_LIBS_INIT}
     )
 
     add_test(munin_test munin_tester)
 endif()
+
+if (DOXYGEN_FOUND)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target("${CMAKE_PROJECT_NAME}_doc"
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY
+            ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT
+            "Generate API documentation with Doxygen" VERBATIM
+    )
+endif()
+
+install(
+    TARGETS
+        munin
+    EXPORT
+        munin-config
+    ARCHIVE DESTINATION
+        lib/munin-${MUNIN_VERSION}
+    LIBRARY DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+install(
+    DIRECTORY
+        include/
+    DESTINATION
+        include/munin-${MUNIN_VERSION}
+)
+
+export(
+    EXPORT
+        munin-config
+    FILE
+        "${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake"
+)
+
+install(
+    EXPORT
+        munin-config
+    DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
+    VERSION
+        "${MUNIN_VERSION}"
+    COMPATIBILITY AnyNewerVersion
+)
+
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
+    DESTINATION
+        lib/munin-${MUNIN_VERSION}
+)
+
+# Add customizations for packaging
+set(CPACK_PACKAGE_NAME "Munin")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Munin")
+set(CPACK_PACKAGE_VENDOR "Matthew Chaplain")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+set(CPACK_PACKAGE_VERSION_MAJOR ${MUNIN_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${MUNIN_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${MUNIN_VERSION_PATCH})
+include(CPack)

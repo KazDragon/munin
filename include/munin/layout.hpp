@@ -1,7 +1,8 @@
 #pragma once
 
-#include "munin/core.hpp"
+#include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
+#include <json.hpp>
 #include <boost/any.hpp>
 #include <memory>
 #include <vector>
@@ -41,6 +42,11 @@ public :
         std::vector<boost::any>                 const &hints,
         terminalpp::extent                             size) const;
 
+    //* =====================================================================
+    /// \brief Returns details about the layout in JSON format.
+    //* =====================================================================
+    nlohmann::json to_json() const;
+
 protected :
     //* =====================================================================
     /// \brief Constructor
@@ -62,9 +68,16 @@ protected :
     /// manner.
     //* =====================================================================
     virtual void do_layout(
-        std::vector<std::shared_ptr<component> > const &components,
-        std::vector<boost::any>                  const &hints,
-        terminalpp::extent                              size) const = 0;
+        std::vector<std::shared_ptr<component>> const &components,
+        std::vector<boost::any>                 const &hints,
+        terminalpp::extent                             size) const = 0;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    virtual nlohmann::json do_to_json() const = 0;
 };
 
 }

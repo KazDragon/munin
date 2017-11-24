@@ -26,4 +26,12 @@ void layout::operator()(
     do_layout(components, hints, size);
 }
 
+// ==========================================================================
+// TO_JSON
+// ==========================================================================
+nlohmann::json layout::to_json() const
+{
+    return do_to_json();
+}
+
 }

@@ -1,108 +1,129 @@
 language: cpp
-
 sudo: false
 
 compiler:
   - clang
 
-env:
-  - CONFIG=Release SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
-  - CONFIG=Release SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
-  - CONFIG=Debug SHARED=1 CCOMPILE=clang CXXCOMPILE=clang++
-  - CONFIG=Debug SHARED=0 CCOMPILE=clang CXXCOMPILE=clang++
-
-addons:
-  apt:
-    sources: &sources
-      - ubuntu-toolchain-r-test
-      - boost-latest
-    packages:
-      - clang
-      - gcc-4.8
-      - g++-4.8
-      - google-mock
-      - libboost1.55-all-dev
-
 matrix:
   include:
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-5
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Debug && SHARED=0 && COVERAGE=ON"
 
-    # g++-5.2 with coverage
-    - compiler: g++
-      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5 COVERAGE=ON
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-5
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Debug && SHARED=1"
 
-    # g++-5.2
-    - compiler: g++
-      env: CONFIG=Release SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-5
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Release && SHARED=0"
 
-    - compiler: g++
-      env: CONFIG=Release SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-5
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Release && SHARED=1"
 
-    - compiler: g++
-      env: CONFIG=Debug SHARED=1 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-trusty-4.0
+        packages:
+          - clang-4.0
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0 && CONFIG=Debug && SHARED=0"
 
-    - compiler: g++
-      env: CONFIG=Debug SHARED=0 CCOMPILE=gcc-5 CXXCOMPILE=g++-5
-      addons:
-        apt:
-          sources: *sources
-          packages:
-            - clang
-            - gcc-5
-            - g++-5
-            - google-mock
-            - libboost1.55-all-dev
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-trusty-4.0
+        packages:
+          - clang-4.0
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0 && CONFIG=Debug && SHARED=1"
+
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-trusty-4.0
+        packages:
+          - clang-4.0
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0 && CONFIG=Release && SHARED=0"
+
+  - os: linux
+    dist: trusty
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+          - llvm-toolchain-trusty-4.0
+        packages:
+          - clang-4.0
+          - google-mock
+          - libboost1.55-all-dev
+    env:
+      - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0 && CONFIG=Release && SHARED=1"
 
 cache:
   - apt: true
   - directories:
-      - cmake-3.4.0-Linux-x86_64
-      - lcov
-      - gtest
+    - lcov
+    - gtest
 
 before_install:
-  - ls -lR /usr/src
-
-# workaround for not having CMake 3.4
-  - if [ ! -d "cmake-3.4.0-Linux-x86_64/bin" ]; then
-      wget --no-check-certificate http://www.cmake.org/files/v3.4/cmake-3.4.0-Linux-x86_64.tar.gz;
-      tar -xzf cmake-3.4.0-Linux-x86_64.tar.gz;
-    fi
-  - export CMAKE=$PWD/cmake-3.4.0-Linux-x86_64/bin/cmake
+# Set up CC/CXX variables
+  - eval "${MATRIX_EVAL}"
+  - export CMAKE=cmake
 
 # workaround for not having lcov 1.13
   - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
@@ -113,24 +134,24 @@ before_install:
     fi
   - export LCOV=$HOME/lcov/usr/local/bin/lcov
 
-# install GTest
-
-  - mkdir gtest || true
-  - cd gtest
-  - CC=$COMPILE CXX=$CXXCOMPILE $CMAKE /usr/src/gtest && make
-  - export GTEST_ROOT=$PWD
-  - cd ..
-
 # build and install a number of other libraries
   - mkdir ext || true
   - export EXTERNAL_LIBRARIES=$PWD/ext
 
+# install GMock
+  - mkdir -p ext/gmock || true
+  - cd ext/gmock
+  - $CMAKE /usr/src/gmock -DCMAKE_BUILD_TYPE=$CONFIG -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
+  - make
+  - export GMOCK_EXT=$PWD
+  - cd ../..
+
 # install Terminal++
-  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.2.tar.gz -O terminalpp.tar.gz
+  - wget https://github.com/KazDragon/terminalpp/archive/v1.2.7.tar.gz -O terminalpp.tar.gz
   - tar zxvf terminalpp.tar.gz
   
-  - cd terminalpp-1.2.2
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
+  - cd terminalpp-1.2.7
+  - $CMAKE . -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DCMAKE_INSTALL_PREFIX=$EXTERNAL_LIBRARIES
   - make install
   - cd ..
   
@@ -140,7 +161,8 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - CC=$CCOMPILE CXX=$CXXCOMPILE $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/share/cmake/terminalpp -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+
+  - $CMAKE -DTerminalpp_DIR=$EXTERNAL_LIBRARIES/lib/terminalpp-1.2.7 -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE -DGTEST_LIBRARY=$GMOCK_EXT/gtest/libgtest.a -DGTEST_MAIN_LIBRARY=$GMOCK_EXT/gtest/libgtest_main.a -DGTEST_INCLUDE_DIR=/usr/src/gmock/gtest/include -DGMOCK_LIBRARY=$GMOCK_EXT/libgmock.a -DGMOCK_MAIN_LIBRARY=$GMOCK_EXT/libgmock_main.a ..
 
 script:
   - make
@@ -155,7 +177,7 @@ after_failure:
 after_success:
   - if [ "$COVERAGE" == "ON" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory .  --capture --output-file coverage.info;
-        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/ext/*' --output-file coverage.info;
+        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/ext/*' '*/json/*' --output-file coverage.info;
         $LCOV --gcov-tool=gcov-5 --list coverage.info;
         coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info;
     fi

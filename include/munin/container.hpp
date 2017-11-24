@@ -2,7 +2,6 @@
 
 #include "munin/export.hpp"
 #include "munin/component.hpp"
-#include "munin/core.hpp"
 #include <boost/optional.hpp>
 #include <vector>
 
@@ -14,7 +13,7 @@ class layout;
 /// \brief A graphical element capable of containing and arranging other
 /// subcomponents.
 //* =========================================================================
-class MUNIN_EXPORT container
+class MUNIN_EXPORT container final
     : public component
 {
 public :
@@ -35,7 +34,7 @@ public :
 
     //* =====================================================================
     /// \brief Adds a component to the container.
-    /// \param component The component to add to the container
+    /// \param comp The component to add to the container
     /// \param layout_hint A hint to be passed to the container's current
     ///        layout.
     //* =====================================================================
@@ -118,25 +117,6 @@ private :
     void do_focus_previous() override;
 
     //* =====================================================================
-    /// \brief Called by enable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    void do_enable() override;
-
-    //* =====================================================================
-    /// \brief Called by disable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    void do_disable() override;
-
-    //* =====================================================================
-    /// \brief Called by is_enabled().  Derived classes must override this
-    /// function in order to return whether the component is disabled or not
-    /// in a custom manner.
-    //* =====================================================================
-    bool do_is_enabled() const override;
-
-    //* =====================================================================
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
@@ -163,13 +143,6 @@ private :
     void do_set_cursor_position(terminalpp::point const &position) override;
 
     //* =====================================================================
-    /// \brief Called by layout().  Derived classes must override this
-    /// function in order to lay the component out.  If the component
-    /// contains subcomponents, these must also be laid out.
-    //* =====================================================================
-    void do_layout() override;
-
-    //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.
@@ -179,6 +152,13 @@ private :
     /// should be drawn.
     //* =====================================================================
     void do_draw(context &ctx, rectangle const &region) const override;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
 
 private :
     struct impl;

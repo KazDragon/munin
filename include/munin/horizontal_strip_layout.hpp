@@ -19,7 +19,7 @@ namespace munin {
 /// |+-------+ |
 /// +----------+
 //* =========================================================================
-class MUNIN_EXPORT horizontal_strip_layout
+class MUNIN_EXPORT horizontal_strip_layout final
     : public layout
 {
 protected :
@@ -41,6 +41,13 @@ protected :
         std::vector<std::shared_ptr<component>> const &components,
         std::vector<boost::any>                 const &hints,
         terminalpp::extent                           size) const override;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
 };
 
 //* =========================================================================

@@ -1,4 +1,5 @@
 #include "munin/basic_component.hpp"
+#include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <map>
 
@@ -15,7 +16,6 @@ struct basic_component::impl
     impl(basic_component &self)
         : self_(self)
         , has_focus_(false)
-        , enabled_(true)
     {
     }
 
@@ -39,7 +39,6 @@ struct basic_component::impl
     basic_component &self_;
     rectangle        bounds_;
     bool             has_focus_;
-    bool             enabled_;
 };
 
 // ==========================================================================
@@ -102,15 +101,12 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    if (pimpl_->enabled_)
+    bool old_focus = pimpl_->has_focus_;
+    pimpl_->has_focus_ = true;
+
+    if (!old_focus)
     {
-        bool old_focus = pimpl_->has_focus_;
-        pimpl_->has_focus_ = true;
-        
-        if (!old_focus)
-        {
-            on_focus_set();
-        }
+        on_focus_set();
     }
 }
 
@@ -121,7 +117,7 @@ void basic_component::do_lose_focus()
 {
     bool old_focus = pimpl_->has_focus_;
     pimpl_->has_focus_ = false;
-    
+
     if (old_focus)
     {
         on_focus_lost();
@@ -133,10 +129,7 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-    if (pimpl_->enabled_)
-    {
-        pimpl_->toggle_focus();
-    }
+    pimpl_->toggle_focus();
 }
 
 // ==========================================================================
@@ -144,34 +137,7 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-    if (pimpl_->enabled_)
-    {
-        pimpl_->toggle_focus();
-    }
-}
-
-// ==========================================================================
-// DO_ENABLE
-// ==========================================================================
-void basic_component::do_enable()
-{
-    pimpl_->enabled_ = true;
-}
-
-// ==========================================================================
-// DO_DISABLE
-// ==========================================================================
-void basic_component::do_disable()
-{
-    pimpl_->enabled_ = false;
-}
-
-// ==========================================================================
-// DO_IS_ENABLED
-// ==========================================================================
-bool basic_component::do_is_enabled() const
-{
-    return pimpl_->enabled_;
+    pimpl_->toggle_focus();
 }
 
 // ==========================================================================
@@ -201,14 +167,6 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 }
 
 // ==========================================================================
-// DO_LAYOUT
-// ==========================================================================
-void basic_component::do_layout()
-{
-    // By default, components are single entities and don't need laying out.
-}
-
-// ==========================================================================
 // DO_EVENT
 // ==========================================================================
 void basic_component::do_event(boost::any const &event)
@@ -224,6 +182,22 @@ void basic_component::do_event(boost::any const &event)
             set_focus();
         }
     }
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json basic_component::do_to_json() const
+{
+    return {
+        {"type",            "basic_component"},
+        {"position",        detail::to_json(get_position())},
+        {"size",            detail::to_json(get_size())},
+        {"preferred_size",  detail::to_json(get_preferred_size())},
+        {"has_focus",       has_focus()},
+        {"cursor_state",    get_cursor_state()},
+        {"cursor_position", detail::to_json(get_cursor_position())}
+    };
 }
 
 }
