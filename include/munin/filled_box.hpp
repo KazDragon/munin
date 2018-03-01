@@ -47,14 +47,16 @@ protected :
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
-    /// in order to draw onto the passed context.  A component must only draw
+    /// in order to draw onto the passed canvas.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param ctx the context in which the component should draw itself.
+    /// \param cvs the canvas in which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    void do_draw(context &ctx, rectangle const &region) const override;
+    void do_draw(
+        terminalpp::canvas_view &cvs, 
+        rectangle const &region) const override;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

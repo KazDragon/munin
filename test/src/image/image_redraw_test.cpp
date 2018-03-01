@@ -1,5 +1,4 @@
 #include <munin/image.hpp>
-#include <munin/context.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>

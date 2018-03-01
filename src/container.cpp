@@ -1,6 +1,5 @@
 #include "munin/container.hpp"
 #include "munin/algorithm.hpp"
-#include "munin/context.hpp"
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
@@ -116,11 +115,12 @@ struct container::impl
     // ======================================================================
     // DRAW_COMPONENTS
     // ======================================================================
-    void draw_components(context &ctx, rectangle const &region) const
+    void draw_components(
+        terminalpp::canvas_view &cvs, rectangle const &region) const
     {
         for (auto const &comp : components_)
         {
-            draw_component(comp, ctx, region);
+            draw_component(comp, cvs, region);
         }
     }
 
@@ -129,7 +129,7 @@ struct container::impl
     // ======================================================================
     void draw_component(
         std::shared_ptr<component> const &comp,
-        context &ctx,
+        terminalpp::canvas_view &cvs,
         rectangle const &region) const
     {
         auto const component_region = rectangle {
@@ -148,8 +148,6 @@ struct container::impl
             // The canvas must have an offset applied to it so that the
             // inner component can pretend that it is being drawn with its
             // container being at position (0,0).
-            auto &cvs = ctx.get_canvas();
-
             cvs.offset_by({
                 component_region.origin.x,
                 component_region.origin.y
@@ -165,7 +163,7 @@ struct container::impl
                 });
             };
 
-            comp->draw(ctx, draw_region.get());
+            comp->draw(cvs, draw_region.get());
         }
     }
 
@@ -683,9 +681,10 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void container::do_draw(context &ctx, rectangle const &region) const
+void container::do_draw(
+    terminalpp::canvas_view &cvs, rectangle const &region) const
 {
-    pimpl_->draw_components(ctx, region);
+    pimpl_->draw_components(cvs, region);
 }
 
 // ==========================================================================

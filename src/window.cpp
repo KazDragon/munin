@@ -1,6 +1,5 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
-#include "munin/context.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
@@ -89,14 +88,16 @@ void window::event(boost::any const &ev)
 // ==========================================================================
 // REPAINT
 // ==========================================================================
-std::string window::repaint(context &ctx, terminalpp::canvas &cvs, terminalpp::terminal &term)
+std::string window::repaint(
+    terminalpp::canvas &cvs, terminalpp::terminal &term)
 {
     std::vector<rectangle> repaint_regions;
     repaint_regions.swap(pimpl_->repaint_regions_);
     
+    terminalpp::canvas_view cvs_view(cvs);
     for (auto const &region : repaint_regions)
     {
-        pimpl_->content_->draw(ctx, region);
+        pimpl_->content_->draw(cvs_view, region);
     }
     
     return pimpl_->screen_.draw(term, cvs);

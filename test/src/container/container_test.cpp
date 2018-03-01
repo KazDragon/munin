@@ -71,9 +71,8 @@ TEST_F(a_new_container, draws_nothing)
     
     container.set_size({1, 1});
     
-    terminalpp::canvas_view canvas_view(canvas);
-    munin::context context(canvas_view);
-    container.draw(context, {{0, 0}, {1, 1}});
+    terminalpp::canvas_view cv(canvas);
+    container.draw(cv, {{0, 0}, {1, 1}});
     
     ASSERT_EQ(terminalpp::element('?'), canvas[0][0]);
 }

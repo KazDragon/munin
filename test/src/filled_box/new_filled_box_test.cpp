@@ -1,5 +1,4 @@
 #include <munin/filled_box.hpp>
-#include <munin/context.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>
@@ -36,8 +35,7 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
     }
 
     terminalpp::canvas_view cv{canvas};
-    munin::context ctx(cv);
-    filled_box.draw(ctx, {{}, filled_box.get_size()});
+    filled_box.draw(cv, {{}, filled_box.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);

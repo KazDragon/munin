@@ -1,5 +1,4 @@
 #include "munin/filled_box.hpp"
-#include "munin/context.hpp"
 #include <terminalpp/canvas_view.hpp>
 
 namespace munin {
@@ -67,10 +66,9 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void filled_box::do_draw(context &ctx, rectangle const &region) const
+void filled_box::do_draw(
+    terminalpp::canvas_view &cvs, rectangle const &region) const
 {
-    auto &cvs = ctx.get_canvas();
-
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
          ++row)

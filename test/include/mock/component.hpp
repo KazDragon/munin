@@ -1,6 +1,6 @@
 #pragma once
+#include <terminalpp/canvas_view.hpp>
 #include <munin/component.hpp>
-#include <munin/context.hpp>
 #include <gmock/gmock.h>
 
 class mock_component : public munin::component
@@ -130,14 +130,15 @@ public :
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
-    /// in order to draw onto the passed context.  A component must only draw
+    /// in order to draw onto the passed canvas.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param ctx the context in which the component should draw itself.
+    /// \param ctx the canvas on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
-    MOCK_CONST_METHOD2(do_draw, void (munin::context &, munin::rectangle const &));
+    MOCK_CONST_METHOD2(do_draw, 
+        void (terminalpp::canvas_view &, munin::rectangle const &));
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

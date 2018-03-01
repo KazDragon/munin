@@ -2,8 +2,9 @@
 
 #include "munin/export.hpp"
 #include "munin/rectangle.hpp"
-#include <terminalpp/point.hpp>
+#include <terminalpp/canvas_view.hpp>
 #include <terminalpp/extent.hpp>
+#include <terminalpp/point.hpp>
 #include <json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
@@ -11,8 +12,6 @@
 #include <vector>
 
 namespace munin {
-
-class context;
 
 //* =========================================================================
 /// \brief An object capable of being drawn on a canvas.
@@ -119,12 +118,12 @@ public :
     //* =====================================================================
     /// \brief Draws the component.
     ///
-    /// \param ctx the context in which the component should draw itself.
+    /// \param cvs the canvas on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     void draw(
-        context         &ctx
+        terminalpp::canvas_view &cvs
       , rectangle const &region) const;
 
     //* =====================================================================
@@ -305,8 +304,8 @@ protected :
     /// should be drawn.
     //* =====================================================================
     virtual void do_draw(
-        context         &ctx
-      , rectangle const &region) const = 0;
+        terminalpp::canvas_view &cvs,
+        rectangle const &region) const = 0;
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this
