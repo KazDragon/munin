@@ -1,5 +1,4 @@
 #include "munin/image.hpp"
-#include "munin/context.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <algorithm>
@@ -248,10 +247,9 @@ void image::set_content(std::vector<terminalpp::string> const &content)
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void image::do_draw(context &ctx, rectangle const &region) const
+void image::do_draw(
+    terminalpp::canvas_view &cvs, rectangle const &region) const
 {
-    auto &cvs = ctx.get_canvas();
-
     auto const size = get_size();
     auto const content_size = get_preferred_size();
     auto const content_basis = get_content_basis(size, content_size);

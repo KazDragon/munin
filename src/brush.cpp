@@ -1,5 +1,4 @@
 #include "munin/brush.hpp"
-#include "munin/context.hpp"
 #include <terminalpp/canvas_view.hpp>
 #include <utility>
 
@@ -94,10 +93,9 @@ terminalpp::extent brush::do_get_preferred_size() const
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void brush::do_draw(context &ctx, rectangle const &region) const
+void brush::do_draw(
+    terminalpp::canvas_view &cvs, rectangle const &region) const
 {
-    auto &cvs = ctx.get_canvas();
-
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
          ++row)

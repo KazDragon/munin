@@ -11,7 +11,9 @@ private :
         return {0, 0};
     }
     
-    void do_draw(munin::context  &ctx, munin::rectangle const &region) const override
+    void do_draw(
+        terminalpp::canvas_view &cvs, 
+        munin::rectangle const &region) const override
     {
     }
 };

@@ -1,8 +1,6 @@
 #include "window_test.hpp"
-#include <munin/context.hpp>
 #include <terminalpp/ansi_terminal.hpp>
 #include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
 #include <terminalpp/screen.hpp>
 #include <gtest/gtest.h>
 
@@ -52,10 +50,8 @@ TEST_F(a_window, again_requests_repaint_when_content_requests_a_redraw_after_a_p
     
     terminalpp::ansi_terminal terminal;
     terminalpp::canvas canvas({});
-    terminalpp::canvas_view canvas_view(canvas);
-    
-    munin::context ctx(canvas_view);
-    window_->repaint(ctx, canvas, terminal);
+
+    window_->repaint(canvas, terminal);
     
     content_->on_redraw({{{}, {}}});
 
@@ -66,9 +62,7 @@ class repainting_a_window : public testing::Test
 {
 protected :
     repainting_a_window()
-      : canvas_(window_size),
-        canvas_view_(canvas_),
-        context_(canvas_view_)
+      : canvas_(window_size)
     {
     }
     
@@ -121,15 +115,13 @@ protected :
     std::shared_ptr<munin::window> window_ = std::make_shared<munin::window>(content_);
     terminalpp::ansi_terminal terminal_;
     terminalpp::canvas canvas_;
-    terminalpp::canvas_view canvas_view_;
-    munin::context context_;
 };
 
 constexpr terminalpp::extent const repainting_a_window::window_size;
 
 TEST_F(repainting_a_window, of_size_zero_does_not_paint_any_data)
 {
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     
     for (auto y = 0; y < window_size.height; ++y)
     {
@@ -143,7 +135,7 @@ TEST_F(repainting_a_window, of_size_zero_does_not_paint_any_data)
 TEST_F(repainting_a_window, after_a_change_of_size_repaints_entire_canvas)
 {
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     
     for (auto y = 0; y < window_size.height; ++y)
     {
@@ -157,11 +149,11 @@ TEST_F(repainting_a_window, after_a_change_of_size_repaints_entire_canvas)
 TEST_F(repainting_a_window, after_a_repaint_request_of_zero_size_repaints_nothing)
 {
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     reset_canvas(canvas_);
     
     content_->on_redraw({{{}, {}}});
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     
     for (auto y = 0; y < window_size.height; ++y)
     {
@@ -175,11 +167,11 @@ TEST_F(repainting_a_window, after_a_repaint_request_of_zero_size_repaints_nothin
 TEST_F(repainting_a_window, after_a_repaint_with_one_region_repaints_only_that_region)
 {
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     reset_canvas(canvas_);
     
     content_->on_redraw({{{}, {window_size.width, 1}}});
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
 
     for (auto x = 0; x < window_size.width; ++x)
     {
@@ -198,14 +190,14 @@ TEST_F(repainting_a_window, after_a_repaint_with_one_region_repaints_only_that_r
 TEST_F(repainting_a_window, after_a_repaint_with_two_discrete_regions_repaints_only_those_regions)
 {
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     reset_canvas(canvas_);
     
     content_->on_redraw({
         {{}, {window_size.width, 1}},
         {{0, 1}, {window_size.width, 1}}
     });
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
 
     for (auto x = 0; x < window_size.width; ++x)
     {
@@ -225,10 +217,10 @@ TEST_F(repainting_a_window, after_a_repaint_with_two_discrete_regions_repaints_o
 TEST_F(repainting_a_window, with_no_changes_returns_empty_paint_data)
 {
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
 
     content_->on_redraw({{{}, {}}});
-    std::string paint_data = window_->repaint(context_, canvas_, terminal_);
+    std::string paint_data = window_->repaint(canvas_, terminal_);
 
     ASSERT_EQ("", paint_data);
 }
@@ -241,11 +233,11 @@ TEST_F(repainting_a_window, with_one_change_returns_paint_data_for_that_region)
     terminalpp::screen screen;
     
     window_->set_size(window_size);
-    window_->repaint(context_, canvas_, terminal_);
+    window_->repaint(canvas_, terminal_);
     screen.draw(terminal, canvas_);
     
     content_->on_redraw({{{}, {1, 1}}});
-    std::string paint_data = window_->repaint(context_, canvas_, terminal);
+    std::string paint_data = window_->repaint(canvas_, terminal);
     
     // Being too damn clever.  The terminal cursor is now on the same line, so 
     // will output a more compact sequence to go to the home spot.  Therefore,

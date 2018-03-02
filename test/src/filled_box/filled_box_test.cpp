@@ -1,5 +1,4 @@
 #include <munin/filled_box.hpp>
-#include <munin/context.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>
@@ -54,9 +53,8 @@ TEST(a_filled_box, draws_its_fill)
     filled_box.set_size({1, 1});
 
     terminalpp::canvas canvas({2, 2});
-    terminalpp::canvas_view canvas_view(canvas);
-    munin::context context(canvas_view);
-    filled_box.draw(context, {{}, {1, 1}});
+    terminalpp::canvas_view cv(canvas);
+    filled_box.draw(cv, {{}, {1, 1}});
 
     ASSERT_EQ(terminalpp::element('Y'), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
@@ -71,11 +69,10 @@ TEST(a_filled_box, draws_only_within_given_region)
     filled_box.set_size({2, 2});
 
     terminalpp::canvas canvas({3, 4});
-    terminalpp::canvas_view canvas_view(canvas);
-    canvas_view.offset_by({1, 1});
-    munin::context context(canvas_view);
+    terminalpp::canvas_view cv(canvas);
+    cv.offset_by({1, 1});
 
-    filled_box.draw(context, {{}, {1, 2}});
+    filled_box.draw(cv, {{}, {1, 2}});
 
     ASSERT_EQ(terminalpp::element(' '), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);

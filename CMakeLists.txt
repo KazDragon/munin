@@ -70,7 +70,6 @@ set (MUNIN_SOURCE_FILES
     src/compass_layout.cpp
     src/component.cpp
     src/container.cpp
-    src/context.cpp
     src/filled_box.cpp
     src/grid_layout.cpp
     src/horizontal_strip_layout.cpp
@@ -89,7 +88,6 @@ set (MUNIN_INCLUDE_FILES
     include/munin/brush.hpp
     include/munin/component.hpp
     include/munin/container.hpp
-    include/munin/context.hpp
     include/munin/filled_box.hpp
     include/munin/grid_layout.hpp
     include/munin/horizontal_strip_layout.hpp

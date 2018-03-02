@@ -12,7 +12,6 @@
 namespace munin {
 
 class component;
-class context;
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
@@ -48,7 +47,7 @@ public :
     /// window since the last repaint.
     //* =====================================================================
     std::string repaint(
-        context &ctx, terminalpp::canvas &cvs, terminalpp::terminal &term);
+        terminalpp::canvas &cvs, terminalpp::terminal &term);
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the

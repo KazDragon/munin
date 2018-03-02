@@ -1,5 +1,4 @@
 #include <munin/vertical_strip_layout.hpp>
-#include <munin/context.hpp>
 #include "mock/component.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
