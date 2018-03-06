@@ -5,15 +5,6 @@ using testing::Invoke;
 using testing::Return;
 using testing::_;
 
-TEST_F(a_window, sets_the_size_of_the_content_when_having_its_size_set)
-{
-    auto const size = terminalpp::extent({80, 24});
-    EXPECT_CALL(*content_, do_set_size(size));
-    
-    window_->set_size(size);
-}
-
-
 TEST_F(a_window, passes_events_to_the_content)
 {
     struct tag {};
