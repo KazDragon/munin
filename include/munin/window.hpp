@@ -32,11 +32,6 @@ public :
     ~window();
     
     //* =====================================================================
-    /// \brief Sets the size of the window and the content therein.
-    //* =====================================================================
-    void set_size(terminalpp::extent size);
-
-    //* =====================================================================
     /// \brief Send an event to the window.  This will be passed straight to
     /// the content.
     //* =====================================================================

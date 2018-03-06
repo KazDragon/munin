@@ -39,8 +39,7 @@ struct window::impl
     
     window &self_;
     std::shared_ptr<component> content_;
-    terminalpp::extent size_;
-    
+
     std::vector<rectangle> repaint_regions_;
 
     terminalpp::screen screen_;
@@ -69,15 +68,6 @@ window::~window()
 }
 
 // ==========================================================================
-// SET_SIZE
-// ==========================================================================
-void window::set_size(terminalpp::extent size)
-{
-    pimpl_->size_ = size;
-    pimpl_->content_->set_size(size);
-}
-
-// ==========================================================================
 // EVENT
 // ==========================================================================
 void window::event(boost::any const &ev)
@@ -91,15 +81,27 @@ void window::event(boost::any const &ev)
 std::string window::repaint(
     terminalpp::canvas &cvs, terminalpp::terminal &term)
 {
-    std::vector<rectangle> repaint_regions;
-    repaint_regions.swap(pimpl_->repaint_regions_);
+    auto const canvas_size = cvs.size();
     
+    std::vector<rectangle> repaint_regions;
+    
+    if (cvs.size() != pimpl_->content_->get_size())
+    {
+        pimpl_->content_->set_size(cvs.size());
+        repaint_regions.clear();
+        repaint_regions.push_back({{}, canvas_size});
+    }
+    else
+    {
+        repaint_regions.swap(pimpl_->repaint_regions_);
+    }
+
     terminalpp::canvas_view cvs_view(cvs);
     for (auto const &region : repaint_regions)
     {
         pimpl_->content_->draw(cvs_view, region);
     }
-    
+
     return pimpl_->screen_.draw(term, cvs);
 }
 
@@ -110,8 +112,7 @@ nlohmann::json window::to_json() const
 {
     return {
         { "type",    "window" },
-        { "content", pimpl_->content_->to_json() },
-        { "size",    detail::to_json(pimpl_->size_) }
+        { "content", pimpl_->content_->to_json() }
     };
 }
 
