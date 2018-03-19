@@ -64,7 +64,6 @@ endif()
 
 set (MUNIN_SOURCE_FILES
     src/aligned_layout.cpp
-    src/algorithm.cpp
     src/basic_component.cpp
     src/brush.cpp
     src/compass_layout.cpp
@@ -79,11 +78,11 @@ set (MUNIN_SOURCE_FILES
     src/vertical_strip_layout.cpp
     src/window.cpp
 
+    src/detail/algorithm.cpp
     src/detail/json_adaptors.cpp
 )
 
 set (MUNIN_INCLUDE_FILES
-    include/munin/algorithm.hpp
     include/munin/basic_component.hpp
     include/munin/brush.hpp
     include/munin/component.hpp
@@ -98,6 +97,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
 
+    include/munin/detail/algorithm.hpp
     include/munin/detail/json_adaptors.hpp
     include/munin/detail/lambda_visitor.hpp
 )

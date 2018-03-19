@@ -1,8 +1,8 @@
 #include "munin/container.hpp"
-#include "munin/algorithm.hpp"
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
+#include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/canvas_view.hpp>
@@ -137,7 +137,7 @@ struct container::impl
             comp->get_size()
         };
 
-        auto draw_region = intersection(component_region, region);
+        auto draw_region = detail::intersection(component_region, region);
 
         if (draw_region)
         {

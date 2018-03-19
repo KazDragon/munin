@@ -11,7 +11,7 @@ namespace terminalpp {
     class canvas_view;
 }
 
-namespace munin {
+namespace munin { namespace detail {
 
 //* =========================================================================
 /// \brief Returns the intersection of two rectangles.
@@ -43,8 +43,8 @@ std::vector<rectangle> rectangular_slice(
 /// \todo Consider a span interface.
 //* =========================================================================
 std::vector<rectangle> clip_regions(
-    std::vector<rectangle> regions
-  , terminalpp::extent     size);
+    std::vector<rectangle> regions,
+    terminalpp::extent     size);
 
 //* =========================================================================
 /// \brief Returns the passed array, except that any regions that have a
@@ -58,8 +58,8 @@ std::vector<rectangle> prune_regions(std::vector<rectangle> regions);
 //* =========================================================================
 MUNIN_EXPORT
 void copy_region(
-    rectangle               const &region
-  , terminalpp::canvas      const &source
-  , terminalpp::canvas_view       &destination);
+    rectangle               const &region,
+    terminalpp::canvas      const &source,
+    terminalpp::canvas_view       &destination);
 
-}
+}}
