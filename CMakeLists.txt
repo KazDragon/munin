@@ -96,6 +96,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/rectangle.hpp
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
+    include/munin/view.hpp
 
     include/munin/detail/algorithm.hpp
     include/munin/detail/json_adaptors.hpp
