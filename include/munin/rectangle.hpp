@@ -38,15 +38,6 @@ struct rectangle
 };
 
 // ==========================================================================
-// OPERATOR+(POINT,EXTENT)
-// ==========================================================================
-constexpr rectangle operator+(
-    terminalpp::point const &pt, terminalpp::extent const &ext)
-{
-    return rectangle(pt, ext);
-}
-
-// ==========================================================================
 // OPERATOR==(RECTANGLE,RECTANGLE)
 // ==========================================================================
 constexpr bool operator==(rectangle const &lhs, rectangle const &rhs)

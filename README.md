@@ -32,12 +32,12 @@ Implement the fundamentals of the library, providing the basis for further devel
  * [x] Grid Layout - a layout that arranges components in equally-sized cells.
  * [x] Aligned Layout - a layout that arranges components with horizontal and vertical alignment (e.g. top-left, right-center)
  * [x] Compass Layout - a layout that arranges components according to compass points (e.g. North, South, Centre)
- 4. [x] A sampling of common components
+4. [x] A sampling of common components
  * [x] Filled Box - a component that simply paints a single repeated character
  * [x] Brush - a component that paints a repeated character pattern.
  * [x] Image - a component that paints a static "image" once.
- * [x] Window - a top-level object that contains and draws components onto a canvas.
- 
+5. [x] Window - a top-level object that contains and draws components onto a canvas.
+
  ## v0.2 - Frames
  Implement the ability to frame components
  1. [ ] Composite Component - a component that is made of many other components, but presents the interface of being just one component.
@@ -50,7 +50,14 @@ Implement the fundamentals of the library, providing the basis for further devel
  2. [ ] Toggle Button - a button that can be toggled on [x] and off [ ].
  
  ## v0.4 - Text Areas
- TBD
+ 1. [ ] Fundamentals for all types of text components
+  * [ ] Viewport - a component that sees a smaller portion of the underlying component
+  * [ ] Horizontal Scroll Bar
+  * [ ] Vertical Scroll Bar
+  * [ ] Scroll Frame - a frame that includes scroll bars
+  * [ ] Scroll Pane - a component that includes a scroll frame and a viewport
+ 2. [ ] Edit - a single-lined horizontally scrolling text box, with a frame.
+ 3. [ ] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
  ## v0.5 - Lists
  TBD
@@ -61,4 +68,20 @@ Implement the fundamentals of the library, providing the basis for further devel
 Munin is automatically tested with Clang and G++ 5.2.
 
 For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the [Waffle board](https://waffle.io/KazDragon/munin)
+
+# The Basics
+
+The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter).  Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library.  Examples can be found neaby this repository.  For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Munin-Acceptance (a raycasting 3D room renderer) projects are both built on Telnet++, Terminal++, and Munin.
+
+# Component
+
+The core abstraction within Munin is the component.  Everything that is drawable in one way or another derives from this abstraction so that they can provide knowledge about where they are (position), how large they are (size), how large they would like to be (preferred size), what to do if a user interacts with it (event) and how to represent themselves on a canvas (draw).
+
+# Container / Layout
+
+Another key abstraction within Munin is the container.  A container, when combined with a layout, declares how to arrange a set of components.  Some layouts, for example the grid layout, simply place components in known positions according to the order in which they are added to the container.  Other layouts, such as the compass and aligned layouts, require the developer to supply hints about where to place each component.  The end effect is that the container automatically adjusts the size and position of its components according to how large the container itself is.
+
+# Window
+
+At the top of the stack is the window.  This is where the underlying application integrates with Munin.  A window is not a component, but is instead constructed with a component that represents the user interface to be displayed.  From here, events can be sent to the window's components.  Ideally, these will be directly from Terminal++, and the default set of components are built with this in mind.  But the interface is flexible enough to allow custom messages to be propagated to custom components.  Additionally, you can register to receive a callback whenever something in the interface changes that requires repainting, and you can of course command to the window to repaint itself.  This returns a string of text that you can send to a terminal to effect the repaint on the client.
 

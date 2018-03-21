@@ -18,9 +18,21 @@ enum class vertical_alignment
     bottom
 };
 
+//* =========================================================================
+/// \brief A hint for an aligned_layout about where to place the component.
+//* =========================================================================
 struct alignment
 {
+    //* =====================================================================
+    /// \brief Where to place the component horizontally 
+    /// (left, centre, right)
+    //* =====================================================================
     horizontal_alignment horizontal;
+
+    //* =====================================================================
+    /// \brief Where to place the component vertically
+    /// (top, centre, bottom)
+    //* =====================================================================
     vertical_alignment   vertical;
 };
 
@@ -28,7 +40,8 @@ struct alignment
 /// \brief A class that knows how to lay components out in a container in
 /// a aligned manner.
 //* =========================================================================
-class MUNIN_EXPORT aligned_layout : public layout
+class MUNIN_EXPORT aligned_layout final
+  : public layout
 {
 protected :
     //* =====================================================================

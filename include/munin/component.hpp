@@ -299,7 +299,7 @@ protected :
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param ctx the context in which the component should draw itself.
+    /// \param cvs the canvas on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
