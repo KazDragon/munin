@@ -350,23 +350,55 @@ TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_w
 TEST(make_image_with_no_content, makes_a_new_default_image)
 {
     std::shared_ptr<munin::image> image = munin::make_image();
-    ASSERT_EQ(terminalpp::extent(0, 0), image->get_preferred_size());
+    ASSERT_EQ(image->to_json(), munin::image{}.to_json());
+}
+
+TEST(make_image_with_no_content_and_fill, makes_a_new_default_image_with_fill)
+{
+    auto const fill = terminalpp::element('x');
+    auto image = munin::make_image(fill);
+
+    ASSERT_EQ(image->to_json(), munin::image(fill).to_json());
 }
 
 TEST(make_image_with_a_string_content, makes_a_single_line_image)
 {
     using namespace terminalpp::literals;
-    std::shared_ptr<munin::image> image = munin::make_image("test"_ts);
-    ASSERT_EQ(terminalpp::extent(4, 1), image->get_preferred_size());
+    auto const content = "test"_ts;
+    std::shared_ptr<munin::image> image = munin::make_image(content);
+    
+    ASSERT_EQ(image->to_json(), munin::image(content).to_json());
+}
+
+TEST(make_image_with_a_string_content_and_fill, makes_a_single_line_image_with_fill)
+{
+    using namespace terminalpp::literals;
+    auto const content = "test"_ts;
+    auto const fill = terminalpp::element('z');
+    std::shared_ptr<munin::image> image = munin::make_image(content, fill);
+    
+    ASSERT_EQ(image->to_json(), munin::image(content, fill).to_json());
 }
 
 TEST(make_image_with_a_vector_content, makes_a_multi_line_image)
 {
-    std::vector<terminalpp::string> pattern = {
+    std::vector<terminalpp::string> const content = {
         "ab",
         "cd"
     };
 
-    std::shared_ptr<munin::image> image = munin::make_image(pattern);
-    ASSERT_EQ(terminalpp::extent(2, 2), image->get_preferred_size());
+    std::shared_ptr<munin::image> image = munin::make_image(content);
+    ASSERT_EQ(image->to_json(), munin::image(content).to_json());
+}
+
+TEST(make_image_with_a_vector_content_and_fill, makes_a_multi_line_image_with_fill)
+{
+    std::vector<terminalpp::string> const content = {
+        "ab",
+        "cd"
+    };
+    auto const fill = terminalpp::element('Q');
+
+    std::shared_ptr<munin::image> image = munin::make_image(content, fill);
+    ASSERT_EQ(image->to_json(), munin::image(content, fill).to_json());
 }
