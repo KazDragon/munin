@@ -309,25 +309,29 @@ nlohmann::json image::do_to_json() const
 // ==========================================================================
 // MAKE_IMAGE
 // ==========================================================================
-std::shared_ptr<image> make_image()
+std::shared_ptr<image> make_image(terminalpp::element fill)
 {
-    return std::make_shared<image>();
+    return std::make_shared<image>(std::move(fill));
 }
 
 // ==========================================================================
 // MAKE_IMAGE
 // ==========================================================================
-std::shared_ptr<image> make_image(terminalpp::string content)
+std::shared_ptr<image> make_image(
+    terminalpp::string content,
+    terminalpp::element fill)
 {
-    return std::make_shared<image>(std::move(content));
+    return std::make_shared<image>(std::move(content), std::move(fill));
 }
 
 // ==========================================================================
 // MAKE_IMAGE
 // ==========================================================================
-std::shared_ptr<image> make_image(std::vector<terminalpp::string> content)
+std::shared_ptr<image> make_image(
+    std::vector<terminalpp::string> content,
+    terminalpp::element fill)
 {
-    return std::make_shared<image>(std::move(content));
+    return std::make_shared<image>(std::move(content), std::move(fill));
 }
 
 }

@@ -94,23 +94,28 @@ private :
 };
 
 //* =========================================================================
-/// \brief Returns a newly created image with the default content.
+/// \brief Returns a newly created image with the default content and,
+/// optionally, a fill character.
 //* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<image> make_image();
+std::shared_ptr<image> make_image(terminalpp::element fill = ' ');
 
 //* =========================================================================
 /// \brief Returns a newly created image with the specified single-line
-/// content.
+/// content and, optionally, a fill character.
 //* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<image> make_image(terminalpp::string content);
+std::shared_ptr<image> make_image(
+    terminalpp::string content,
+    terminalpp::element fill = ' ');
 
 //* =========================================================================
 /// \brief Returns a newly created image with the specified multi-line
-/// content.
+/// content and, optionally, a fill character.
 //* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<image> make_image(std::vector<terminalpp::string> content);
+std::shared_ptr<image> make_image(
+    std::vector<terminalpp::string> content,
+    terminalpp::element fill = ' ');
 
 }
