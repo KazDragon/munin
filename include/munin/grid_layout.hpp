@@ -8,6 +8,7 @@ namespace munin {
 /// \brief A class that knows how to lay components out in a container in
 /// a grid of cells of equal size.
 ///
+/// \verbatim
 /// +------------+
 /// |+--++--++--+|
 /// ||  ||  ||  ||
@@ -19,6 +20,7 @@ namespace munin {
 /// ||  ||  ||  ||
 /// |+--++--++--+|
 /// +------------+
+/// \endverbatim
 //* =========================================================================
 class MUNIN_EXPORT grid_layout final
     : public layout

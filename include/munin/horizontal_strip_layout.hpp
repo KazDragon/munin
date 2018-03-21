@@ -10,6 +10,7 @@ namespace munin {
 /// horizontal strips.  Each component is given all the available width,
 /// with the sum of the preferred height of all the components.
 ///
+/// \verbatim
 /// +----------+
 /// |+-------+ |
 /// ||       | |
@@ -18,6 +19,7 @@ namespace munin {
 /// ||       | |
 /// |+-------+ |
 /// +----------+
+/// \endverbatim
 //* =========================================================================
 class MUNIN_EXPORT horizontal_strip_layout final
     : public layout

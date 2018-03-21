@@ -13,19 +13,26 @@ namespace munin {
 ///
 /// Note: this can be sensitive to insertion order.
 ///
-/// +------------+ +---+----+---+
-/// |   NORTH    | | W | C  | E |
-/// +------------+ | E | E  | A |
-/// |            | | S | N  | S |
-/// |   CENTRE   | | T | TR | T |
-/// |            | |   |  E |   |
-/// +------------+ +---+----+---+
+/// \verbatim
+/// +------------+ +---+-----+---+
+/// |   NORTH    | | W |  C  | E |
+/// +------------+ | E |  E  | A |
+/// |            | | S |  N  | S |
+/// |   CENTRE   | | T |  T  | T |
+/// |            | |   |  R  |   |
+/// |            | |   |  E  |   |
+/// +------------+ +---+-----+---+
+/// \endverbatim
 ///
 //* =========================================================================
 class MUNIN_EXPORT compass_layout final
     : public layout
 {
 public :
+    //* =====================================================================
+    /// \brief An enumeration of possible compass headings within the
+    /// layout.
+    //* =====================================================================
     enum class heading
     {
         centre,

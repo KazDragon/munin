@@ -11,6 +11,7 @@ namespace munin {
 /// vertical strips.  Each component is given all the available height,
 /// with the sum of the preferred widths of all the components.
 ///
+/// \verbatim
 /// +----------+
 /// |+-+-----+ |
 /// || |     | |
@@ -19,6 +20,7 @@ namespace munin {
 /// || |     | |
 /// |+-+-----+ |
 /// +----------+
+/// \endverbatim
 //* =========================================================================
 class MUNIN_EXPORT vertical_strip_layout final
     : public layout
