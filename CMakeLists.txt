@@ -68,6 +68,7 @@ set (MUNIN_SOURCE_FILES
     src/brush.cpp
     src/compass_layout.cpp
     src/component.cpp
+    src/composite_component.cpp
     src/container.cpp
     src/filled_box.cpp
     src/grid_layout.cpp
@@ -86,6 +87,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/basic_component.hpp
     include/munin/brush.hpp
     include/munin/component.hpp
+    include/munin/composite_component.hpp
     include/munin/container.hpp
     include/munin/filled_box.hpp
     include/munin/grid_layout.hpp
