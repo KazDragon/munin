@@ -33,7 +33,9 @@ protected :
     //* =====================================================================
     /// \brief Adds a component to the underlying layout
     //* =====================================================================
-    void add_component(std::shared_ptr<component> const &comp);
+    void add_component(
+        std::shared_ptr<component> const &comp,
+        boost::any const &hint = boost::any());
     
 private :
     //* =====================================================================
