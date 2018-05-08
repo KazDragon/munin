@@ -360,7 +360,9 @@ container::~container()
 // ==========================================================================
 void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 {
-    pimpl_->layout_ = std::move(lyt);
+    pimpl_->layout_ = lyt.get() == nullptr 
+                    ? make_null_layout() 
+                    : std::move(lyt);
     pimpl_->layout_container();
 }
 
