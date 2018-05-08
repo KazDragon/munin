@@ -7,14 +7,36 @@ namespace munin {
 
 struct solid_frame::impl
 {
-    std::shared_ptr<munin::filled_box> top_left      = munin::make_fill('+');
-    std::shared_ptr<munin::filled_box> top_centre    = munin::make_fill('-');
-    std::shared_ptr<munin::filled_box> top_right     = munin::make_fill('+');
-    std::shared_ptr<munin::filled_box> centre_left   = munin::make_fill('|');
-    std::shared_ptr<munin::filled_box> centre_right  = munin::make_fill('|');
-    std::shared_ptr<munin::filled_box> bottom_left   = munin::make_fill('+');
-    std::shared_ptr<munin::filled_box> bottom_centre = munin::make_fill('-');
-    std::shared_ptr<munin::filled_box> bottom_right  = munin::make_fill('+');
+    terminalpp::attribute lowlight_attribute = {};
+    terminalpp::attribute highlight_attribute = {
+        terminalpp::ansi::graphics::colour::cyan,
+        terminalpp::colour(),
+        terminalpp::ansi::graphics::intensity::bold};
+    
+    std::shared_ptr<munin::filled_box> top_left      = munin::make_fill({'+', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> top_centre    = munin::make_fill({'-', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> top_right     = munin::make_fill({'+', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> centre_left   = munin::make_fill({'|', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> centre_right  = munin::make_fill({'|', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_left   = munin::make_fill({'+', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_centre = munin::make_fill({'-', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_right  = munin::make_fill({'+', lowlight_attribute});
+    
+    bool is_highlighted = false;
+    
+    void set_fills()
+    {
+        auto const &attr = is_highlighted ? highlight_attribute : lowlight_attribute;
+        
+        top_left->set_fill({'+', attr});
+        top_centre->set_fill({'-', attr});
+        top_right->set_fill({'+', attr});
+        centre_left->set_fill({'|', attr});
+        centre_right->set_fill({'|', attr});
+        bottom_left->set_fill({'+', attr});
+        bottom_centre->set_fill({'-', attr});
+        bottom_right->set_fill({'+', attr});
+    }
 };
 
 solid_frame::solid_frame()
@@ -47,25 +69,24 @@ solid_frame::~solid_frame()
 {
 }
 
+void solid_frame::set_highlight_attribute(
+    terminalpp::attribute const &highlight_attribute)
+{
+    pimpl_->highlight_attribute = highlight_attribute;
+    pimpl_->set_fills();
+}
+
+void solid_frame::set_lowlight_attribute(
+    terminalpp::attribute const &lowlight_attribute)
+{
+    pimpl_->lowlight_attribute = lowlight_attribute;
+    pimpl_->set_fills();
+}
+
 void solid_frame::set_highlight(bool highlight)
 {
-    static auto const lowlight_attribute  = terminalpp::attribute();
-    static auto const highlight_attribute = terminalpp::attribute(
-        terminalpp::ansi::graphics::colour::cyan,
-        terminalpp::colour(),
-        terminalpp::ansi::graphics::intensity::bold);
-        
-    auto const &attr = 
-        highlight ? highlight_attribute : lowlight_attribute;
-        
-    pimpl_->top_left->set_fill({'+', attr});
-    pimpl_->top_centre->set_fill({'-', attr});
-    pimpl_->top_right->set_fill({'+', attr});
-    pimpl_->centre_left->set_fill({'|', attr});
-    pimpl_->centre_right->set_fill({'|', attr});
-    pimpl_->bottom_left->set_fill({'+', attr});
-    pimpl_->bottom_centre->set_fill({'-', attr});
-    pimpl_->bottom_right->set_fill({'+', attr});
+    pimpl_->is_highlighted = highlight;
+    pimpl_->set_fills();
 }
 
 std::shared_ptr<solid_frame> make_solid_frame()
