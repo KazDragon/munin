@@ -12,15 +12,27 @@ struct solid_frame::impl
         terminalpp::ansi::graphics::colour::cyan,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold};
+
+    static constexpr terminalpp::glyph corner_glyph          = '+';
+    static constexpr terminalpp::glyph horizontal_beam_glyph = '-';
+    static constexpr terminalpp::glyph vertical_beam_glyph   = '|';
     
-    std::shared_ptr<munin::filled_box> top_left      = munin::make_fill({'+', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> top_centre    = munin::make_fill({'-', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> top_right     = munin::make_fill({'+', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> centre_left   = munin::make_fill({'|', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> centre_right  = munin::make_fill({'|', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_left   = munin::make_fill({'+', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_centre = munin::make_fill({'-', lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_right  = munin::make_fill({'+', lowlight_attribute});
+    std::shared_ptr<munin::filled_box> top_left = 
+        munin::make_fill({corner_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> top_centre = 
+        munin::make_fill({horizontal_beam_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> top_right = 
+        munin::make_fill({corner_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> centre_left = 
+        munin::make_fill({vertical_beam_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> centre_right = 
+        munin::make_fill({vertical_beam_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_left = 
+        munin::make_fill({corner_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_centre = 
+        munin::make_fill({horizontal_beam_glyph, lowlight_attribute});
+    std::shared_ptr<munin::filled_box> bottom_right = 
+        munin::make_fill({corner_glyph, lowlight_attribute});
     
     bool is_highlighted = false;
     
@@ -28,16 +40,20 @@ struct solid_frame::impl
     {
         auto const &attr = is_highlighted ? highlight_attribute : lowlight_attribute;
         
-        top_left->set_fill({'+', attr});
-        top_centre->set_fill({'-', attr});
-        top_right->set_fill({'+', attr});
-        centre_left->set_fill({'|', attr});
-        centre_right->set_fill({'|', attr});
-        bottom_left->set_fill({'+', attr});
-        bottom_centre->set_fill({'-', attr});
-        bottom_right->set_fill({'+', attr});
+        top_left->set_fill({corner_glyph, attr});
+        top_centre->set_fill({horizontal_beam_glyph, attr});
+        top_right->set_fill({corner_glyph, attr});
+        centre_left->set_fill({vertical_beam_glyph, attr});
+        centre_right->set_fill({vertical_beam_glyph, attr});
+        bottom_left->set_fill({corner_glyph, attr});
+        bottom_centre->set_fill({horizontal_beam_glyph, attr});
+        bottom_right->set_fill({corner_glyph, attr});
     }
 };
+
+constexpr terminalpp::glyph solid_frame::impl::corner_glyph;
+constexpr terminalpp::glyph solid_frame::impl::horizontal_beam_glyph;
+constexpr terminalpp::glyph solid_frame::impl::vertical_beam_glyph;
 
 solid_frame::solid_frame()
   : pimpl_(std::make_shared<impl>())
