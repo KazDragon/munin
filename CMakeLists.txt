@@ -151,6 +151,7 @@ if (GTEST_FOUND)
     enable_testing()
 
     set (MUNIN_TEST_SOURCE_FILES
+        test/src/mock/component.cpp
         test/src/algorithm/algorithm_test.cpp
         test/src/aligned_layout/aligned_layout_test.cpp
         test/src/basic_component/new_basic_component_test.cpp
