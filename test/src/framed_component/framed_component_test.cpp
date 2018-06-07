@@ -2,6 +2,8 @@
 #include <munin/filled_box.hpp>
 #include <munin/framed_component.hpp>
 #include <munin/solid_frame.hpp>
+#include <terminalpp/canvas.hpp>
+#include <terminalpp/canvas_view.hpp>
 #include <gtest/gtest.h>
 
 using testing::Return;
@@ -92,7 +94,7 @@ TEST(a_framed_component_larger_than_the_frame, positions_the_inner_component_inw
     framed_component->set_size({5, 7});
 }
 
-TEST(a_frame_component, has_a_preferred_size_of_the_sum_of_the_frame_and_inner)
+TEST(a_framed_component, has_a_preferred_size_of_the_sum_of_the_frame_and_inner)
 {
     std::shared_ptr<mock_component> mock_frame = make_mock_component();
     std::shared_ptr<mock_component> mock_comp  = make_mock_component();
@@ -109,4 +111,42 @@ TEST(a_frame_component, has_a_preferred_size_of_the_sum_of_the_frame_and_inner)
     ASSERT_EQ(
         terminalpp::extent(9, 15),
         framed_component->get_preferred_size());
+}
+
+TEST(a_framed_component, draws_the_inner_component_inside_the_frame)
+{
+    static constexpr terminalpp::attribute default_attribute;
+    static constexpr terminalpp::attribute fill_attribute{
+        terminalpp::ansi::graphics::colour::green
+    };
+    
+    std::shared_ptr<munin::framed_component> comp = munin::make_framed_component(
+        munin::make_solid_frame(),
+        munin::make_fill({'X', fill_attribute})
+    );
+    
+    comp->set_position({0, 0});
+    comp->set_size({4, 4});
+    
+    terminalpp::canvas cvs({4, 4});
+    terminalpp::canvas_view cvs_view(cvs);
+    
+    comp->draw(cvs_view, {{0, 0}, {4, 4}});
+    
+    ASSERT_EQ(default_attribute, cvs[0][0].attribute_);
+    ASSERT_EQ(default_attribute, cvs[1][0].attribute_);
+    ASSERT_EQ(default_attribute, cvs[2][0].attribute_);
+    ASSERT_EQ(default_attribute, cvs[3][0].attribute_);
+    ASSERT_EQ(default_attribute, cvs[0][1].attribute_);
+    ASSERT_EQ(fill_attribute,    cvs[1][1].attribute_);
+    ASSERT_EQ(fill_attribute,    cvs[2][1].attribute_);
+    ASSERT_EQ(default_attribute, cvs[3][1].attribute_);
+    ASSERT_EQ(default_attribute, cvs[0][2].attribute_);
+    ASSERT_EQ(fill_attribute,    cvs[1][2].attribute_);
+    ASSERT_EQ(fill_attribute,    cvs[2][2].attribute_);
+    ASSERT_EQ(default_attribute, cvs[3][2].attribute_);
+    ASSERT_EQ(default_attribute, cvs[0][3].attribute_);
+    ASSERT_EQ(default_attribute, cvs[1][3].attribute_);
+    ASSERT_EQ(default_attribute, cvs[2][3].attribute_);
+    ASSERT_EQ(default_attribute, cvs[3][3].attribute_);
 }
