@@ -4,59 +4,77 @@
 
 using testing::_;
 using testing::Invoke;
+using testing::ValuesIn;
 
-TEST(clicking_the_mouse_on_the_inner_component, sends_the_mouse_event_to_the_inner_component)
+using framed_component_mouse_data = std::tuple<
+    terminalpp::extent, // size of framed component
+    terminalpp::point,  // click position
+    terminalpp::point   // expected click position on inner component
+>;
+
+class framed_components : public testing::TestWithParam<framed_component_mouse_data>
+{   
+protected :
+    void SetUp() override
+    {
+        // Fake out the position and size functions for the frame and inner
+        // components.
+        ON_CALL(*mock_frame_, do_set_position(_))
+            .WillByDefault(Invoke([this](auto const &position)
+            {
+                mock_frame_position_ = position;
+            }));
+        ON_CALL(*mock_frame_, do_get_position())
+            .WillByDefault(Invoke([this]{return mock_frame_position_;}));
+        ON_CALL(*mock_frame_, do_set_size(_))
+            .WillByDefault(Invoke([this](auto const &size)
+            {
+                mock_frame_size_ = size;
+            }));
+        ON_CALL(*mock_frame_, do_get_size())
+            .WillByDefault(Invoke([this]{return mock_frame_size_;}));
+        
+        ON_CALL(*mock_inner_, do_set_position(_))
+            .WillByDefault(Invoke([this](auto const &position)
+            {
+                mock_inner_position_ = position;
+            }));
+        ON_CALL(*mock_inner_, do_get_position())
+            .WillByDefault(Invoke([this]{return mock_inner_position_;}));
+        ON_CALL(*mock_inner_, do_set_size(_))
+            .WillByDefault(Invoke([this](auto const &size)
+            {
+                mock_inner_size_ = size;
+            }));
+        ON_CALL(*mock_inner_, do_get_size())
+            .WillByDefault(Invoke([this]{return mock_inner_size_;}));
+    }
+
+    std::shared_ptr<mock_component> mock_frame_{make_mock_component()};
+    std::shared_ptr<mock_component> mock_inner_{make_mock_component()};
+    std::shared_ptr<munin::framed_component> framed_component_{
+        make_framed_component(mock_frame_, mock_inner_)
+    };
+
+private :
+    terminalpp::point  mock_frame_position_;
+    terminalpp::extent mock_frame_size_;
+
+    terminalpp::point  mock_inner_position_;
+    terminalpp::extent mock_inner_size_;
+};
+
+TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
 {
-    auto mock_frame = make_mock_component();
-    auto mock_inner = make_mock_component();
-    
-    // Fake out the position and size functions for the frame/inner component
-    terminalpp::point mock_frame_position;
-    terminalpp::point mock_inner_position;
-    terminalpp::extent mock_frame_size;
-    terminalpp::extent mock_inner_size;
-    
-    ON_CALL(*mock_frame, do_set_position(_))
-        .WillByDefault(Invoke([&mock_frame_position](auto const &position)
-        {
-            mock_frame_position = position;
-        }));
-    ON_CALL(*mock_frame, do_get_position())
-        .WillByDefault(Invoke([&mock_frame_position]{return mock_frame_position;}));
-    ON_CALL(*mock_frame, do_set_size(_))
-        .WillByDefault(Invoke([&mock_frame_size](auto const &size)
-        {
-            mock_frame_size = size;
-        }));
-    ON_CALL(*mock_frame, do_get_size())
-        .WillByDefault(Invoke([&mock_frame_size]{return mock_frame_size;}));
-    
-    ON_CALL(*mock_inner, do_set_position(_))
-        .WillByDefault(Invoke([&mock_inner_position](auto const &position)
-        {
-            mock_inner_position = position;
-        }));
-    ON_CALL(*mock_inner, do_get_position())
-        .WillByDefault(Invoke([&mock_inner_position]{return mock_inner_position;}));
-    ON_CALL(*mock_inner, do_set_size(_))
-        .WillByDefault(Invoke([&mock_inner_size](auto const &size)
-        {
-            mock_inner_size = size;
-        }));
-    ON_CALL(*mock_inner, do_get_size())
-        .WillByDefault(Invoke([&mock_inner_size]{return mock_inner_size;}));
-    
-    std::shared_ptr<munin::framed_component> comp = munin::make_framed_component(
-        mock_frame,
-        mock_inner
-    );
-    
-    comp->set_position({0, 0});
-    comp->set_size({4, 4});
+    auto const &params = GetParam();
+    auto const &component_size = std::get<0>(params);
+    auto const &initial_click  = std::get<1>(params);
+    auto const &expected_click = std::get<2>(params);
+
+    framed_component_->set_size(component_size);
 
     auto received_mouse_report = terminalpp::ansi::mouse::report{};
-
-    EXPECT_CALL(*mock_inner, do_event(_))
+    EXPECT_CALL(*mock_inner_, do_event(_))
         .WillOnce(Invoke([&received_mouse_report](auto ev)
         {
             auto *mouse_report = 
@@ -70,15 +88,28 @@ TEST(clicking_the_mouse_on_the_inner_component, sends_the_mouse_event_to_the_inn
 
     auto const sent_mouse_report = terminalpp::ansi::mouse::report{
         terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        2, 2
+        initial_click.x, initial_click.y
     };
     
-    comp->event(sent_mouse_report);
+    framed_component_->event(sent_mouse_report);
 
     auto const expected_mouse_report = terminalpp::ansi::mouse::report{
         terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        1, 1
+        expected_click.x, expected_click.y
     };
 
     ASSERT_EQ(expected_mouse_report, received_mouse_report);
 }
+
+INSTANTIATE_TEST_CASE_P(
+    framed_component_mouse_clicks,
+    framed_components,
+    ValuesIn(
+    {
+        framed_component_mouse_data(
+            {4, 4},
+            {2, 2},
+            {1, 1}
+        )
+    })
+);
