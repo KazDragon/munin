@@ -106,10 +106,52 @@ INSTANTIATE_TEST_CASE_P(
     framed_components,
     ValuesIn(
     {
+        // General test case - click on the inner component forwards to the
+        // inner component's co-ordinate space.
         framed_component_mouse_data(
             {4, 4},
             {2, 2},
             {1, 1}
+        ),
+
+        // A click occurs on the northern border, and is forwarded on to the
+        // northernmost part of the inner component.
+        framed_component_mouse_data(
+            {4, 4},
+            {2, 0},
+            {1, 0}
+        ),
+
+        // A click occurs on the southern border, and is forwarded on to the
+        // southernmost part of the inner component.
+        framed_component_mouse_data(
+            {4, 4},
+            {2, 3},
+            {1, 1}
+        ),
+
+        // A click occurs on the western border, and is forwarded on to the
+        // westernmost part of the inner component.
+        framed_component_mouse_data(
+            {4, 4},
+            {0, 2},
+            {0, 1}
+        ),
+
+        // A click occurs on the eastern border, and is forwarded on to the
+        // easternmost part of the inner component.
+        framed_component_mouse_data(
+            {4, 4},
+            {3, 2},
+            {1, 1}
+        ),
+
+        // Degenerate case: somehow clicking on a component with no size
+        // will forward onto the origin.
+        framed_component_mouse_data(
+            {0, 0},
+            {0, 0},
+            {0, 0}
         )
     })
 );

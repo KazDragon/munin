@@ -103,29 +103,29 @@ framed_component::~framed_component()
 // ==========================================================================
 void framed_component::do_event(boost::any const &ev)
 {
-    std::cout << "framed_component::do_event\n";
     auto *mouse_event = boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
     
     if (mouse_event)
     {
         auto inner_mouse_event = *mouse_event;
-        
+       
         // Mouse events *always* hit the inner component, and never the
         // frame, so it needs adjusting inward and sending onward instead
         // of being handled by the default event handler, who will likely
         // send the event to the frame instead.
-        auto size = get_size();
-        
-        // Correct the mouse event as clicked on this component.
-        inner_mouse_event.x_position_ =
-          size.width < 2 ? 0 : std::max(mouse_event->x_position_, 1);
-        inner_mouse_event.y_position_ =
-          size.height < 2 ? 0 : std::max(mouse_event->y_position_, 1);
-        
+
         // Translate mouse co-ordinates to inner-component co-ordinates
         auto inner_position = pimpl_->inner_component_->get_position();
+        auto inner_size     = pimpl_->inner_component_->get_size();
+
         inner_mouse_event.x_position_ -= inner_position.x;
         inner_mouse_event.y_position_ -= inner_position.y;
+
+        // And clamp it to the bounds of the component itself.
+        inner_mouse_event.x_position_ = std::max(
+            0, std::min(inner_size.width - 1, inner_mouse_event.x_position_));
+        inner_mouse_event.y_position_ = std::max(
+            0, std::min(inner_size.height - 1, inner_mouse_event.y_position_));
 
         pimpl_->inner_component_->event(inner_mouse_event);
     }
