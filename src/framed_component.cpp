@@ -1,9 +1,7 @@
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
-#include <iostream>
 
 namespace munin {
-
 namespace {
 
 class framed_component_layout : public munin::layout
@@ -110,8 +108,6 @@ void framed_component::do_event(boost::any const &ev)
     
     if (mouse_event)
     {
-        std::cout << "framed_component::do_event is a mouse event " << *mouse_event << "\n";
-
         auto inner_mouse_event = *mouse_event;
         
         // Mouse events *always* hit the inner component, and never the
@@ -119,7 +115,6 @@ void framed_component::do_event(boost::any const &ev)
         // of being handled by the default event handler, who will likely
         // send the event to the frame instead.
         auto size = get_size();
-        std::cout << "framed_component size is " << size << std::endl;
         
         // Correct the mouse event as clicked on this component.
         inner_mouse_event.x_position_ =
@@ -129,11 +124,9 @@ void framed_component::do_event(boost::any const &ev)
         
         // Translate mouse co-ordinates to inner-component co-ordinates
         auto inner_position = pimpl_->inner_component_->get_position();
-        std::cout << "inner position = " << inner_position << std::endl;
         inner_mouse_event.x_position_ -= inner_position.x;
         inner_mouse_event.y_position_ -= inner_position.y;
 
-        std::cout << "sending " << inner_mouse_event;
         pimpl_->inner_component_->event(inner_mouse_event);
     }
     else

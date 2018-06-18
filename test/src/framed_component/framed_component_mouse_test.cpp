@@ -81,5 +81,4 @@ TEST(clicking_the_mouse_on_the_inner_component, sends_the_mouse_event_to_the_inn
     };
 
     ASSERT_EQ(expected_mouse_report, received_mouse_report);
-
 }
