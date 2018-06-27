@@ -37,7 +37,6 @@ protected :
         std::shared_ptr<component> const &comp,
         boost::any const &hint = boost::any());
     
-private :
     //* =====================================================================
     /// \brief Called by set_position().  Derived classes must override this
     /// function in order to set the position of the component in a custom
@@ -152,6 +151,7 @@ private :
     //* =====================================================================
     nlohmann::json do_to_json() const override;
 
+private :
     munin::container content_;
 };
 
