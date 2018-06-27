@@ -15,7 +15,7 @@ public :
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    filled_box(terminalpp::element const &element = ' ');
+    explicit filled_box(terminalpp::element const &element = ' ');
 
     //* =====================================================================
     /// \brief Destructor
