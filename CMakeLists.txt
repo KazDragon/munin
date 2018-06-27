@@ -106,7 +106,6 @@ set (MUNIN_INCLUDE_FILES
 
     include/munin/detail/algorithm.hpp
     include/munin/detail/json_adaptors.hpp
-    include/munin/detail/lambda_visitor.hpp
 )
 
 add_library(munin
