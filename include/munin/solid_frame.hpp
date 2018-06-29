@@ -38,17 +38,29 @@ public :
         terminalpp::attribute const &lowlight_attribute);
     
     //* =====================================================================
-    /// \brief Sets which attribute (highlight or lowlight) is used to draw
-    /// the frame.
+    /// \brief Associates a component with this frame, such that its focus
+    /// state is reflected by the highlight state of this frame.
     //* =====================================================================
-    void set_highlight(bool highlight);
+    void highlight_on_focus(
+        std::shared_ptr<component> const &associated_component);
 
 private :
     struct impl;
     std::shared_ptr<impl> pimpl_;
 };
 
+//* =========================================================================
+/// \brief Creates a new solid frame
+//* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<solid_frame> make_solid_frame();
+
+//* =========================================================================
+/// \brief Creates a new solid frame that is automatically associated
+/// with the passed component.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<solid_frame> make_solid_frame(
+    std::shared_ptr<component> const &associated_component);
 
 }
