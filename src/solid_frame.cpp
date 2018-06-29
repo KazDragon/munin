@@ -173,12 +173,26 @@ void solid_frame::set_lowlight_attribute(
 }
 
 // ==========================================================================
-// SET_HIGHLIGHT
+// HIGHLIGHT_ON_FOCUS
 // ==========================================================================
-void solid_frame::set_highlight(bool highlight)
+void solid_frame::highlight_on_focus(
+    std::shared_ptr<component> const &associated_component)
 {
-    pimpl_->is_highlighted = highlight;
-    pimpl_->set_fills();
+    auto const evaluate_focus = 
+        [this, wp = std::weak_ptr<component>(associated_component)]
+        {
+            std::shared_ptr<component> associated_component(wp.lock());
+
+            if (associated_component)
+            {
+                pimpl_->is_highlighted = associated_component->has_focus();
+                pimpl_->set_fills();
+            }
+        };
+
+    associated_component->on_focus_set.connect(evaluate_focus);
+    associated_component->on_focus_lost.connect(evaluate_focus);
+    evaluate_focus();
 }
 
 // ==========================================================================
@@ -188,5 +202,16 @@ std::shared_ptr<solid_frame> make_solid_frame()
 {
     return std::make_shared<solid_frame>();
 }
-    
+
+// ==========================================================================
+// MAKE_SOLID_FRAME
+// ==========================================================================
+std::shared_ptr<solid_frame> make_solid_frame(
+    std::shared_ptr<component> const &associated_component)
+{
+    auto frame = make_solid_frame();
+    frame->highlight_on_focus(associated_component);
+    return frame;
+}
+
 }
