@@ -2,10 +2,10 @@
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/rectangle.hpp"
+#include "munin/render_surface.hpp"
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
-#include <terminalpp/canvas_view.hpp>
 #include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
@@ -116,11 +116,11 @@ struct container::impl
     // DRAW_COMPONENTS
     // ======================================================================
     void draw_components(
-        terminalpp::canvas_view &cvs, rectangle const &region) const
+        render_surface &surface, rectangle const &region) const
     {
         for (auto const &comp : components_)
         {
-            draw_component(comp, cvs, region);
+            draw_component(comp, surface, region);
         }
     }
 
@@ -129,7 +129,7 @@ struct container::impl
     // ======================================================================
     void draw_component(
         std::shared_ptr<component> const &comp,
-        terminalpp::canvas_view &cvs,
+        render_surface &surface,
         rectangle const &region) const
     {
         auto const component_region = rectangle {
@@ -148,22 +148,22 @@ struct container::impl
             // The canvas must have an offset applied to it so that the
             // inner component can pretend that it is being drawn with its
             // container being at position (0,0).
-            cvs.offset_by({
+            surface.offset_by({
                 component_region.origin.x,
                 component_region.origin.y
             });
 
             // Ensure that the offset is unapplied before exit of this
             // function.
-            BOOST_SCOPE_EXIT_ALL(&cvs, &component_region)
+            BOOST_SCOPE_EXIT_ALL(&surface, &component_region)
             {
-                cvs.offset_by({
+                surface.offset_by({
                     -component_region.origin.x,
                     -component_region.origin.y
                 });
             };
 
-            comp->draw(cvs, draw_region.get());
+            comp->draw(surface, draw_region.get());
         }
     }
 
@@ -684,9 +684,9 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 // DO_DRAW
 // ==========================================================================
 void container::do_draw(
-    terminalpp::canvas_view &cvs, rectangle const &region) const
+    render_surface &surface, rectangle const &region) const
 {
-    pimpl_->draw_components(cvs, region);
+    pimpl_->draw_components(surface, region);
 }
 
 // ==========================================================================

@@ -1,6 +1,5 @@
 #include <munin/render_surface.hpp>
 #include <munin/render_surface_capabilities.hpp>
-#include <terminalpp/canvas.hpp>
 
 #include <gtest/gtest.h>
 

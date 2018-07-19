@@ -1,5 +1,4 @@
 #include "munin/render_surface.hpp"
-#include <terminalpp/canvas.hpp>
 
 namespace munin {
 namespace {

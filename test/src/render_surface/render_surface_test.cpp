@@ -1,5 +1,4 @@
 #include <munin/render_surface.hpp>
-#include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
 
 TEST(render_surface_test, default_render_surface_views_same_basis_as_canvas)

@@ -1,6 +1,5 @@
 #include <munin/image.hpp>
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_image, has_a_zero_preferred_size)
@@ -92,8 +91,8 @@ TEST(a_new_image, draws_whitespace_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
@@ -125,8 +124,8 @@ TEST(a_new_image_with_a_fill, draws_fill_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][1]);
@@ -161,8 +160,8 @@ TEST(a_new_image_with_a_single_line_content, draws_that_content_centred_with_whi
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -205,8 +204,8 @@ TEST(a_new_image_with_a_single_line_content_and_fill, draws_that_content_centred
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{'Z'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'Z'}, canvas[1][0]);
@@ -253,8 +252,8 @@ TEST(a_new_image_with_multi_line_content, draws_that_content_centred_with_whites
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -313,8 +312,8 @@ TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_w
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{'T'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'T'}, canvas[1][0]);

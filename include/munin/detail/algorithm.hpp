@@ -53,13 +53,4 @@ std::vector<rectangle> clip_regions(
 //* =========================================================================
 std::vector<rectangle> prune_regions(std::vector<rectangle> regions);
 
-//* =========================================================================
-/// \brief Copies a region from one canvas to another.
-//* =========================================================================
-MUNIN_EXPORT
-void copy_region(
-    rectangle               const &region,
-    terminalpp::canvas      const &source,
-    terminalpp::canvas_view       &destination);
-
 }}

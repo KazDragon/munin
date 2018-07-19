@@ -2,13 +2,8 @@
 
 #include "munin/export.hpp"
 #include "munin/render_surface_capabilities.hpp"
-#include <terminalpp/element.hpp>
-#include <terminalpp/extent.hpp>
+#include <terminalpp/canvas.hpp>
 #include <iosfwd>
-
-namespace terminalpp {
-    class canvas;
-}
 
 namespace munin {
 

@@ -12,7 +12,7 @@ private :
     }
     
     void do_draw(
-        terminalpp::canvas_view &cvs, 
+        munin::render_surface &surface, 
         munin::rectangle const &region) const override
     {
     }

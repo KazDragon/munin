@@ -1,5 +1,5 @@
 #include "munin/brush.hpp"
-#include <terminalpp/canvas_view.hpp>
+#include "munin/render_surface.hpp"
 #include <utility>
 
 using namespace terminalpp::literals;
@@ -94,7 +94,7 @@ terminalpp::extent brush::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void brush::do_draw(
-    terminalpp::canvas_view &cvs, rectangle const &region) const
+    render_surface &surface, rectangle const &region) const
 {
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
@@ -108,7 +108,7 @@ void brush::do_draw(
         {
             auto const fill_column = column % pimpl_->pattern_[fill_row].size();
 
-            cvs[column][row] = pimpl_->pattern_[fill_row][fill_column];
+            surface[column][row] = pimpl_->pattern_[fill_row][fill_column];
         }
     }
 }

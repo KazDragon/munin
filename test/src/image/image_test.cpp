@@ -1,6 +1,5 @@
 #include <munin/image.hpp>
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
 TEST(an_image_with_its_content_set_empty, draws_fill_on_the_canvas)
@@ -25,8 +24,8 @@ TEST(an_image_with_its_content_set_empty, draws_fill_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -70,8 +69,8 @@ TEST(an_image_with_its_content_set_to_single_line, draws_line_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -120,8 +119,8 @@ TEST(an_image_with_its_content_set_to_multi_line, draws_lines_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -172,8 +171,8 @@ TEST(an_image, sets_its_content_empty_when_set_to_an_empty_string)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
@@ -202,8 +201,8 @@ TEST(an_image, can_have_its_fill_set)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    image.draw(cv, {{}, image.get_size()});
+    munin::render_surface surface{canvas};
+    image.draw(surface, {{}, image.get_size()});
 
     ASSERT_EQ(terminalpp::element{'!'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'!'}, canvas[1][0]);
