@@ -50,12 +50,12 @@ protected :
     /// in order to draw onto the passed canvas.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param cvs the canvas in which the component should draw itself.
+    /// \param surface the surface on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     void do_draw(
-        terminalpp::canvas_view &cvs, 
+        render_surface &surface,
         rectangle const &region) const override;
 
     //* =====================================================================

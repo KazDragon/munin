@@ -1,5 +1,6 @@
 #include "munin/window.hpp"
 #include "munin/component.hpp"
+#include "munin/render_surface.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
@@ -96,10 +97,10 @@ std::string window::repaint(
         repaint_regions.swap(pimpl_->repaint_regions_);
     }
 
-    terminalpp::canvas_view cvs_view(cvs);
+    render_surface surface(cvs);
     for (auto const &region : repaint_regions)
     {
-        pimpl_->content_->draw(cvs_view, region);
+        pimpl_->content_->draw(surface, region);
     }
 
     return pimpl_->screen_.draw(term, cvs);

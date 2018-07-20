@@ -2,8 +2,7 @@
 #include <munin/filled_box.hpp>
 #include <munin/framed_component.hpp>
 #include <munin/solid_frame.hpp>
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
 using testing::Return;
@@ -129,9 +128,9 @@ TEST(a_framed_component, draws_the_inner_component_inside_the_frame)
     comp->set_size({4, 4});
     
     terminalpp::canvas cvs({4, 4});
-    terminalpp::canvas_view cvs_view(cvs);
+    munin::render_surface surface{cvs};
     
-    comp->draw(cvs_view, {{0, 0}, {4, 4}});
+    comp->draw(surface, {{0, 0}, {4, 4}});
     
     ASSERT_EQ(default_attribute, cvs[0][0].attribute_);
     ASSERT_EQ(default_attribute, cvs[1][0].attribute_);

@@ -265,26 +265,5 @@ std::vector<rectangle> prune_regions(std::vector<rectangle> regions)
     return regions;
 }
 
-// ==========================================================================
-// COPY_REGION
-// ==========================================================================
-void copy_region(
-    rectangle               const &region
-  , terminalpp::canvas      const &source
-  , terminalpp::canvas_view       &destination)
-{
-    for (terminalpp::coordinate_type y_coord = region.origin.y;
-         y_coord < region.origin.y + region.size.height;
-         ++y_coord)
-    {
-        for (terminalpp::coordinate_type x_coord = region.origin.x;
-             x_coord < region.origin.x + region.size.width;
-             ++x_coord)
-        {
-            destination[x_coord][y_coord] = source[x_coord][y_coord];
-        }
-    }
-}
-
 }}
 

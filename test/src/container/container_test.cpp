@@ -1,6 +1,5 @@
 #include "container_test.hpp"
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 
 using testing::Return;
 using testing::_;
@@ -71,8 +70,8 @@ TEST_F(a_new_container, draws_nothing)
     
     container.set_size({1, 1});
     
-    terminalpp::canvas_view cv(canvas);
-    container.draw(cv, {{0, 0}, {1, 1}});
+    munin::render_surface surface{canvas};
+    container.draw(surface, {{0, 0}, {1, 1}});
     
     ASSERT_EQ(terminalpp::element('?'), canvas[0][0]);
 }

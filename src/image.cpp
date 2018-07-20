@@ -1,6 +1,6 @@
 #include "munin/image.hpp"
 #include "munin/detail/json_adaptors.hpp"
-#include <terminalpp/canvas_view.hpp>
+#include "munin/render_surface.hpp"
 #include <algorithm>
 #include <utility>
 
@@ -86,7 +86,7 @@ static void add_redraw_region(
 // DRAW_FILL_LINE
 // ==========================================================================
 static void draw_fill_line(
-    terminalpp::canvas_view &cvs,
+    render_surface &surface,
     terminalpp::point const &origin,
     terminalpp::coordinate_type const &width,
     terminalpp::element const &fill)
@@ -95,7 +95,7 @@ static void draw_fill_line(
          column < origin.x + width;
          ++column)
     {
-        cvs[column][origin.y] = fill;
+        surface[column][origin.y] = fill;
     }
 }
 
@@ -103,7 +103,7 @@ static void draw_fill_line(
 // DRAW_CONTENT_LINE
 // ==========================================================================
 static void draw_content_line(
-    terminalpp::canvas_view &cvs,
+    render_surface &surface,
     terminalpp::point const &origin,
     terminalpp::coordinate_type const &content_start,
     terminalpp::coordinate_type const &line_width,
@@ -116,7 +116,7 @@ static void draw_content_line(
             column >= content_start
          && column <  content_start + content.size();
 
-        cvs[column][origin.y] =
+        surface[column][origin.y] =
             column_has_content
           ? content[column - content_start]
           : fill;
@@ -248,7 +248,7 @@ void image::set_content(std::vector<terminalpp::string> const &content)
 // DO_DRAW
 // ==========================================================================
 void image::do_draw(
-    terminalpp::canvas_view &cvs, rectangle const &region) const
+    render_surface &surface, rectangle const &region) const
 {
     auto const size = get_size();
     auto const content_size = get_preferred_size();
@@ -265,7 +265,7 @@ void image::do_draw(
         if (row_has_content)
         {
             draw_content_line(
-                cvs,
+                surface,
                 { region.origin.x, row },
                 content_basis.x,
                 region.size.width,
@@ -275,7 +275,7 @@ void image::do_draw(
         else
         {
             draw_fill_line(
-                cvs,
+                surface,
                 { region.origin.x, row },
                 region.size.width,
                 pimpl_->fill_);

@@ -2,7 +2,6 @@
 
 #include "munin/export.hpp"
 #include "munin/rectangle.hpp"
-#include <terminalpp/canvas_view.hpp>
 #include <terminalpp/extent.hpp>
 #include <terminalpp/point.hpp>
 #include <json.hpp>
@@ -12,6 +11,8 @@
 #include <vector>
 
 namespace munin {
+
+class render_surface;
 
 //* =========================================================================
 /// \brief An object capable of being drawn on a canvas.
@@ -118,12 +119,12 @@ public :
     //* =====================================================================
     /// \brief Draws the component.
     ///
-    /// \param cvs the canvas on which the component should draw itself.
+    /// \param surface the surface on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     void draw(
-        terminalpp::canvas_view &cvs
+        render_surface &surface
       , rectangle const &region) const;
 
     //* =====================================================================
@@ -299,12 +300,12 @@ protected :
     /// in order to draw onto the passed context.  A component must only draw
     /// the part of itself specified by the region.
     ///
-    /// \param cvs the canvas on which the component should draw itself.
+    /// \param surface the surface on which the component should draw itself.
     /// \param region the region relative to this component's origin that
     /// should be drawn.
     //* =====================================================================
     virtual void do_draw(
-        terminalpp::canvas_view &cvs,
+        render_surface &surface,
         rectangle const &region) const = 0;
 
     //* =====================================================================

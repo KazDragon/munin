@@ -1,6 +1,5 @@
 #include <munin/filled_box.hpp>
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_filled_box, has_a_whitespace_fill)
@@ -34,8 +33,8 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    filled_box.draw(cv, {{}, filled_box.get_size()});
+    munin::render_surface surface{canvas};
+    filled_box.draw(surface, {{}, filled_box.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);

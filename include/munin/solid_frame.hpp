@@ -1,6 +1,7 @@
 #pragma once
 
-#include <munin/composite_component.hpp>
+#include "munin/composite_component.hpp"
+#include <terminalpp/attribute.hpp>
 
 namespace munin {
     

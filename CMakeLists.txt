@@ -78,6 +78,7 @@ set (MUNIN_SOURCE_FILES
     src/image.cpp
     src/layout.cpp
     src/null_layout.cpp
+    src/render_surface.cpp
     src/solid_frame.cpp
     src/vertical_strip_layout.cpp
     src/window.cpp
@@ -101,6 +102,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/layout.hpp
     include/munin/null_layout.hpp
     include/munin/rectangle.hpp
+    include/munin/render_surface.hpp
     include/munin/solid_frame.hpp
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
@@ -187,6 +189,8 @@ if (GTEST_FOUND)
         test/src/image/image_redraw_test.cpp
         test/src/image/new_image_test.cpp
         test/src/null_layout/null_layout_test.cpp
+        test/src/render_surface/render_surface_capabilities_test.cpp
+        test/src/render_surface/render_surface_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/window/window_json_test.cpp

@@ -1,6 +1,5 @@
 #include <munin/brush.hpp>
-#include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
+#include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_brush, has_a_singular_preferred_size)
@@ -50,8 +49,8 @@ TEST(a_new_brush, draws_whitespace_on_the_canvas)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    brush.draw(surface, {{}, brush.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
@@ -86,9 +85,9 @@ TEST(a_new_brush_with_a_single_line_pattern, draws_that_pattern_repeatedly)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    cv.offset_by({1, 1});
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    surface.offset_by({1, 1});
+    brush.draw(surface, {{}, brush.get_size()});
 
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
@@ -152,9 +151,9 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
         }
     }
 
-    terminalpp::canvas_view cv{canvas};
-    cv.offset_by({1, 1});
-    brush.draw(cv, {{}, brush.get_size()});
+    munin::render_surface surface{canvas};
+    surface.offset_by({1, 1});
+    brush.draw(surface, {{}, brush.get_size()});
 
     ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);

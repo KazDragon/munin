@@ -1,5 +1,6 @@
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
+#include <terminalpp/ansi/mouse.hpp>
 
 namespace munin {
 namespace {
