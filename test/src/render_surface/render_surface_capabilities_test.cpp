@@ -25,7 +25,7 @@ TEST_P(render_surface_with_optional_unicode_capability, returns_that_capability_
     struct unicode_render_surface_capabilities
       : public munin::render_surface_capabilities
     {
-        unicode_render_surface_capabilities(bool unicode_support)
+        explicit unicode_render_surface_capabilities(bool unicode_support)
           : unicode_support_(unicode_support)
         {
         }

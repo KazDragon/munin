@@ -3,7 +3,6 @@
 #include "munin/export.hpp"
 #include "munin/render_surface_capabilities.hpp"
 #include <terminalpp/canvas.hpp>
-#include <iosfwd>
 
 namespace munin {
 
@@ -31,28 +30,8 @@ public :
         // ==================================================================
         // OPERATOR=
         // ==================================================================
-        row_proxy &operator=(row_proxy const &other);
-
-        // ==================================================================
-        // OPERATOR=
-        // ==================================================================
         row_proxy &operator=(terminalpp::element const &value);
 
-        // ==================================================================
-        // CONVERSION OPERATOR: ELEMENT
-        // ==================================================================
-        operator terminalpp::element &();
-
-        // ==================================================================
-        // CONVERSION OPERATOR: ELEMENT
-        // ==================================================================
-        operator terminalpp::element const &() const;
-
-        // ==================================================================
-        // EQUALITY: ELEMENT
-        // ==================================================================
-        bool operator==(const terminalpp::element& value) const;
-        
     private :
         render_surface &surface_;
         terminalpp::coordinate_type column_;
@@ -79,30 +58,6 @@ public :
 
     private :
         render_surface &surface_;
-        terminalpp::coordinate_type column_;
-    };
-
-    //* =====================================================================
-    /// \brief A constant proxy into a column of elements on the canvas
-    //* =====================================================================
-    class const_column_proxy
-    {
-    public :
-        // ==================================================================
-        // CONSTRUCTOR
-        // ==================================================================
-        const_column_proxy(
-            render_surface const &surface, 
-            terminalpp::coordinate_type column);
-
-        // ==================================================================
-        // OPERATOR[]
-        // ==================================================================
-        terminalpp::element const &operator[](
-            terminalpp::coordinate_type row) const;
-
-    private :
-        render_surface const &surface_;
         terminalpp::coordinate_type column_;
     };
 
@@ -141,11 +96,6 @@ public :
     //* =====================================================================
     column_proxy operator[](terminalpp::coordinate_type column);
 
-    //* =====================================================================
-    /// \brief A subscript operator into a column
-    //* =====================================================================
-    const_column_proxy operator[](terminalpp::coordinate_type column) const;
-
 private :
     //* =====================================================================
     /// \brief Set the value of an element.
@@ -155,26 +105,9 @@ private :
         terminalpp::coordinate_type row, 
         terminalpp::element const &value);
 
-    //* =====================================================================
-    /// \brief Get the value of an element.
-    //* =====================================================================
-    terminalpp::element &get_element(
-        terminalpp::coordinate_type column, 
-        terminalpp::coordinate_type row);
-
-    //* =====================================================================
-    /// \brief Get the value of an element.
-    //* =====================================================================
-    terminalpp::element const &get_element(
-        terminalpp::coordinate_type column, 
-        terminalpp::coordinate_type row) const;
-
     render_surface_capabilities const &capabilities_;
     terminalpp::canvas &canvas_;
     terminalpp::extent  offset_;
 };
-
-MUNIN_EXPORT
-std::ostream &operator<<(std::ostream &out, render_surface::row_proxy const &row);
 
 }

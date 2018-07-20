@@ -40,45 +40,10 @@ render_surface::row_proxy::row_proxy(
 // ROW_PROXY::OPERATOR=
 // ==========================================================================
 render_surface::row_proxy &render_surface::row_proxy::operator=(
-    render_surface::row_proxy const &other)
-{
-    surface_.set_element(column_, row_, other);
-    return *this;
-}
-
-// ==========================================================================
-// ROW_PROXY::OPERATOR=
-// ==========================================================================
-render_surface::row_proxy &render_surface::row_proxy::operator=(
     terminalpp::element const &value)
 {
     surface_.set_element(column_, row_, value);
     return *this;
-}
-
-// ==========================================================================
-// ROW_PROXY::CONVERSION OPERATOR
-// ==========================================================================
-render_surface::row_proxy::operator terminalpp::element &()
-{
-    return surface_.get_element(column_, row_);
-}
-
-// ==========================================================================
-// ROW_PROXY::CONVERSION OPERATOR
-// ==========================================================================
-render_surface::row_proxy::operator terminalpp::element const &() const
-{
-    return surface_.get_element(column_, row_);
-}
-
-// ==========================================================================
-// ROW_PROXY::OPERATOR==
-// ==========================================================================
-bool render_surface::row_proxy::operator==(
-    terminalpp::element const& value) const
-{
-    return surface_.get_element(column_, row_) == value;
 }
 
 // ==========================================================================
@@ -99,26 +64,6 @@ render_surface::row_proxy render_surface::column_proxy::operator[](
     terminalpp::coordinate_type row)
 {
     return render_surface::row_proxy(surface_, column_, row);
-}
-
-// ==========================================================================
-// CONST_COLUMN_PROXY::CONSTRUCTOR
-// ==========================================================================
-render_surface::const_column_proxy::const_column_proxy(
-    render_surface const &surface, 
-    terminalpp::coordinate_type column)
-  : surface_(surface),
-    column_(column)
-{
-}
-
-// ==========================================================================
-// CONST_COLUMN_PROXY::OPERATOR[]
-// ==========================================================================
-terminalpp::element const &render_surface::const_column_proxy::operator[](
-    terminalpp::coordinate_type row) const
-{
-    return surface_.get_element(column_, row);
 }
 
 // ==========================================================================
@@ -175,34 +120,6 @@ render_surface::column_proxy render_surface::operator[](
 }
 
 // ==========================================================================
-// OPERATOR[]
-// ==========================================================================
-render_surface::const_column_proxy render_surface::operator[](
-    terminalpp::coordinate_type column) const
-{
-    return const_column_proxy(*this, column);
-}
-
-// ==========================================================================
-// GET_ELEMENT
-// ==========================================================================
-terminalpp::element &render_surface::get_element(
-    terminalpp::coordinate_type column, terminalpp::coordinate_type row)
-{
-    return canvas_[column + offset_.width][row + offset_.height];
-}
-
-// ==========================================================================
-// GET_ELEMENT
-// ==========================================================================
-terminalpp::element const &render_surface::get_element(
-    terminalpp::coordinate_type column, 
-    terminalpp::coordinate_type row) const
-{
-    return canvas_[column + offset_.width][row + offset_.height];
-}
-
-// ==========================================================================
 // SET_ELEMENT
 // ==========================================================================
 void render_surface::set_element(
@@ -211,16 +128,6 @@ void render_surface::set_element(
     terminalpp::element const &value)
 {
     canvas_[column + offset_.width][row + offset_.height] = value;
-}
-
-// ==========================================================================
-// OPERATOR<<(row_proxy)
-// ==========================================================================
-std::ostream &operator<<(
-    std::ostream &out,
-    render_surface::row_proxy const &row)
-{
-    return out << terminalpp::element(row);
 }
 
 }

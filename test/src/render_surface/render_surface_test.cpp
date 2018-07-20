@@ -32,7 +32,6 @@ TEST(render_surface_test, offset_render_surface_has_offset_basis)
 
     render_surface.offset_by({1, 1});
     render_surface[0][0] = 'x';
-    ASSERT_TRUE(render_surface[0][0] == 'x');
 
     ASSERT_TRUE(canvas[0][0] == ' ');
     ASSERT_TRUE(canvas[0][1] == ' ');
