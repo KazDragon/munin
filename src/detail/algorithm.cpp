@@ -1,6 +1,5 @@
 #include "munin/detail/algorithm.hpp"
 #include <terminalpp/canvas.hpp>
-#include <terminalpp/canvas_view.hpp>
 #include <algorithm>
 
 namespace munin { namespace detail {
