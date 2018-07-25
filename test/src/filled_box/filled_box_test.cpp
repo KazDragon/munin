@@ -2,7 +2,7 @@
 #include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
-TEST(make_fill, make_a_new_filled_box)
+TEST(make_fill, makes_a_new_filled_box)
 {
     std::shared_ptr<munin::filled_box> filled_box = munin::make_fill('F');
 }
@@ -39,7 +39,6 @@ TEST(a_filled_box, can_have_its_fill_set)
 
     filled_box.set_fill(terminalpp::element{'X'});
 
-    ASSERT_EQ(terminalpp::element{'X'}, filled_box.get_fill());
     ASSERT_EQ(1, called);
     ASSERT_EQ(1u, redraw_regions.size());
     ASSERT_EQ(munin::rectangle({}, filled_box.get_size()), redraw_regions[0]);

@@ -179,6 +179,7 @@ if (GTEST_FOUND)
         test/src/container/container_layout_test.cpp
         test/src/filled_box/new_filled_box_test.cpp
         test/src/filled_box/filled_box_test.cpp
+        test/src/filled_box/functional_filled_box_test.cpp
         test/src/framed_component/framed_component_focus_test.cpp
         test/src/framed_component/framed_component_test.cpp
         test/src/framed_component/framed_component_mouse_test.cpp
