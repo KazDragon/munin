@@ -34,11 +34,6 @@ public :
     //* =====================================================================
     void set_preferred_size(terminalpp::extent preferred_size);
 
-    //* =====================================================================
-    /// \brief Sets the element with which the box is filled.
-    //* =====================================================================
-    void set_fill(terminalpp::element const &element);
-
 protected :
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override

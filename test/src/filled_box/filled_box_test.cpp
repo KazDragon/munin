@@ -24,30 +24,9 @@ TEST(a_filled_box, can_have_its_preferred_size_set)
     ASSERT_EQ(1, called);
 }
 
-TEST(a_filled_box, can_have_its_fill_set)
-{
-    std::vector<munin::rectangle> redraw_regions;
-    int called = 0;
-    auto on_redraw = [&called, &redraw_regions](auto const &regions)
-    {
-        redraw_regions = regions;
-        ++called;
-    };
-
-    munin::filled_box filled_box;
-    filled_box.on_redraw.connect(on_redraw);
-
-    filled_box.set_fill(terminalpp::element{'X'});
-
-    ASSERT_EQ(1, called);
-    ASSERT_EQ(1u, redraw_regions.size());
-    ASSERT_EQ(munin::rectangle({}, filled_box.get_size()), redraw_regions[0]);
-}
-
 TEST(a_filled_box, draws_its_fill)
 {
-    munin::filled_box filled_box;
-    filled_box.set_fill('Y');
+    munin::filled_box filled_box('Y');
     filled_box.set_size({1, 1});
 
     terminalpp::canvas canvas({2, 2});
@@ -63,8 +42,7 @@ TEST(a_filled_box, draws_its_fill)
 
 TEST(a_filled_box, draws_only_within_given_region)
 {
-    munin::filled_box filled_box;
-    filled_box.set_fill('Y');
+    munin::filled_box filled_box('Y');
     filled_box.set_size({2, 2});
 
     terminalpp::canvas canvas({3, 4});

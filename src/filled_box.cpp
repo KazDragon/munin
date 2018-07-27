@@ -48,15 +48,6 @@ void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 }
 
 // ==========================================================================
-// SET_FILL
-// ==========================================================================
-void filled_box::set_fill(terminalpp::element const &element)
-{
-    pimpl_->fill_function_ = [element](auto){return element;};
-    on_redraw({rectangle({}, get_size())});
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent filled_box::do_get_preferred_size() const

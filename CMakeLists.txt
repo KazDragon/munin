@@ -72,7 +72,6 @@ set (MUNIN_SOURCE_FILES
     src/container.cpp
     src/filled_box.cpp
     src/framed_component.cpp
-    src/graphics.cpp
     src/grid_layout.cpp
     src/horizontal_strip_layout.cpp
     src/image.cpp
@@ -95,7 +94,6 @@ set (MUNIN_INCLUDE_FILES
     include/munin/container.hpp
     include/munin/filled_box.hpp
     include/munin/framed_component.hpp
-    include/munin/graphics.hpp
     include/munin/grid_layout.hpp
     include/munin/horizontal_strip_layout.hpp
     include/munin/image.hpp
