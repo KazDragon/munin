@@ -232,3 +232,36 @@ TEST_F(a_solid_frame_with_an_associated_focussed_component, when_unfocussed_draw
     ASSERT_EQ(horizontal_beam,     canvas[2][3]);
     ASSERT_EQ(bottom_right_corner, canvas[3][3]);
 }
+
+TEST_F(a_solid_frame_with_an_associated_focussed_component, can_have_a_custom_highlight)
+{
+    terminalpp::attribute custom_highlight = {
+        terminalpp::ansi::graphics::colour::green,
+        terminalpp::ansi::graphics::colour::magenta
+    };
+    
+    frame_.set_highlight_attribute(custom_highlight);
+    frame_.set_size({4, 4});
+
+    ON_CALL(*comp_, do_has_focus())
+        .WillByDefault(Return(true));
+    comp_->on_focus_set();
+
+    terminalpp::canvas canvas({4, 4});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
+
+    ASSERT_EQ(terminalpp::element(top_left_corner,     custom_highlight), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][0]);
+    ASSERT_EQ(terminalpp::element(top_right_corner,    custom_highlight), canvas[3][0]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(bottom_left_corner,  custom_highlight), canvas[0][3]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][3]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][3]);
+    ASSERT_EQ(terminalpp::element(bottom_right_corner, custom_highlight), canvas[3][3]);
+}
+
