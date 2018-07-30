@@ -2,6 +2,7 @@
 
 #include "munin/basic_component.hpp"
 #include <terminalpp/element.hpp>
+#include <functional>
 
 namespace munin {
 
@@ -18,6 +19,12 @@ public :
     explicit filled_box(terminalpp::element const &element = ' ');
 
     //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    explicit filled_box(
+        std::function<terminalpp::element (render_surface &)> fill_function);
+    
+    //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
     ~filled_box() override;
@@ -26,16 +33,6 @@ public :
     /// \brief Sets the preferred size of this box.  The default is (1,1).
     //* =====================================================================
     void set_preferred_size(terminalpp::extent preferred_size);
-
-    //* =====================================================================
-    /// \brief Sets the element with which the box is filled.
-    //* =====================================================================
-    void set_fill(terminalpp::element const &element);
-
-    //* =====================================================================
-    /// \brief Gets the element with which the box is filled.
-    //* =====================================================================
-    terminalpp::element get_fill() const;
 
 protected :
     //* =====================================================================
@@ -75,5 +72,12 @@ private :
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill);
+
+//* =========================================================================
+/// \brief Returns a newly created filled box.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<filled_box> make_fill(
+    std::function<terminalpp::element (render_surface&)> fill_function);
 
 }

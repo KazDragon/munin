@@ -8,7 +8,7 @@ namespace munin {
 // ==========================================================================
 struct filled_box::impl
 {
-    terminalpp::element element_;
+    std::function<terminalpp::element (render_surface &)> fill_function_;
     terminalpp::extent  preferred_size_;
 };
 
@@ -16,9 +16,18 @@ struct filled_box::impl
 // CONSTRUCTOR
 // ==========================================================================
 filled_box::filled_box(terminalpp::element const &element)
-    : pimpl_(std::make_shared<impl>())
+  : filled_box([element](auto){return element;})
 {
-    pimpl_->element_        = element;
+}
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+filled_box::filled_box(
+    std::function<terminalpp::element (render_surface &)> fill_function)
+  : pimpl_(std::make_shared<impl>())
+{
+    pimpl_->fill_function_  = std::move(fill_function);
     pimpl_->preferred_size_ = terminalpp::extent(1, 1);
 }
 
@@ -39,23 +48,6 @@ void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 }
 
 // ==========================================================================
-// SET_FILL
-// ==========================================================================
-void filled_box::set_fill(terminalpp::element const &element)
-{
-    pimpl_->element_ = element;
-    on_redraw({rectangle({}, get_size())});
-}
-
-// ==========================================================================
-// GET_FILL
-// ==========================================================================
-terminalpp::element filled_box::get_fill() const
-{
-    return pimpl_->element_;
-}
-
-// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent filled_box::do_get_preferred_size() const
@@ -69,6 +61,8 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 void filled_box::do_draw(
     render_surface &surface, rectangle const &region) const
 {
+    auto const element = pimpl_->fill_function_(surface);
+    
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
          ++row)
@@ -77,7 +71,7 @@ void filled_box::do_draw(
              column < region.origin.x + region.size.width;
              ++column)
         {
-            surface[column][row] = pimpl_->element_;
+            surface[column][row] = element;
         }
     }
 }
@@ -100,6 +94,15 @@ nlohmann::json filled_box::do_to_json() const
 std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill)
 {
     return std::make_shared<filled_box>(fill);
+}
+
+// ==========================================================================
+// MAKE_FILLED_BOX
+// ==========================================================================
+std::shared_ptr<filled_box> make_fill(
+    std::function<terminalpp::element (render_surface &)> fill_function)
+{
+    return std::make_shared<filled_box>(std::move(fill_function));
 }
 
 }

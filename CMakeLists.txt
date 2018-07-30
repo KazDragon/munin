@@ -72,7 +72,6 @@ set (MUNIN_SOURCE_FILES
     src/container.cpp
     src/filled_box.cpp
     src/framed_component.cpp
-    src/graphics.cpp
     src/grid_layout.cpp
     src/horizontal_strip_layout.cpp
     src/image.cpp
@@ -95,7 +94,6 @@ set (MUNIN_INCLUDE_FILES
     include/munin/container.hpp
     include/munin/filled_box.hpp
     include/munin/framed_component.hpp
-    include/munin/graphics.hpp
     include/munin/grid_layout.hpp
     include/munin/horizontal_strip_layout.hpp
     include/munin/image.hpp
@@ -179,6 +177,7 @@ if (GTEST_FOUND)
         test/src/container/container_layout_test.cpp
         test/src/filled_box/new_filled_box_test.cpp
         test/src/filled_box/filled_box_test.cpp
+        test/src/filled_box/functional_filled_box_test.cpp
         test/src/framed_component/framed_component_focus_test.cpp
         test/src/framed_component/framed_component_test.cpp
         test/src/framed_component/framed_component_mouse_test.cpp

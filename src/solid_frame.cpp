@@ -2,118 +2,146 @@
 #include "munin/detail/unicode_glyphs.hpp"
 #include "munin/compass_layout.hpp"
 #include "munin/filled_box.hpp"
-#include "munin/graphics.hpp"
+#include "munin/render_surface.hpp"
 #include "munin/view.hpp"
 
 namespace munin {
 namespace {
 
-constexpr terminalpp::glyph const default_corner_glyph          = '+';
-constexpr terminalpp::glyph const default_horizontal_beam_glyph = '-';
-constexpr terminalpp::glyph const default_vertical_beam_glyph   = '|';
+constexpr terminalpp::glyph const default_corner_element          = '+';
+constexpr terminalpp::glyph const default_horizontal_beam_element = '-';
+constexpr terminalpp::glyph const default_vertical_beam_element   = '|';
     
 // ==========================================================================
 // TOP_LEFT_CORNER_GLYPH
 // ==========================================================================
-terminalpp::glyph top_left_corner_glyph()
+terminalpp::element select_top_left_corner_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_top_left_corner
-         : default_corner_glyph;
+         : default_corner_element, attr};
 }
 
 // ==========================================================================
 // TOP_RIGHT_CORNER_GLYPH
 // ==========================================================================
-terminalpp::glyph top_right_corner_glyph()
+terminalpp::element select_top_right_corner_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_top_right_corner
-         : default_corner_glyph;
+         : default_corner_element, attr};
 }
 
 // ==========================================================================
 // BOTTOM_LEFT_CORNER_GLYPH
 // ==========================================================================
-terminalpp::glyph bottom_left_corner_glyph()
+terminalpp::element select_bottom_left_corner_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_bottom_left_corner
-         : default_corner_glyph;
+         : default_corner_element, attr};
 }
 
 // ==========================================================================
 // BOTTOM_RIGHT_CORNER_GLYPH
 // ==========================================================================
-terminalpp::glyph bottom_right_corner_glyph()
+terminalpp::element select_bottom_right_corner_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_bottom_right_corner
-         : default_corner_glyph;
+         : default_corner_element, attr};
 }
 
 // ==========================================================================
 // HORIZONTAL_BEAM_GLYPH
 // ==========================================================================
-terminalpp::glyph horizontal_beam_glyph()
+terminalpp::element select_horizontal_beam_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_horizontal_beam
-         : default_horizontal_beam_glyph;
+         : default_horizontal_beam_element, attr};
 }
 
 // ==========================================================================
 // VERTICAL_BEAM_GLYPH
 // ==========================================================================
-terminalpp::glyph vertical_beam_glyph()
+terminalpp::element select_vertical_beam_element(
+    render_surface const &surface,
+    terminalpp::attribute const &attr)
 {
-    return get_graphics().supports_unicode()
+    return {surface.supports_unicode()
          ? detail::double_lined_vertical_beam
-         : default_vertical_beam_glyph;
+         : default_vertical_beam_element, attr};
 }
 
 }
 
 struct solid_frame::impl
 {
-    terminalpp::attribute lowlight_attribute = {};
+    terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
         terminalpp::ansi::graphics::colour::cyan,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold};
+    terminalpp::attribute *current_attribute = &lowlight_attribute;
 
-    std::shared_ptr<munin::filled_box> top_left = 
-        munin::make_fill({top_left_corner_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> top_centre = 
-        munin::make_fill({horizontal_beam_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> top_right = 
-        munin::make_fill({top_right_corner_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> centre_left = 
-        munin::make_fill({vertical_beam_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> centre_right = 
-        munin::make_fill({vertical_beam_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_left = 
-        munin::make_fill({bottom_left_corner_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_centre = 
-        munin::make_fill({horizontal_beam_glyph(), lowlight_attribute});
-    std::shared_ptr<munin::filled_box> bottom_right = 
-        munin::make_fill({bottom_right_corner_glyph(), lowlight_attribute});
-    
-    bool is_highlighted = false;
-    
-    void set_fills()
-    {
-        auto const &attr = is_highlighted ? highlight_attribute : lowlight_attribute;
+    std::shared_ptr<munin::filled_box> top_left = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_top_left_corner_element(surface, *current_attribute);
+        });
+            
+    std::shared_ptr<munin::filled_box> top_centre = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_horizontal_beam_element(surface, *current_attribute);
+        });
         
-        top_left->set_fill({top_left_corner_glyph(), attr});
-        top_centre->set_fill({horizontal_beam_glyph(), attr});
-        top_right->set_fill({top_right_corner_glyph(), attr});
-        centre_left->set_fill({vertical_beam_glyph(), attr});
-        centre_right->set_fill({vertical_beam_glyph(), attr});
-        bottom_left->set_fill({bottom_left_corner_glyph(), attr});
-        bottom_centre->set_fill({horizontal_beam_glyph(), attr});
-        bottom_right->set_fill({bottom_right_corner_glyph(), attr});
-    }
+    std::shared_ptr<munin::filled_box> top_right = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_top_right_corner_element(surface, *current_attribute);
+        });
+        
+    std::shared_ptr<munin::filled_box> centre_left = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_vertical_beam_element(surface, *current_attribute);
+        });
+        
+    std::shared_ptr<munin::filled_box> centre_right = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_vertical_beam_element(surface, *current_attribute);
+        });
+        
+    std::shared_ptr<munin::filled_box> bottom_left = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_bottom_left_corner_element(surface, *current_attribute);
+        });
+        
+    std::shared_ptr<munin::filled_box> bottom_centre = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_horizontal_beam_element(surface, *current_attribute);
+        });
+        
+    std::shared_ptr<munin::filled_box> bottom_right = munin::make_fill(
+        [this](render_surface &surface)
+        {
+            return select_bottom_right_corner_element(surface, *current_attribute);
+        });
 };
 
 // ==========================================================================
@@ -159,7 +187,6 @@ void solid_frame::set_highlight_attribute(
     terminalpp::attribute const &highlight_attribute)
 {
     pimpl_->highlight_attribute = highlight_attribute;
-    pimpl_->set_fills();
 }
 
 // ==========================================================================
@@ -169,7 +196,6 @@ void solid_frame::set_lowlight_attribute(
     terminalpp::attribute const &lowlight_attribute)
 {
     pimpl_->lowlight_attribute = lowlight_attribute;
-    pimpl_->set_fills();
 }
 
 // ==========================================================================
@@ -185,8 +211,9 @@ void solid_frame::highlight_on_focus(
 
             if (associated_component)
             {
-                pimpl_->is_highlighted = associated_component->has_focus();
-                pimpl_->set_fills();
+                pimpl_->current_attribute = associated_component->has_focus()
+                                          ? &pimpl_->highlight_attribute
+                                          : &pimpl_->lowlight_attribute;
             }
         };
 

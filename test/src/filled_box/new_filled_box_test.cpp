@@ -2,12 +2,6 @@
 #include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
 
-TEST(a_new_filled_box, has_a_whitespace_fill)
-{
-    munin::filled_box filled_box;
-    ASSERT_EQ(terminalpp::element(' '), filled_box.get_fill());
-}
-
 TEST(a_new_filled_box, has_a_singular_preferred_size)
 {
     munin::filled_box filled_box;

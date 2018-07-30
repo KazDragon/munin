@@ -1,5 +1,5 @@
 #include "mock/component.hpp"
-#include "mock/graphics.hpp"
+#include "mock/render_surface_capabilities.hpp"
 #include <munin/solid_frame.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/string.hpp>
@@ -28,19 +28,46 @@ static auto const highlight_attribute = terminalpp::attribute(
     terminalpp::colour(),
     terminalpp::ansi::graphics::intensity::bold);
 
-TEST(a_solid_frame, is_a_component)
+class a_solid_frame_with_no_unicode_support : public testing::Test
+{
+protected :
+    void SetUp() override
+    {
+        ON_CALL(surface_capabilities_, supports_unicode())
+            .WillByDefault(Return(false));
+    }
+
+    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
+    munin::solid_frame frame_;
+};
+
+using a_solid_frame = a_solid_frame_with_no_unicode_support;
+
+class a_solid_frame_with_unicode_support : public testing::Test
+{
+protected :
+    void SetUp() override
+    {
+        ON_CALL(surface_capabilities_, supports_unicode())
+            .WillByDefault(Return(true));
+    }
+
+    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
+    munin::solid_frame frame_;
+};
+
+TEST_F(a_solid_frame, is_a_component)
 {
     std::shared_ptr<munin::component> comp = munin::make_solid_frame();
 }
 
-TEST(a_solid_frame, draws_a_border)
+TEST_F(a_solid_frame_with_no_unicode_support, draws_a_border)
 {
-    munin::solid_frame frame;
-    frame.set_size({4, 4});
+    frame_.set_size({4, 4});
     
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -56,33 +83,13 @@ TEST(a_solid_frame, draws_a_border)
     ASSERT_EQ(bottom_right_corner, canvas[3][3]);
 }
 
-class a_solid_frame_with_unicode_graphics : public testing::Test
+TEST_F(a_solid_frame_with_unicode_support, draws_a_border_with_box_drawing_glyphs)
 {
-protected:
-    void SetUp() override
-    {
-        ON_CALL(mock_gr_, supports_unicode())
-            .WillByDefault(Return(true));
-
-        munin::set_graphics(&mock_gr_);
-    }
-
-    void TearDown() override
-    {
-        munin::set_graphics(nullptr);
-    }
-
-    NiceMock<mock_graphics> mock_gr_;  
-};
-
-TEST_F(a_solid_frame_with_unicode_graphics, draws_a_border_with_box_drawing_glyphs)
-{
-    munin::solid_frame frame;
-    frame.set_size({4, 4});
+    frame_.set_size({4, 4});
     
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(unicode_top_left_corner,     canvas[0][0]);
     ASSERT_EQ(unicode_horizontal_beam,     canvas[1][0]);
@@ -98,20 +105,19 @@ TEST_F(a_solid_frame_with_unicode_graphics, draws_a_border_with_box_drawing_glyp
     ASSERT_EQ(unicode_bottom_right_corner, canvas[3][3]);
 }
 
-TEST(a_solid_frame, can_be_displayed_with_a_custom_lowlight)
+TEST_F(a_solid_frame, can_be_displayed_with_a_custom_lowlight)
 {
     static auto const lowlight_attribute = terminalpp::attribute(
         terminalpp::ansi::graphics::colour::green,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold);
         
-    munin::solid_frame frame;
-    frame.set_size({4, 4});
-    frame.set_lowlight_attribute(lowlight_attribute);
+    frame_.set_size({4, 4});
+    frame_.set_lowlight_attribute(lowlight_attribute);
     
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[0][0]);
     ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[1][0]);
@@ -127,20 +133,39 @@ TEST(a_solid_frame, can_be_displayed_with_a_custom_lowlight)
     ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[3][3]);
 }
 
-TEST(a_solid_frame_with_an_associated_unfocussed_component, draws_a_highlighted_border)
+class a_solid_frame_with_an_associated_unfocussed_component : public a_solid_frame_with_no_unicode_support
 {
-    auto comp = make_mock_component();
-    ON_CALL(*comp, do_has_focus())
-        .WillByDefault(Return(false));
+protected :
+    void SetUp() override
+    {
+        frame_.highlight_on_focus(comp_);
+        ON_CALL(*comp_, do_has_focus())
+            .WillByDefault(Return(false));
+    }
+    
+    std::shared_ptr<mock_component> comp_ = make_mock_component();
+};
 
-    munin::solid_frame frame;
-    frame.set_highlight_attribute(highlight_attribute);
-    frame.highlight_on_focus(comp);
-    frame.set_size({4, 4});
+class a_solid_frame_with_an_associated_focussed_component : public a_solid_frame_with_no_unicode_support
+{
+protected :
+    void SetUp() override
+    {
+        frame_.highlight_on_focus(comp_);
+        ON_CALL(*comp_, do_has_focus())
+            .WillByDefault(Return(true));
+    }
+    
+    std::shared_ptr<mock_component> comp_ = make_mock_component();
+};
+
+TEST_F(a_solid_frame_with_an_associated_unfocussed_component, draws_a_lowlighted_border)
+{
+    frame_.set_size({4, 4});
 
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -156,24 +181,17 @@ TEST(a_solid_frame_with_an_associated_unfocussed_component, draws_a_highlighted_
     ASSERT_EQ(bottom_right_corner, canvas[3][3]);
 }
 
-TEST(a_solid_frame_with_an_associated_unfocussed_component, when_focussed_draws_a_highlighted_border)
+TEST_F(a_solid_frame_with_an_associated_unfocussed_component, when_focussed_draws_a_highlighted_border)
 {
-    auto comp = make_mock_component();
-    ON_CALL(*comp, do_has_focus())
-        .WillByDefault(Return(false));
+    frame_.set_size({4, 4});
 
-    munin::solid_frame frame;
-    frame.set_highlight_attribute(highlight_attribute);
-    frame.highlight_on_focus(comp);
-    frame.set_size({4, 4});
-
-    ON_CALL(*comp, do_has_focus())
+    ON_CALL(*comp_, do_has_focus())
         .WillByDefault(Return(true));
-    comp->on_focus_set();
+    comp_->on_focus_set();
 
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(terminalpp::element(top_left_corner,     highlight_attribute), canvas[0][0]);
     ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[1][0]);
@@ -189,24 +207,17 @@ TEST(a_solid_frame_with_an_associated_unfocussed_component, when_focussed_draws_
     ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[3][3]);
 }
 
-TEST(a_solid_frame_with_an_associated_focussed_component, when_unfocussed_draws_a_border)
+TEST_F(a_solid_frame_with_an_associated_focussed_component, when_unfocussed_draws_a_lowlit_border)
 {
-    auto comp = make_mock_component();
-    ON_CALL(*comp, do_has_focus())
-        .WillByDefault(Return(true));
+    frame_.set_size({4, 4});
 
-    munin::solid_frame frame;
-    frame.set_highlight_attribute(highlight_attribute);
-    frame.highlight_on_focus(comp);
-    frame.set_size({4, 4});
-
-    ON_CALL(*comp, do_has_focus())
+    ON_CALL(*comp_, do_has_focus())
         .WillByDefault(Return(false));
-    comp->on_focus_lost();
+    comp_->on_focus_lost();
 
     terminalpp::canvas canvas({4, 4});
-    munin::render_surface surface{canvas};
-    frame.draw(surface, {{}, {4, 4}});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -221,3 +232,36 @@ TEST(a_solid_frame_with_an_associated_focussed_component, when_unfocussed_draws_
     ASSERT_EQ(horizontal_beam,     canvas[2][3]);
     ASSERT_EQ(bottom_right_corner, canvas[3][3]);
 }
+
+TEST_F(a_solid_frame_with_an_associated_focussed_component, can_have_a_custom_highlight)
+{
+    terminalpp::attribute custom_highlight = {
+        terminalpp::ansi::graphics::colour::green,
+        terminalpp::ansi::graphics::colour::magenta
+    };
+    
+    frame_.set_highlight_attribute(custom_highlight);
+    frame_.set_size({4, 4});
+
+    ON_CALL(*comp_, do_has_focus())
+        .WillByDefault(Return(true));
+    comp_->on_focus_set();
+
+    terminalpp::canvas canvas({4, 4});
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, {4, 4}});
+
+    ASSERT_EQ(terminalpp::element(top_left_corner,     custom_highlight), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][0]);
+    ASSERT_EQ(terminalpp::element(top_right_corner,    custom_highlight), canvas[3][0]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(bottom_left_corner,  custom_highlight), canvas[0][3]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][3]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][3]);
+    ASSERT_EQ(terminalpp::element(bottom_right_corner, custom_highlight), canvas[3][3]);
+}
+
