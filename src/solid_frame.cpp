@@ -20,7 +20,7 @@ terminalpp::element select_top_left_corner_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_top_left_corner
+         ? detail::single_lined_rounded_top_left_corner
          : default_corner_element, attr};
 }
 
@@ -32,7 +32,7 @@ terminalpp::element select_top_right_corner_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_top_right_corner
+         ? detail::single_lined_rounded_top_right_corner
          : default_corner_element, attr};
 }
 
@@ -44,7 +44,7 @@ terminalpp::element select_bottom_left_corner_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_bottom_left_corner
+         ? detail::single_lined_rounded_bottom_left_corner
          : default_corner_element, attr};
 }
 
@@ -56,7 +56,7 @@ terminalpp::element select_bottom_right_corner_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_bottom_right_corner
+         ? detail::single_lined_rounded_bottom_right_corner
          : default_corner_element, attr};
 }
 
@@ -68,7 +68,7 @@ terminalpp::element select_horizontal_beam_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_horizontal_beam
+         ? detail::single_lined_horizontal_beam
          : default_horizontal_beam_element, attr};
 }
 
@@ -80,7 +80,7 @@ terminalpp::element select_vertical_beam_element(
     terminalpp::attribute const &attr)
 {
     return {surface.supports_unicode()
-         ? detail::double_lined_vertical_beam
+         ? detail::single_lined_vertical_beam
          : default_vertical_beam_element, attr};
 }
 
