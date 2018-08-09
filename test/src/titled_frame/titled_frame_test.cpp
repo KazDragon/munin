@@ -61,28 +61,47 @@ TEST_F(a_titled_frame, is_a_component)
     std::shared_ptr<munin::component> comp = munin::make_titled_frame("title");
 }
 
-/*
-TEST_F(a_titled_frame_with_no_unicode_support, draws_a_border)
+TEST_F(a_titled_frame_with_no_unicode_support, draws_a_border_with_title)
 {
-    frame_.set_size({4, 4});
+    frame_.set_size({13, 3});
     
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas({13, 3});
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, {13, 3}});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][0]);
-    ASSERT_EQ(top_right_corner,    canvas[3][0]);
+    ASSERT_EQ(' ',                 canvas[2][0]);
+    ASSERT_EQ('t',                 canvas[3][0]);
+    ASSERT_EQ('i',                 canvas[4][0]);
+    ASSERT_EQ('t',                 canvas[5][0]);
+    ASSERT_EQ('l',                 canvas[6][0]);
+    ASSERT_EQ('e',                 canvas[7][0]);
+    ASSERT_EQ(' ',                 canvas[8][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[10][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[11][0]);
+    ASSERT_EQ(top_right_corner,    canvas[12][0]);
+
     ASSERT_EQ(vertical_beam,       canvas[0][1]);
-    ASSERT_EQ(vertical_beam,       canvas[3][1]);
-    ASSERT_EQ(vertical_beam,       canvas[0][2]);
-    ASSERT_EQ(vertical_beam,       canvas[3][2]);
-    ASSERT_EQ(bottom_left_corner,  canvas[0][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[1][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][3]);
-    ASSERT_EQ(bottom_right_corner, canvas[3][3]);
+    ASSERT_EQ(vertical_beam,       canvas[12][1]);
+    
+    ASSERT_EQ(bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[8][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[10][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[11][2]);
+    ASSERT_EQ(bottom_right_corner, canvas[12][2]);
 }
+
+/*
 
 TEST_F(a_titled_frame_with_unicode_support, draws_a_border_with_box_drawing_glyphs)
 {

@@ -2,6 +2,7 @@
 #include "munin/detail/unicode_glyphs.hpp"
 #include "munin/compass_layout.hpp"
 #include "munin/filled_box.hpp"
+#include "munin/image.hpp"
 #include "munin/render_surface.hpp"
 #include "munin/view.hpp"
 
@@ -84,65 +85,88 @@ terminalpp::element select_vertical_beam_element(
          : default_vertical_beam_element, attr};
 }
 
+// ==========================================================================
+// MAKE_TOP_LEFT_FILL
+// ==========================================================================
+auto make_top_left_corner_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_top_left_corner_element(surface, attr);
+        });
+}
+
+// ==========================================================================
+// MAKE_HORIZONTAL_BEAM_FILL
+// ==========================================================================
+auto make_horizontal_beam_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_horizontal_beam_element(surface, attr);
+        });
+}
+
+// ==========================================================================
+// MAKE_TOP_RIGHT_FILL
+// ==========================================================================
+auto make_top_right_corner_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_top_right_corner_element(surface, attr);
+        });
+}
+
+// ==========================================================================
+// MAKE_VERTICAL_BEAM_FILL
+// ==========================================================================
+auto make_vertical_beam_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_vertical_beam_element(surface, attr);
+        });
+}
+
+// ==========================================================================
+// MAKE_BOTTOM_LEFT_FILL
+// ==========================================================================
+auto make_bottom_left_corner_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_bottom_left_corner_element(surface, attr);
+        });
+}
+
+// ==========================================================================
+// MAKE_BOTTOM_RIGHT_FILL
+// ==========================================================================
+auto make_bottom_right_corner_fill(terminalpp::attribute const &attr)
+{
+    return munin::make_fill(
+        [&attr](render_surface &surface)
+        {
+            return select_bottom_right_corner_element(surface, attr);
+        });
+}
+
 }
 
 struct titled_frame::impl
 {
-    terminalpp::string title;
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
         terminalpp::ansi::graphics::colour::cyan,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold};
     terminalpp::attribute *current_attribute = &lowlight_attribute;
-
-    std::shared_ptr<munin::filled_box> top_left = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_top_left_corner_element(surface, *current_attribute);
-        });
-            
-    std::shared_ptr<munin::filled_box> top_centre = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_horizontal_beam_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> top_right = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_top_right_corner_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> centre_left = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_vertical_beam_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> centre_right = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_vertical_beam_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> bottom_left = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_bottom_left_corner_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> bottom_centre = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_horizontal_beam_element(surface, *current_attribute);
-        });
-        
-    std::shared_ptr<munin::filled_box> bottom_right = munin::make_fill(
-        [this](render_surface &surface)
-        {
-            return select_bottom_right_corner_element(surface, *current_attribute);
-        });
 };
 
 // ==========================================================================
@@ -151,22 +175,37 @@ struct titled_frame::impl
 titled_frame::titled_frame(terminalpp::string const &title)
   : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->title = title;
+    auto const &attr = *pimpl_->current_attribute;
     
+    auto title_piece = view(
+        make_compass_layout(),
+        make_fill(' '), compass_layout::heading::west,
+        make_image(title), compass_layout::heading::centre,
+        make_fill(' '), compass_layout::heading::east);
+        
+    auto title_banner = view(
+        make_compass_layout(),
+        title_piece, compass_layout::heading::west,
+        make_horizontal_beam_fill(attr), compass_layout::heading::centre);
+        
     auto north_beam = view(
         make_compass_layout(),
-        pimpl_->top_left,   compass_layout::heading::west,
-        pimpl_->top_centre, compass_layout::heading::centre,
-        pimpl_->top_right,  compass_layout::heading::east);
+        make_top_left_corner_fill(attr), compass_layout::heading::west,
+        view(
+            make_compass_layout(),
+            make_horizontal_beam_fill(attr), compass_layout::heading::west,
+            title_banner, compass_layout::heading::centre,
+            make_horizontal_beam_fill(attr), compass_layout::heading::east),
+        make_top_right_corner_fill(attr), compass_layout::heading::east);
     
     auto south_beam = view(
         make_compass_layout(),
-        pimpl_->bottom_left, compass_layout::heading::west,
-        pimpl_->bottom_centre, compass_layout::heading::centre,
-        pimpl_->bottom_right, compass_layout::heading::east);
+        make_bottom_left_corner_fill(attr), compass_layout::heading::west,
+        make_horizontal_beam_fill(attr), compass_layout::heading::centre,
+        make_bottom_right_corner_fill(attr), compass_layout::heading::east);
         
-    auto west_beam = pimpl_->centre_left;
-    auto east_beam = pimpl_->centre_right;
+    auto west_beam = make_vertical_beam_fill(attr);
+    auto east_beam = make_vertical_beam_fill(attr);
     
     set_layout(make_compass_layout());
     
