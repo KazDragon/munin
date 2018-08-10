@@ -63,11 +63,49 @@ TEST_F(a_titled_frame, is_a_component)
 
 TEST_F(a_titled_frame_with_no_unicode_support, draws_a_border_with_title)
 {
-    frame_.set_size({13, 3});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
     
-    terminalpp::canvas canvas({13, 3});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {13, 3}});
+    frame_.draw(surface, {{}, size});
+
+    ASSERT_EQ(top_left_corner,     canvas[0][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][0]);
+    ASSERT_EQ(' ',                 canvas[2][0]);
+    ASSERT_EQ('t',                 canvas[3][0]);
+    ASSERT_EQ('i',                 canvas[4][0]);
+    ASSERT_EQ('t',                 canvas[5][0]);
+    ASSERT_EQ('l',                 canvas[6][0]);
+    ASSERT_EQ('e',                 canvas[7][0]);
+    ASSERT_EQ(' ',                 canvas[8][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][0]);
+    ASSERT_EQ(top_right_corner,    canvas[10][0]);
+
+    ASSERT_EQ(vertical_beam,       canvas[0][1]);
+    ASSERT_EQ(vertical_beam,       canvas[10][1]);
+    
+    ASSERT_EQ(bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[8][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][2]);
+    ASSERT_EQ(bottom_right_corner, canvas[10][2]);
+}
+
+TEST_F(a_titled_frame_with_no_unicode_support, left_justifies_text_when_grown)
+{
+    auto const size = terminalpp::extent{13, 3};
+    frame_.set_size(size);
+    
+    terminalpp::canvas canvas(size);
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, size});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
@@ -101,28 +139,74 @@ TEST_F(a_titled_frame_with_no_unicode_support, draws_a_border_with_title)
     ASSERT_EQ(bottom_right_corner, canvas[12][2]);
 }
 
-/*
+TEST_F(a_titled_frame_with_no_unicode_support, clips_the_title_when_shrunk)
+{
+    auto const size = terminalpp::extent{9, 3};
+    frame_.set_size(size);
+    
+    terminalpp::canvas canvas(size);
+    munin::render_surface surface{canvas, surface_capabilities_};
+    frame_.draw(surface, {{}, size});
+
+    ASSERT_EQ(top_left_corner,     canvas[0][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][0]);
+    ASSERT_EQ(' ',                 canvas[2][0]);
+    ASSERT_EQ('i',                 canvas[3][0]);
+    ASSERT_EQ('t',                 canvas[4][0]);
+    ASSERT_EQ('l',                 canvas[5][0]);
+    ASSERT_EQ(' ',                 canvas[6][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][0]);
+    ASSERT_EQ(top_right_corner,    canvas[8][0]);
+
+    ASSERT_EQ(vertical_beam,       canvas[0][1]);
+    ASSERT_EQ(vertical_beam,       canvas[8][1]);
+    
+    ASSERT_EQ(bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(bottom_right_corner, canvas[8][2]);
+}
 
 TEST_F(a_titled_frame_with_unicode_support, draws_a_border_with_box_drawing_glyphs)
 {
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
     
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
     ASSERT_EQ(unicode_top_left_corner,     canvas[0][0]);
     ASSERT_EQ(unicode_horizontal_beam,     canvas[1][0]);
-    ASSERT_EQ(unicode_horizontal_beam,     canvas[2][0]);
-    ASSERT_EQ(unicode_top_right_corner,    canvas[3][0]);
+    ASSERT_EQ(' ',                         canvas[2][0]);
+    ASSERT_EQ('t',                         canvas[3][0]);
+    ASSERT_EQ('i',                         canvas[4][0]);
+    ASSERT_EQ('t',                         canvas[5][0]);
+    ASSERT_EQ('l',                         canvas[6][0]);
+    ASSERT_EQ('e',                         canvas[7][0]);
+    ASSERT_EQ(' ',                         canvas[8][0]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[9][0]);
+    ASSERT_EQ(unicode_top_right_corner,    canvas[10][0]);
+
     ASSERT_EQ(unicode_vertical_beam,       canvas[0][1]);
-    ASSERT_EQ(unicode_vertical_beam,       canvas[0][2]);
-    ASSERT_EQ(unicode_vertical_beam,       canvas[3][2]);
-    ASSERT_EQ(unicode_vertical_beam,       canvas[3][1]);
-    ASSERT_EQ(unicode_bottom_left_corner,  canvas[0][3]);
-    ASSERT_EQ(unicode_horizontal_beam,     canvas[1][3]);
-    ASSERT_EQ(unicode_horizontal_beam,     canvas[2][3]);
-    ASSERT_EQ(unicode_bottom_right_corner, canvas[3][3]);
+    ASSERT_EQ(unicode_vertical_beam,       canvas[10][1]);
+    
+    ASSERT_EQ(unicode_bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[8][2]);
+    ASSERT_EQ(unicode_horizontal_beam,     canvas[9][2]);
+    ASSERT_EQ(unicode_bottom_right_corner, canvas[10][2]);
 }
 
 TEST_F(a_titled_frame, can_be_displayed_with_a_custom_lowlight)
@@ -132,25 +216,40 @@ TEST_F(a_titled_frame, can_be_displayed_with_a_custom_lowlight)
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold);
         
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
     frame_.set_lowlight_attribute(lowlight_attribute);
     
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
-    ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[0][0]);
-    ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[1][0]);
-    ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[2][0]);
-    ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[3][0]);
-    ASSERT_EQ(terminalpp::element('|', lowlight_attribute), canvas[0][1]);
-    ASSERT_EQ(terminalpp::element('|', lowlight_attribute), canvas[3][1]);
-    ASSERT_EQ(terminalpp::element('|', lowlight_attribute), canvas[0][2]);
-    ASSERT_EQ(terminalpp::element('|', lowlight_attribute), canvas[3][2]);
-    ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[0][3]);
-    ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[1][3]);
-    ASSERT_EQ(terminalpp::element('-', lowlight_attribute), canvas[2][3]);
-    ASSERT_EQ(terminalpp::element('+', lowlight_attribute), canvas[3][3]);
+    ASSERT_EQ(terminalpp::element(top_left_corner, lowlight_attribute),     canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[1][0]);
+    ASSERT_EQ(' ',                                                          canvas[2][0]);
+    ASSERT_EQ('t',                                                          canvas[3][0]);
+    ASSERT_EQ('i',                                                          canvas[4][0]);
+    ASSERT_EQ('t',                                                          canvas[5][0]);
+    ASSERT_EQ('l',                                                          canvas[6][0]);
+    ASSERT_EQ('e',                                                          canvas[7][0]);
+    ASSERT_EQ(' ',                                                          canvas[8][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[9][0]);
+    ASSERT_EQ(terminalpp::element(top_right_corner, lowlight_attribute),    canvas[10][0]);
+
+    ASSERT_EQ(terminalpp::element(vertical_beam, lowlight_attribute),       canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam, lowlight_attribute),       canvas[10][1]);
+    
+    ASSERT_EQ(terminalpp::element(bottom_left_corner, lowlight_attribute),  canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[1][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[2][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[4][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[5][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[6][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[7][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[8][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, lowlight_attribute),     canvas[9][2]);
+    ASSERT_EQ(terminalpp::element(bottom_right_corner, lowlight_attribute), canvas[10][2]);
 }
 
 class a_titled_frame_with_an_associated_unfocussed_component : public a_titled_frame_with_no_unicode_support
@@ -181,107 +280,166 @@ protected :
 
 TEST_F(a_titled_frame_with_an_associated_unfocussed_component, draws_a_lowlighted_border)
 {
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
 
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][0]);
-    ASSERT_EQ(top_right_corner,    canvas[3][0]);
+    ASSERT_EQ(' ',                 canvas[2][0]);
+    ASSERT_EQ('t',                 canvas[3][0]);
+    ASSERT_EQ('i',                 canvas[4][0]);
+    ASSERT_EQ('t',                 canvas[5][0]);
+    ASSERT_EQ('l',                 canvas[6][0]);
+    ASSERT_EQ('e',                 canvas[7][0]);
+    ASSERT_EQ(' ',                 canvas[8][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][0]);
+    ASSERT_EQ(top_right_corner,    canvas[10][0]);
+
     ASSERT_EQ(vertical_beam,       canvas[0][1]);
-    ASSERT_EQ(vertical_beam,       canvas[3][1]);
-    ASSERT_EQ(vertical_beam,       canvas[0][2]);
-    ASSERT_EQ(vertical_beam,       canvas[3][2]);
-    ASSERT_EQ(bottom_left_corner,  canvas[0][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[1][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][3]);
-    ASSERT_EQ(bottom_right_corner, canvas[3][3]);
+    ASSERT_EQ(vertical_beam,       canvas[10][1]);
+    
+    ASSERT_EQ(bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[8][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][2]);
+    ASSERT_EQ(bottom_right_corner, canvas[10][2]);
 }
 
 TEST_F(a_titled_frame_with_an_associated_unfocussed_component, when_focussed_draws_a_highlighted_border)
 {
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
 
     ON_CALL(*comp_, do_has_focus())
         .WillByDefault(Return(true));
     comp_->on_focus_set();
 
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
-    ASSERT_EQ(terminalpp::element(top_left_corner,     highlight_attribute), canvas[0][0]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[1][0]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[2][0]);
-    ASSERT_EQ(terminalpp::element(top_right_corner,    highlight_attribute), canvas[3][0]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       highlight_attribute), canvas[3][2]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       highlight_attribute), canvas[0][1]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       highlight_attribute), canvas[3][1]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       highlight_attribute), canvas[0][2]);
-    ASSERT_EQ(terminalpp::element(bottom_left_corner,  highlight_attribute), canvas[0][3]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[1][3]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     highlight_attribute), canvas[2][3]);
-    ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[3][3]);
+    ASSERT_EQ(terminalpp::element(top_left_corner, highlight_attribute),     canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[1][0]);
+    ASSERT_EQ(' ',                                                           canvas[2][0]);
+    ASSERT_EQ('t',                                                           canvas[3][0]);
+    ASSERT_EQ('i',                                                           canvas[4][0]);
+    ASSERT_EQ('t',                                                           canvas[5][0]);
+    ASSERT_EQ('l',                                                           canvas[6][0]);
+    ASSERT_EQ('e',                                                           canvas[7][0]);
+    ASSERT_EQ(' ',                                                           canvas[8][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][0]);
+    ASSERT_EQ(terminalpp::element(top_right_corner, highlight_attribute),    canvas[10][0]);
+
+    ASSERT_EQ(terminalpp::element(vertical_beam, highlight_attribute),       canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam, highlight_attribute),       canvas[10][1]);
+    
+    ASSERT_EQ(terminalpp::element(bottom_left_corner, highlight_attribute),  canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[1][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[2][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[4][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[5][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[6][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[7][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[8][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][2]);
+    ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[10][2]);
 }
 
 TEST_F(a_titled_frame_with_an_associated_focussed_component, when_unfocussed_draws_a_lowlit_border)
 {
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
 
     ON_CALL(*comp_, do_has_focus())
         .WillByDefault(Return(false));
     comp_->on_focus_lost();
 
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
     ASSERT_EQ(top_left_corner,     canvas[0][0]);
     ASSERT_EQ(horizontal_beam,     canvas[1][0]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][0]);
-    ASSERT_EQ(top_right_corner,    canvas[3][0]);
+    ASSERT_EQ(' ',                 canvas[2][0]);
+    ASSERT_EQ('t',                 canvas[3][0]);
+    ASSERT_EQ('i',                 canvas[4][0]);
+    ASSERT_EQ('t',                 canvas[5][0]);
+    ASSERT_EQ('l',                 canvas[6][0]);
+    ASSERT_EQ('e',                 canvas[7][0]);
+    ASSERT_EQ(' ',                 canvas[8][0]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][0]);
+    ASSERT_EQ(top_right_corner,    canvas[10][0]);
+
     ASSERT_EQ(vertical_beam,       canvas[0][1]);
-    ASSERT_EQ(vertical_beam,       canvas[3][1]);
-    ASSERT_EQ(vertical_beam,       canvas[0][2]);
-    ASSERT_EQ(vertical_beam,       canvas[3][2]);
-    ASSERT_EQ(bottom_left_corner,  canvas[0][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[1][3]);
-    ASSERT_EQ(horizontal_beam,     canvas[2][3]);
-    ASSERT_EQ(bottom_right_corner, canvas[3][3]);
+    ASSERT_EQ(vertical_beam,       canvas[10][1]);
+    
+    ASSERT_EQ(bottom_left_corner,  canvas[0][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[1][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[2][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[3][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[4][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[5][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[6][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[7][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[8][2]);
+    ASSERT_EQ(horizontal_beam,     canvas[9][2]);
+    ASSERT_EQ(bottom_right_corner, canvas[10][2]);
 }
 
 TEST_F(a_titled_frame_with_an_associated_focussed_component, can_have_a_custom_highlight)
 {
-    terminalpp::attribute custom_highlight = {
+    terminalpp::attribute highlight_attribute = {
         terminalpp::ansi::graphics::colour::green,
         terminalpp::ansi::graphics::colour::magenta
     };
     
-    frame_.set_highlight_attribute(custom_highlight);
-    frame_.set_size({4, 4});
+    auto const size = terminalpp::extent{11, 3};
+    frame_.set_size(size);
+    frame_.set_highlight_attribute(highlight_attribute);
 
     ON_CALL(*comp_, do_has_focus())
         .WillByDefault(Return(true));
     comp_->on_focus_set();
 
-    terminalpp::canvas canvas({4, 4});
+    terminalpp::canvas canvas(size);
     munin::render_surface surface{canvas, surface_capabilities_};
-    frame_.draw(surface, {{}, {4, 4}});
+    frame_.draw(surface, {{}, size});
 
-    ASSERT_EQ(terminalpp::element(top_left_corner,     custom_highlight), canvas[0][0]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][0]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][0]);
-    ASSERT_EQ(terminalpp::element(top_right_corner,    custom_highlight), canvas[3][0]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][2]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][1]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[3][1]);
-    ASSERT_EQ(terminalpp::element(vertical_beam,       custom_highlight), canvas[0][2]);
-    ASSERT_EQ(terminalpp::element(bottom_left_corner,  custom_highlight), canvas[0][3]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[1][3]);
-    ASSERT_EQ(terminalpp::element(horizontal_beam,     custom_highlight), canvas[2][3]);
-    ASSERT_EQ(terminalpp::element(bottom_right_corner, custom_highlight), canvas[3][3]);
+    ASSERT_EQ(terminalpp::element(top_left_corner, highlight_attribute),     canvas[0][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[1][0]);
+    ASSERT_EQ(' ',                                                           canvas[2][0]);
+    ASSERT_EQ('t',                                                           canvas[3][0]);
+    ASSERT_EQ('i',                                                           canvas[4][0]);
+    ASSERT_EQ('t',                                                           canvas[5][0]);
+    ASSERT_EQ('l',                                                           canvas[6][0]);
+    ASSERT_EQ('e',                                                           canvas[7][0]);
+    ASSERT_EQ(' ',                                                           canvas[8][0]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][0]);
+    ASSERT_EQ(terminalpp::element(top_right_corner, highlight_attribute),    canvas[10][0]);
+
+    ASSERT_EQ(terminalpp::element(vertical_beam, highlight_attribute),       canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(vertical_beam, highlight_attribute),       canvas[10][1]);
+    
+    ASSERT_EQ(terminalpp::element(bottom_left_corner, highlight_attribute),  canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[1][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[2][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[4][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[5][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[6][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[7][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[8][2]);
+    ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][2]);
+    ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[10][2]);
 }
-*/

@@ -88,72 +88,72 @@ terminalpp::element select_vertical_beam_element(
 // ==========================================================================
 // MAKE_TOP_LEFT_FILL
 // ==========================================================================
-auto make_top_left_corner_fill(terminalpp::attribute const &attr)
+auto make_top_left_corner_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_top_left_corner_element(surface, attr);
+            return select_top_left_corner_element(surface, *attr);
         });
 }
 
 // ==========================================================================
 // MAKE_HORIZONTAL_BEAM_FILL
 // ==========================================================================
-auto make_horizontal_beam_fill(terminalpp::attribute const &attr)
+auto make_horizontal_beam_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_horizontal_beam_element(surface, attr);
+            return select_horizontal_beam_element(surface, *attr);
         });
 }
 
 // ==========================================================================
 // MAKE_TOP_RIGHT_FILL
 // ==========================================================================
-auto make_top_right_corner_fill(terminalpp::attribute const &attr)
+auto make_top_right_corner_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_top_right_corner_element(surface, attr);
+            return select_top_right_corner_element(surface, *attr);
         });
 }
 
 // ==========================================================================
 // MAKE_VERTICAL_BEAM_FILL
 // ==========================================================================
-auto make_vertical_beam_fill(terminalpp::attribute const &attr)
+auto make_vertical_beam_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_vertical_beam_element(surface, attr);
+            return select_vertical_beam_element(surface, *attr);
         });
 }
 
 // ==========================================================================
 // MAKE_BOTTOM_LEFT_FILL
 // ==========================================================================
-auto make_bottom_left_corner_fill(terminalpp::attribute const &attr)
+auto make_bottom_left_corner_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_bottom_left_corner_element(surface, attr);
+            return select_bottom_left_corner_element(surface, *attr);
         });
 }
 
 // ==========================================================================
 // MAKE_BOTTOM_RIGHT_FILL
 // ==========================================================================
-auto make_bottom_right_corner_fill(terminalpp::attribute const &attr)
+auto make_bottom_right_corner_fill(terminalpp::attribute *&attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
-            return select_bottom_right_corner_element(surface, attr);
+            return select_bottom_right_corner_element(surface, *attr);
         });
 }
 
@@ -175,7 +175,7 @@ struct titled_frame::impl
 titled_frame::titled_frame(terminalpp::string const &title)
   : pimpl_(std::make_shared<impl>())
 {
-    auto const &attr = *pimpl_->current_attribute;
+    auto &attr = pimpl_->current_attribute;
     
     auto title_piece = view(
         make_compass_layout(),
