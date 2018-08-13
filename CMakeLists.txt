@@ -83,6 +83,7 @@ set (MUNIN_SOURCE_FILES
     src/vertical_strip_layout.cpp
     src/window.cpp
 
+    src/detail/adaptive_fill.cpp
     src/detail/algorithm.cpp
     src/detail/json_adaptors.cpp
 )
@@ -108,6 +109,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/window.hpp
     include/munin/view.hpp
 
+    include/munin/detail/adaptive_fill.hpp
     include/munin/detail/algorithm.hpp
     include/munin/detail/json_adaptors.hpp
 )
