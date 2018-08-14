@@ -1,12 +1,12 @@
-#include "munin/solid_frame.hpp"
+#include "munin/titled_frame.hpp"
 #include "munin/detail/adaptive_fill.hpp"
 #include "munin/compass_layout.hpp"
-#include "munin/render_surface.hpp"
+#include "munin/image.hpp"
 #include "munin/view.hpp"
 
 namespace munin {
 
-struct solid_frame::impl
+struct titled_frame::impl
 {
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
@@ -19,16 +19,31 @@ struct solid_frame::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-solid_frame::solid_frame()
+titled_frame::titled_frame(terminalpp::string const &title)
   : pimpl_(std::make_shared<impl>())
 {
     auto &attr = pimpl_->current_attribute;
     
+    auto title_piece = view(
+        make_compass_layout(),
+        make_fill(' '), compass_layout::heading::west,
+        make_image(title), compass_layout::heading::centre,
+        make_fill(' '), compass_layout::heading::east);
+        
+    auto title_banner = view(
+        make_compass_layout(),
+        title_piece, compass_layout::heading::west,
+        detail::make_horizontal_beam_fill(attr), compass_layout::heading::centre);
+        
     auto north_beam = view(
         make_compass_layout(),
         detail::make_top_left_corner_fill(attr), compass_layout::heading::west,
-        detail::make_horizontal_beam_fill(attr), compass_layout::heading::centre,
-        detail::make_top_right_corner_fill(attr),  compass_layout::heading::east);
+        view(
+            make_compass_layout(),
+            detail::make_horizontal_beam_fill(attr), compass_layout::heading::west,
+            title_banner, compass_layout::heading::centre,
+            detail::make_horizontal_beam_fill(attr), compass_layout::heading::east),
+        detail::make_top_right_corner_fill(attr), compass_layout::heading::east);
     
     auto south_beam = view(
         make_compass_layout(),
@@ -50,14 +65,14 @@ solid_frame::solid_frame()
 // ==========================================================================
 // DESTRUCTOR
 // ==========================================================================
-solid_frame::~solid_frame()
+titled_frame::~titled_frame()
 {
 }
 
 // ==========================================================================
 // SET_HIGHLIGHT_ATTRIBUTE
 // ==========================================================================
-void solid_frame::set_highlight_attribute(
+void titled_frame::set_highlight_attribute(
     terminalpp::attribute const &highlight_attribute)
 {
     pimpl_->highlight_attribute = highlight_attribute;
@@ -66,7 +81,7 @@ void solid_frame::set_highlight_attribute(
 // ==========================================================================
 // SET_LOWLIGHT_ATTRIBUTE
 // ==========================================================================
-void solid_frame::set_lowlight_attribute(
+void titled_frame::set_lowlight_attribute(
     terminalpp::attribute const &lowlight_attribute)
 {
     pimpl_->lowlight_attribute = lowlight_attribute;
@@ -75,7 +90,7 @@ void solid_frame::set_lowlight_attribute(
 // ==========================================================================
 // HIGHLIGHT_ON_FOCUS
 // ==========================================================================
-void solid_frame::highlight_on_focus(
+void titled_frame::highlight_on_focus(
     std::shared_ptr<component> const &associated_component)
 {
     auto const evaluate_focus = 
@@ -99,18 +114,20 @@ void solid_frame::highlight_on_focus(
 // ==========================================================================
 // MAKE_SOLID_FRAME
 // ==========================================================================
-std::shared_ptr<solid_frame> make_solid_frame()
+std::shared_ptr<titled_frame> make_titled_frame(
+    terminalpp::string const &title)
 {
-    return std::make_shared<solid_frame>();
+    return std::make_shared<titled_frame>(title);
 }
 
 // ==========================================================================
 // MAKE_SOLID_FRAME
 // ==========================================================================
-std::shared_ptr<solid_frame> make_solid_frame(
+std::shared_ptr<titled_frame> make_titled_frame(
+    terminalpp::string const &title,
     std::shared_ptr<component> const &associated_component)
 {
-    auto frame = make_solid_frame();
+    auto frame = make_titled_frame(title);
     frame->highlight_on_focus(associated_component);
     return frame;
 }
