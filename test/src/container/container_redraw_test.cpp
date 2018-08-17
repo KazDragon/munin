@@ -1,4 +1,5 @@
 #include "container_test.hpp"
+#include "redraw.hpp"
 
 using testing::Return;
 
@@ -11,8 +12,7 @@ TEST_F(a_container_with_one_component, requests_redraws_relative_to_component_po
         [](auto const &redraw_regions)
         {
             static auto const expected_redraw_region = munin::rectangle{{2, 3}, {10,5}};
-            ASSERT_EQ(1u, redraw_regions.size());
-            ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+            assert_equivalent_redraw_regions(redraw_regions, {expected_redraw_region});
         });
         
     EXPECT_CALL(*component, do_get_position())

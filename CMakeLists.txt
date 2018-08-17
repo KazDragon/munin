@@ -156,6 +156,7 @@ if (GTEST_FOUND)
     enable_testing()
 
     set (MUNIN_TEST_SOURCE_FILES
+        test/src/redraw.cpp
         test/src/mock/component.cpp
         test/src/algorithm/algorithm_test.cpp
         test/src/aligned_layout/aligned_layout_test.cpp
@@ -205,6 +206,7 @@ if (GTEST_FOUND)
     set (MUNIN_TEST_INCLUDE_FILES
         test/src/container/container_test.hpp
         test/src/window/window_test.hpp
+        test/include/redraw.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp
         test/include/mock/terminal.hpp
