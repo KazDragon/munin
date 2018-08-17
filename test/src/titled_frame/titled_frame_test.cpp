@@ -1,5 +1,6 @@
 #include "mock/component.hpp"
 #include "mock/render_surface_capabilities.hpp"
+#include "redraw.hpp"
 #include <munin/titled_frame.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/string.hpp>
@@ -273,6 +274,7 @@ protected :
         frame_.highlight_on_focus(comp_);
         ON_CALL(*comp_, do_has_focus())
             .WillByDefault(Return(true));
+        comp_->on_focus_set();
     }
     
     std::shared_ptr<mock_component> comp_ = make_mock_component();
@@ -354,6 +356,35 @@ TEST_F(a_titled_frame_with_an_associated_unfocussed_component, when_focussed_dra
     ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[8][2]);
     ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][2]);
     ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[10][2]);
+}
+
+TEST_F(a_titled_frame_with_an_associated_unfocussed_component, redraws_when_associated_component_gains_focus)
+{
+    frame_.set_size({11, 3});
+    
+    int redraw_count = 0;
+    std::vector<munin::rectangle> redraw_regions;
+    frame_.on_redraw.connect(
+        [&redraw_count, &redraw_regions](auto const &regions)
+        {
+            ++redraw_count;
+            redraw_regions = regions;
+        });
+    
+    ON_CALL(*comp_, do_has_focus())
+        .WillByDefault(Return(true));
+    comp_->on_focus_set();
+    
+    std::vector<munin::rectangle> const expected_redraw_regions = {
+      munin::rectangle{{0,  0}, {2,  1}},
+      munin::rectangle{{9,  0}, {2,  1}},
+      munin::rectangle{{0,  0}, {1,  3}},
+      munin::rectangle{{10, 0}, {1,  3}},
+      munin::rectangle{{0,  2}, {11, 1}}
+    };
+    
+    ASSERT_EQ(1, redraw_count);
+    assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
 
 TEST_F(a_titled_frame_with_an_associated_focussed_component, when_unfocussed_draws_a_lowlit_border)
@@ -442,4 +473,33 @@ TEST_F(a_titled_frame_with_an_associated_focussed_component, can_have_a_custom_h
     ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[8][2]);
     ASSERT_EQ(terminalpp::element(horizontal_beam, highlight_attribute),     canvas[9][2]);
     ASSERT_EQ(terminalpp::element(bottom_right_corner, highlight_attribute), canvas[10][2]);
+}
+
+TEST_F(a_titled_frame_with_an_associated_focussed_component, redraws_when_associated_component_gains_focus)
+{
+    frame_.set_size({11, 3});
+    
+    int redraw_count = 0;
+    std::vector<munin::rectangle> redraw_regions;
+    frame_.on_redraw.connect(
+        [&redraw_count, &redraw_regions](auto const &regions)
+        {
+            ++redraw_count;
+            redraw_regions = regions;
+        });
+    
+    ON_CALL(*comp_, do_has_focus())
+        .WillByDefault(Return(false));
+    comp_->on_focus_lost();
+    
+    std::vector<munin::rectangle> const expected_redraw_regions = {
+      munin::rectangle{{0,  0}, {2,  1}},
+      munin::rectangle{{9,  0}, {2,  1}},
+      munin::rectangle{{0,  0}, {1,  3}},
+      munin::rectangle{{10, 0}, {1,  3}},
+      munin::rectangle{{0,  2}, {11, 1}}
+    };
+    
+    ASSERT_EQ(1, redraw_count);
+    assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
