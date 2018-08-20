@@ -39,16 +39,26 @@ struct titled_frame::impl
     void redraw_frame()
     {
         auto size = self.get_size();
-        auto northwest_beam_region = rectangle{{0, 0}, {2, 1}};
+        auto northwest_beam_region = size.width > 4
+          ? rectangle{{0, 0}, {2, 1}}
+          : rectangle{{0, 0}, {size.width, 1}};
         
         auto skipped_section_width = 3 + title->get_size().width + 1;
         auto northeast_beam_region = rectangle{
             {skipped_section_width, 0},
             {size.width - (skipped_section_width), 1}};
         
-        auto south_beam_region = rectangle{{0, size.height - 1}, {size.width, 1}};
-        auto west_beam_region  = rectangle{{0, 1}, {1, size.height - 2}};
-        auto east_beam_region  = rectangle{{size.width - 1, 1}, {1, size.height - 2}};
+        auto south_beam_region = size.height > 1
+          ? rectangle{{0, size.height - 1}, {size.width, 1}}
+          : rectangle{};
+          
+        auto west_beam_region  = size.height > 2
+          ? rectangle{{0, 1}, {1, size.height - 2}}
+          : rectangle{};
+          
+        auto east_beam_region  = size.height > 2
+          ? rectangle{{size.width - 1, 1}, {1, size.height - 2}}
+          : rectangle{};
 
         self.on_redraw({
             northwest_beam_region, northeast_beam_region,
