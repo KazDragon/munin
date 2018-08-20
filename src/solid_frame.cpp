@@ -24,14 +24,27 @@ struct solid_frame::impl
     void redraw_frame()
     {
         auto size = self.get_size();
-        auto north_beam_region = munin::rectangle{{0,0}, {size.width, 1}};
-        auto south_beam_region = munin::rectangle{{0, size.height - 1}, {size.width, 1}};
-        auto west_beam_region  = munin::rectangle{{0, 1}, {1, size.height - 2}};
-        auto east_beam_region  = munin::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
-
-        self.on_redraw({
-            north_beam_region, south_beam_region, west_beam_region, east_beam_region
-        });
+        
+        if (size.width > 2 && size.height > 2)
+        {
+            // Here we individually pick out the frame edges and redraw them.
+            auto north_beam_region = munin::rectangle{{0,0}, {size.width, 1}};
+            auto south_beam_region = munin::rectangle{{0, size.height - 1}, {size.width, 1}};
+            auto west_beam_region  = munin::rectangle{{0, 1}, {1, size.height - 2}};
+            auto east_beam_region  = munin::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
+    
+            self.on_redraw({
+                north_beam_region, south_beam_region, west_beam_region, east_beam_region
+            });
+        }
+        else
+        {
+            // But if only our border is showing, then the redraw region is
+            // the complete frame area.
+            self.on_redraw({
+                {{0, 0}, size}
+            });
+        }
     }
     
     void evaluate_focus(std::shared_ptr<component> const &associated_component)
