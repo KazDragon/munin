@@ -8,19 +8,65 @@ namespace munin {
 
 struct solid_frame::impl
 {
+    impl(solid_frame &self)
+      : self(self)
+    {
+    }
+    
+    solid_frame &self;
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
         terminalpp::ansi::graphics::colour::cyan,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold};
     terminalpp::attribute *current_attribute = &lowlight_attribute;
+
+    void redraw_frame()
+    {
+        auto size = self.get_size();
+        
+        if (size.width > 2 && size.height > 2)
+        {
+            // Here we individually pick out the frame edges and redraw them.
+            auto north_beam_region = munin::rectangle{{0,0}, {size.width, 1}};
+            auto south_beam_region = munin::rectangle{{0, size.height - 1}, {size.width, 1}};
+            auto west_beam_region  = munin::rectangle{{0, 1}, {1, size.height - 2}};
+            auto east_beam_region  = munin::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
+    
+            self.on_redraw({
+                north_beam_region, south_beam_region, west_beam_region, east_beam_region
+            });
+        }
+        else
+        {
+            // But if only our border is showing, then the redraw region is
+            // the complete frame area.
+            self.on_redraw({
+                {{0, 0}, size}
+            });
+        }
+    }
+    
+    void evaluate_focus(std::shared_ptr<component> const &associated_component)
+    {
+        auto *old_attribute = current_attribute;
+        
+        current_attribute = associated_component->has_focus()
+                          ? &highlight_attribute
+                          : &lowlight_attribute;
+                          
+        if (current_attribute != old_attribute)
+        {
+            redraw_frame();
+        }
+    }
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 solid_frame::solid_frame()
-  : pimpl_(std::make_shared<impl>())
+  : pimpl_(std::make_shared<impl>(*this))
 {
     auto &attr = pimpl_->current_attribute;
     
@@ -78,19 +124,17 @@ void solid_frame::set_lowlight_attribute(
 void solid_frame::highlight_on_focus(
     std::shared_ptr<component> const &associated_component)
 {
-    auto const evaluate_focus = 
-        [this, wp = std::weak_ptr<component>(associated_component)]
+    auto evaluate_focus = 
+        [this, wp = std::weak_ptr<component>(associated_component)]()
         {
-            std::shared_ptr<component> associated_component(wp.lock());
-
-            if (associated_component)
+            std::shared_ptr<component> comp(wp);
+            
+            if (comp)
             {
-                pimpl_->current_attribute = associated_component->has_focus()
-                                          ? &pimpl_->highlight_attribute
-                                          : &pimpl_->lowlight_attribute;
+                pimpl_->evaluate_focus(comp);
             }
         };
-
+        
     associated_component->on_focus_set.connect(evaluate_focus);
     associated_component->on_focus_lost.connect(evaluate_focus);
     evaluate_focus();

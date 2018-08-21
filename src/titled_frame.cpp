@@ -8,26 +8,78 @@ namespace munin {
 
 struct titled_frame::impl
 {
+    impl(titled_frame &self)
+      : self(self)
+    {
+    }
+    
+    titled_frame &self;
+    std::shared_ptr<image> title;
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
         terminalpp::ansi::graphics::colour::cyan,
         terminalpp::colour(),
         terminalpp::ansi::graphics::intensity::bold};
     terminalpp::attribute *current_attribute = &lowlight_attribute;
+
+    void evaluate_focus(std::shared_ptr<component> const &associated_component)
+    {
+        auto *old_attribute = current_attribute;
+        
+        current_attribute = associated_component->has_focus()
+                          ? &highlight_attribute
+                          : &lowlight_attribute;
+                          
+        if (old_attribute != current_attribute)
+        {
+            redraw_frame();
+        }
+    }
+
+    void redraw_frame()
+    {
+        auto size = self.get_size();
+        auto northwest_beam_region = size.width > 4
+          ? rectangle{{0, 0}, {2, 1}}
+          : rectangle{{0, 0}, {size.width, 1}};
+        
+        auto skipped_section_width = 3 + title->get_size().width + 1;
+        auto northeast_beam_region = rectangle{
+            {skipped_section_width, 0},
+            {size.width - (skipped_section_width), 1}};
+        
+        auto south_beam_region = size.height > 1
+          ? rectangle{{0, size.height - 1}, {size.width, 1}}
+          : rectangle{};
+          
+        auto west_beam_region  = size.height > 2
+          ? rectangle{{0, 1}, {1, size.height - 2}}
+          : rectangle{};
+          
+        auto east_beam_region  = size.height > 2
+          ? rectangle{{size.width - 1, 1}, {1, size.height - 2}}
+          : rectangle{};
+
+        self.on_redraw({
+            northwest_beam_region, northeast_beam_region,
+            south_beam_region, west_beam_region, east_beam_region
+        });
+    }
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 titled_frame::titled_frame(terminalpp::string const &title)
-  : pimpl_(std::make_shared<impl>())
+  : pimpl_(std::make_shared<impl>(*this))
 {
     auto &attr = pimpl_->current_attribute;
+    pimpl_->title = make_image(title);
     
     auto title_piece = view(
         make_compass_layout(),
         make_fill(' '), compass_layout::heading::west,
-        make_image(title), compass_layout::heading::centre,
+        pimpl_->title, compass_layout::heading::centre,
         make_fill(' '), compass_layout::heading::east);
         
     auto title_banner = view(
@@ -100,9 +152,7 @@ void titled_frame::highlight_on_focus(
 
             if (associated_component)
             {
-                pimpl_->current_attribute = associated_component->has_focus()
-                                          ? &pimpl_->highlight_attribute
-                                          : &pimpl_->lowlight_attribute;
+                pimpl_->evaluate_focus(associated_component);
             }
         };
 
