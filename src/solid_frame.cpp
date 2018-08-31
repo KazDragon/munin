@@ -145,13 +145,11 @@ void solid_frame::highlight_on_focus(
 // ==========================================================================
 nlohmann::json solid_frame::do_to_json() const
 {
-    /*
     nlohmann::json patch = R"([
         { "op": "replace", "path": "/type", "value": "solid_frame" }
     ])"_json;
-    */
 
-    return composite_component::do_to_json();//.patch(patch);
+    return composite_component::do_to_json().patch(patch);
 }
 
 // ==========================================================================
