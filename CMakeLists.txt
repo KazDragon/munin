@@ -195,6 +195,7 @@ if (GTEST_FOUND)
         test/src/null_layout/null_layout_test.cpp
         test/src/render_surface/render_surface_capabilities_test.cpp
         test/src/render_surface/render_surface_test.cpp
+        test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
