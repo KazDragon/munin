@@ -45,7 +45,7 @@ public :
     void highlight_on_focus(
         std::shared_ptr<component> const &associated_component);
 
-private :
+protected :
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this
     /// function in order to add additional data about their implementation
@@ -53,6 +53,7 @@ private :
     //* =====================================================================
     nlohmann::json do_to_json() const override;
 
+private :
     struct impl;
     std::shared_ptr<impl> pimpl_;
 };

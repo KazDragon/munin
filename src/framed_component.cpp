@@ -74,6 +74,7 @@ std::unique_ptr<layout> make_framed_component_layout()
 // ==========================================================================
 struct framed_component::impl
 {
+    std::shared_ptr<component> frame_;
     std::shared_ptr<component> inner_component_;
 };
 
@@ -85,6 +86,7 @@ framed_component::framed_component(
     std::shared_ptr<component> const &inner_component)
   : pimpl_(std::make_shared<impl>())
 {
+    pimpl_->frame_ = frame;
     pimpl_->inner_component_ = inner_component;
     
     add_component(frame);
@@ -174,6 +176,22 @@ void framed_component::do_event(boost::any const &ev)
     {
         composite_component::do_event(ev);
     }
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json framed_component::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "framed_component" }
+    ])"_json;
+
+    auto json = composite_component::do_to_json().patch(patch);
+    json["frame"] = pimpl_->frame_->to_json();
+    json["component"] = pimpl_->inner_component_->to_json();
+    
+    return json;
 }
 
 // ==========================================================================
