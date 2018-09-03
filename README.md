@@ -40,9 +40,9 @@ Implement the fundamentals of the library, providing the basis for further devel
 
  ## v0.2 - Frames
  Implement the ability to frame components
- 1. [ ] Composite Component - a component that is made of many other components, but presents the interface of being just one component.
- 2. [ ] Solid Frame - a frame made of solid characters.
- 3. [ ] Named Frame - a frame that displays text in addition to the solid characters.
+ 1. [x] Composite Component - a component that is made of many other components, but presents the interface of being just one component.
+ 2. [x] Solid Frame - a frame made of solid characters.
+ 3. [x] Named Frame - a frame that displays text in addition to the solid characters.
  
  ## v0.3 - Buttons
  Implement clickable buttons
