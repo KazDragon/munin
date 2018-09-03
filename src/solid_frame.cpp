@@ -141,6 +141,18 @@ void solid_frame::highlight_on_focus(
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json solid_frame::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "solid_frame" }
+    ])"_json;
+
+    return composite_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
 // MAKE_SOLID_FRAME
 // ==========================================================================
 std::shared_ptr<solid_frame> make_solid_frame()

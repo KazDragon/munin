@@ -63,6 +63,13 @@ protected :
     //* =====================================================================
     void do_event(boost::any const &ev) override;
     
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
+
 private :
     struct impl;
     std::shared_ptr<impl> pimpl_;

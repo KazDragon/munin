@@ -184,6 +184,7 @@ if (GTEST_FOUND)
         test/src/filled_box/filled_box_test.cpp
         test/src/filled_box/functional_filled_box_test.cpp
         test/src/framed_component/framed_component_focus_test.cpp
+        test/src/framed_component/framed_component_json_test.cpp
         test/src/framed_component/framed_component_test.cpp
         test/src/framed_component/framed_component_mouse_test.cpp
         test/src/grid_layout/grid_layout_test.cpp
@@ -195,7 +196,9 @@ if (GTEST_FOUND)
         test/src/null_layout/null_layout_test.cpp
         test/src/render_surface/render_surface_capabilities_test.cpp
         test/src/render_surface/render_surface_test.cpp
+        test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
+        test/src/titled_frame/titled_frame_json_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/window/window_json_test.cpp

@@ -1,3 +1,4 @@
+#include "titled_frame_test.hpp"
 #include "mock/component.hpp"
 #include "mock/render_surface_capabilities.hpp"
 #include "redraw.hpp"
@@ -28,34 +29,6 @@ static auto const highlight_attribute = terminalpp::attribute(
     terminalpp::ansi::graphics::colour::cyan,
     terminalpp::colour(),
     terminalpp::ansi::graphics::intensity::bold);
-
-class a_titled_frame_with_no_unicode_support : public testing::Test
-{
-protected :
-    void SetUp() override
-    {
-        ON_CALL(surface_capabilities_, supports_unicode())
-            .WillByDefault(Return(false));
-    }
-
-    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
-    munin::titled_frame frame_{"title"};
-};
-
-using a_titled_frame = a_titled_frame_with_no_unicode_support;
-
-class a_titled_frame_with_unicode_support : public testing::Test
-{
-protected :
-    void SetUp() override
-    {
-        ON_CALL(surface_capabilities_, supports_unicode())
-            .WillByDefault(Return(true));
-    }
-
-    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
-    munin::titled_frame frame_{"title"};
-};
 
 TEST_F(a_titled_frame, is_a_component)
 {

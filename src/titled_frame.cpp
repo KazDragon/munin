@@ -14,6 +14,7 @@ struct titled_frame::impl
     }
     
     titled_frame &self;
+    terminalpp::string title_text;
     std::shared_ptr<image> title;
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute = {
@@ -73,8 +74,10 @@ struct titled_frame::impl
 titled_frame::titled_frame(terminalpp::string const &title)
   : pimpl_(std::make_shared<impl>(*this))
 {
+    pimpl_->title_text = title;
+    pimpl_->title = make_image(pimpl_->title_text);
+    
     auto &attr = pimpl_->current_attribute;
-    pimpl_->title = make_image(title);
     
     auto title_piece = view(
         make_compass_layout(),
@@ -159,6 +162,21 @@ void titled_frame::highlight_on_focus(
     associated_component->on_focus_set.connect(evaluate_focus);
     associated_component->on_focus_lost.connect(evaluate_focus);
     evaluate_focus();
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json titled_frame::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "titled_frame" }
+    ])"_json;
+
+    auto json = composite_component::do_to_json().patch(patch);
+    json["title"] = to_string(pimpl_->title_text);
+    
+    return json;
 }
 
 // ==========================================================================

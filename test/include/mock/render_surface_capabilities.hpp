@@ -1,5 +1,6 @@
 #pragma once
 
+#include <munin/render_surface_capabilities.hpp>
 #include <gmock/gmock.h>
 
 //* =========================================================================

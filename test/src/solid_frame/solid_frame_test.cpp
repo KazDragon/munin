@@ -1,10 +1,7 @@
+#include "solid_frame_test.hpp"
 #include "mock/component.hpp"
-#include "mock/render_surface_capabilities.hpp"
 #include "redraw.hpp"
-#include <munin/solid_frame.hpp>
-#include <munin/render_surface.hpp>
 #include <terminalpp/string.hpp>
-#include <gtest/gtest.h>
 
 using testing::NiceMock;
 using testing::Return;
@@ -28,34 +25,6 @@ static auto const highlight_attribute = terminalpp::attribute(
     terminalpp::ansi::graphics::colour::cyan,
     terminalpp::colour(),
     terminalpp::ansi::graphics::intensity::bold);
-
-class a_solid_frame_with_no_unicode_support : public testing::Test
-{
-protected :
-    void SetUp() override
-    {
-        ON_CALL(surface_capabilities_, supports_unicode())
-            .WillByDefault(Return(false));
-    }
-
-    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
-    munin::solid_frame frame_;
-};
-
-using a_solid_frame = a_solid_frame_with_no_unicode_support;
-
-class a_solid_frame_with_unicode_support : public testing::Test
-{
-protected :
-    void SetUp() override
-    {
-        ON_CALL(surface_capabilities_, supports_unicode())
-            .WillByDefault(Return(true));
-    }
-
-    NiceMock<mock_render_surface_capabilities> surface_capabilities_;
-    munin::solid_frame frame_;
-};
 
 TEST_F(a_solid_frame, is_a_component)
 {
