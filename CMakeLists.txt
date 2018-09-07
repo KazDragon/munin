@@ -66,6 +66,7 @@ set (MUNIN_SOURCE_FILES
     src/aligned_layout.cpp
     src/basic_component.cpp
     src/brush.cpp
+    src/button.cpp
     src/compass_layout.cpp
     src/component.cpp
     src/composite_component.cpp
@@ -91,6 +92,7 @@ set (MUNIN_SOURCE_FILES
 set (MUNIN_INCLUDE_FILES
     include/munin/basic_component.hpp
     include/munin/brush.hpp
+    include/munin/button.hpp
     include/munin/component.hpp
     include/munin/composite_component.hpp
     include/munin/container.hpp
@@ -169,6 +171,7 @@ if (GTEST_FOUND)
         test/src/brush/brush_json_test.cpp
         test/src/brush/brush_redraw_test.cpp
         test/src/brush/new_brush_test.cpp
+        test/src/button/button_test.cpp
         test/src/compass_layout/compass_layout_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
