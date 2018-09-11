@@ -4,6 +4,7 @@
 #include "munin/image.hpp"
 #include "munin/solid_frame.hpp"
 #include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 
 namespace munin {
 
@@ -31,6 +32,20 @@ void button::do_event(boost::any const &ev)
         if (report->button_ == terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN)
         {
             on_click();
+        }
+    }
+    else
+    {
+        auto const* vk =
+            boost::any_cast<terminalpp::virtual_key>(&ev);
+            
+        if (vk != nullptr)
+        {
+            if (vk->key == terminalpp::vk::enter
+             || vk->key == terminalpp::vk::space)
+            {
+                on_click();
+            }
         }
     }
 }

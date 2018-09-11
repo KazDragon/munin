@@ -1,8 +1,11 @@
 #include <munin/button.hpp>
 #include <munin/render_surface.hpp>
-#include <terminalpp/canvas.hpp>
 #include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/canvas.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
+
+using testing::ValuesIn;
 
 TEST(a_new_button, can_be_constructed_from_a_string)
 {
@@ -37,7 +40,13 @@ TEST(a_new_button, can_be_constructed_from_a_terminal_string)
     ASSERT_EQ('E', canvas[5][1]);
 }
 
-class a_button : public testing::Test
+using event_emission_data = std::tuple<
+    boost::any, // event
+    bool        // emits signal
+>;
+
+class a_button :
+    public testing::TestWithParam<event_emission_data>
 {
 public :
     a_button()
@@ -50,36 +59,37 @@ protected :
     munin::button button_;
 };
 
-TEST_F(a_button, emits_an_on_click_signal_when_a_mouse_down_event_is_received)
+TEST_P(a_button, emits_on_click)
 {
+    auto const &event = std::get<0>(GetParam());
+    auto const &click_should_be_received = std::get<1>(GetParam());
+
     bool click_received = false;
     button_.on_click.connect(
         [&click_received]
         {
             click_received = true;
         });
-        
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
-    
-    button_.event(mouse_event);
-    
-    ASSERT_TRUE(click_received);
+      
+    button_.event(event);
+    ASSERT_EQ(click_should_be_received, click_received);
 }
 
-TEST_F(a_button, does_not_emit_an_on_click_signal_when_a_mouse_up_event_is_received)
-{
-    bool click_received = false;
-    button_.on_click.connect(
-        [&click_received]
-        {
-            click_received = true;
-        });
-        
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::BUTTON_UP;
-    
-    button_.event(mouse_event);
-    
-    ASSERT_FALSE(click_received);
-}
+INSTANTIATE_TEST_CASE_P(
+    a_button_emits_on_click_for_certain_events,
+    a_button,
+    ValuesIn({
+        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN}, true },
+        event_emission_data{ terminalpp::virtual_key{terminalpp::vk::enter}, true },
+        event_emission_data{ terminalpp::virtual_key{terminalpp::vk::space}, true },
+    }));
+
+INSTANTIATE_TEST_CASE_P(
+    a_button_does_not_emit_on_click_for_certain_events,
+    a_button,
+    ValuesIn({
+        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN}, false },
+        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::BUTTON_UP}, false },
+        event_emission_data{ terminalpp::virtual_key{terminalpp::vk::slash}, false },
+        event_emission_data{ terminalpp::virtual_key{terminalpp::vk::tilde}, false },
+    }));
