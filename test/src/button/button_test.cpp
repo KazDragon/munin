@@ -11,13 +11,13 @@ TEST(a_new_button, can_be_constructed_from_a_string)
 {
     auto const size = terminalpp::extent{6, 3};
     
-    munin::button button(" OK ");
-    button.set_size(size);
+    auto button = munin::make_button(" OK ");
+    button->set_size(size);
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
     
-    button.draw(surface, {{}, size});
+    button->draw(surface, {{}, size});
     
     ASSERT_EQ('O', canvas[2][1]);
     ASSERT_EQ('K', canvas[3][1]);
@@ -28,13 +28,13 @@ TEST(a_new_button, can_be_constructed_from_a_terminal_string)
     auto const size = terminalpp::extent{8, 3};
     
     using namespace terminalpp::literals;
-    munin::button button("CANCEL"_ts);
-    button.set_size(size);
+    auto button = munin::make_button("CANCEL"_ts);
+    button->set_size(size);
     
     terminalpp::canvas canvas(size);
     munin::render_surface surface(canvas);
     
-    button.draw(surface, {{}, size});
+    button->draw(surface, {{}, size});
     
     ASSERT_EQ('A', canvas[2][1]);
     ASSERT_EQ('E', canvas[5][1]);
