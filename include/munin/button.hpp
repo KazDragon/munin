@@ -25,4 +25,11 @@ protected :
     void do_event(boost::any const &event) override;
 };
 
+//* =========================================================================
+/// \brief Creates a new button
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<button> make_button(terminalpp::string const &text);
+
 }
+

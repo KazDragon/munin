@@ -49,5 +49,13 @@ void button::do_event(boost::any const &ev)
         }
     }
 }
-    
+
+// ==========================================================================
+// MAKE_BUTTON
+// ==========================================================================
+std::shared_ptr<button> make_button(terminalpp::string const &text)
+{
+    return std::make_shared<button>(text);
+}
+
 }
