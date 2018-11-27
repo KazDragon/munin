@@ -481,3 +481,61 @@ INSTANTIATE_TEST_CASE_P(
         }
     })
 );
+
+#if 0
+INSTANTIATE_TEST_CASE_P(
+    west_and_east_consume_allocated_width,
+    compass_layouts,
+    ValuesIn(
+    {
+    / *
+        +------------+
+        |+----------+|
+        ||    N     ||
+        |+--+----+--+|
+        ||     |    ||
+        ||     |    ||
+        ||W    |   E||
+        ||     |    ||
+        ||     |    ||
+        ||     |    ||
+        |+--+----+--+|
+        ||    S     ||
+        |+----------+|
+        +------------+
+    * /
+
+// TODO: FIXME: this is blatantly wrong, since this wouldn't produce the image
+// above (rather, N and S would be touching and W and E would be separated)
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::north),
+                { { 0, 0 }, { 3, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 3 },
+                boost::any(munin::compass_layout::heading::south),
+                { { 0, 6 }, { 3, 3 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                boost::any(munin::compass_layout::heading::east),
+                { { 3, 3 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                boost::any(munin::compass_layout::heading::west),
+                { { 0, 3 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 0, 0 },
+                boost::any(munin::compass_layout::heading::centre),
+                { { 1, 1 }, { 1, 1 } }
+            }},
+            { 3, 9 },
+            { 3, 9 }
+        },
+    })
+);
+#endif

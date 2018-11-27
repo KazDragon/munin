@@ -131,58 +131,80 @@ terminalpp::extent compass_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
     std::vector<boost::any>                 const &hints) const
 {
-    used_headings headings;
+    // Keeps track of the "unused" area that a centre component would fit 
+    // into. For example, with a north component of (3,1) and an east 
+    // component of (1, 3), then there is an open area of (2, 2) remaining.
+    // Therefore, a centre component of (3, 3) would only affect the preferred
+    // size by an extra (1, 1).
+    terminalpp::extent unused_size;
 
-    terminalpp::extent centre_usage;
+    // Keeps track of the preferred centre size.  This must be handled last
+    // due to it requiring knowledge of the unused size.
+    terminalpp::extent preferred_centre;
+
+    // The value that accumulates the preferred size for this group of
+    // components.
+    terminalpp::extent preferred_size;
 
     for (auto index = 0u; index < components.size(); ++index)
     {
         auto &comp            = *components[index];
         auto const *hint_any  = boost::any_cast<heading>(&hints[index]);
         auto const hint       = hint_any ? *hint_any : heading::centre;
-        auto const &preferred_size = comp.get_preferred_size();
+        auto const &comp_preferred_size = comp.get_preferred_size();
 
         switch (hint)
         {
             default :
                 // Fall-through
             case heading::centre :
-                centre_usage.width =
-                    (std::max)(centre_usage.width, preferred_size.width);
-                centre_usage.height =
-                    (std::max)(centre_usage.height, preferred_size.height);
+                preferred_centre.width = std::max(
+                    preferred_centre.width,
+                    comp_preferred_size.width);
+                preferred_centre.height = std::max(
+                    preferred_centre.height,
+                    comp_preferred_size.height);
                 break;
 
             case heading::north :
-                headings.north = preferred_size.height;
-                centre_usage.width =
-                    (std::max)(centre_usage.width, preferred_size.width);
-                break;
-
+                // fall-through
             case heading::south :
-                headings.south = preferred_size.height;
-                centre_usage.width =
-                    (std::max)(centre_usage.width, preferred_size.width);
+                unused_size.width = std::max(
+                    unused_size.width,
+                    comp_preferred_size.width - preferred_size.width);
+                    
+                preferred_size.width = std::max(
+                    preferred_size.width,
+                    comp_preferred_size.width);
+                preferred_size.height += comp_preferred_size.height;    
                 break;
-
+                
             case heading::west :
-                headings.west = preferred_size.width;
-                centre_usage.height =
-                    (std::max)(centre_usage.height, preferred_size.height);
-                break;
-
+                // fall-through
             case heading::east :
-                headings.east = preferred_size.width;
-                centre_usage.height =
-                    (std::max)(centre_usage.height, preferred_size.height);
-                break;
+                unused_size.height = std::max(
+                    unused_size.height,
+                    comp_preferred_size.height - preferred_size.height);
+                    
+                preferred_size.width += comp_preferred_size.width;    
+                preferred_size.height = std::max(
+                    preferred_size.height,
+                    comp_preferred_size.height);
+              break;
         }
     }
 
-    return {
-        headings.west + headings.east + centre_usage.width,
-        headings.north + headings.south + centre_usage.height
-    };
+    preferred_centre.width = std::max(
+        preferred_centre.width - unused_size.width,
+        0);
+    preferred_centre.height = std::max(
+        preferred_centre.height - unused_size.height,
+        0);
+        
+    preferred_size.width += preferred_centre.width;
+    preferred_size.height += preferred_centre.height;
+    
+    return preferred_size;
 }
 
 // ==========================================================================
