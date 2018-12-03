@@ -6,6 +6,12 @@
 using testing::Return;
 using testing::ValuesIn;
 
+const static auto north  = boost::any{munin::compass_layout::heading::north};
+const static auto south  = boost::any{munin::compass_layout::heading::south};
+const static auto east   = boost::any{munin::compass_layout::heading::east};
+const static auto west   = boost::any{munin::compass_layout::heading::west};
+const static auto centre = boost::any{munin::compass_layout::heading::centre};
+
 TEST(compass_layout_test, reports_attributes_as_json)
 {
     munin::compass_layout cl;
@@ -479,5 +485,271 @@ INSTANTIATE_TEST_CASE_P(
             { 12, 12 },
             { 11, 11 }
         }
+    })
+);
+
+INSTANTIATE_TEST_CASE_P(
+    compass_layouts_preserve_empty_space,
+    compass_layouts,
+    ValuesIn(
+    {
+        /*
+             L-shapes should preserve the associated empty space.
+             For example:
+             
+             +--------+
+             |    N   |
+             +------+-+
+                    | |
+                    |E|
+             SPACE! | |
+                    | |
+                    +-+
+                    
+             And rotations/permutations thereof.
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 2, 1 }, { 1, 3 } }
+            }},
+            { 3, 4 },
+            { 3, 4 }
+        },
+
+        /*
+                 +-+
+                 | |
+                 |E|
+                 | |
+                 | |
+        +--------+-+
+        |    S     |
+        +----------+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 1 },
+                south,
+                { { 0, 3 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 2, 0 }, { 1, 3 } }
+            }},
+            { 3, 4 },
+            { 3, 4 }
+        },
+
+        /*
+        +-+
+        | |
+        |W|
+        | |
+        | |
+        +-+--------+
+        |    S     |
+        +----------+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 1 },
+                south,
+                { { 0, 3 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                west,
+                { { 0, 0 }, { 1, 3 } }
+            }},
+            { 3, 4 },
+            { 3, 4 }
+        },
+
+        /*
+        +----------+
+        |    N     |
+        +-+--------+
+        | |
+        | |
+        |W|
+        | |
+        +-+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                west,
+                { { 0, 1 }, { 1, 3 } }
+            }},
+            { 3, 4 },
+            { 3, 4 }
+        },
+
+        /*
+             +-----+-+
+             |  N  | |
+             +-----+ |
+                   | |
+             SPACE!|E|
+                   | |
+                   +-+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 3, 0 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            }},
+            { 4, 3 },
+            { 4, 3 }
+        },
+
+        /*
+        Adding a small centre component will grow to fit the available space.
+
+             +-----+-+
+             |  N  | |
+             +-+---+ |
+             |C|   | |
+             +-+   |E|
+             |  \_ | |
+             +----\+-+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 3, 0 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 1 },
+                centre,
+                { { 0, 1 }, { 3, 2 } }
+            }},
+            { 4, 3 },
+            { 4, 3 }
+        },
+
+        /*
+        Adding a perfectly fitting centre component fill the available space.
+
+             +-----+-+
+             |  N  | |
+             +-----+ |
+             |     | |
+             |  C  |E|
+             |     | |
+             +-----+-+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 3, 0 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 3, 2 },
+                centre,
+                { { 0, 1 }, { 3, 2 } }
+            }},
+            { 4, 3 },
+            { 4, 3 }
+        },
+
+        /*
+        Adding a large centre component shrink into the available space,
+        even if its preferred size is large.
+
+           +-+-----+-+
+           |\|  N  | |
+           | +-----+ |
+           | |     | |
+           | |  C  |E|
+           | |     | |
+           | +-----+-+
+           |/       \|
+           +---------+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 3, 0 }, { 1, 3 } }
+            },
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                centre,
+                { { 0, 1 }, { 3, 2 } }
+            }},
+            { 4, 3 },
+            { 6, 6 }
+        },
+
+        /*
+        Finally, a large centre component causes other components to stretch 
+        into the available space, if it is given.
+
+           +-+-----+-+
+           |-|  N  | |
+           +-+-----+ |
+           |       | |
+           |    C  |E|
+           |       | |
+           |       +-+
+           |       |||
+           +-------+-+
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 5, 0 }, { 1, 6 } }
+            },
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 5, 1 } }
+            },
+            compass_layout_component_data {
+                { 5, 5 },
+                centre,
+                { { 0, 1 }, { 5, 5 } }
+            }},
+            { 6, 6 },
+            { 6, 6 }
+        },
     })
 );
