@@ -169,27 +169,31 @@ terminalpp::extent compass_layout::do_get_preferred_size(
             case heading::north :
                 // fall-through
             case heading::south :
-                unused_size.width = std::max(
-                    unused_size.width,
-                    comp_preferred_size.width - preferred_size.width);
-                    
-                preferred_size.width = std::max(
-                    preferred_size.width,
-                    comp_preferred_size.width);
-                preferred_size.height += comp_preferred_size.height;    
+                preferred_size.width += std::max(
+                    comp_preferred_size.width - unused_size.width, 0);
+                unused_size.width += std::max(
+                    comp_preferred_size.width - unused_size.width, 0);
+                
+                preferred_size.height += std::max(
+                    comp_preferred_size.height - unused_size.height, 0);
+                unused_size.height -= std::min(
+                    unused_size.height,
+                    comp_preferred_size.height);
                 break;
                 
             case heading::west :
                 // fall-through
             case heading::east :
-                unused_size.height = std::max(
-                    unused_size.height,
-                    comp_preferred_size.height - preferred_size.height);
-                    
-                preferred_size.width += comp_preferred_size.width;    
-                preferred_size.height = std::max(
-                    preferred_size.height,
-                    comp_preferred_size.height);
+                preferred_size.height += std::max(
+                    comp_preferred_size.height - unused_size.height, 0);
+                unused_size.height += std::max(
+                    comp_preferred_size.height - unused_size.height, 0);
+                
+                preferred_size.width += std::max(
+                    comp_preferred_size.width - unused_size.width, 0);
+                unused_size.width -= std::min(
+                    unused_size.width,
+                    comp_preferred_size.width);
               break;
         }
     }

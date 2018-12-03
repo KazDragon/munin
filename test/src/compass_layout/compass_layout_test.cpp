@@ -6,6 +6,11 @@
 using testing::Return;
 using testing::ValuesIn;
 
+const static auto north = boost::any{munin::compass_layout::heading::north};
+const static auto south = boost::any{munin::compass_layout::heading::south};
+const static auto east  = boost::any{munin::compass_layout::heading::east};
+const static auto west  = boost::any{munin::compass_layout::heading::west};
+
 TEST(compass_layout_test, reports_attributes_as_json)
 {
     munin::compass_layout cl;
@@ -482,31 +487,49 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
+INSTANTIATE_TEST_CASE_P(
+    compass_layouts_preserve_empty_space,
+    compass_layouts,
+    ValuesIn(
+    {
+        /*
+             L-shapes should preserve the associated empty space.
+             For example:
+             
+             +--------+
+             |    N   |
+             +------+-+
+                    | |
+                    |E|
+             SPACE! | |
+                    | |
+                    +-+
+                    
+             And rotations/permutations thereof.
+        */
+        compass_layout_test_data {{
+            compass_layout_component_data {
+                { 3, 1 },
+                north,
+                { { 0, 0 }, { 3, 1 } }
+            },
+            compass_layout_component_data {
+                { 1, 3 },
+                east,
+                { { 2, 1 }, { 1, 3 } }
+            }},
+            { 3, 4 },
+            { 3, 4 }
+        }
+    })
+);
+
 #if 0
 INSTANTIATE_TEST_CASE_P(
     west_and_east_consume_allocated_width,
     compass_layouts,
     ValuesIn(
     {
-    / *
-        +------------+
-        |+----------+|
-        ||    N     ||
-        |+--+----+--+|
-        ||     |    ||
-        ||     |    ||
-        ||W    |   E||
-        ||     |    ||
-        ||     |    ||
-        ||     |    ||
-        |+--+----+--+|
-        ||    S     ||
-        |+----------+|
-        +------------+
-    * /
-
-// TODO: FIXME: this is blatantly wrong, since this wouldn't produce the image
-// above (rather, N and S would be touching and W and E would be separated)
         compass_layout_test_data {{
             compass_layout_component_data {
                 { 3, 3 },
