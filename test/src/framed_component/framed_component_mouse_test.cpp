@@ -1,9 +1,11 @@
 #include "mock/component.hpp"
+#include "mock/frame.hpp"
 #include <munin/framed_component.hpp>
 #include <gtest/gtest.h>
 
 using testing::_;
 using testing::Invoke;
+using testing::Return;
 using testing::ValuesIn;
 
 using framed_component_mouse_data = std::tuple<
@@ -50,7 +52,7 @@ protected :
             .WillByDefault(Invoke([this]{return mock_inner_size_;}));
     }
 
-    std::shared_ptr<mock_component> mock_frame_{make_mock_component()};
+    std::shared_ptr<mock_frame> mock_frame_{make_mock_frame()};
     std::shared_ptr<mock_component> mock_inner_{make_mock_component()};
     std::shared_ptr<munin::framed_component> framed_component_{
         make_framed_component(mock_frame_, mock_inner_)
@@ -70,6 +72,15 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
     auto const &component_size = std::get<0>(params);
     auto const &initial_click  = std::get<1>(params);
     auto const &expected_click = std::get<2>(params);
+
+    ON_CALL(*mock_frame_, north_border_height())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, south_border_height())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, west_border_width())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, east_border_width())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
 
     framed_component_->set_size(component_size);
 

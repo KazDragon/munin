@@ -1,6 +1,6 @@
 #pragma once
 
-#include "munin/composite_component.hpp"
+#include "munin/frame.hpp"
 #include <terminalpp/attribute.hpp>
 
 namespace munin {
@@ -13,7 +13,7 @@ namespace munin {
 /// these determine the attributes with which the frame is drawn.  These
 /// attributes can be toggled by setting the highlight property.
 //* =========================================================================
-class MUNIN_EXPORT solid_frame : public composite_component
+class MUNIN_EXPORT solid_frame : public frame
 {
 public :
     //* =====================================================================
@@ -45,6 +45,26 @@ public :
     void highlight_on_focus(
         std::shared_ptr<component> const &associated_component);
 
+    //* =====================================================================
+    /// \brief returns the height of the north border.
+    //* =====================================================================
+    terminalpp::coordinate_type north_border_height() const override;
+
+    //* =====================================================================
+    /// \brief returns the height of the south border.
+    //* =====================================================================
+    terminalpp::coordinate_type south_border_height() const override;
+    
+    //* =====================================================================
+    /// \brief returns the width of the west border.
+    //* =====================================================================
+    terminalpp::coordinate_type west_border_width() const override;
+    
+    //* =====================================================================
+    /// \brief returns the width of the east border.
+    //* =====================================================================
+    terminalpp::coordinate_type east_border_width() const override;
+    
 protected :
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this
