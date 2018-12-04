@@ -165,6 +165,38 @@ void titled_frame::highlight_on_focus(
 }
 
 // ==========================================================================
+// NORTH_BORDER_HEIGHT
+// ==========================================================================
+terminalpp::coordinate_type titled_frame::north_border_height() const
+{
+    return 1;    
+}
+
+// ==========================================================================
+// SOUTH_BORDER_HEIGHT
+// ==========================================================================
+terminalpp::coordinate_type titled_frame::south_border_height() const
+{
+    return 1;    
+}
+
+// ==========================================================================
+// WEST_BORDER_WIDTH
+// ==========================================================================
+terminalpp::coordinate_type titled_frame::west_border_width() const
+{
+    return 1;    
+}
+
+// ==========================================================================
+// EAST_BORDER_WIDTH
+// ==========================================================================
+terminalpp::coordinate_type titled_frame::east_border_width() const
+{
+    return 1;    
+}
+
+// ==========================================================================
 // DO_TO_JSON
 // ==========================================================================
 nlohmann::json titled_frame::do_to_json() const

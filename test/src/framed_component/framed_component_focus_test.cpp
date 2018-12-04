@@ -1,4 +1,5 @@
 #include "mock/component.hpp"
+#include "mock/frame.hpp"
 #include <munin/framed_component.hpp>
 #include <gtest/gtest.h>
 
@@ -29,7 +30,7 @@ protected:
             .WillByDefault(Return(false));
     }
 
-    std::shared_ptr<mock_component> mock_frame_{make_mock_component()};
+    std::shared_ptr<mock_frame> mock_frame_{make_mock_frame()};
     std::shared_ptr<mock_component> mock_inner_{make_mock_component()};
     std::shared_ptr<munin::framed_component> framed_component_{
         munin::make_framed_component(mock_frame_, mock_inner_)

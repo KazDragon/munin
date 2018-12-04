@@ -17,8 +17,17 @@ protected :
         std::vector<std::shared_ptr<component>> const &components,
         std::vector<boost::any>                 const &hints) const override
     {
-        return components[0]->get_preferred_size()
-             + components[1]->get_preferred_size();
+        auto outer_frame = std::static_pointer_cast<frame>(components[0]);
+        auto inner_preferred_size = components[1]->get_preferred_size();
+        
+        return terminalpp::extent{
+            inner_preferred_size.width
+          + outer_frame->west_border_width()
+          + outer_frame->east_border_width(),
+            inner_preferred_size.height
+          + outer_frame->north_border_height()
+          + outer_frame->south_border_height()
+        };
     }
 
     //* =====================================================================
@@ -31,23 +40,31 @@ protected :
         std::vector<boost::any>                 const &hints,
         terminalpp::extent                             size) const override
     {
-        auto const &frame = components[0];
-        frame->set_position({0, 0});
-        frame->set_size(size);
+        auto const &outer_frame = std::static_pointer_cast<frame>(components[0]);
+        outer_frame->set_position({0, 0});
+        outer_frame->set_size(size);
+
+        auto const north_border_height = outer_frame->north_border_height();
+        auto const south_border_height = outer_frame->south_border_height();
+        auto const west_border_width = outer_frame->west_border_width();
+        auto const east_border_width = outer_frame->east_border_width();
         
         auto const &inner = components[1];
         inner->set_position({
-            std::min(size.width, 1),
-            std::min(size.height, 1)
+            std::min(size.width, west_border_width),
+            std::min(size.height, north_border_height)
         });
 
+        auto const border_height = north_border_height + south_border_height;
+        auto const border_width = west_border_width + east_border_width;
+
         inner->set_size({
-            size.width == 0 ? 0
-          : size.width == 1 ? 1
-          : size.width - 2,
-            size.height == 0 ? 0
-          : size.height == 1 ? 1
-          : size.height - 2
+            size.width < border_width 
+          ? size.width 
+          : size.width - border_width,
+            size.height < border_height 
+          ? size.height 
+          : size.height - border_height
         });
     }
 
@@ -82,14 +99,14 @@ struct framed_component::impl
 // CONSTRUCTOR
 // ==========================================================================
 framed_component::framed_component(
-    std::shared_ptr<component> const &frame,
+    std::shared_ptr<frame> const &outer_frame,
     std::shared_ptr<component> const &inner_component)
   : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->frame_ = frame;
+    pimpl_->frame_ = outer_frame;
     pimpl_->inner_component_ = inner_component;
     
-    add_component(frame);
+    add_component(outer_frame);
     add_component(inner_component);
     set_layout(make_framed_component_layout());
 }
@@ -198,10 +215,10 @@ nlohmann::json framed_component::do_to_json() const
 // MAKE_FRAMED_COMPONENT
 // ==========================================================================
 std::shared_ptr<framed_component> make_framed_component(
-    std::shared_ptr<component> const &frame,
+    std::shared_ptr<frame> const &outer_frame,
     std::shared_ptr<component> const &inner_component)
 {
-    return std::make_shared<framed_component>(frame, inner_component);
+    return std::make_shared<framed_component>(outer_frame, inner_component);
 }
 
 }

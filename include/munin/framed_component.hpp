@@ -1,6 +1,7 @@
 #pragma once
 
 #include "munin/composite_component.hpp"
+#include "munin/frame.hpp"
 
 namespace munin {
 
@@ -15,7 +16,7 @@ public :
     /// \brief Constructor
     //* =====================================================================
     framed_component(
-        std::shared_ptr<component> const &frame,
+        std::shared_ptr<frame> const &outer_frame,
         std::shared_ptr<component> const &inner_component);
 
     //* =====================================================================
@@ -80,7 +81,7 @@ private :
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<framed_component> make_framed_component(
-    std::shared_ptr<component> const &frame,
+    std::shared_ptr<frame> const &outer_frame,
     std::shared_ptr<component> const &inner_component);
 
 }
