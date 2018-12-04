@@ -68,9 +68,6 @@ protected :
     /// in a custom manner.
     //* =====================================================================
     nlohmann::json do_to_json() const override;
-
-private :
-    terminalpp::extent dimensions_;
 };
 
 //* =========================================================================
