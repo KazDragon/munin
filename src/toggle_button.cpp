@@ -34,6 +34,18 @@ toggle_button::toggle_button(bool checked)
 }
 
 // ==========================================================================
+// SET_TOGGLE_STATE
+// ==========================================================================
+void toggle_button::set_toggle_state(bool checked)
+{
+    if (checked != pimpl_->toggle_state_)
+    {
+        pimpl_->toggle_state_ = checked;
+        on_state_changed(pimpl_->toggle_state_);
+    }
+}
+
+// ==========================================================================
 // MAKE_BUTTON
 // ==========================================================================
 std::shared_ptr<toggle_button> make_toggle_button(bool checked)

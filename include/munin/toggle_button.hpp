@@ -14,6 +14,17 @@ public :
     //* =====================================================================
     explicit toggle_button(bool checked = false);
 
+    //* =====================================================================
+    /// \brief Sets the toggle state of the button.
+    //* =====================================================================
+    void set_toggle_state(bool checked);
+    
+    //* =====================================================================
+    /// \fn on_state_changed
+    /// An event that fires when the toggle state of the button changes.
+    //* =====================================================================
+    boost::signals2::signal<void (bool)> on_state_changed;
+
 private :
     struct impl;
     std::shared_ptr<impl> pimpl_;
