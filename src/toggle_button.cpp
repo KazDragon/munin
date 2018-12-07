@@ -11,6 +11,7 @@ namespace munin {
 // ==========================================================================
 struct toggle_button::impl
 {
+    std::shared_ptr<component> fill_;
     bool toggle_state_ = false;
 };
 
@@ -20,17 +21,20 @@ struct toggle_button::impl
 toggle_button::toggle_button(bool checked)
   : pimpl_(std::make_shared<impl>())
 {
-    pimpl_->toggle_state_ = checked;
-    
-    set_layout(make_grid_layout({1, 1}));
-    add_component(make_framed_component(
-        make_solid_frame(),
+    pimpl_->fill_ = 
         make_fill([this](render_surface&) -> terminalpp::element
         {
             return pimpl_->toggle_state_
                  ? 'X'
                  : ' ';
-        })));
+        });
+        
+    pimpl_->toggle_state_ = checked;
+    
+    set_layout(make_grid_layout({1, 1}));
+    add_component(make_framed_component(
+        make_solid_frame(),
+        pimpl_->fill_));
 }
 
 // ==========================================================================
@@ -42,6 +46,9 @@ void toggle_button::set_toggle_state(bool checked)
     {
         pimpl_->toggle_state_ = checked;
         on_state_changed(pimpl_->toggle_state_);
+        on_redraw({
+            { {pimpl_->fill_->get_position()}, {pimpl_->fill_->get_size()} }
+        });
     }
 }
 
