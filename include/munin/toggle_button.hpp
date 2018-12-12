@@ -25,6 +25,13 @@ public :
     //* =====================================================================
     boost::signals2::signal<void (bool)> on_state_changed;
 
+protected :
+    //* =====================================================================
+    /// \brief Called by event().  Derived classes must override this
+    /// function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(boost::any const &event) override;
+
 private :
     struct impl;
     std::shared_ptr<impl> pimpl_;

@@ -3,6 +3,8 @@
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
 #include "munin/solid_frame.hpp"
+#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 
 namespace munin {
 
@@ -49,6 +51,37 @@ void toggle_button::set_toggle_state(bool checked)
         on_redraw({
             { {pimpl_->fill_->get_position()}, {pimpl_->fill_->get_size()} }
         });
+    }
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void toggle_button::do_event(boost::any const &ev)
+{
+    auto const* report = 
+        boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+        
+    if (report != nullptr)
+    {
+        if (report->button_ == terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN)
+        {
+            set_toggle_state(!pimpl_->toggle_state_);
+        }
+    }
+    else
+    {
+        auto const* vk =
+            boost::any_cast<terminalpp::virtual_key>(&ev);
+            
+        if (vk != nullptr)
+        {
+            if (vk->key == terminalpp::vk::enter
+             || vk->key == terminalpp::vk::space)
+            {
+                set_toggle_state(!pimpl_->toggle_state_);
+            }
+        }
     }
 }
 
