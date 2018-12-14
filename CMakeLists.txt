@@ -207,6 +207,7 @@ if (GTEST_FOUND)
         test/src/titled_frame/titled_frame_json_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
         test/src/toggle_button/toggle_button_test.cpp
+        test/src/toggle_button/toggle_button_json_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/window/window_json_test.cpp
         test/src/window/window_test.cpp

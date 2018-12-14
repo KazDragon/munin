@@ -86,6 +86,21 @@ void toggle_button::do_event(boost::any const &ev)
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json toggle_button::do_to_json() const
+{
+    static auto const patch = R"([
+        { "op": "replace", "path": "/type", "value": "toggle_button" }
+    ])"_json;
+
+    auto json = composite_component::do_to_json().patch(patch);
+    json["state"] = pimpl_->toggle_state_;
+
+    return json;
+}
+
+// ==========================================================================
 // MAKE_BUTTON
 // ==========================================================================
 std::shared_ptr<toggle_button> make_toggle_button(bool checked)
