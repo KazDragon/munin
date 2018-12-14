@@ -81,6 +81,7 @@ set (MUNIN_SOURCE_FILES
     src/render_surface.cpp
     src/solid_frame.cpp
     src/titled_frame.cpp
+    src/toggle_button.cpp
     src/vertical_strip_layout.cpp
     src/window.cpp
 
@@ -107,6 +108,7 @@ set (MUNIN_INCLUDE_FILES
     include/munin/render_surface.hpp
     include/munin/solid_frame.hpp
     include/munin/titled_frame.hpp
+    include/munin/toggle_button.hpp
     include/munin/vertical_strip_layout.hpp
     include/munin/window.hpp
     include/munin/view.hpp
@@ -204,6 +206,8 @@ if (GTEST_FOUND)
         test/src/solid_frame/solid_frame_test.cpp
         test/src/titled_frame/titled_frame_json_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
+        test/src/toggle_button/toggle_button_test.cpp
+        test/src/toggle_button/toggle_button_json_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/window/window_json_test.cpp
         test/src/window/window_test.cpp
