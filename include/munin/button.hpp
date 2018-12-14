@@ -23,6 +23,13 @@ protected :
     /// function in order to handle events in a custom manner.
     //* =====================================================================
     void do_event(boost::any const &event) override;
+
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    nlohmann::json do_to_json() const override;
 };
 
 //* =========================================================================

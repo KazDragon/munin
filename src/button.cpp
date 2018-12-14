@@ -51,6 +51,18 @@ void button::do_event(boost::any const &ev)
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json button::do_to_json() const
+{
+    static auto const patch = R"([
+        { "op": "replace", "path": "/type", "value": "button" }
+    ])"_json;
+
+    return composite_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
 // MAKE_BUTTON
 // ==========================================================================
 std::shared_ptr<button> make_button(terminalpp::string const &text)
