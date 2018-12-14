@@ -174,6 +174,7 @@ if (GTEST_FOUND)
         test/src/brush/brush_redraw_test.cpp
         test/src/brush/new_brush_test.cpp
         test/src/button/button_test.cpp
+        test/src/button/button_json_test.cpp
         test/src/compass_layout/compass_layout_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
