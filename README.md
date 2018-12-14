@@ -46,8 +46,8 @@ Implement the fundamentals of the library, providing the basis for further devel
  
  ## v0.3 - Buttons
  Implement clickable buttons
- 1. [ ] Button - a normal click button
- 2. [ ] Toggle Button - a button that can be toggled on [x] and off [ ].
+ 1. [x] Button - a normal click button
+ 2. [x] Toggle Button - a button that can be toggled on [x] and off [ ].
  
  ## v0.4 - Text Areas
  1. [ ] Fundamentals for all types of text components
@@ -71,7 +71,7 @@ For further information about the working status of Munin to report any bugs, or
 
 # The Basics
 
-The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter).  Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library.  Examples can be found neaby this repository.  For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Munin-Acceptance (a raycasting 3D room renderer) projects are both built on Telnet++, Terminal++, and Munin.
+The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter).  Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library.  Examples can be found nearby this repository.  For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Munin-Acceptance (a raycasting 3D room renderer) projects are both built on Telnet++, Terminal++, and Munin.
 
 # Component
 
