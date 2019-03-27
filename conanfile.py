@@ -1,0 +1,45 @@
+from conans import ConanFile, CMake, tools
+
+
+class MuninConan(ConanFile):
+    name = "munin"
+    version = "0.3.1"
+    license = "MIT"
+    author = "KazDragon"
+    url = "https://github.com/KazDragon/munin"
+    description = "A text-based gui component library build on Terminal++"
+    topics = ("ansi-escape-codes", "text-ui")
+    settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False], "withTests": [True, False]}
+    default_options = {"shared": False, "withTests": False}
+    exports = "*"
+    requires = ("terminalpp/1.3.0@kazdragon/conan-public",
+                "jsonformoderncpp/3.2.0@vthiery/stable",
+                "boost_any/[>=1.69]@bincrafters/stable",
+                "boost_optional/[>=1.69]@bincrafters/stable",
+                "boost_scope_exit/[>=1.69]@bincrafters/stable",
+                "boost_signals2/[>=1.69]@bincrafters/stable")
+    generators = "cmake"
+
+    def requirements(self):
+        if (self.options.withTests):
+            self.requires("gtest/[>=1.8.1]@bincrafters/stable")
+            
+    def build(self):
+        cmake = CMake(self)
+        cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.definitions["MUNIN_WITH_TESTS"] = self.options.withTests
+        cmake.configure()
+        cmake.build()
+
+    def package(self):
+        self.copy("*.hpp", dst="include", src="include")
+        self.copy("*.lib", dst="lib", keep_path=False)
+        self.copy("*.dll", dst="bin", keep_path=False)
+        self.copy("*.so", dst="lib", keep_path=False)
+        self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("*.a", dst="lib", keep_path=False)
+
+    def package_info(self):
+        self.cpp_info.libs = ["munin"]
+

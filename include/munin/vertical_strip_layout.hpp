@@ -1,7 +1,6 @@
 #pragma once
 
 #include "munin/layout.hpp"
-#include <boost/shared_ptr.hpp>
 
 namespace munin {
 

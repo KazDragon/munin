@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(MUNIN VERSION 0.3)
+project(MUNIN VERSION 0.3.1)
 
 cmake_policy(VERSION 3.2)
 
@@ -7,50 +7,20 @@ if (POLICY CMP0063)
     cmake_policy(SET CMP0063 NEW)
 endif()
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_CXX_STANDARD 14)
 
-# Some Boost components are required for this library
-include(FindBoost)
-find_package(Boost
-    REQUIRED
-    COMPONENTS
-        system)
+option(MUNIN_WITH_TESTS "Build with tests included" False)
 
-# Terminal++ is required for this library.
-find_package(Terminalpp 1.2.7 REQUIRED)
-
-# Due to the strange requirements for Google Mock, it is assumed to have been
-# built in the "gtest" directory.  For this, it is required to run the moral
-# equivalent of the following script before building Munin
-#
-#  mkdir gtest
-#  cd gtest
-#  cmake /usr/src/gtest && make
-#  export GTEST_ROOT=$PWD
-#  cd ..
-find_package(GTest)
-
-if (GTEST_FOUND)
-    find_package(GMock REQUIRED)
-
-    # For GTest, it is necessary to link with the appropriate local threading
-    # library.
-    find_package(Threads)
-
-    enable_testing()
-endif()
-
-# For producing automatically-generated documentation, we use Doxygen
-find_package(Doxygen)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
 include(GenerateExportHeader)
 
-# Add nlohmann_json for easy JSON support.
-option(BuildTests "JSON Unit Tests" OFF)
-add_subdirectory(json)
+# For producing automatically-generated documentation, we use Doxygen
+find_package(Doxygen)
 
 if (MUNIN_SANITIZE)
     list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
@@ -139,24 +109,19 @@ target_include_directories(munin
     PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/munin-${MUNIN_VERSION}>
-        "${Boost_INCLUDE_DIRS}"
 )
 
 target_link_libraries(munin
     PUBLIC
-        terminalpp
-        nlohmann_json
-        ${Boost_SYSTEM_LIBRARY}
+        CONAN_PKG::terminalpp
+        CONAN_PKG::jsonformoderncpp
+        CONAN_PKG::boost_any
+        CONAN_PKG::boost_optional
+        CONAN_PKG::boost_scope_exit
+        CONAN_PKG::boost_signals2
 )
 
-target_compile_features(munin
-    PRIVATE
-        cxx_auto_type
-        cxx_strong_enums
-        cxx_generic_lambdas
-)
-
-if (GTEST_FOUND)
+if (MUNIN_WITH_TESTS)
     enable_testing()
 
     set (MUNIN_TEST_SOURCE_FILES
@@ -232,16 +197,11 @@ if (GTEST_FOUND)
     target_include_directories(munin_tester
         PRIVATE
             ${PROJECT_SOURCE_DIR}/test/include
-            ${GTEST_INCLUDE_DIR}
     )
 
     target_link_libraries(munin_tester
         munin
-        terminalpp-core
-        ${GMOCK_LIBRARY}
-        ${GTEST_LIBRARY}
-        ${GMOCK_MAIN_LIBRARY}
-        ${CMAKE_THREAD_LIBS_INIT}
+        CONAN_PKG::gtest
     )
 
     add_test(munin_test munin_tester)

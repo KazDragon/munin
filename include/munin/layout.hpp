@@ -2,7 +2,7 @@
 
 #include "munin/export.hpp"
 #include <terminalpp/extent.hpp>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <boost/any.hpp>
 #include <memory>
 #include <vector>

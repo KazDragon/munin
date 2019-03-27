@@ -4,7 +4,7 @@
 #include "munin/rectangle.hpp"
 #include <terminalpp/extent.hpp>
 #include <terminalpp/point.hpp>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
