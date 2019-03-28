@@ -101,9 +101,8 @@ before_script:
   - conan remote add nonstd-lite https://api.bintray.com/conan/agauniyal/nonstd-lite
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan
   - conan remote add kazdragon-conan https://api.bintray.com/conan/kazdragon/conan-public
-  - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:withTests=True -o munin:shared=$SHARED --build=missing
-  - conan build -c ..
-  - $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:withTests=True --build=missing
+  - $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
   - conan build ..
