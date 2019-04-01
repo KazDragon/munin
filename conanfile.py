@@ -25,6 +25,15 @@ class MuninConan(ConanFile):
         if (self.options.withTests):
             self.requires("gtest/[>=1.8.1]@bincrafters/stable")
             
+    def imports(self):
+        # If Munin is built as shared, then running the tests will
+        # rely on the shared object for terminalpp being available
+        # in the same directory.
+        self.copy("*.so*", dst="", src="", keep_path=False, root_package="terminalpp")
+
+    def configure(self):
+        self.options["terminalpp"].shared = self.options.shared
+        
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
@@ -37,6 +46,7 @@ class MuninConan(ConanFile):
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
+        self.copy("*.so.*", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
 
