@@ -23,13 +23,13 @@ include(GenerateExportHeader)
 find_package(Doxygen)
 
 if (MUNIN_SANITIZE)
-    list(APPEND CMAKE_CXX_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
-    list(APPEND CMAKE_EXE_LINKER_FLAGS "-fsanitize=${MUNIN_SANITIZE}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=${MUNIN_SANITIZE}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=${MUNIN_SANITIZE}")
 endif()
 
 if (MUNIN_COVERAGE)
-    list(APPEND CMAKE_CXX_FLAGS "--coverage -g -O0")
-    list(APPEND CMAKE_EXE_LINKER_FLAGS "--coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -g -O0")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif()
 
 set (MUNIN_SOURCE_FILES
