@@ -136,9 +136,9 @@ TEST(setting_the_toggle_state_of_a_toggle_button, fires_a_redraw_request)
     auto button = munin::make_toggle_button();
     button->set_size(size);
 
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     button->on_redraw.connect(
-        [&redraw_regions](std::vector<munin::rectangle> const &regions)
+        [&redraw_regions](std::vector<terminalpp::rectangle> const &regions)
         {
             redraw_regions.insert(
                 redraw_regions.end(),
@@ -149,7 +149,7 @@ TEST(setting_the_toggle_state_of_a_toggle_button, fires_a_redraw_request)
     button->set_toggle_state(true);
     
     ASSERT_EQ(size_t{1}, redraw_regions.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {1, 1}), redraw_regions[0]);    
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {1, 1}), redraw_regions[0]);    
 }
 
 namespace {

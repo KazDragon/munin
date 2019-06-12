@@ -1,9 +1,9 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include "munin/rectangle.hpp"
 #include <terminalpp/extent.hpp>
 #include <terminalpp/point.hpp>
+#include <terminalpp/rectangle.hpp>
 #include <nlohmann/json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
@@ -125,7 +125,7 @@ public :
     //* =====================================================================
     void draw(
         render_surface &surface
-      , rectangle const &region) const;
+      , terminalpp::rectangle const &region) const;
 
     //* =====================================================================
     /// \brief Send an event to the component.  This may be of any type.
@@ -147,7 +147,7 @@ public :
     //* =====================================================================
     boost::signals2::signal
     <
-        void (std::vector<rectangle> const &regions)
+        void (std::vector<terminalpp::rectangle> const &regions)
     > on_redraw;
 
     //* =====================================================================
@@ -306,7 +306,7 @@ protected :
     //* =====================================================================
     virtual void do_draw(
         render_surface &surface,
-        rectangle const &region) const = 0;
+        terminalpp::rectangle const &region) const = 0;
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

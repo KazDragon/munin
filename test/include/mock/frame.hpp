@@ -139,7 +139,7 @@ public :
     /// should be drawn.
     //* =====================================================================
     MOCK_CONST_METHOD2(do_draw, 
-        void (munin::render_surface &, munin::rectangle const &));
+        void (munin::render_surface &, terminalpp::rectangle const &));
 
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this

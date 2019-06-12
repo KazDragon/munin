@@ -7,8 +7,8 @@ namespace munin { namespace detail {
 // ==========================================================================
 // INTERSECTION
 // ==========================================================================
-boost::optional<rectangle> intersection(
-    rectangle const &lhs, rectangle const &rhs)
+boost::optional<terminalpp::rectangle> intersection(
+    terminalpp::rectangle const &lhs, terminalpp::rectangle const &rhs)
 {
     // Check to see if the rectangles overlap.
 
@@ -38,7 +38,7 @@ boost::optional<rectangle> intersection(
     // The overlapping rectangle has an origin that starts at the same x-
     // co-ordinate as the not-leftmost rectangle, and at the same y-co-ordinate
     // as the not-topmost rectangle.
-    rectangle overlap;
+    terminalpp::rectangle overlap;
     overlap.origin.x = not_leftmost.origin.x;
     overlap.origin.y = not_topmost.origin.y;
 
@@ -70,198 +70,6 @@ boost::optional<rectangle> intersection(
     }
 
     return overlap;
-}
-
-// ==========================================================================
-// CUT_SLICES
-// ==========================================================================
-static std::vector<rectangle> cut_slices(
-    std::vector<rectangle> const &rectangles)
-{
-    std::vector<rectangle> slices;
-
-    for (auto &&current_rectangle : rectangles)
-    {
-        for (terminalpp::coordinate_type row = 0;
-             row < current_rectangle.size.height;
-             ++row)
-        {
-            slices.push_back(
-                rectangle{{ current_rectangle.origin.x
-                          , current_rectangle.origin.y + row}
-                        , {current_rectangle.size.width, 1}});
-        }
-    }
-
-    return slices;
-}
-
-// ==========================================================================
-// COMPARE_SLICES
-// ==========================================================================
-static bool compare_slices(rectangle const &lhs, rectangle const &rhs)
-{
-    if (lhs.origin.y == rhs.origin.y)
-    {
-        return lhs.origin.x < rhs.origin.x;
-    }
-    else
-    {
-        return lhs.origin.y < rhs.origin.y;
-    }
-}
-
-// ==========================================================================
-// HAS_EMPTY_HEIGHT
-// ==========================================================================
-static bool has_empty_height(rectangle const &rect)
-{
-    return rect.size.height == 0;
-}
-
-// ==========================================================================
-// MERGE_OVERLAPPING_SLICES
-// ==========================================================================
-static std::vector<rectangle> merge_overlapping_slices(
-    std::vector<rectangle> rectangles)
-{
-    std::sort(rectangles.begin(), rectangles.end(), compare_slices);
-
-    auto first_slice = rectangles.begin();
-
-    // Iterate through adjacent slices, merging any that overlap.
-    for (; first_slice != rectangles.end(); ++first_slice)
-    {
-        // Skip over any slices that have been merged.
-        if (first_slice->size.height == 0)
-        {
-            continue;
-        }
-
-        auto second_slice = first_slice + 1;
-
-        // Iterate through all adjacent slices that share a y-coordinate
-        // until we either run out of slices, or cannot merge a slice.
-        for (;
-             second_slice != rectangles.end()
-          && first_slice->origin.y == second_slice->origin.y
-          && first_slice->origin.x + first_slice->size.width >= second_slice->origin.x;
-             ++second_slice)
-        {
-            // Set the width of the first slice to be equivalent to the
-            // rightmost point of the two rectangles.
-            first_slice->size.width = (std::max)(
-                first_slice->origin.x + first_slice->size.width
-              , second_slice->origin.x + second_slice->size.width)
-              - first_slice->origin.x;
-
-            // Mark the second slice as having been merged.
-            second_slice->size.height = 0;
-        }
-    }
-
-    // Snip out any rectangles that have been merged (have 0 height).
-    rectangles.erase(std::remove_if(
-            rectangles.begin()
-          , rectangles.end()
-          , has_empty_height)
-      , rectangles.end());
-
-    return rectangles;
-}
-
-// ==========================================================================
-// RECTANGULAR_SLICE
-// ==========================================================================
-std::vector<rectangle> rectangular_slice(
-    std::vector<rectangle> const &rectangles)
-{
-    return merge_overlapping_slices(cut_slices(rectangles));
-}
-
-// ==========================================================================
-// CLIP_REGION
-// ==========================================================================
-static rectangle clip_region(rectangle region, terminalpp::extent size)
-{
-    if (region.origin.x < 0)
-    {
-        size.width += region.origin.x;
-        region.origin.x = 0;
-    }
-
-    if (region.origin.y < 0)
-    {
-        size.height += region.origin.y;
-        region.origin.y = 0;
-    }
-
-    if (region.origin.x >= size.width)
-    {
-        region.size.width = 0;
-    }
-
-    if (region.origin.y >= size.height)
-    {
-        region.size.height = 0;
-    }
-
-    if (region.origin.x < size.width
-     && region.origin.y < size.height)
-    {
-        if (region.origin.x + region.size.width >= size.width)
-        {
-            region.size.width = size.width - region.origin.x;
-        }
-
-        if (region.origin.y + region.size.height >= size.height)
-        {
-            region.size.height = size.height - region.origin.y;
-        }
-    }
-
-    return region;
-}
-
-// ==========================================================================
-// HAS_ZERO_DIMENSION
-// ==========================================================================
-static bool has_zero_dimension(rectangle const &region)
-{
-    return region.size.width == 0 || region.size.height == 0;
-}
-
-// ==========================================================================
-// CLIP_REGIONS
-// ==========================================================================
-std::vector<rectangle> clip_regions(
-    std::vector<rectangle> regions, terminalpp::extent size)
-{
-    // Returns a vector of rectangles that is identical to the regions
-    // passed in, except that their extends are clipped to those of the
-    // content's.
-    std::transform(
-        regions.begin()
-      , regions.end()
-      , regions.begin()
-      , [size](auto const &region){ return clip_region(region, size); });
-
-    return regions;
-}
-
-// ==========================================================================
-// PRUNE_REGIONS
-// ==========================================================================
-std::vector<rectangle> prune_regions(std::vector<rectangle> regions)
-{
-    regions.erase(
-        remove_if(
-            regions.begin()
-          , regions.end()
-          , [](auto &region) { return has_zero_dimension(region); })
-      , regions.end());
-
-    return regions;
 }
 
 }}

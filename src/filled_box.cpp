@@ -59,7 +59,7 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void filled_box::do_draw(
-    render_surface &surface, rectangle const &region) const
+    render_surface &surface, terminalpp::rectangle const &region) const
 {
     auto const element = pimpl_->fill_function_(surface);
     

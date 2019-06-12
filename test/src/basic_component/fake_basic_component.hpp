@@ -13,7 +13,7 @@ private :
     
     void do_draw(
         munin::render_surface &surface, 
-        munin::rectangle const &region) const override
+        terminalpp::rectangle const &region) const override
     {
     }
 };

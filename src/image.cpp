@@ -46,7 +46,7 @@ static terminalpp::extent get_content_extent(
 // ==========================================================================
 // GET_CONTENT_BOUNDS
 // ==========================================================================
-static munin::rectangle get_content_bounds(
+static terminalpp::rectangle get_content_bounds(
     terminalpp::extent const &component_size,
     terminalpp::extent const &content_size)
 {
@@ -59,7 +59,7 @@ static munin::rectangle get_content_bounds(
 // ==========================================================================
 // HAS_ZERO_DIMENSION
 // ==========================================================================
-static bool has_zero_dimension(munin::rectangle const &bounds)
+static bool has_zero_dimension(terminalpp::rectangle const &bounds)
 {
     return bounds.size.width == 0 || bounds.size.height == 0;
 }
@@ -68,7 +68,7 @@ static bool has_zero_dimension(munin::rectangle const &bounds)
 // ADD_REDRAW_REGION
 // ==========================================================================
 static void add_redraw_region(
-    std::vector<munin::rectangle> &redraw_regions,
+    std::vector<terminalpp::rectangle> &redraw_regions,
     terminalpp::extent const &component_size,
     terminalpp::extent const &content_size)
 {
@@ -233,7 +233,7 @@ void image::set_content(std::vector<terminalpp::string> const &content)
         return;
     }
 
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     auto const size = get_size();
 
     add_redraw_region(redraw_regions, size, get_preferred_size());
@@ -248,7 +248,7 @@ void image::set_content(std::vector<terminalpp::string> const &content)
 // DO_DRAW
 // ==========================================================================
 void image::do_draw(
-    render_surface &surface, rectangle const &region) const
+    render_surface &surface, terminalpp::rectangle const &region) const
 {
     auto const size = get_size();
     auto const content_size = get_preferred_size();

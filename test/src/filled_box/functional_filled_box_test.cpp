@@ -17,7 +17,7 @@ TEST(a_filled_box, can_retrieve_its_fill_from_a_function)
     terminalpp::canvas canvas({2, 2});
     munin::render_surface surface(canvas);
     
-    box->draw(surface, munin::rectangle{{}, {2, 2}});
+    box->draw(surface, terminalpp::rectangle{{}, {2, 2}});
     
     ASSERT_EQ('x', canvas[0][0]);
     ASSERT_EQ('x', canvas[0][1]);
@@ -26,7 +26,7 @@ TEST(a_filled_box, can_retrieve_its_fill_from_a_function)
     
     fill = 'y';
 
-    box->draw(surface, munin::rectangle{{}, {2, 2}});
+    box->draw(surface, terminalpp::rectangle{{}, {2, 2}});
     
     ASSERT_EQ('y', canvas[0][0]);
     ASSERT_EQ('y', canvas[0][1]);

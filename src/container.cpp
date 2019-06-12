@@ -1,11 +1,11 @@
 #include "munin/container.hpp"
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
-#include "munin/rectangle.hpp"
 #include "munin/render_surface.hpp"
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/rectangle.hpp>
 #include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
@@ -116,7 +116,7 @@ struct container::impl
     // DRAW_COMPONENTS
     // ======================================================================
     void draw_components(
-        render_surface &surface, rectangle const &region) const
+        render_surface &surface, terminalpp::rectangle const &region) const
     {
         for (auto const &comp : components_)
         {
@@ -130,9 +130,9 @@ struct container::impl
     void draw_component(
         std::shared_ptr<component> const &comp,
         render_surface &surface,
-        rectangle const &region) const
+        terminalpp::rectangle const &region) const
     {
-        auto const component_region = rectangle {
+        auto const component_region = terminalpp::rectangle {
             comp->get_position(),
             comp->get_size()
         };
@@ -171,8 +171,8 @@ struct container::impl
     // SUBCOMPONENT_REDRAW_HANDLER
     // ======================================================================
     void subcomponent_redraw_handler(
-        std::weak_ptr<component> weak_subcomponent,
-        std::vector<rectangle>   regions)
+        std::weak_ptr<component>           weak_subcomponent,
+        std::vector<terminalpp::rectangle> regions)
     {
         auto subcomponent = weak_subcomponent.lock();
 
@@ -331,7 +331,7 @@ struct container::impl
     }
 
     container                               &self_;
-    munin::rectangle                         bounds_;
+    terminalpp::rectangle                    bounds_;
     std::unique_ptr<munin::layout>           layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>>  components_;
     std::vector<boost::any>                  hints_;
@@ -684,7 +684,7 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 // DO_DRAW
 // ==========================================================================
 void container::do_draw(
-    render_surface &surface, rectangle const &region) const
+    render_surface &surface, terminalpp::rectangle const &region) const
 {
     pimpl_->draw_components(surface, region);
 }

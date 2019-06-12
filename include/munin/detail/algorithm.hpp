@@ -1,7 +1,7 @@
 #pragma once
 
 #include "munin/export.hpp"
-#include "munin/rectangle.hpp"
+#include <terminalpp/rectangle.hpp>
 #include <boost/optional.hpp>
 #include <string>
 #include <vector>
@@ -17,40 +17,8 @@ namespace munin { namespace detail {
 /// \brief Returns the intersection of two rectangles.
 //* =========================================================================
 MUNIN_EXPORT 
-boost::optional<rectangle> intersection(
-    rectangle const &lhs
-  , rectangle const &rhs);
-
-//* =========================================================================
-/// \brief Returns an array of sliced rectangles.
-/// \par
-/// A rectangular slice takes an array of rectangles, and returns an array
-/// of the fewest number of rectangles, each of height 1, that describes the
-/// area covered by the original rectangles.  These are sorted from left to
-/// right, top to bottom.
-/// \todo Consider a span interface.
-//* =========================================================================
-MUNIN_EXPORT 
-std::vector<rectangle> rectangular_slice(
-    std::vector<rectangle> const &rectangles);
-
-//* =========================================================================
-/// \brief Returns an array of clipped regions.
-/// \par
-/// A clipped region is one whose bounds are trimmed to a particular size.
-/// For example, if the size is (5,5), and a region is (3,2)->[3,3], then
-/// the region is clipped to (3,2)->[2,3].
-/// \todo Consider a span interface.
-//* =========================================================================
-std::vector<rectangle> clip_regions(
-    std::vector<rectangle> regions,
-    terminalpp::extent     size);
-
-//* =========================================================================
-/// \brief Returns the passed array, except that any regions that have a
-/// height or width of 0 are omitted.
-/// \todo Consider a span interface.
-//* =========================================================================
-std::vector<rectangle> prune_regions(std::vector<rectangle> regions);
+boost::optional<terminalpp::rectangle> intersection(
+    terminalpp::rectangle const &lhs
+  , terminalpp::rectangle const &rhs);
 
 }}

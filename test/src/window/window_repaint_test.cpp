@@ -111,7 +111,7 @@ protected :
         }
     }
     
-    void increment_elements_within(munin::rectangle const &region)
+    void increment_elements_within(terminalpp::rectangle const &region)
     {
         for (auto y = region.origin.y; y < region.origin.y + region.size.height; ++y)
         {

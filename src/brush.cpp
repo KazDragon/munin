@@ -94,7 +94,7 @@ terminalpp::extent brush::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void brush::do_draw(
-    render_surface &surface, rectangle const &region) const
+    render_surface &surface, terminalpp::rectangle const &region) const
 {
     for (terminalpp::coordinate_type row = region.origin.y;
          row < region.origin.y + region.size.height;
