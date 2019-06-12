@@ -1,5 +1,6 @@
 #include "munin/brush.hpp"
 #include "munin/render_surface.hpp"
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <utility>
 
 using namespace terminalpp::literals;
@@ -96,21 +97,18 @@ terminalpp::extent brush::do_get_preferred_size() const
 void brush::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-    for (terminalpp::coordinate_type row = region.origin.y;
-         row < region.origin.y + region.size.height;
-         ++row)
-    {
-        auto const fill_row = row % pimpl_->pattern_.size();
-
-        for (terminalpp::coordinate_type column = region.origin.x;
-             column < region.origin.x + region.size.width;
-             ++column)
+    terminalpp::for_each_in_region(
+        surface,
+        region,
+        [this](terminalpp::element &elem, 
+               terminalpp::coordinate_type column, 
+               terminalpp::coordinate_type row)
         {
+            auto const fill_row = row % pimpl_->pattern_.size();
             auto const fill_column = column % pimpl_->pattern_[fill_row].size();
 
-            surface[column][row] = pimpl_->pattern_[fill_row][fill_column];
-        }
-    }
+            elem = pimpl_->pattern_[fill_row][fill_column];
+        });
 }
 
 // ==========================================================================

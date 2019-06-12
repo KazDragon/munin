@@ -1,5 +1,6 @@
 #include <munin/filled_box.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_filled_box, has_a_singular_preferred_size)
@@ -15,17 +16,15 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
 
     terminalpp::canvas canvas({3, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     filled_box.draw(surface, {{}, filled_box.get_size()});

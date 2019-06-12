@@ -1,5 +1,6 @@
 #include <munin/brush.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_brush, has_a_singular_preferred_size)
@@ -37,17 +38,15 @@ TEST(a_new_brush, draws_whitespace_on_the_canvas)
 
     terminalpp::canvas canvas({3, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     brush.draw(surface, {{}, brush.get_size()});
@@ -73,17 +72,15 @@ TEST(a_new_brush_with_a_single_line_pattern, draws_that_pattern_repeatedly)
 
     terminalpp::canvas canvas({8, 4});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     surface.offset_by({1, 1});
@@ -139,17 +136,15 @@ TEST(a_new_brush_with_a_multi_line_pattern, draws_that_pattern_repeatedly)
 
     terminalpp::canvas canvas({6, 6});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     surface.offset_by({1, 1});
