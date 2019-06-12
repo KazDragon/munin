@@ -41,7 +41,7 @@ using aligned_layout_test_data = std::tuple<
     munin::alignment,   // alignment of component under test
     terminalpp::extent, // container size
     terminalpp::extent, // component size
-    munin::rectangle    // expected placement
+    terminalpp::rectangle    // expected placement
 >;
 
 class aligned_layouts

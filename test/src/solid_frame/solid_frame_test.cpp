@@ -183,7 +183,7 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, redraws_when_assoc
     frame_.set_size({4, 4});
     
     int redraw_count = 0;
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     frame_.on_redraw.connect(
         [&redraw_count, &redraw_regions](auto const &regions)
         {
@@ -195,11 +195,11 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, redraws_when_assoc
         .WillByDefault(Return(true));
     comp_->on_focus_set();
     
-    std::vector<munin::rectangle> const expected_redraw_regions = {
-      munin::rectangle{{0, 0}, {4, 1}},
-      munin::rectangle{{0, 0}, {1, 4}},
-      munin::rectangle{{3, 0}, {1, 4}},
-      munin::rectangle{{0, 3}, {4, 1}}
+    std::vector<terminalpp::rectangle> const expected_redraw_regions = {
+      terminalpp::rectangle{{0, 0}, {4, 1}},
+      terminalpp::rectangle{{0, 0}, {1, 4}},
+      terminalpp::rectangle{{3, 0}, {1, 4}},
+      terminalpp::rectangle{{0, 3}, {4, 1}}
     };
     
     ASSERT_EQ(1, redraw_count);
@@ -211,7 +211,7 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, redraws_a_reduced_
     frame_.set_size({1, 1});
     
     int redraw_count = 0;
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     frame_.on_redraw.connect(
         [&redraw_count, &redraw_regions](auto const &regions)
         {
@@ -223,8 +223,8 @@ TEST_F(a_solid_frame_with_an_associated_unfocussed_component, redraws_a_reduced_
         .WillByDefault(Return(true));
     comp_->on_focus_set();
     
-    std::vector<munin::rectangle> const expected_redraw_regions = {
-      munin::rectangle{{0, 0}, {1, 1}},
+    std::vector<terminalpp::rectangle> const expected_redraw_regions = {
+      terminalpp::rectangle{{0, 0}, {1, 1}},
     };
     
     ASSERT_EQ(1, redraw_count);
@@ -302,7 +302,7 @@ TEST_F(a_solid_frame_with_an_associated_focussed_component, redraws_when_associa
     frame_.set_size({4, 4});
     
     int redraw_count = 0;
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     frame_.on_redraw.connect(
         [&redraw_count, &redraw_regions](auto const &regions)
         {
@@ -314,11 +314,11 @@ TEST_F(a_solid_frame_with_an_associated_focussed_component, redraws_when_associa
         .WillByDefault(Return(false));
     comp_->on_focus_lost();
     
-    std::vector<munin::rectangle> const expected_redraw_regions = {
-      munin::rectangle{{0, 0}, {4, 1}},
-      munin::rectangle{{0, 0}, {1, 4}},
-      munin::rectangle{{3, 0}, {1, 4}},
-      munin::rectangle{{0, 3}, {4, 1}}
+    std::vector<terminalpp::rectangle> const expected_redraw_regions = {
+      terminalpp::rectangle{{0, 0}, {4, 1}},
+      terminalpp::rectangle{{0, 0}, {1, 4}},
+      terminalpp::rectangle{{3, 0}, {1, 4}},
+      terminalpp::rectangle{{0, 3}, {4, 1}}
     };
     
     ASSERT_EQ(1, redraw_count);

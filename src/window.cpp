@@ -23,7 +23,7 @@ struct window::impl
     // ======================================================================
     // REQUEST_REPAINT
     // ======================================================================
-    void request_repaint(std::vector<rectangle> const &regions)
+    void request_repaint(std::vector<terminalpp::rectangle> const &regions)
     {
         bool first_request = repaint_regions_.empty();
         
@@ -41,7 +41,7 @@ struct window::impl
     window &self_;
     std::shared_ptr<component> content_;
 
-    std::vector<rectangle> repaint_regions_;
+    std::vector<terminalpp::rectangle> repaint_regions_;
 
     terminalpp::screen screen_;
 };
@@ -84,7 +84,7 @@ std::string window::repaint(
 {
     auto const canvas_size = cvs.size();
     
-    std::vector<rectangle> repaint_regions;
+    std::vector<terminalpp::rectangle> repaint_regions;
     
     if (cvs.size() != pimpl_->content_->get_size())
     {

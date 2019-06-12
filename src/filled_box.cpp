@@ -1,5 +1,6 @@
 #include "munin/filled_box.hpp"
 #include "munin/render_surface.hpp"
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 
 namespace munin {
 
@@ -59,21 +60,19 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 // DO_DRAW
 // ==========================================================================
 void filled_box::do_draw(
-    render_surface &surface, rectangle const &region) const
+    render_surface &surface, terminalpp::rectangle const &region) const
 {
     auto const element = pimpl_->fill_function_(surface);
     
-    for (terminalpp::coordinate_type row = region.origin.y;
-         row < region.origin.y + region.size.height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type column = region.origin.x;
-             column < region.origin.x + region.size.width;
-             ++column)
+    terminalpp::for_each_in_region(
+        surface,
+        region,
+        [&element](terminalpp::element &elem, 
+                   terminalpp::coordinate_type column, 
+                   terminalpp::coordinate_type row)
         {
-            surface[column][row] = element;
-        }
-    }
+            elem = element;
+        });
 }
 
 // ==========================================================================

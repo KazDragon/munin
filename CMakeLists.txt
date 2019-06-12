@@ -74,7 +74,6 @@ set (MUNIN_INCLUDE_FILES
     include/munin/image.hpp
     include/munin/layout.hpp
     include/munin/null_layout.hpp
-    include/munin/rectangle.hpp
     include/munin/render_surface.hpp
     include/munin/solid_frame.hpp
     include/munin/titled_frame.hpp

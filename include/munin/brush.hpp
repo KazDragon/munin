@@ -71,7 +71,7 @@ protected :
     //* =====================================================================
     void do_draw(
         render_surface &surface, 
-        rectangle const &region) const override;
+        terminalpp::rectangle const &region) const override;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

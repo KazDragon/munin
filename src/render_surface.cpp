@@ -24,29 +24,6 @@ static default_render_surface_capabilities default_capabilities;
 }
 
 // ==========================================================================
-// ROW_PROXY::CONSTRUCTOR
-// ==========================================================================
-render_surface::row_proxy::row_proxy(
-    render_surface& surface, 
-    terminalpp::coordinate_type column, 
-    terminalpp::coordinate_type row)
-  : surface_(surface),
-    column_(column),
-    row_(row)
-{
-}
-
-// ==========================================================================
-// ROW_PROXY::OPERATOR=
-// ==========================================================================
-render_surface::row_proxy &render_surface::row_proxy::operator=(
-    terminalpp::element const &value)
-{
-    surface_.set_element(column_, row_, value);
-    return *this;
-}
-
-// ==========================================================================
 // COLUMN_PROXY::CONSTRUCTOR
 // ==========================================================================
 render_surface::column_proxy::column_proxy(
@@ -60,10 +37,10 @@ render_surface::column_proxy::column_proxy(
 // ==========================================================================
 // COLUMN_PROXY::OPERATOR[]
 // ==========================================================================
-render_surface::row_proxy render_surface::column_proxy::operator[](
+terminalpp::element &render_surface::column_proxy::operator[](
     terminalpp::coordinate_type row)
 {
-    return render_surface::row_proxy(surface_, column_, row);
+    return surface_.get_element(column_, row);
 }
 
 // ==========================================================================
@@ -120,14 +97,13 @@ render_surface::column_proxy render_surface::operator[](
 }
 
 // ==========================================================================
-// SET_ELEMENT
+// GET_ELEMENT
 // ==========================================================================
-void render_surface::set_element(
+terminalpp::element &render_surface::get_element(
     terminalpp::coordinate_type column, 
-    terminalpp::coordinate_type row, 
-    terminalpp::element const &value)
+    terminalpp::coordinate_type row)
 {
-    canvas_[column + offset_.width][row + offset_.height] = value;
+    return canvas_[column + offset_.width][row + offset_.height];
 }
 
 }

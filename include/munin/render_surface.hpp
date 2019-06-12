@@ -13,30 +13,7 @@ namespace munin {
 class MUNIN_EXPORT render_surface
 {
 public :
-    //* =====================================================================
-    /// \brief A proxy into a row of elements on the canvas
-    //* =====================================================================
-    class row_proxy
-    {
-    public :
-        // ==================================================================
-        // CONSTRUCTOR
-        // ==================================================================
-        row_proxy(
-            render_surface &surface, 
-            terminalpp::coordinate_type column, 
-            terminalpp::coordinate_type row);
-
-        // ==================================================================
-        // OPERATOR=
-        // ==================================================================
-        row_proxy &operator=(terminalpp::element const &value);
-
-    private :
-        render_surface &surface_;
-        terminalpp::coordinate_type column_;
-        terminalpp::coordinate_type row_;
-    };
+    using size_type = terminalpp::coordinate_type;
 
     //* =====================================================================
     /// \brief A proxy into a column of elements on the canvas
@@ -44,6 +21,8 @@ public :
     class column_proxy
     {
     public :
+        using size_type = terminalpp::coordinate_type;
+
         // ==================================================================
         // CONSTRUCTOR
         // ==================================================================
@@ -54,7 +33,7 @@ public :
         // ==================================================================
         // OPERATOR[]
         // ==================================================================
-        row_proxy operator[](terminalpp::coordinate_type row);
+        terminalpp::element &operator[](terminalpp::coordinate_type row);
 
     private :
         render_surface &surface_;
@@ -98,12 +77,11 @@ public :
 
 private :
     //* =====================================================================
-    /// \brief Set the value of an element.
+    /// \brief Gets an element from the underlying canvas.
     //* =====================================================================
-    void set_element(
+    terminalpp::element &get_element(
         terminalpp::coordinate_type column, 
-        terminalpp::coordinate_type row, 
-        terminalpp::element const &value);
+        terminalpp::coordinate_type row);
 
     render_surface_capabilities const &capabilities_;
     terminalpp::canvas &canvas_;

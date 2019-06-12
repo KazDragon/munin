@@ -36,9 +36,9 @@ struct basic_component::impl
         }
     }
 
-    basic_component &self_;
-    rectangle        bounds_;
-    bool             has_focus_;
+    basic_component       &self_;
+    terminalpp::rectangle bounds_;
+    bool                  has_focus_;
 };
 
 // ==========================================================================

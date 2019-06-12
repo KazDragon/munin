@@ -7,7 +7,7 @@ TEST(a_brush_to_be_redrawn, redraws_entire_brush_when_setting_pattern)
     brush.set_size({6, 3});
 
     int redraw_called = 0;
-    std::vector<munin::rectangle> redraw_regions;
+    std::vector<terminalpp::rectangle> redraw_regions;
     brush.on_redraw.connect(
         [&redraw_called, &redraw_regions](auto const &regions)
     {
@@ -19,5 +19,5 @@ TEST(a_brush_to_be_redrawn, redraws_entire_brush_when_setting_pattern)
 
     ASSERT_EQ(1, redraw_called);
     ASSERT_EQ(1u, redraw_regions.size());
-    ASSERT_EQ(munin::rectangle({0, 0}, {6, 3}), redraw_regions[0]);
+    ASSERT_EQ(terminalpp::rectangle({0, 0}, {6, 3}), redraw_regions[0]);
 }

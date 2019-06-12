@@ -143,7 +143,7 @@ void composite_component::do_set_cursor_position(terminalpp::point const &positi
 // ==========================================================================
 void composite_component::do_draw(
     render_surface &surface,
-    rectangle const &region) const
+    terminalpp::rectangle const &region) const
 {
     content_.draw(surface, region);
 }

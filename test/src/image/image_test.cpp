@@ -1,5 +1,6 @@
 #include <munin/image.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
 TEST(an_image_with_its_content_set_empty, draws_fill_on_the_canvas)
@@ -12,17 +13,15 @@ TEST(an_image_with_its_content_set_empty, draws_fill_on_the_canvas)
     image.set_size({6,3});
     terminalpp::canvas canvas({6, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -57,17 +56,15 @@ TEST(an_image_with_its_content_set_to_single_line, draws_line_on_the_canvas)
 
     terminalpp::canvas canvas({6, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -107,17 +104,15 @@ TEST(an_image_with_its_content_set_to_multi_line, draws_lines_on_the_canvas)
 
     terminalpp::canvas canvas({6, 4});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -159,17 +154,15 @@ TEST(an_image, sets_its_content_empty_when_set_to_an_empty_string)
 
     terminalpp::canvas canvas({4, 1});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -189,17 +182,15 @@ TEST(an_image, can_have_its_fill_set)
 
     terminalpp::canvas canvas({6, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});

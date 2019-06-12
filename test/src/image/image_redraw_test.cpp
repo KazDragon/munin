@@ -39,7 +39,7 @@ protected :
     terminalpp::extent preferred_size_;
 
     int redraw_called_ = 0;
-    std::vector<munin::rectangle> redraw_regions_;
+    std::vector<terminalpp::rectangle> redraw_regions_;
 };
 
 TEST_F(an_image_to_be_redrawn, redraws_entire_image_when_setting_fill)
@@ -49,7 +49,7 @@ TEST_F(an_image_to_be_redrawn, redraws_entire_image_when_setting_fill)
     ASSERT_EQ(0, preferred_size_changed_called_);
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({0, 0}, {6, 4}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({0, 0}, {6, 4}), redraw_regions_[0]);
 }
 
 class an_image_with_empty_content : public an_image_to_be_redrawn
@@ -74,7 +74,7 @@ TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
 
 TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_to_multi_line)
@@ -92,7 +92,7 @@ TEST_F(an_image_with_empty_content, redraws_new_image_area_when_setting_content_
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
 }
 
 class an_image_with_single_line_content : public an_image_to_be_redrawn
@@ -113,7 +113,7 @@ TEST_F(an_image_with_single_line_content, redraws_old_image_area_when_setting_co
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
 
 TEST_F(an_image_with_single_line_content, redraws_old_and_new_image_area_when_setting_content_to_larger_content)
@@ -125,8 +125,8 @@ TEST_F(an_image_with_single_line_content, redraws_old_and_new_image_area_when_se
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(2u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
-    ASSERT_EQ(munin::rectangle({0, 1}, {6, 1}), redraw_regions_[1]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({0, 1}, {6, 1}), redraw_regions_[1]);
 }
 
 TEST_F(an_image_with_single_line_content, redraws_old_area_and_new_area_when_setting_content_to_multi_line_content)
@@ -143,8 +143,8 @@ TEST_F(an_image_with_single_line_content, redraws_old_area_and_new_area_when_set
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(2u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[1]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[1]);
 }
 
 class an_image_with_multi_line_content : public an_image_to_be_redrawn
@@ -168,7 +168,7 @@ TEST_F(an_image_with_multi_line_content, redraws_old_area_when_setting_content_e
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(1u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
 }
 
 TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_content_to_single_line)
@@ -180,8 +180,8 @@ TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_c
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(2u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 1}), redraw_regions_[1]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[1]);
 }
 
 TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_content_to_multi_line)
@@ -197,6 +197,6 @@ TEST_F(an_image_with_multi_line_content, redraws_old_and_new_area_when_setting_c
 
     ASSERT_EQ(1, redraw_called_);
     ASSERT_EQ(2u, redraw_regions_.size());
-    ASSERT_EQ(munin::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
-    ASSERT_EQ(munin::rectangle({0, 1}, {6, 2}), redraw_regions_[1]);
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
+    ASSERT_EQ(terminalpp::rectangle({0, 1}, {6, 2}), redraw_regions_[1]);
 }

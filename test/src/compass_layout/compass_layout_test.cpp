@@ -1,6 +1,6 @@
 #include "mock/component.hpp"
 #include <munin/compass_layout.hpp>
-#include <munin/rectangle.hpp>
+#include <terminalpp/rectangle.hpp>
 #include <gtest/gtest.h>
 
 using testing::Return;
@@ -29,9 +29,9 @@ TEST(a_compass_layout_with_no_elements, has_a_zero_preferred_size)
 }
 
 using compass_layout_component_data = std::tuple<
-    terminalpp::extent, // preferred size
-    boost::any,         // layout hint
-    munin::rectangle    // expected size
+    terminalpp::extent,   // preferred size
+    boost::any,           // layout hint
+    terminalpp::rectangle // expected size
 >;
 
 using compass_layout_test_data = std::tuple<

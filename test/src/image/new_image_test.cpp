@@ -1,5 +1,6 @@
 #include <munin/image.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
 TEST(a_new_image, has_a_zero_preferred_size)
@@ -79,17 +80,15 @@ TEST(a_new_image, draws_whitespace_on_the_canvas)
 
     terminalpp::canvas canvas({3, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -112,17 +111,15 @@ TEST(a_new_image_with_a_fill, draws_fill_on_the_canvas)
 
     terminalpp::canvas canvas({3, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -148,17 +145,15 @@ TEST(a_new_image_with_a_single_line_content, draws_that_content_centred_with_whi
 
     terminalpp::canvas canvas({5, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -192,17 +187,15 @@ TEST(a_new_image_with_a_single_line_content_and_fill, draws_that_content_centred
 
     terminalpp::canvas canvas({5, 3});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -240,17 +233,15 @@ TEST(a_new_image_with_multi_line_content, draws_that_content_centred_with_whites
 
     terminalpp::canvas canvas({5, 5});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});
@@ -300,17 +291,15 @@ TEST(a_new_image_with_multi_line_content_with_fill, draws_that_content_centred_w
 
     terminalpp::canvas canvas({5, 5});
 
-    for (terminalpp::coordinate_type row = 0;
-         row < canvas.size().height;
-         ++row)
-    {
-        for (terminalpp::coordinate_type col = 0;
-             col < canvas.size().width;
-             ++col)
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
         {
-            canvas[col][row] = 'X';
-        }
-    }
+            elem = 'X';
+        });
 
     munin::render_surface surface{canvas};
     image.draw(surface, {{}, image.get_size()});

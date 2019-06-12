@@ -5,13 +5,13 @@ using testing::Return;
 
 TEST_F(a_container_with_one_component, requests_redraws_relative_to_component_position_when_subcomponent_requests_redraws)
 {
-    static auto const redraw_region      = munin::rectangle{{0,0}, {10,5}};
+    static auto const redraw_region      = terminalpp::rectangle{{0,0}, {10,5}};
     static auto const component_position = terminalpp::point{2, 3};
     
     container.on_redraw.connect(
         [](auto const &redraw_regions)
         {
-            static auto const expected_redraw_region = munin::rectangle{{2, 3}, {10,5}};
+            static auto const expected_redraw_region = terminalpp::rectangle{{2, 3}, {10,5}};
             assert_equivalent_redraw_regions(redraw_regions, {expected_redraw_region});
         });
         

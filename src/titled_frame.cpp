@@ -41,25 +41,25 @@ struct titled_frame::impl
     {
         auto size = self.get_size();
         auto northwest_beam_region = size.width > 4
-          ? rectangle{{0, 0}, {2, 1}}
-          : rectangle{{0, 0}, {size.width, 1}};
+          ? terminalpp::rectangle{{0, 0}, {2, 1}}
+          : terminalpp::rectangle{{0, 0}, {size.width, 1}};
         
         auto skipped_section_width = 3 + title->get_size().width + 1;
-        auto northeast_beam_region = rectangle{
+        auto northeast_beam_region = terminalpp::rectangle{
             {skipped_section_width, 0},
             {size.width - (skipped_section_width), 1}};
         
         auto south_beam_region = size.height > 1
-          ? rectangle{{0, size.height - 1}, {size.width, 1}}
-          : rectangle{};
+          ? terminalpp::rectangle{{0, size.height - 1}, {size.width, 1}}
+          : terminalpp::rectangle{};
           
         auto west_beam_region  = size.height > 2
-          ? rectangle{{0, 1}, {1, size.height - 2}}
-          : rectangle{};
+          ? terminalpp::rectangle{{0, 1}, {1, size.height - 2}}
+          : terminalpp::rectangle{};
           
         auto east_beam_region  = size.height > 2
-          ? rectangle{{size.width - 1, 1}, {1, size.height - 2}}
-          : rectangle{};
+          ? terminalpp::rectangle{{size.width - 1, 1}, {1, size.height - 2}}
+          : terminalpp::rectangle{};
 
         self.on_redraw({
             northwest_beam_region, northeast_beam_region,

@@ -28,10 +28,10 @@ struct solid_frame::impl
         if (size.width > 2 && size.height > 2)
         {
             // Here we individually pick out the frame edges and redraw them.
-            auto north_beam_region = munin::rectangle{{0,0}, {size.width, 1}};
-            auto south_beam_region = munin::rectangle{{0, size.height - 1}, {size.width, 1}};
-            auto west_beam_region  = munin::rectangle{{0, 1}, {1, size.height - 2}};
-            auto east_beam_region  = munin::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
+            auto north_beam_region = terminalpp::rectangle{{0,0}, {size.width, 1}};
+            auto south_beam_region = terminalpp::rectangle{{0, size.height - 1}, {size.width, 1}};
+            auto west_beam_region  = terminalpp::rectangle{{0, 1}, {1, size.height - 2}};
+            auto east_beam_region  = terminalpp::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
     
             self.on_redraw({
                 north_beam_region, south_beam_region, west_beam_region, east_beam_region

@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 
 static terminalpp::extent calculate_bounds(
-    std::vector<munin::rectangle> const &regions)
+    std::vector<terminalpp::rectangle> const &regions)
 {
     return std::accumulate(
         regions.begin(),
@@ -18,7 +18,7 @@ static terminalpp::extent calculate_bounds(
 }
 
 static std::vector<bool> create_redraw_map(
-    std::vector<munin::rectangle> const &regions)
+    std::vector<terminalpp::rectangle> const &regions)
 {
     auto extent = calculate_bounds(regions);
     std::vector<bool> redraw_map(extent.width * extent.height);
@@ -38,8 +38,8 @@ static std::vector<bool> create_redraw_map(
 }
 
 void assert_equivalent_redraw_regions(
-    std::vector<munin::rectangle> const &lhs,
-    std::vector<munin::rectangle> const &rhs)
+    std::vector<terminalpp::rectangle> const &lhs,
+    std::vector<terminalpp::rectangle> const &rhs)
 {
     auto const lhs_bounds = calculate_bounds(lhs);
     auto const rhs_bounds = calculate_bounds(rhs);
