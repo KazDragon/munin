@@ -172,6 +172,8 @@ if (MUNIN_WITH_TESTS)
         test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
         test/src/text_area/text_area_test.cpp
+        test/src/text_area/text_area_test.hpp
+        test/src/text_area/new_text_area_test.cpp
         test/src/titled_frame/titled_frame_json_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
         test/src/toggle_button/toggle_button_test.cpp

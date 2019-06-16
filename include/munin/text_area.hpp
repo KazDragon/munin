@@ -9,13 +9,36 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT text_area : public basic_component
 {
-protected :
+public:
+    using caret_position = std::int32_t;
+    using length = std::int32_t;
+
+    //* =====================================================================
+    /// \Brief Returns the position of the caret.
+    //* =====================================================================
+    caret_position get_caret_position() const;
+
+    //* =====================================================================
+    /// \brief Returns the length of the document.
+    ///
+    /// The maximum length of the document is the maximum index at which the
+    /// caret can be placed.
+    //* =====================================================================
+    length get_length() const;
+
+protected:
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
     /// this function in order to get the size of the component in a custom
     /// manner.
     //* =====================================================================
     terminalpp::extent do_get_preferred_size() const override;
+
+    //* =====================================================================
+    /// \brief Called by get_cursor_state().  Derived classes must override
+    /// this function in order to return the cursor state in a custom manner.
+    //* =====================================================================
+    bool do_get_cursor_state() const override;
 
     //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
