@@ -1,6 +1,8 @@
 #pragma once
 
 #include "munin/basic_component.hpp"
+#include <terminalpp/string.hpp>
+#include <memory>
 
 namespace munin {
 
@@ -10,13 +12,23 @@ namespace munin {
 class MUNIN_EXPORT text_area : public basic_component
 {
 public:
-    using caret_position = std::int32_t;
-    using length = std::int32_t;
+    // A type that represents a uniquely indexed position within the document.
+    using text_index = std::int32_t;
+
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    text_area();
+
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~text_area() override;
 
     //* =====================================================================
     /// \Brief Returns the position of the caret.
     //* =====================================================================
-    caret_position get_caret_position() const;
+    text_index get_caret_position() const;
 
     //* =====================================================================
     /// \brief Returns the length of the document.
@@ -24,7 +36,27 @@ public:
     /// The maximum length of the document is the maximum index at which the
     /// caret can be placed.
     //* =====================================================================
-    length get_length() const;
+    text_index get_length() const;
+
+    //* =====================================================================
+    /// \brief Inserts text at the specified caret position
+    ///
+    /// A position of -1 inserts at the current caret position and the caret
+    /// is moved with it.
+    //* =====================================================================
+    void insert_text(
+        terminalpp::string const &text, 
+        text_index position = -1);
+
+    //* =====================================================================
+    /// \fn on_caret_position_changed
+    /// \brief Connect to this signal in order to receive notifications about
+    /// when the component's caret position changes.
+    //* =====================================================================
+    boost::signals2::signal
+    <
+        void ()
+    > on_caret_position_changed;
 
 protected:
     //* =====================================================================
@@ -33,6 +65,13 @@ protected:
     /// manner.
     //* =====================================================================
     terminalpp::extent do_get_preferred_size() const override;
+
+    //* =====================================================================
+    /// \brief Called by get_cursor_position().  Derived classes must
+    /// override this function in order to return the cursor position in
+    /// a custom manner.
+    //* =====================================================================
+    terminalpp::point do_get_cursor_position() const override;
 
     //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
@@ -52,6 +91,10 @@ protected:
     void do_draw(
         render_surface &surface,
         terminalpp::rectangle const &region) const override;
+
+private:
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================
