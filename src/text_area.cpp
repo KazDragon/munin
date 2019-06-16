@@ -1,23 +1,61 @@
 #include "munin/text_area.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <boost/make_unique.hpp>
 
 namespace munin {
 
 // ==========================================================================
+// TEXT_AREA::IMPLEMENTATION STRUCTURE
+// ==========================================================================
+struct text_area::impl
+{
+    terminalpp::string text_;
+    text_area::text_index caret_position_{0};
+};
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+text_area::text_area()
+  : pimpl_(boost::make_unique<impl>())
+{
+}
+
+// ==========================================================================
+// DESTRUCTOR
+// ==========================================================================
+text_area::~text_area() = default;
+
+// ==========================================================================
 // GET_CARET_POSITION
 // ==========================================================================
-text_area::caret_position text_area::get_caret_position() const
+text_area::text_index text_area::get_caret_position() const
 {
-    return 0;
+    return pimpl_->caret_position_;
 }
 
 // ==========================================================================
 // GET_LENGTH
 // ==========================================================================
-text_area::length text_area::get_length() const
+text_area::text_index text_area::get_length() const
 {
     return 0;
+}
+
+// ==========================================================================
+// INSERT_TEXT
+// ==========================================================================
+void text_area::insert_text(
+    terminalpp::string const &text,
+    text_area::text_index position /* = -1 */)
+{
+    pimpl_->text_ += text;
+    pimpl_->caret_position_ += text.size();
+
+    on_caret_position_changed();
+    on_cursor_position_changed();
+    on_preferred_size_changed();
 }
 
 // ==========================================================================
@@ -25,7 +63,15 @@ text_area::length text_area::get_length() const
 // ==========================================================================
 terminalpp::extent text_area::do_get_preferred_size() const
 {
-    return {0, 1};
+    return {terminalpp::coordinate_type(pimpl_->text_.size()), 1};
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+terminalpp::point text_area::do_get_cursor_position() const
+{
+    return {get_caret_position(), 0};
 }
 
 // ==========================================================================
