@@ -32,64 +32,60 @@ if (MUNIN_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 endif()
 
-set (MUNIN_SOURCE_FILES
-    src/aligned_layout.cpp
-    src/basic_component.cpp
-    src/brush.cpp
-    src/button.cpp
-    src/compass_layout.cpp
-    src/component.cpp
-    src/composite_component.cpp
-    src/container.cpp
-    src/filled_box.cpp
-    src/framed_component.cpp
-    src/grid_layout.cpp
-    src/horizontal_strip_layout.cpp
-    src/image.cpp
-    src/layout.cpp
-    src/null_layout.cpp
-    src/render_surface.cpp
-    src/solid_frame.cpp
-    src/titled_frame.cpp
-    src/toggle_button.cpp
-    src/vertical_strip_layout.cpp
-    src/window.cpp
+add_library(munin)
 
-    src/detail/adaptive_fill.cpp
-    src/detail/algorithm.cpp
-    src/detail/json_adaptors.cpp
-)
-
-set (MUNIN_INCLUDE_FILES
-    include/munin/basic_component.hpp
-    include/munin/brush.hpp
-    include/munin/button.hpp
-    include/munin/component.hpp
-    include/munin/composite_component.hpp
-    include/munin/container.hpp
-    include/munin/filled_box.hpp
-    include/munin/framed_component.hpp
-    include/munin/grid_layout.hpp
-    include/munin/horizontal_strip_layout.hpp
-    include/munin/image.hpp
-    include/munin/layout.hpp
-    include/munin/null_layout.hpp
-    include/munin/render_surface.hpp
-    include/munin/solid_frame.hpp
-    include/munin/titled_frame.hpp
-    include/munin/toggle_button.hpp
-    include/munin/vertical_strip_layout.hpp
-    include/munin/window.hpp
-    include/munin/view.hpp
-
-    include/munin/detail/adaptive_fill.hpp
-    include/munin/detail/algorithm.hpp
-    include/munin/detail/json_adaptors.hpp
-)
-
-add_library(munin
-    ${MUNIN_SOURCE_FILES}
-    ${MUNIN_INCLUDE_FILES}
+target_sources(munin
+    PRIVATE
+        include/munin/basic_component.hpp
+        include/munin/brush.hpp
+        include/munin/button.hpp
+        include/munin/component.hpp
+        include/munin/composite_component.hpp
+        include/munin/container.hpp
+        include/munin/filled_box.hpp
+        include/munin/framed_component.hpp
+        include/munin/grid_layout.hpp
+        include/munin/horizontal_strip_layout.hpp
+        include/munin/image.hpp
+        include/munin/layout.hpp
+        include/munin/null_layout.hpp
+        include/munin/render_surface.hpp
+        include/munin/solid_frame.hpp
+        include/munin/titled_frame.hpp
+        include/munin/toggle_button.hpp
+        include/munin/vertical_strip_layout.hpp
+        include/munin/window.hpp
+        include/munin/view.hpp
+    
+        include/munin/detail/adaptive_fill.hpp
+        include/munin/detail/algorithm.hpp
+        include/munin/detail/json_adaptors.hpp
+    
+        src/aligned_layout.cpp
+        src/basic_component.cpp
+        src/brush.cpp
+        src/button.cpp
+        src/compass_layout.cpp
+        src/component.cpp
+        src/composite_component.cpp
+        src/container.cpp
+        src/filled_box.cpp
+        src/framed_component.cpp
+        src/grid_layout.cpp
+        src/horizontal_strip_layout.cpp
+        src/image.cpp
+        src/layout.cpp
+        src/null_layout.cpp
+        src/render_surface.cpp
+        src/solid_frame.cpp
+        src/titled_frame.cpp
+        src/toggle_button.cpp
+        src/vertical_strip_layout.cpp
+        src/window.cpp
+    
+        src/detail/adaptive_fill.cpp
+        src/detail/algorithm.cpp
+        src/detail/json_adaptors.cpp
 )
 
 generate_export_header(munin
@@ -123,75 +119,70 @@ target_link_libraries(munin
 if (MUNIN_WITH_TESTS)
     enable_testing()
 
-    set (MUNIN_TEST_SOURCE_FILES
-        test/src/redraw.cpp
-        test/src/mock/component.cpp
-        test/src/mock/frame.cpp
-        test/src/algorithm/algorithm_test.cpp
-        test/src/aligned_layout/aligned_layout_test.cpp
-        test/src/basic_component/new_basic_component_test.cpp
-        test/src/basic_component/unfocused_basic_component_test.cpp
-        test/src/basic_component/focused_basic_component_test.cpp
-        test/src/basic_component/basic_component_test.cpp
-        test/src/brush/brush_test.cpp
-        test/src/brush/brush_json_test.cpp
-        test/src/brush/brush_redraw_test.cpp
-        test/src/brush/new_brush_test.cpp
-        test/src/button/button_test.cpp
-        test/src/button/button_json_test.cpp
-        test/src/compass_layout/compass_layout_test.cpp
-        test/src/container/container_test.cpp
-        test/src/container/container_cursor_test.cpp
-        test/src/container/container_draw_test.cpp
-        test/src/container/container_event_test.cpp
-        test/src/container/container_focus_test.cpp
-        test/src/container/container_focus_next_test.cpp
-        test/src/container/container_focus_previous_test.cpp
-        test/src/container/container_json_test.cpp
-        test/src/container/container_redraw_test.cpp
-        test/src/container/container_subcomponent_focus_test.cpp
-        test/src/container/container_layout_test.cpp
-        test/src/filled_box/new_filled_box_test.cpp
-        test/src/filled_box/filled_box_test.cpp
-        test/src/filled_box/functional_filled_box_test.cpp
-        test/src/framed_component/framed_component_focus_test.cpp
-        test/src/framed_component/framed_component_json_test.cpp
-        test/src/framed_component/framed_component_test.cpp
-        test/src/framed_component/framed_component_mouse_test.cpp
-        test/src/grid_layout/grid_layout_test.cpp
-        test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
-        test/src/image/image_json_test.cpp
-        test/src/image/image_test.cpp
-        test/src/image/image_redraw_test.cpp
-        test/src/image/new_image_test.cpp
-        test/src/null_layout/null_layout_test.cpp
-        test/src/render_surface/render_surface_capabilities_test.cpp
-        test/src/render_surface/render_surface_test.cpp
-        test/src/solid_frame/solid_frame_json_test.cpp
-        test/src/solid_frame/solid_frame_test.cpp
-        test/src/titled_frame/titled_frame_json_test.cpp
-        test/src/titled_frame/titled_frame_test.cpp
-        test/src/toggle_button/toggle_button_test.cpp
-        test/src/toggle_button/toggle_button_json_test.cpp
-        test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
-        test/src/window/window_json_test.cpp
-        test/src/window/window_test.cpp
-        test/src/window/window_repaint_test.cpp
-    )
-
-    set (MUNIN_TEST_INCLUDE_FILES
-        test/src/container/container_test.hpp
-        test/src/window/window_test.hpp
-        test/include/redraw.hpp
-        test/include/mock/component.hpp
-        test/include/mock/layout.hpp
-        test/include/mock/terminal.hpp
-    )
-
-    add_executable(munin_tester
-        ${MUNIN_TEST_SOURCE_FILES}
-        ${MUNIN_TEST_INCLUDE_FILES}
-    )
+    add_executable(munin_tester test/src/redraw.cpp)
+    
+    target_sources(munin_tester
+        PRIVATE
+            test/src/container/container_test.hpp
+            test/src/window/window_test.hpp
+            test/include/redraw.hpp
+            test/include/mock/component.hpp
+            test/include/mock/layout.hpp
+            test/include/mock/terminal.hpp
+            test/src/redraw.cpp
+            test/src/mock/component.cpp
+            test/src/mock/frame.cpp
+            test/src/algorithm/algorithm_test.cpp
+            test/src/aligned_layout/aligned_layout_test.cpp
+            test/src/basic_component/new_basic_component_test.cpp
+            test/src/basic_component/unfocused_basic_component_test.cpp
+            test/src/basic_component/focused_basic_component_test.cpp
+            test/src/basic_component/basic_component_test.cpp
+            test/src/brush/brush_test.cpp
+            test/src/brush/brush_json_test.cpp
+            test/src/brush/brush_redraw_test.cpp
+            test/src/brush/new_brush_test.cpp
+            test/src/button/button_test.cpp
+            test/src/button/button_json_test.cpp
+            test/src/compass_layout/compass_layout_test.cpp
+            test/src/container/container_test.cpp
+            test/src/container/container_cursor_test.cpp
+            test/src/container/container_draw_test.cpp
+            test/src/container/container_event_test.cpp
+            test/src/container/container_focus_test.cpp
+            test/src/container/container_focus_next_test.cpp
+            test/src/container/container_focus_previous_test.cpp
+            test/src/container/container_json_test.cpp
+            test/src/container/container_redraw_test.cpp
+            test/src/container/container_subcomponent_focus_test.cpp
+            test/src/container/container_layout_test.cpp
+            test/src/filled_box/new_filled_box_test.cpp
+            test/src/filled_box/filled_box_test.cpp
+            test/src/filled_box/functional_filled_box_test.cpp
+            test/src/framed_component/framed_component_focus_test.cpp
+            test/src/framed_component/framed_component_json_test.cpp
+            test/src/framed_component/framed_component_test.cpp
+            test/src/framed_component/framed_component_mouse_test.cpp
+            test/src/grid_layout/grid_layout_test.cpp
+            test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+            test/src/image/image_json_test.cpp
+            test/src/image/image_test.cpp
+            test/src/image/image_redraw_test.cpp
+            test/src/image/new_image_test.cpp
+            test/src/null_layout/null_layout_test.cpp
+            test/src/render_surface/render_surface_capabilities_test.cpp
+            test/src/render_surface/render_surface_test.cpp
+            test/src/solid_frame/solid_frame_json_test.cpp
+            test/src/solid_frame/solid_frame_test.cpp
+            test/src/titled_frame/titled_frame_json_test.cpp
+            test/src/titled_frame/titled_frame_test.cpp
+            test/src/toggle_button/toggle_button_test.cpp
+            test/src/toggle_button/toggle_button_json_test.cpp
+            test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+            test/src/window/window_json_test.cpp
+            test/src/window/window_test.cpp
+            test/src/window/window_repaint_test.cpp
+    ) 
 
     target_include_directories(munin_tester
         PRIVATE
