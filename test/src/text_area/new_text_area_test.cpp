@@ -112,6 +112,100 @@ TEST_F(a_new_text_area, announces_new_caret_and_cursor_positions_and_preferred_s
     ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
 }
 
+TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_inserted)
+{
+    text_area_.set_size({2, 2});
+    
+    bool redraw_requested = false;
+    std::vector<terminalpp::rectangle> redraw_regions;
+    
+    text_area_.on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_requested = true;
+            redraw_regions = regions;
+        });
+    
+    text_area_.insert_text("b"_ts);
+    
+    ASSERT_TRUE(redraw_requested);
+    
+    terminalpp::canvas canvas({3, 3});
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    
+    for (auto const &region : redraw_regions)
+    {
+        text_area_.draw(surface, region);
+    }
+
+    ASSERT_EQ(terminalpp::element{'b'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+}
+
+TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
+{
+    text_area_.set_size({2, 2});
+    
+    bool redraw_requested = false;
+    std::vector<terminalpp::rectangle> redraw_regions;
+    
+    text_area_.on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_requested = true;
+            redraw_regions = regions;
+        });
+    
+    text_area_.insert_text("cde"_ts);
+    
+    ASSERT_TRUE(redraw_requested);
+    
+    terminalpp::canvas canvas({3, 3});
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    
+    for (auto const &region : redraw_regions)
+    {
+        text_area_.draw(surface, region);
+    }
+
+    ASSERT_EQ(terminalpp::element{'c'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'d'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+}
+
 /*
 class a_new_text_area_with_text_inserted_at_the_end : public a_new_text_area
 {
