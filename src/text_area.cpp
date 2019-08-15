@@ -10,15 +10,62 @@ namespace munin {
 // ==========================================================================
 struct text_area::impl
 {
+    text_area &self_;
     terminalpp::string text_;
+    std::vector<terminalpp::string> laid_out_text_;
+
     text_area::text_index caret_position_{0};
+    
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
+    impl(text_area &self)
+      : self_(self)
+    {
+    }
+
+    // ======================================================================
+    // LAYOUT_TEXT
+    // ======================================================================
+    void layout_text()
+    {
+        laid_out_text_.clear();
+        auto const size = self_.get_size();
+
+        bool new_line = true;
+
+        for(auto const &ch : text_)
+        {
+            if (new_line)
+            {
+                new_line = false;
+                laid_out_text_.emplace_back();
+            }
+            
+            auto &last_line = laid_out_text_.back();
+            
+            if (ch.glyph_.character_ == '\n')
+            {
+                new_line = true;
+            }
+            else
+            {
+                last_line += ch;
+            }
+            
+            if (last_line.size() == size.width)
+            {
+                new_line = true;
+            }
+        }
+    }
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 text_area::text_area()
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(boost::make_unique<impl>(*this))
 {
 }
 
@@ -56,6 +103,9 @@ void text_area::insert_text(
     on_caret_position_changed();
     on_cursor_position_changed();
     on_preferred_size_changed();
+    on_redraw({{{}, get_size()}});
+    
+    pimpl_->layout_text();
 }
 
 // ==========================================================================
@@ -92,11 +142,14 @@ void text_area::do_draw(
     terminalpp::for_each_in_region(
         surface, 
         region, 
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
+        [this](terminalpp::element &elem,
+               terminalpp::coordinate_type column,
+               terminalpp::coordinate_type row)
         {
-            elem = ' ';
+            elem = (pimpl_->laid_out_text_.size() > row
+                && pimpl_->laid_out_text_[row].size() > column)
+                 ? pimpl_->laid_out_text_[row][column]
+                 : ' ';
         });
 }
 
