@@ -31,18 +31,12 @@ struct text_area::impl
     void layout_text()
     {
         laid_out_text_.clear();
-        auto const size = self_.get_size();
+        laid_out_text_.emplace_back();
 
-        bool new_line = true;
+        auto const text_area_width = self_.get_size().width;
 
         for(auto const &ch : text_)
         {
-            if (new_line)
-            {
-                new_line = false;
-                laid_out_text_.emplace_back();
-            }
-            
             auto &last_line = laid_out_text_.back();
             
             if (ch.glyph_.character_ == '\n')
@@ -54,9 +48,9 @@ struct text_area::impl
                 last_line += ch;
             }
             
-            if (last_line.size() == size.width)
+            if (last_line.size() == text_area_width)
             {
-                new_line = true;
+                laid_out_text_.emplace_back();
             }
         }
     }

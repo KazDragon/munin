@@ -9,17 +9,6 @@ using a_new_text_area = a_text_area;
 
 using namespace terminalpp::literals;
 
-namespace {
-    auto const lorem_ipsum = 
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do "
-        "eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim "
-        "ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut "
-        "aliquip ex ea commodo consequat. Duis aute irure dolor in "
-        "reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla "
-        "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
-        "culpa qui officia deserunt mollit anim id est laborum."_ts;
-}
-
 TEST_F(a_new_text_area, has_zero_cursor_position)
 {
     ASSERT_EQ(terminalpp::point(0, 0), text_area_.get_cursor_position());
@@ -67,13 +56,13 @@ TEST_F(a_new_text_area, draws_only_spaces)
     text_area_.draw(surface, {{}, text_area_.get_size()});
 
     ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
 
@@ -151,13 +140,13 @@ TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_i
     }
 
     ASSERT_EQ(terminalpp::element{'b'}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
 
@@ -288,14 +277,3 @@ INSTANTIATE_TEST_CASE_P(
         text_area_layout_data{"ab\nc"_ts, {2, 2}},
     })
 );
-
-/*
-class a_new_text_area_with_text_inserted_at_the_end : public a_new_text_area
-{
-protected:
-    a_new_text_area_with_text_inserted_at_the_end()
-    {
-        text_area_.insert_text(lorem_ipsum, -1);
-    }
-};
-*/
