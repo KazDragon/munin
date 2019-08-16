@@ -2,6 +2,7 @@
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <boost/make_unique.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 
 namespace munin {
 
@@ -46,7 +47,7 @@ struct text_area::impl
             
             if (ch.glyph_.character_ == '\n')
             {
-                new_line = true;
+                laid_out_text_.emplace_back();
             }
             else
             {
@@ -113,7 +114,28 @@ void text_area::insert_text(
 // ==========================================================================
 terminalpp::extent text_area::do_get_preferred_size() const
 {
-    return {terminalpp::coordinate_type(pimpl_->text_.size()), 1};
+    terminalpp::coordinate_type preferred_rows = 1;
+    terminalpp::coordinate_type max_column_coordinate = 0;
+    terminalpp::coordinate_type current_x_coordinate = 0;
+    
+    boost::for_each(
+        pimpl_->text_,
+        [&](auto const &elem)
+        {
+            if (elem.glyph_.character_ == '\n')
+            {
+                ++preferred_rows;
+                current_x_coordinate = 0;
+            }
+            else
+            {
+                ++current_x_coordinate;
+                max_column_coordinate = 
+                    std::max(max_column_coordinate, current_x_coordinate);
+            }
+        });
+    
+    return {max_column_coordinate, preferred_rows};
 }
 
 // ==========================================================================

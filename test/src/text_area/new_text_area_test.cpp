@@ -3,6 +3,8 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/string.hpp>
 
+using testing::ValuesIn;
+
 using a_new_text_area = a_text_area;
 
 using namespace terminalpp::literals;
@@ -252,6 +254,40 @@ TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
+
+using text_area_layout_data = std::tuple<
+    terminalpp::string, // text content
+    terminalpp::extent  // expected size
+>;
+
+class unjustified_text_areas 
+  : public testing::TestWithParam<text_area_layout_data>
+{
+};
+
+TEST_P(unjustified_text_areas, have_a_preferred_size_related_to_text_content)
+{
+    auto const &param = GetParam();
+    auto const &text = std::get<0>(param);
+    auto const &expected_size = std::get<1>(param);
+    
+    munin::text_area text_area;
+    text_area.insert_text(text);
+    
+    ASSERT_EQ(expected_size, text_area.get_preferred_size());
+};
+
+INSTANTIATE_TEST_CASE_P(
+    unjustified_text_areas_behave,
+    unjustified_text_areas,
+    ValuesIn
+    ({
+        text_area_layout_data{"a"_ts, {1, 1}},
+        text_area_layout_data{"ab"_ts, {2, 1}},
+        text_area_layout_data{"ab\n"_ts, {2, 2}},
+        text_area_layout_data{"ab\nc"_ts, {2, 2}},
+    })
+);
 
 /*
 class a_new_text_area_with_text_inserted_at_the_end : public a_new_text_area
