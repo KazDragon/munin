@@ -29,13 +29,6 @@ TEST_F(a_new_text_area, has_length_zero)
     ASSERT_EQ(0, text_area_.get_length());
 }
 
-TEST_F(a_new_text_area, has_a_preferred_width_of_zero_and_a_preferred_size_of_one)
-{
-    // A text area always wants to put its cursor somewhere, and will use a
-    // textel of height 1 if it can.
-    ASSERT_EQ(terminalpp::extent(0, 1), text_area_.get_preferred_size());
-}
-
 TEST_F(a_new_text_area, draws_only_spaces)
 {
     text_area_.set_size({2, 2});
@@ -245,35 +238,63 @@ TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
 }
 
 using text_area_layout_data = std::tuple<
-    terminalpp::string, // text content
-    terminalpp::extent  // expected size
+    terminalpp::extent,           // actual size
+    terminalpp::string,           // actual text content
+    terminalpp::extent,           // expected preferred size
+    munin::text_area::text_index, // expected caret position
+    terminalpp::point             // expected cursor position
 >;
 
 class unjustified_text_areas 
   : public testing::TestWithParam<text_area_layout_data>
 {
+protected:
+    void SetUp() override
+    {
+        auto const &param = GetParam();
+        auto const &size = std::get<0>(param);
+        auto const &text = std::get<1>(param);
+        expected_preferred_size_ = std::get<2>(param);
+        expected_caret_position_ = std::get<3>(param);
+        expected_cursor_position_ = std::get<4>(param);
+        
+        text_area_.set_size(size);
+        text_area_.insert_text(text);
+    }
+    
+    munin::text_area text_area_;
+    terminalpp::extent expected_preferred_size_;
+    munin::text_area::text_index expected_caret_position_;
+    terminalpp::point expected_cursor_position_;
 };
 
 TEST_P(unjustified_text_areas, have_a_preferred_size_related_to_text_content)
 {
-    auto const &param = GetParam();
-    auto const &text = std::get<0>(param);
-    auto const &expected_size = std::get<1>(param);
-    
-    munin::text_area text_area;
-    text_area.insert_text(text);
-    
-    ASSERT_EQ(expected_size, text_area.get_preferred_size());
+    ASSERT_EQ(expected_preferred_size_, text_area_.get_preferred_size());
 };
+
+TEST_P(unjustified_text_areas,  have_a_specific_caret_position_after_insertion)
+{
+    ASSERT_EQ(expected_caret_position_, text_area_.get_caret_position());    
+}
+
+TEST_P(unjustified_text_areas, have_a_specific_cursor_position_after_insertion)
+{
+    ASSERT_EQ(expected_cursor_position_, text_area_.get_cursor_position());
+}
 
 INSTANTIATE_TEST_CASE_P(
     unjustified_text_areas_behave,
     unjustified_text_areas,
     ValuesIn
     ({
-        text_area_layout_data{"a"_ts, {1, 1}},
-        text_area_layout_data{"ab"_ts, {2, 1}},
-        text_area_layout_data{"ab\n"_ts, {2, 2}},
-        text_area_layout_data{"ab\nc"_ts, {2, 2}},
+        // Default position (nothing was inserted)
+        text_area_layout_data{{3, 2}, ""_ts, {1, 1}, 0, {0, 0}},
+        
+        // Insertions that do not require flow (manual newlines only)
+        text_area_layout_data{{3, 2}, "a"_ts, {1, 1}, 1, {1, 0}},
+        text_area_layout_data{{3, 2}, "ab"_ts, {2, 1}, 2, {2, 0}},
+        text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
     })
 );

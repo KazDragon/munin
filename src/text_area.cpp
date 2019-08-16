@@ -109,7 +109,7 @@ void text_area::insert_text(
 terminalpp::extent text_area::do_get_preferred_size() const
 {
     terminalpp::coordinate_type preferred_rows = 1;
-    terminalpp::coordinate_type max_column_coordinate = 0;
+    terminalpp::coordinate_type max_column_coordinate = 1;
     terminalpp::coordinate_type current_x_coordinate = 0;
     
     boost::for_each(
@@ -137,6 +137,8 @@ terminalpp::extent text_area::do_get_preferred_size() const
 // ==========================================================================
 terminalpp::point text_area::do_get_cursor_position() const
 {
+    // TODO: search through the laid-out text for the cursor position that
+    // matches this caret position.
     return {get_caret_position(), 0};
 }
 
