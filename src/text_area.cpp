@@ -139,7 +139,76 @@ terminalpp::point text_area::do_get_cursor_position() const
 {
     // TODO: search through the laid-out text for the cursor position that
     // matches this caret position.
-    return {get_caret_position(), 0};
+    auto const &text_area_width = get_size().width;
+    auto current_caret_position = text_index{0};
+    auto current_cursor_position = terminalpp::point{};
+    
+    std::cout << "caret pos = " << pimpl_->caret_position_ << "\n";
+    
+    for (auto const &row : pimpl_->laid_out_text_)
+    {
+        if (current_caret_position == pimpl_->caret_position_)
+        {
+            break;
+        }
+        else
+        {
+            std::cout << "row " << current_cursor_position.y
+                      << "has " << row.size() << " characters\n";
+            
+            // There are either N or N+1 caret positions in a row, where
+            // N is the number of elements in a row.  If the row does not fill
+            // the available size, then there is an extra caret on the end
+            // to act as an insertion position.
+            for (auto const &column : row)
+            {
+                std::cout << current_cursor_position << "\n";
+                
+                if (current_caret_position == pimpl_->caret_position_)
+                {
+                    break;
+                }
+                else
+                {
+                    ++current_caret_position;
+                    ++current_cursor_position.x;
+                }
+            }
+            
+            if (current_caret_position == pimpl_->caret_position_)
+            {
+                break;
+            }
+            else
+            {
+                // This advances to the last caret position on the line,
+                // the insertion point.
+                ++current_caret_position;
+                ++current_cursor_position.x;
+            }
+            
+            
+            if (current_caret_position == pimpl_->caret_position_)
+            {
+                break;
+            }
+            else
+            {
+                ++current_cursor_position.y;
+                current_cursor_position.x = 0;
+            }
+        }
+    }
+    
+    if (current_cursor_position.x == get_size().width
+     && get_size().width != 0)
+    {
+        current_cursor_position.x = 0;
+        ++current_cursor_position.y;
+        std::cout << "shifting to next line:" << current_cursor_position << "\n";
+    }
+    
+    return current_cursor_position;
 }
 
 // ==========================================================================
