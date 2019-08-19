@@ -294,6 +294,7 @@ INSTANTIATE_TEST_CASE_P(
         // Insertions that do not require flow (manual newlines only)
         text_area_layout_data{{3, 2}, "a"_ts, {1, 1}, 1, {1, 0}},
         text_area_layout_data{{3, 2}, "ab"_ts, {2, 1}, 2, {2, 0}},
+        text_area_layout_data{{3, 2}, "a\nb"_ts, {1, 2}, 3, {1, 1}},
         text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
         text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
     })
