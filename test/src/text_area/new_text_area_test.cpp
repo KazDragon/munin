@@ -297,5 +297,8 @@ INSTANTIATE_TEST_CASE_P(
         text_area_layout_data{{3, 2}, "a\nb"_ts, {1, 2}, 3, {1, 1}},
         text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
         text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
+        
+        // Insertions that require flow (had an automatic split)
+        text_area_layout_data{{3, 2}, "abc"_ts, {2, 2}, 3, {1, 1}},
     })
 );
