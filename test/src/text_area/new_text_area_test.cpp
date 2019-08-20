@@ -297,8 +297,14 @@ INSTANTIATE_TEST_CASE_P(
         text_area_layout_data{{3, 2}, "a\nb"_ts, {1, 2}, 3, {1, 1}},
         text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
         text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abc"_ts, {3, 1}, 3, {0, 1}},
         
         // Insertions that require flow (had an automatic split)
-        text_area_layout_data{{3, 2}, "abc"_ts, {2, 2}, 3, {1, 1}},
+        text_area_layout_data{{3, 2}, "abcd"_ts, {4, 1}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abcde"_ts, {5, 1}, 5, {2, 1}},
+        text_area_layout_data{{3, 2}, "abcdefg"_ts, {7, 1}, 7, {1, 2}},
+        
+        // Insertions that have an explicit newline on the boundary
+        text_area_layout_data{{3, 2}, "abc\n", {3, 2}, 4, {0, 1}},
     })
 );
