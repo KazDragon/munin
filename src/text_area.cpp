@@ -11,12 +11,6 @@ namespace munin {
 // ==========================================================================
 struct text_area::impl
 {
-    text_area &self_;
-    terminalpp::string text_;
-    std::vector<terminalpp::string> laid_out_text_;
-
-    text_area::text_index caret_position_{0};
-    
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
@@ -56,75 +50,54 @@ struct text_area::impl
     }
 
     // ======================================================================
-    // GET_CURSOR_POSITION
+    // MOVE_CARET
     // ======================================================================
-    terminalpp::point get_cursor_position() const
+    void move_caret(text_area::text_index to_index)
     {
-        // TODO: search through the laid-out text for the cursor position that
-        // matches this caret position.
-        auto const &text_area_width = self_.get_size().width;
-        auto current_caret_position = text_index{0};
-        auto current_cursor_position = terminalpp::point{};
+        auto const text_area_width = self_.get_size().width;
+        auto last_newline_index = text_area::text_index{0};
         
-        for (auto const &row : laid_out_text_)
+        // For now, assume advance.
+        for(; caret_position_ != to_index; ++caret_position_)
         {
-            if (current_caret_position == caret_position_)
+            // If the character is a newline, then the cursor position only
+            // advances if it is not at the very end of a line.  This is to
+            // prevent it turning into a double newline in that circumstance.
+            if (text_[caret_position_] == '\n')
             {
-                break;
+                auto line_length = caret_position_ - last_newline_index;
+                
+                if (line_length != text_area_width)
+                {
+                    cursor_position_.x = 0;
+                    ++cursor_position_.y;
+                }
+                
+                last_newline_index = caret_position_;
             }
             else
             {
-                // There are either N or N+1 caret positions in a row, where
-                // N is the number of elements in a row.  If the row does not fill
-                // the available size, then there is an extra caret on the end
-                // to act as an insertion position.
-                for (auto const &column : row)
-                {
-                    if (current_caret_position == caret_position_)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        ++current_caret_position;
-                        ++current_cursor_position.x;
-                    }
-                }
-                
-                if (current_caret_position == caret_position_)
-                {
-                    break;
-                }
-                else if (row.size() != text_area_width)
-                {
-                    // This advances to the last caret position on the line,
-                    // the insertion point.
-                    ++current_caret_position;
-                    ++current_cursor_position.x;
-                }
-                
-                
-                if (current_caret_position == caret_position_)
-                {
-                    break;
-                }
-                else
-                {
-                    ++current_cursor_position.y;
-                    current_cursor_position.x = 0;
-                }
+                ++cursor_position_.x;
+            }
+            
+            // Wrap the cursor if necessary.
+            if (cursor_position_.x >= text_area_width)
+            {
+                cursor_position_.x = 0;
+                ++cursor_position_.y;
             }
         }
-        
-        if (current_cursor_position.x == text_area_width 
-         && text_area_width != 0)
-        {
-            current_cursor_position.x = 0;
-            ++current_cursor_position.y;
-        }
-        
-        return current_cursor_position;
+
+        self_.on_caret_position_changed();
+        self_.on_cursor_position_changed();
     }
+
+    text_area &self_;
+    terminalpp::string text_;
+    std::vector<terminalpp::string> laid_out_text_;
+
+    text_area::text_index caret_position_{0};
+    terminalpp::point cursor_position_{0, 0};
 };
 
 // ==========================================================================
@@ -164,10 +137,9 @@ void text_area::insert_text(
     text_area::text_index position /* = -1 */)
 {
     pimpl_->text_ += text;
-    pimpl_->caret_position_ += text.size();
+    
+    pimpl_->move_caret(pimpl_->caret_position_ + text.size());
 
-    on_caret_position_changed();
-    on_cursor_position_changed();
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
     
@@ -208,7 +180,7 @@ terminalpp::extent text_area::do_get_preferred_size() const
 // ==========================================================================
 terminalpp::point text_area::do_get_cursor_position() const
 {
-    return pimpl_->get_cursor_position();
+    return pimpl_->cursor_position_;
 }
 
 // ==========================================================================
