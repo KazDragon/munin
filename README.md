@@ -7,8 +7,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
 
 [![Github Issues](https://img.shields.io/github/issues/KazDragon/munin.svg)](https://github.com/KazDragon/munin/issues)
-[![Stories in Ready](https://badge.waffle.io/KazDragon/munin.png?label=ready&title=Stories%20In%20Ready)](https://waffle.io/KazDragon/munin)
-[![Stories in Progress](https://badge.waffle.io/KazDragon/munin.png?label=in%20progress&title=Stories%20In%20Progress)](https://waffle.io/KazDragon/munin)
 
 [![Gitter](https://badges.gitter.im/KazDragon/munin.svg)](https://gitter.im/KazDragon/munin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![This is a forkable respository](https://img.shields.io/badge/forkable-yes-brightgreen.svg)](https://basicallydan.github.io/forkability/?u=KazDragon&r=munin)
@@ -50,18 +48,19 @@ Implement the fundamentals of the library, providing the basis for further devel
  2. [x] Toggle Button - a button that can be toggled on [x] and off [ ].
  
  ## v0.4 - Text Areas
- 1. [ ] Fundamentals for all types of text components
-  * [ ] Viewport - a component that sees a smaller portion of the underlying component
-  * [ ] Horizontal Scroll Bar
-  * [ ] Vertical Scroll Bar
-  * [ ] Scroll Frame - a frame that includes scroll bars
-  * [ ] Scroll Pane - a component that includes a scroll frame and a viewport
- 2. [ ] Edit - a single-lined horizontally scrolling text box, with a frame.
- 3. [ ] Text Area - a multiple-lined vertically scrolling text box, with a frame.
+ Fundamentals for all types of text components:
+ 1. [ ] Viewport - a component that sees a smaller portion of the underlying component
+ 2. [ ] Horizontal Scroll Bar
+ 3. [ ] Vertical Scroll Bar
+ 4. [ ] Scroll Frame - a frame that includes scroll bars
+ 5. [ ] Scroll Pane - a component that includes a scroll frame and a viewport
+ 
+ Specific text manipulation components:
+ 1. [ ] Edit - a single-lined horizontally scrolling text box, with a frame.
+ 2. [x] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
  ## v0.5 - Lists
  TBD
-
 
 # Status
 
@@ -71,7 +70,7 @@ For further information about the working status of Munin to report any bugs, or
 
 # The Basics
 
-The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter).  Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library.  Examples can be found nearby this repository.  For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Munin-Acceptance (a raycasting 3D room renderer) projects are both built on Telnet++, Terminal++, and Munin.
+The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter).  Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library.  Examples can be found nearby this repository.  For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Textray (a raycasting 3D room renderer) projects are both built using Server++, Telnet++, Terminal++, and Munin.
 
 # Component
 
@@ -84,4 +83,3 @@ Another key abstraction within Munin is the container.  A container, when combin
 # Window
 
 At the top of the stack is the window.  This is where the underlying application integrates with Munin.  A window is not a component, but is instead constructed with a component that represents the user interface to be displayed.  From here, events can be sent to the window's components.  Ideally, these will be directly from Terminal++, and the default set of components are built with this in mind.  But the interface is flexible enough to allow custom messages to be propagated to custom components.  Additionally, you can register to receive a callback whenever something in the interface changes that requires repainting, and you can of course command to the window to repaint itself.  This returns a string of text that you can send to a terminal to effect the repaint on the client.
-
