@@ -39,14 +39,18 @@ public:
     text_index get_length() const;
 
     //* =====================================================================
-    /// \brief Inserts text at the specified caret position
-    ///
-    /// A position of -1 inserts at the current caret position and the caret
-    /// is moved with it.
+    /// \brief Inserts text at the current caret position, after which the
+    /// caret will be at the end of the inserted text.
+    //* =====================================================================
+    void insert_text(terminalpp::string const &text);
+
+    //* =====================================================================
+    /// \brief Inserts text at the specified caret position, during which the
+    /// caret will not move. 
     //* =====================================================================
     void insert_text(
         terminalpp::string const &text, 
-        text_index position = -1);
+        text_index position);
 
     //* =====================================================================
     /// \fn on_caret_position_changed

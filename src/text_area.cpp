@@ -132,13 +132,20 @@ text_area::text_index text_area::get_length() const
 // ==========================================================================
 // INSERT_TEXT
 // ==========================================================================
+void text_area::insert_text(terminalpp::string const &text)
+{
+    insert_text(text, pimpl_->caret_position_);
+    pimpl_->move_caret(pimpl_->caret_position_ + text.size());
+}
+
+// ==========================================================================
+// INSERT_TEXT
+// ==========================================================================
 void text_area::insert_text(
     terminalpp::string const &text,
     text_area::text_index position /* = -1 */)
 {
     pimpl_->text_ += text;
-    
-    pimpl_->move_caret(pimpl_->caret_position_ + text.size());
 
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
