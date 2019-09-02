@@ -143,7 +143,7 @@ void text_area::insert_text(terminalpp::string const &text)
 // ==========================================================================
 void text_area::insert_text(
     terminalpp::string const &text,
-    text_area::text_index position /* = -1 */)
+    text_area::text_index position)
 {
     pimpl_->text_ += text;
 
