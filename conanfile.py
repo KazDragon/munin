@@ -13,7 +13,7 @@ class MuninConan(ConanFile):
     options = {"shared": [True, False], "withTests": [True, False]}
     default_options = {"shared": False, "withTests": False}
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
-    requires = ("terminalpp/1.3.0@kazdragon/conan-public",
+    requires = ("terminalpp/1.3.3@kazdragon/conan-public",
                 "jsonformoderncpp/[>=3.3.0]@vthiery/stable",
                 "boost_any/[>=1.69]@bincrafters/stable",
                 "boost_optional/[>=1.69]@bincrafters/stable",

@@ -145,7 +145,10 @@ void text_area::insert_text(
     terminalpp::string const &text,
     text_area::text_index position)
 {
-    pimpl_->text_ += text;
+    pimpl_->text_.insert(
+        pimpl_->text_.begin() + position, 
+        text.begin(),
+        text.end());
 
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
