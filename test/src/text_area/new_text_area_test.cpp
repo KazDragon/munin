@@ -32,31 +32,17 @@ TEST_F(a_new_text_area, has_length_zero)
 TEST_F(a_new_text_area, draws_only_spaces)
 {
     text_area_.set_size({2, 2});
+    fill_canvas({3, 3});
 
-    terminalpp::canvas canvas({3, 3});
-
-    terminalpp::for_each_in_region(
-        canvas,
-        {{}, canvas.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
-        {
-            elem = 'X';
-        });
-
-    munin::render_surface surface{canvas};
+    munin::render_surface surface{canvas_};
     text_area_.draw(surface, {{}, text_area_.get_size()});
 
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
+
+    verify_oob_is_untouched();
 }
 
 TEST_F(a_new_text_area, announces_new_caret_and_cursor_positions_and_preferred_size_when_inserting_text_at_the_caret)
@@ -114,33 +100,20 @@ TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_i
     
     ASSERT_TRUE(redraw_requested);
     
-    terminalpp::canvas canvas({3, 3});
-    terminalpp::for_each_in_region(
-        canvas,
-        {{}, canvas.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
-        {
-            elem = 'X';
-        });
-
-    munin::render_surface surface{canvas};
+    fill_canvas({3, 3});
+    munin::render_surface surface{canvas_};
     
     for (auto const &region : redraw_regions)
     {
         text_area_.draw(surface, region);
     }
 
-    ASSERT_EQ(terminalpp::element{'b'}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'b'}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
+    
+    verify_oob_is_untouched();
 }
 
 TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
@@ -161,33 +134,20 @@ TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
     
     ASSERT_TRUE(redraw_requested);
     
-    terminalpp::canvas canvas({3, 3});
-    terminalpp::for_each_in_region(
-        canvas,
-        {{}, canvas.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
-        {
-            elem = 'X';
-        });
-
-    munin::render_surface surface{canvas};
+    fill_canvas({3, 3});
+    munin::render_surface surface{canvas_};
     
     for (auto const &region : redraw_regions)
     {
         text_area_.draw(surface, region);
     }
 
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{'e'}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{'d'}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
+    
+    verify_oob_is_untouched();
 }
 
 TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
@@ -207,34 +167,21 @@ TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
     text_area_.insert_text("c\nde"_ts);
     
     ASSERT_TRUE(redraw_requested);
-    
-    terminalpp::canvas canvas({3, 3});
-    terminalpp::for_each_in_region(
-        canvas,
-        {{}, canvas.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
-        {
-            elem = 'X';
-        });
 
-    munin::render_surface surface{canvas};
+    fill_canvas({3, 3});    
+    munin::render_surface surface{canvas_};
     
     for (auto const &region : redraw_regions)
     {
         text_area_.draw(surface, region);
     }
 
-    ASSERT_EQ(terminalpp::element{'c'}, canvas[0][0]);
-    ASSERT_EQ(terminalpp::element{' '}, canvas[1][0]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-    ASSERT_EQ(terminalpp::element{'d'}, canvas[0][1]);
-    ASSERT_EQ(terminalpp::element{'e'}, canvas[1][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-    ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{'d'}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas_[1][1]);
+    
+    verify_oob_is_untouched();
 }
 
 using text_area_layout_data = std::tuple<
@@ -308,3 +255,67 @@ INSTANTIATE_TEST_CASE_P(
         text_area_layout_data{{3, 2}, "abc\n", {3, 2}, 4, {0, 1}},
     })
 );
+
+TEST_F(a_new_text_area, does_not_move_the_caret_when_inserting_at_a_specified_index_but_still_inserts_the_text)
+{
+    text_area_.set_size({2, 2});
+
+    bool caret_position_changed = false;
+    text_area_.on_caret_position_changed.connect(
+        [&caret_position_changed]()
+        {
+            caret_position_changed = true;
+        });
+
+    bool cursor_position_changed = false;
+    text_area_.on_cursor_position_changed.connect(
+        [&cursor_position_changed]()
+        {
+            cursor_position_changed = true;
+        });
+
+    bool preferred_size_changed = false;
+    text_area_.on_preferred_size_changed.connect(
+        [&preferred_size_changed]()
+        {
+            preferred_size_changed = true;
+        });
+
+    bool redraw_requested = false;
+    std::vector<terminalpp::rectangle> redraw_regions;
+    
+    text_area_.on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_requested = true;
+            redraw_regions = regions;
+        });
+
+    text_area_.insert_text("a"_ts, 0);
+
+    ASSERT_FALSE(caret_position_changed);
+    ASSERT_EQ(0, text_area_.get_caret_position());
+
+    ASSERT_FALSE(cursor_position_changed);
+    ASSERT_EQ(terminalpp::point(0, 0), text_area_.get_cursor_position());
+
+    ASSERT_TRUE(preferred_size_changed);
+    ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
+
+    ASSERT_TRUE(redraw_requested);
+    
+    fill_canvas({3, 3});
+    munin::render_surface surface{canvas_};
+    
+    for (auto const &region : redraw_regions)
+    {
+        text_area_.draw(surface, region);
+    }
+
+    ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
+    
+    verify_oob_is_untouched();
+}
