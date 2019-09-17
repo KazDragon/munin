@@ -130,7 +130,6 @@ if (MUNIN_WITH_TESTS)
             test/include/redraw.hpp
             test/include/mock/component.hpp
             test/include/mock/layout.hpp
-            test/include/mock/terminal.hpp
             test/src/redraw.cpp
             test/src/mock/component.cpp
             test/src/mock/frame.cpp
