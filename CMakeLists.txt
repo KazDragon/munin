@@ -8,6 +8,7 @@ if (POLICY CMP0063)
 endif()
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(MUNIN_WITH_TESTS "Build with tests included" False)
 
