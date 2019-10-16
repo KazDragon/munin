@@ -43,6 +43,7 @@ target_sources(munin
         include/munin/component.hpp
         include/munin/composite_component.hpp
         include/munin/container.hpp
+        include/munin/edit.hpp
         include/munin/filled_box.hpp
         include/munin/framed_component.hpp
         include/munin/grid_layout.hpp
@@ -71,6 +72,7 @@ target_sources(munin
         src/component.cpp
         src/composite_component.cpp
         src/container.cpp
+        src/edit.cpp
         src/filled_box.cpp
         src/framed_component.cpp
         src/grid_layout.cpp
@@ -158,6 +160,7 @@ if (MUNIN_WITH_TESTS)
             test/src/container/container_redraw_test.cpp
             test/src/container/container_subcomponent_focus_test.cpp
             test/src/container/container_layout_test.cpp
+            test/src/edit/edit_test.cpp
             test/src/filled_box/new_filled_box_test.cpp
             test/src/filled_box/filled_box_test.cpp
             test/src/filled_box/functional_filled_box_test.cpp
