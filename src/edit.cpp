@@ -1,15 +1,49 @@
 #include "munin/edit.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <boost/make_unique.hpp>
 
 namespace munin {
+
+// ==========================================================================
+// EDIT::IMPLEMENTATION STRUCTURE
+// ==========================================================================
+struct edit::impl
+{
+    terminalpp::string content;
+    terminalpp::point cursor_position{0, 0};
+};
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+edit::edit()
+  : pimpl_(boost::make_unique<impl>())
+{
+}
+
+// ==========================================================================
+// DESTRUCTOR
+// ==========================================================================
+edit::~edit() = default;
+
+// ==========================================================================
+// INSERT_TEXT
+// ==========================================================================
+void edit::insert_text(terminalpp::string const &text)
+{
+    pimpl_->content += text;
+    pimpl_->cursor_position.x += text.size();
+    
+    on_preferred_size_changed();
+}
 
 // ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent edit::do_get_preferred_size() const
 {
-    return {1, 1};
+    return terminalpp::extent(pimpl_->content.size() + 1, 1);
 }
 
 // ==========================================================================
@@ -18,6 +52,14 @@ terminalpp::extent edit::do_get_preferred_size() const
 bool edit::do_get_cursor_state() const
 {
     return true;
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+terminalpp::point edit::do_get_cursor_position() const
+{
+    return pimpl_->cursor_position;
 }
 
 // ==========================================================================
@@ -30,11 +72,18 @@ void edit::do_draw(
     terminalpp::for_each_in_region(
         surface,
         region,
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
+        [this](terminalpp::element &elem,
+               terminalpp::coordinate_type column,
+               terminalpp::coordinate_type row)
         {
-            elem = ' ';
+            if (column < pimpl_->content.size())
+            {
+                elem = pimpl_->content[column];
+            }
+            else
+            {
+                elem = ' ';
+            }
         });
 }
 
