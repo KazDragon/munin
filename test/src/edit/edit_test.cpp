@@ -1,8 +1,9 @@
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/element.hpp>
-#include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
 
 using namespace terminalpp::literals;
@@ -113,6 +114,35 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
     ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
     ASSERT_EQ(terminalpp::element{'z'}, cvs[1][1]);
     ASSERT_EQ(terminalpp::element{'a'}, cvs[2][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+}
+
+TEST_F(a_new_edit, inserts_a_character_when_a_keypress_is_received)
+{
+    terminalpp::canvas cvs{{4, 3}};
+    fill_canvas(cvs, 'x');
+    
+    edit_->set_position({1, 1});
+    edit_->set_size({2, 1});
+
+    terminalpp::virtual_key keypress{terminalpp::vk::uppercase_t};
+    edit_->event(keypress);
+    
+    munin::render_surface surface{cvs};
+    surface.offset_by({1, 1});
+    edit_->draw(surface, {{}, edit_->get_size()});
+
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'T'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[2][1]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);

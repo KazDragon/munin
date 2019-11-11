@@ -1,6 +1,7 @@
 #include "munin/edit.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <boost/make_unique.hpp>
 
 namespace munin {
@@ -10,15 +11,46 @@ namespace munin {
 // ==========================================================================
 struct edit::impl
 {
+    edit &self_;
     terminalpp::string content;
     terminalpp::point cursor_position{0, 0};
+
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
+    impl(edit &self)
+      : self_(self)
+    {
+    }
+
+    // ======================================================================
+    // INSERT_TEXT
+    // ======================================================================
+    void insert_text(terminalpp::string const &text)
+    {
+        content += text;
+        cursor_position.x += text.size();
+        
+        self_.on_preferred_size_changed();
+    }
+
+    // ======================================================================
+    // EVENT
+    // ======================================================================
+    void event(terminalpp::virtual_key const &vk)
+    {
+        terminalpp::string text;
+        text += char(vk.key);
+        
+        insert_text(text);
+    }
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 edit::edit()
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(boost::make_unique<impl>(*this))
 {
 }
 
@@ -32,10 +64,7 @@ edit::~edit() = default;
 // ==========================================================================
 void edit::insert_text(terminalpp::string const &text)
 {
-    pimpl_->content += text;
-    pimpl_->cursor_position.x += text.size();
-    
-    on_preferred_size_changed();
+    pimpl_->insert_text(text);
 }
 
 // ==========================================================================
@@ -85,6 +114,19 @@ void edit::do_draw(
                 elem = ' ';
             }
         });
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void edit::do_event(boost::any const &ev)
+{
+    auto *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
+    
+    if (vk != nullptr)
+    {
+        pimpl_->event(*vk);
+    }
 }
 
 // ==========================================================================
