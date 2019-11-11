@@ -87,7 +87,44 @@ TEST_F(a_new_edit, inserting_text_changes_preferred_size_to_size_of_text)
     // The expected preferred size is the length of the text and one extra
     // for the cursor.
     ASSERT_EQ(terminalpp::extent(5, 1), preferred_size);
+}
+
+TEST_F(a_new_edit, inserting_text_redraws_changed_text_area)
+{
+    terminalpp::canvas cvs{{4, 3}};
+    fill_canvas(cvs, 'x');
     
+    edit_->set_position({1, 1});
+    edit_->set_size({2, 1});
+    
+    munin::render_surface surface{cvs};
+    surface.offset_by({1, 1});
+    edit_->draw(surface, {{}, edit_->get_size()});
+
+    
+    edit_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                edit_->draw(surface, region);
+            }
+        });
+        
+    edit_->insert_text("?!");
+
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'?'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{'!'}, cvs[2][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
 }
 
 TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)

@@ -28,10 +28,16 @@ struct edit::impl
     // ======================================================================
     void insert_text(terminalpp::string const &text)
     {
+        terminalpp::coordinate_type const width = content.size();
+        terminalpp::coordinate_type const added_width = text.size();
+        
         content += text;
         cursor_position.x += text.size();
         
         self_.on_preferred_size_changed();
+        self_.on_redraw({
+            {{0, width}, {added_width, 1}}
+        });
     }
 
     // ======================================================================
