@@ -163,25 +163,38 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
     ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
 }
 
-using printable_character_test_data = std::tuple<
+using keypress_data = std::tuple<
     terminalpp::vk,      // character code
-    terminalpp::element  // representation
+    terminalpp::element, // representation
+    terminalpp::point    // expected cursor position
 >;
 
-class printable_character_test 
-  : public testing::TestWithParam<printable_character_test_data>
+class receiving_keypresses 
+  : public testing::TestWithParam<keypress_data>
 {
 public:
-    printable_character_test()
+    receiving_keypresses()
       : cvs_({4, 3}),
         surface_(cvs_)
     {
+        fill_canvas(cvs_, 'x');
+        surface_.offset_by({1, 1});
+        
+        edit_.on_redraw.connect(
+            [this](auto const &regions)
+            {
+                for (auto const &region : regions)
+                {
+                    edit_.draw(surface_, region);
+                }
+            });
+        
         edit_.set_position({1, 1});
         edit_.set_size({2, 1});
-    
-        fill_canvas(cvs_, 'x');
         
-        surface_.offset_by({1, 1});
+        edit_.on_redraw({
+            {{0, 0}, edit_.get_size()}
+        });
     }
     
 protected:
@@ -190,18 +203,19 @@ protected:
     munin::render_surface surface_;
 };
 
-TEST_P(printable_character_test, a_character_is_inserted_when_a_printable_character_keypress_is_received)
+TEST_P(receiving_keypresses, draws_appropriate_characters_and_moves_the_cursor)
 {
     using std::get;
     
     auto const params = GetParam();
     auto const keypress = get<0>(params);
     auto const expected = get<1>(params);
+    auto const cursor_pos = get<2>(params);
     
     edit_.event(terminalpp::virtual_key{keypress});
     
-    edit_.draw(surface_, {{}, edit_.get_size()});
-
+    ASSERT_EQ(cursor_pos, edit_.get_cursor_position());
+    
     ASSERT_EQ(terminalpp::element{'x'}, cvs_[0][0]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs_[1][0]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs_[2][0]);
@@ -217,14 +231,23 @@ TEST_P(printable_character_test, a_character_is_inserted_when_a_printable_charac
 }
 
 INSTANTIATE_TEST_CASE_P(
-    printable_characters,
-    printable_character_test,
+    receiving_keypresses_test,
+    receiving_keypresses,
     ValuesIn
     ({
-        printable_character_test_data{ terminalpp::vk::uppercase_t, 'T' },
-        printable_character_test_data{ terminalpp::vk::lowercase_t, 't' },
-        printable_character_test_data{ terminalpp::vk::uppercase_z, 'Z' },
-        printable_character_test_data{ terminalpp::vk::space,       ' ' },
-        printable_character_test_data{ terminalpp::vk::dollar,      '$' },
+        // Keypresses that represent printable characters get converted
+        // to text and the cursor moves onward.
+        keypress_data{ terminalpp::vk::uppercase_t, 'T', {1, 0} },
+        keypress_data{ terminalpp::vk::lowercase_t, 't', {1, 0} },
+        keypress_data{ terminalpp::vk::uppercase_z, 'Z', {1, 0} },
+        keypress_data{ terminalpp::vk::space,       ' ', {1, 0} },
+        keypress_data{ terminalpp::vk::dollar,      '$', {1, 0} },
+        
+        // Newline and control characters do not get converted (so the output
+        // remains a space) and the cursor stays in the same location.
+        keypress_data{ terminalpp::vk::lf,          ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::cr,          ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::nul,         ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::stx,         ' ', {0, 0} },
     })
 );

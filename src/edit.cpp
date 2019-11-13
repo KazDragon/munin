@@ -3,6 +3,7 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <boost/make_unique.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 namespace munin {
 
@@ -28,11 +29,40 @@ struct edit::impl
     // ======================================================================
     void insert_text(terminalpp::string const &text)
     {
-        terminalpp::coordinate_type const width = content.size();
-        terminalpp::coordinate_type const added_width = text.size();
+        using std::begin;
+        using std::end;
         
-        content += text;
-        cursor_position.x += text.size();
+        auto const &is_control_element = 
+            [](auto const &element)
+            {
+                return element.glyph_.character_ <= terminalpp::detail::ascii::ESC;
+            };
+            
+        auto const &is_printable_element =
+            [](auto const &element)
+            {
+                return is_printable(element.glyph_);
+            };
+
+        auto const &is_visible_in_edits = 
+            [&](auto const &element)
+            {
+                return is_printable_element(element)
+                    && !is_control_element(element);
+            };
+            
+        terminalpp::coordinate_type const width = content.size();
+        
+        auto const insertable_text = 
+            text | boost::adaptors::filtered(is_visible_in_edits);
+            
+        content.insert(
+            content.end(),
+            begin(insertable_text),
+            end(insertable_text));
+        
+        terminalpp::coordinate_type const added_width = content.size() - width;
+        cursor_position.x += added_width;
         
         self_.on_preferred_size_changed();
         self_.on_redraw({
