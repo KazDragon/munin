@@ -249,5 +249,9 @@ INSTANTIATE_TEST_CASE_P(
         keypress_data{ terminalpp::vk::cr,          ' ', {0, 0} },
         keypress_data{ terminalpp::vk::nul,         ' ', {0, 0} },
         keypress_data{ terminalpp::vk::stx,         ' ', {0, 0} },
+
+        // Specially, backspace or DEL do nothing on an empty edit
+        keypress_data{ terminalpp::vk::bs,          ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::del,         ' ', {0, 0} },
     })
 );
