@@ -253,5 +253,16 @@ INSTANTIATE_TEST_CASE_P(
         // Specially, backspace or DEL do nothing on an empty edit
         keypress_data{ terminalpp::vk::bs,          ' ', {0, 0} },
         keypress_data{ terminalpp::vk::del,         ' ', {0, 0} },
+        
+        // Lastly, for an edit with no characters, the cursor can't be
+        // moved with either cursor or other movement keys.
+        keypress_data{ terminalpp::vk::cursor_up,    ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::cursor_down,  ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::cursor_left,  ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::cursor_right, ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::home,         ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::end,          ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::pgup,         ' ', {0, 0} },
+        keypress_data{ terminalpp::vk::pgdn,         ' ', {0, 0} },
     })
 );
