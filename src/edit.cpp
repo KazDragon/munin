@@ -66,7 +66,7 @@ struct edit::impl
         
         self_.on_preferred_size_changed();
         self_.on_redraw({
-            {{0, width}, {added_width, 1}}
+            {{width, 0}, {added_width, 1}}
         });
     }
 

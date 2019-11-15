@@ -144,6 +144,8 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
     ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
 }
 
+namespace {
+
 using keypress_data = std::tuple<
     terminalpp::vk,      // character code
     terminalpp::element, // representation
@@ -183,6 +185,8 @@ protected:
     terminalpp::canvas   cvs_;
     munin::render_surface surface_;
 };
+
+}
 
 TEST_P(receiving_keypresses, draws_appropriate_characters_and_moves_the_cursor)
 {
