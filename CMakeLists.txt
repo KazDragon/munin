@@ -130,9 +130,11 @@ if (MUNIN_WITH_TESTS)
         PRIVATE
             test/src/container/container_test.hpp
             test/src/window/window_test.hpp
+            test/include/fill_canvas.hpp
             test/include/redraw.hpp
             test/include/mock/component.hpp
             test/include/mock/layout.hpp
+            test/src/fill_canvas.cpp
             test/src/redraw.cpp
             test/src/mock/component.cpp
             test/src/mock/frame.cpp
