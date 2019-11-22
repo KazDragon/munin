@@ -113,5 +113,18 @@ INSTANTIATE_TEST_CASE_P(
     ({
         // Cases with only one character in the content.
         keypress_data{ "t", {1, 0}, terminalpp::vk::lowercase_e, "te", {2, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::uppercase_u, "tU", {2, 0} },
+        
+        // Cases with multiple characters in the content.
+        keypress_data{ "tes", {0, 0}, terminalpp::vk::uppercase_t, "Ttes", {1, 0} },
+        keypress_data{ "tes", {1, 0}, terminalpp::vk::uppercase_t, "tTes", {2, 0} },
+        keypress_data{ "tes", {2, 0}, terminalpp::vk::uppercase_t, "teTs", {3, 0} },
+        keypress_data{ "tes", {3, 0}, terminalpp::vk::uppercase_t, "tesT", {4, 0} },
+
+        // Cursor movement.
+        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_right, "t", {1, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
+        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_right, "t", {1, 0} },
+        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
     })
 );

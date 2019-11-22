@@ -56,29 +56,67 @@ struct edit::impl
         auto const insertable_text = 
             text | boost::adaptors::filtered(is_visible_in_edits);
             
+        auto const old_cursor_position = cursor_position;
+        
         content.insert(
-            content.end(),
+            content.begin() + cursor_position.x,
             begin(insertable_text),
             end(insertable_text));
         
         terminalpp::coordinate_type const added_width = content.size() - width;
-        cursor_position.x += added_width;
+        self_.set_cursor_position({
+            cursor_position.x + added_width,
+            cursor_position.y
+        });
+        
+        // Adding new text causes not only the space under the old cursor to
+        // be redrawn, but also everything to the right of that as it is shifted
+        // along one character.
+        terminalpp::coordinate_type const changed_text_length = 
+            content.size() - old_cursor_position.x;
         
         self_.on_preferred_size_changed();
         self_.on_redraw({
-            {{width, 0}, {added_width, 1}}
+            {{old_cursor_position.x, 0}, {changed_text_length, 1}}
         });
     }
 
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(terminalpp::virtual_key const &vk)
+    void key_event(terminalpp::virtual_key const &vk)
     {
-        terminalpp::string text;
-        text += char(vk.key);
-        
-        insert_text(text);
+        switch(vk.key)
+        {
+            case terminalpp::vk::cursor_left:
+                if (cursor_position.x != 0)
+                {
+                    self_.set_cursor_position({
+                        cursor_position.x - 1,
+                        cursor_position.y
+                    });
+                }
+                break;
+
+            case terminalpp::vk::cursor_right:
+                if (cursor_position.x < content.size())
+                {
+                    self_.set_cursor_position({
+                        cursor_position.x + 1,
+                        cursor_position.y
+                    });
+                }
+                break;    
+
+            default:
+            {
+                terminalpp::string text;
+                text += char(vk.key);
+                
+                insert_text(text);
+                break;
+            }
+        }
     }
 };
 
@@ -128,6 +166,15 @@ terminalpp::point edit::do_get_cursor_position() const
 }
 
 // ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+void edit::do_set_cursor_position(terminalpp::point const& position)
+{
+    pimpl_->cursor_position = position;
+    on_cursor_position_changed();
+}
+
+// ==========================================================================
 // DO_DRAW
 // ==========================================================================
 void edit::do_draw(
@@ -161,7 +208,7 @@ void edit::do_event(boost::any const &ev)
     
     if (vk != nullptr)
     {
-        pimpl_->event(*vk);
+        pimpl_->key_event(*vk);
     }
 }
 
