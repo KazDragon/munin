@@ -89,34 +89,69 @@ struct edit::impl
         switch(vk.key)
         {
             case terminalpp::vk::cursor_left:
-                if (cursor_position.x != 0)
-                {
-                    self_.set_cursor_position({
-                        cursor_position.x - 1,
-                        cursor_position.y
-                    });
-                }
+                handle_cursor_left();
                 break;
 
             case terminalpp::vk::cursor_right:
-                if (cursor_position.x < content.size())
-                {
-                    self_.set_cursor_position({
-                        cursor_position.x + 1,
-                        cursor_position.y
-                    });
-                }
-                break;    
+                handle_cursor_right();
+                break;
+                
+            case terminalpp::vk::home:
+                handle_home();
+                break;
 
             default:
-            {
-                terminalpp::string text;
-                text += char(vk.key);
-                
-                insert_text(text);
+                handle_text(char(vk.key));
                 break;
-            }
         }
+    }
+
+private:
+    // ======================================================================
+    // HANDLE_CURSOR_LEFT
+    // ======================================================================
+    void handle_cursor_left()
+    {
+        if (cursor_position.x != 0)
+        {
+            self_.set_cursor_position({
+                cursor_position.x - 1,
+                cursor_position.y
+            });
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_CURSOR_RIGHT
+    // ======================================================================
+    void handle_cursor_right()
+    {
+        if (cursor_position.x < content.size())
+        {
+            self_.set_cursor_position({
+                cursor_position.x + 1,
+                cursor_position.y
+            });
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_HOME
+    // ======================================================================
+    void handle_home()
+    {
+        self_.set_cursor_position({0, cursor_position.y});
+    }
+
+    // ======================================================================
+    // HANDLE_TEXT
+    // ======================================================================
+    void handle_text(char ch)
+    {
+        terminalpp::string text;
+        text += ch;
+        
+        insert_text(text);
     }
 };
 

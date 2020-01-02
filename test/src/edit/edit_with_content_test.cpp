@@ -126,5 +126,14 @@ INSTANTIATE_TEST_CASE_P(
         keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
         keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_right, "t", {1, 0} },
         keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
+        
+        // Home/end keys
+        keypress_data{ "t",    {0, 0}, terminalpp::vk::home, "t",    {0, 0} },
+        keypress_data{ "t",    {1, 0}, terminalpp::vk::home, "t",    {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::home, "test", {0, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::home, "test", {0, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::home, "test", {0, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::home, "test", {0, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::home, "test", {0, 0} },
     })
 );
