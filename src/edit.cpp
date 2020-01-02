@@ -99,6 +99,10 @@ struct edit::impl
             case terminalpp::vk::home:
                 handle_home();
                 break;
+                
+            case terminalpp::vk::end:
+                handle_end();
+                break;
 
             default:
                 handle_text(char(vk.key));
@@ -141,6 +145,16 @@ private:
     void handle_home()
     {
         self_.set_cursor_position({0, cursor_position.y});
+    }
+
+    // ======================================================================
+    // HANDLE_HOME
+    // ======================================================================
+    void handle_end()
+    {
+        terminalpp::coordinate_type rightmost_cursor_position = content.size();
+        self_.set_cursor_position({
+            rightmost_cursor_position, cursor_position.y});
     }
 
     // ======================================================================
