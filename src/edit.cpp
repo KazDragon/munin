@@ -32,26 +32,21 @@ struct edit::impl
         using std::begin;
         using std::end;
         
-        auto const &is_control_element = 
-            [](auto const &element)
-            {
-                return element.glyph_.character_ <= terminalpp::detail::ascii::ESC;
-            };
-            
-        auto const &is_printable_element =
-            [](auto const &element)
-            {
-                return is_printable(element.glyph_);
-            };
-
         auto const &is_visible_in_edits = 
             [&](auto const &element)
             {
-                return is_printable_element(element)
+                auto const &is_control_element = 
+                    [](auto const &element)
+                    {
+                        return element.glyph_.character_ 
+                            <= terminalpp::detail::ascii::ESC;
+                    };
+            
+                return is_printable(element.glyph_)
                     && !is_control_element(element);
             };
             
-        terminalpp::coordinate_type const width = content.size();
+        terminalpp::coordinate_type const old_content_size = content.size();
         
         auto const insertable_text = 
             text | boost::adaptors::filtered(is_visible_in_edits);
@@ -63,12 +58,12 @@ struct edit::impl
             begin(insertable_text),
             end(insertable_text));
         
-        std::cout << "content: " << content << "\n";
-        
-        terminalpp::coordinate_type const added_width = content.size() - width;
+        terminalpp::coordinate_type const new_content_size = content.size();
+        terminalpp::coordinate_type const added_content_size = 
+            new_content_size - old_content_size;
 
         self_.set_cursor_position({
-            cursor_position.x + added_width,
+            cursor_position.x + added_content_size,
             cursor_position.y
         });
         
@@ -83,14 +78,11 @@ struct edit::impl
             terminalpp::coordinate_type(0));
 
         terminalpp::coordinate_type const changed_text_length = std::min(
-            terminalpp::coordinate_type(content.size() - old_cursor_position.x),
+            new_content_size - old_cursor_position.x,
             remaining_space);
             
         self_.on_preferred_size_changed();
         
-        std::cout << "on_redraw(" << terminalpp::point(old_cursor_position.x, 0)
-                  << ", " << terminalpp::extent(changed_text_length, 1) << "\n";
-                  
         self_.on_redraw({
             {{old_cursor_position.x, 0}, {changed_text_length, 1}}
         });
@@ -245,7 +237,6 @@ void edit::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
-    std::cout << "do_draw: " << region.origin << "," << region.size << "\n";
     auto const size = get_size();
     
     terminalpp::for_each_in_region(
@@ -255,17 +246,13 @@ void edit::do_draw(
             terminalpp::coordinate_type column,
             terminalpp::coordinate_type row)
         {
-            if (row == 0)
+            if (column < pimpl_->content.size())
             {
-                if (column < pimpl_->content.size())
-                {
-                    std::cout << "[" << column << "," << row << "]" << pimpl_->content[column] << "\n";
-                    elem = pimpl_->content[column];
-                }
-                else if (column < size.width)
-                {
-                    elem = ' ';
-                }
+                elem = pimpl_->content[column];
+            }
+            else if (column < size.width)
+            {
+                elem = ' ';
             }
         });
 }
