@@ -143,5 +143,17 @@ INSTANTIATE_TEST_CASE_P(
         keypress_data{ "test", {2, 0}, terminalpp::vk::end, "test", {4, 0} },
         keypress_data{ "test", {3, 0}, terminalpp::vk::end, "test", {4, 0} },
         keypress_data{ "test", {4, 0}, terminalpp::vk::end, "test", {4, 0} },
+
+        // Test writing off the end of the viewable portion of the edit.
+        // In all cases, this should continue exactly as it did, but should
+        // not be drawn (it's the job of a Viewport to have a view that follows
+        // the cursor)
+        //
+        // Note: an edit in this test is 4x1.
+        keypress_data{ "test", {0, 0}, terminalpp::vk::lowercase_z, "ztes", {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::lowercase_z, "tzes", {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::lowercase_z, "tezs", {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", {4, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", {5, 0} },
     })
 );

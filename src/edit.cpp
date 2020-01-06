@@ -63,7 +63,10 @@ struct edit::impl
             begin(insertable_text),
             end(insertable_text));
         
+        std::cout << "content: " << content << "\n";
+        
         terminalpp::coordinate_type const added_width = content.size() - width;
+
         self_.set_cursor_position({
             cursor_position.x + added_width,
             cursor_position.y
@@ -72,10 +75,22 @@ struct edit::impl
         // Adding new text causes not only the space under the old cursor to
         // be redrawn, but also everything to the right of that as it is shifted
         // along one character.
-        terminalpp::coordinate_type const changed_text_length = 
-            content.size() - old_cursor_position.x;
-        
+
+        // This must then be trimmed to the extents of the space currently taken 
+        // by the edit.
+        terminalpp::coordinate_type const remaining_space = std::max(
+            terminalpp::coordinate_type(self_.get_size().width - old_cursor_position.x),
+            terminalpp::coordinate_type(0));
+
+        terminalpp::coordinate_type const changed_text_length = std::min(
+            terminalpp::coordinate_type(content.size() - old_cursor_position.x),
+            remaining_space);
+            
         self_.on_preferred_size_changed();
+        
+        std::cout << "on_redraw(" << terminalpp::point(old_cursor_position.x, 0)
+                  << ", " << terminalpp::extent(changed_text_length, 1) << "\n";
+                  
         self_.on_redraw({
             {{old_cursor_position.x, 0}, {changed_text_length, 1}}
         });
@@ -230,20 +245,27 @@ void edit::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
+    std::cout << "do_draw: " << region.origin << "," << region.size << "\n";
+    auto const size = get_size();
+    
     terminalpp::for_each_in_region(
         surface,
         region,
-        [this](terminalpp::element &elem,
-               terminalpp::coordinate_type column,
-               terminalpp::coordinate_type row)
+        [=](terminalpp::element &elem,
+            terminalpp::coordinate_type column,
+            terminalpp::coordinate_type row)
         {
-            if (column < pimpl_->content.size())
+            if (row == 0)
             {
-                elem = pimpl_->content[column];
-            }
-            else
-            {
-                elem = ' ';
+                if (column < pimpl_->content.size())
+                {
+                    std::cout << "[" << column << "," << row << "]" << pimpl_->content[column] << "\n";
+                    elem = pimpl_->content[column];
+                }
+                else if (column < size.width)
+                {
+                    elem = ' ';
+                }
             }
         });
 }
