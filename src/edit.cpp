@@ -112,7 +112,7 @@ struct edit::impl
                 break;
                 
             case terminalpp::vk::bs:
-                [[fallthrough]]
+                [[fallthrough]];
             case terminalpp::vk::del:
                 handle_backspace();
                 break;
