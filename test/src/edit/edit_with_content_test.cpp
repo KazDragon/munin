@@ -155,5 +155,19 @@ INSTANTIATE_TEST_CASE_P(
         keypress_data{ "test", {2, 0}, terminalpp::vk::lowercase_z, "tezs", {3, 0} },
         keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", {4, 0} },
         keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", {5, 0} },
+        
+        // Pressing the backspace or DEL keys result in deleting the character
+        // to the left of the cursor and retreating the cursor one step.
+        keypress_data{ "test", {4, 0}, terminalpp::vk::bs, "tes",  {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::bs, "tet",  {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::bs, "tst",  {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::bs, "est",  {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::bs, "test", {0, 0} },
+
+        keypress_data{ "test", {4, 0}, terminalpp::vk::del, "tes",  {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::del, "tet",  {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::del, "tst",  {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::del, "est",  {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::del, "test", {0, 0} },
     })
 );

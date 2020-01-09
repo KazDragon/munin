@@ -110,6 +110,12 @@ struct edit::impl
             case terminalpp::vk::end:
                 handle_end();
                 break;
+                
+            case terminalpp::vk::bs:
+                [[fallthrough]]
+            case terminalpp::vk::del:
+                handle_backspace();
+                break;
 
             default:
                 handle_text(char(vk.key));
@@ -162,6 +168,34 @@ private:
         terminalpp::coordinate_type rightmost_cursor_position = content.size();
         self_.set_cursor_position({
             rightmost_cursor_position, cursor_position.y});
+    }
+
+    // ======================================================================
+    // HANDLE_BACKSPACE
+    // ======================================================================
+    void handle_backspace()
+    {
+        auto const cursor_position = self_.get_cursor_position();
+        
+        if (cursor_position.x != 0)
+        {
+            auto const redraw_amount = 
+                (terminalpp::coordinate_type(content.size()) - cursor_position.x) + 1;
+
+            auto const erased_content = 
+                content.begin() + (cursor_position.x - 1);
+            content.erase(erased_content, erased_content + 1);
+    
+            self_.set_cursor_position({
+                cursor_position.x - 1,
+                cursor_position.y
+            });
+            
+            self_.on_redraw({{
+                { cursor_position.x - 1, cursor_position.y },
+                { redraw_amount, 1 }
+            }});
+        }
     }
 
     // ======================================================================
