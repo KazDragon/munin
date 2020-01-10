@@ -163,6 +163,7 @@ if (MUNIN_WITH_TESTS)
             test/src/container/container_subcomponent_focus_test.cpp
             test/src/container/container_layout_test.cpp
             test/src/edit/edit_test.cpp
+            test/src/edit/edit_mouse_test.cpp
             test/src/edit/edit_with_content_test.cpp
             test/src/filled_box/new_filled_box_test.cpp
             test/src/filled_box/filled_box_test.cpp

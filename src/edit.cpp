@@ -1,6 +1,7 @@
 #include "munin/edit.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -123,6 +124,26 @@ struct edit::impl
         }
     }
 
+    // ======================================================================
+    // MOUSE_EVENT
+    // ======================================================================
+    void mouse_event(terminalpp::ansi::mouse::report const &mouse)
+    {
+        if (mouse.button_ == terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN)
+        {
+            auto const current_cursor_position = self_.get_cursor_position();
+            
+            auto const new_cursor_x = std::min(
+                terminalpp::coordinate_type(content.size()),
+                mouse.x_position_);
+            
+            self_.set_cursor_position({
+                new_cursor_x, 
+                current_cursor_position.y
+            });
+        }
+    }
+    
 private:
     // ======================================================================
     // HANDLE_CURSOR_LEFT
@@ -301,6 +322,15 @@ void edit::do_event(boost::any const &ev)
     if (vk != nullptr)
     {
         pimpl_->key_event(*vk);
+        return;
+    }
+    
+    auto *mouse = boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+    
+    if (mouse != nullptr)
+    {
+        pimpl_->mouse_event(*mouse);
+        return;
     }
 }
 
