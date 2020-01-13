@@ -23,6 +23,11 @@ public:
     ~edit() override;
     
     //* =====================================================================
+    /// \brief Returns the total text content of the edit.
+    //* =====================================================================
+    terminalpp::string get_text() const;
+
+    //* =====================================================================
     /// \brief Inserts the given text at the current cursor position, moving
     /// the cursor with the text.
     //* =====================================================================
