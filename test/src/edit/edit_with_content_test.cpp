@@ -14,6 +14,7 @@ using keypress_data = std::tuple<
     terminalpp::point,  // initial cursor position
     terminalpp::vk,     // virtual keypress
     terminalpp::string, // expected text drawn
+    terminalpp::string, // expected text
     terminalpp::point   // expected final cursor position
 >;
 
@@ -58,7 +59,8 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
     auto const &initial_pos      = get<1>(params);
     auto const &keypress         = get<2>(params);
     auto const &expected_content = get<3>(params);
-    auto const &expected_pos     = get<4>(params);
+    auto const &expected_text    = get<4>(params);
+    auto const &expected_pos     = get<5>(params);
 
     edit_.insert_text(initial_content);
     edit_.set_cursor_position(initial_pos);
@@ -104,6 +106,8 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
                     << "at position [" << column << "," << row << "]";
             }
         });
+        
+    EXPECT_EQ(expected_text, edit_.get_text());
 }
 
 INSTANTIATE_TEST_CASE_P(
@@ -112,37 +116,37 @@ INSTANTIATE_TEST_CASE_P(
     ValuesIn
     ({
         // Cases with only one character in the content.
-        keypress_data{ "t", {1, 0}, terminalpp::vk::lowercase_e, "te", {2, 0} },
-        keypress_data{ "t", {1, 0}, terminalpp::vk::uppercase_u, "tU", {2, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::lowercase_e, "te", "te", {2, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::uppercase_u, "tU", "tU", {2, 0} },
         
         // Cases with multiple characters in the content.
-        keypress_data{ "tes", {0, 0}, terminalpp::vk::uppercase_t, "Ttes", {1, 0} },
-        keypress_data{ "tes", {1, 0}, terminalpp::vk::uppercase_t, "tTes", {2, 0} },
-        keypress_data{ "tes", {2, 0}, terminalpp::vk::uppercase_t, "teTs", {3, 0} },
-        keypress_data{ "tes", {3, 0}, terminalpp::vk::uppercase_t, "tesT", {4, 0} },
+        keypress_data{ "tes", {0, 0}, terminalpp::vk::uppercase_t, "Ttes", "Ttes", {1, 0} },
+        keypress_data{ "tes", {1, 0}, terminalpp::vk::uppercase_t, "tTes", "tTes", {2, 0} },
+        keypress_data{ "tes", {2, 0}, terminalpp::vk::uppercase_t, "teTs", "teTs", {3, 0} },
+        keypress_data{ "tes", {3, 0}, terminalpp::vk::uppercase_t, "tesT", "tesT", {4, 0} },
 
         // Cursor movement.
-        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_right, "t", {1, 0} },
-        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
-        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_right, "t", {1, 0} },
-        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_left,  "t", {0, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_right, "t", "t", {1, 0} },
+        keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_left,  "t", "t", {0, 0} },
+        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_right, "t", "t", {1, 0} },
+        keypress_data{ "t", {0, 0}, terminalpp::vk::cursor_left,  "t", "t", {0, 0} },
         
         // Home/end keys
-        keypress_data{ "t",    {0, 0}, terminalpp::vk::home, "t",    {0, 0} },
-        keypress_data{ "t",    {1, 0}, terminalpp::vk::home, "t",    {0, 0} },
-        keypress_data{ "test", {0, 0}, terminalpp::vk::home, "test", {0, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::home, "test", {0, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::home, "test", {0, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::home, "test", {0, 0} },
-        keypress_data{ "test", {4, 0}, terminalpp::vk::home, "test", {0, 0} },
+        keypress_data{ "t",    {0, 0}, terminalpp::vk::home, "t",    "t", {0, 0} },
+        keypress_data{ "t",    {1, 0}, terminalpp::vk::home, "t",    "t", {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::home, "test", "test", {0, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::home, "test", "test", {0, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::home, "test", "test", {0, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::home, "test", "test", {0, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::home, "test", "test", {0, 0} },
 
-        keypress_data{ "t",    {0, 0}, terminalpp::vk::end, "t",    {1, 0} },
-        keypress_data{ "t",    {1, 0}, terminalpp::vk::end, "t",    {1, 0} },
-        keypress_data{ "test", {0, 0}, terminalpp::vk::end, "test", {4, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::end, "test", {4, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::end, "test", {4, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::end, "test", {4, 0} },
-        keypress_data{ "test", {4, 0}, terminalpp::vk::end, "test", {4, 0} },
+        keypress_data{ "t",    {0, 0}, terminalpp::vk::end, "t",    "t",    {1, 0} },
+        keypress_data{ "t",    {1, 0}, terminalpp::vk::end, "t",    "t",    {1, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
 
         // Test writing off the end of the viewable portion of the edit.
         // In all cases, this should continue exactly as it did, but should
@@ -150,24 +154,24 @@ INSTANTIATE_TEST_CASE_P(
         // the cursor)
         //
         // Note: an edit in this test is 4x1.
-        keypress_data{ "test", {0, 0}, terminalpp::vk::lowercase_z, "ztes", {1, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::lowercase_z, "tzes", {2, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::lowercase_z, "tezs", {3, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", {4, 0} },
-        keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", {5, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::lowercase_z, "ztes", "ztest", {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::lowercase_z, "tzes", "tzest", {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::lowercase_z, "tezs", "tezst", {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", "teszt", {4, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", "testz", {5, 0} },
         
         // Pressing the backspace or DEL keys result in deleting the character
         // to the left of the cursor and retreating the cursor one step.
-        keypress_data{ "test", {4, 0}, terminalpp::vk::bs, "tes",  {3, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::bs, "tet",  {2, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::bs, "tst",  {1, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::bs, "est",  {0, 0} },
-        keypress_data{ "test", {0, 0}, terminalpp::vk::bs, "test", {0, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::bs, "tes",  "tes",  {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::bs, "tet",  "tet",  {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::bs, "tst",  "tst",  {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::bs, "est",  "est",  {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::bs, "test", "test", {0, 0} },
 
-        keypress_data{ "test", {4, 0}, terminalpp::vk::del, "tes",  {3, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::del, "tet",  {2, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::del, "tst",  {1, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::del, "est",  {0, 0} },
-        keypress_data{ "test", {0, 0}, terminalpp::vk::del, "test", {0, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::del, "tes",  "tes",  {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::del, "tet",  "tet",  {2, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::del, "tst",  "tst",  {1, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::del, "est",  "est",  {0, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::del, "test", "test", {0, 0} },
     })
 );
