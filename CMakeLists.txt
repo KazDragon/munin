@@ -59,6 +59,7 @@ target_sources(munin
         include/munin/vertical_strip_layout.hpp
         include/munin/window.hpp
         include/munin/view.hpp
+        include/munin/viewport.hpp
     
         include/munin/detail/adaptive_fill.hpp
         include/munin/detail/algorithm.hpp
@@ -87,6 +88,7 @@ target_sources(munin
         src/toggle_button.cpp
         src/vertical_strip_layout.cpp
         src/window.cpp
+        src/viewport.cpp
     
         src/detail/adaptive_fill.cpp
         src/detail/algorithm.cpp
@@ -192,6 +194,7 @@ if (MUNIN_WITH_TESTS)
             test/src/toggle_button/toggle_button_test.cpp
             test/src/toggle_button/toggle_button_json_test.cpp
             test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+            test/src/viewport/viewport_test.cpp
             test/src/window/window_json_test.cpp
             test/src/window/window_test.cpp
             test/src/window/window_repaint_test.cpp
