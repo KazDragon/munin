@@ -9,6 +9,7 @@ namespace munin {
 // ==========================================================================
 struct viewport::impl
 {
+    std::shared_ptr<component> tracked_component_;
 };
 
 // ==========================================================================
@@ -17,6 +18,9 @@ struct viewport::impl
 viewport::viewport(std::shared_ptr<component> tracked_component)
   : pimpl_(boost::make_unique<impl>())
 {
+    pimpl_->tracked_component_ = std::move(tracked_component);
+    pimpl_->tracked_component_->on_preferred_size_changed.connect(
+        on_preferred_size_changed);
 }
 
 // ==========================================================================
@@ -29,7 +33,7 @@ viewport::~viewport() = default;
 // ==========================================================================
 terminalpp::extent viewport::do_get_preferred_size() const
 {
-    return {};
+    return pimpl_->tracked_component_->get_preferred_size();
 }
 
 // ==========================================================================
