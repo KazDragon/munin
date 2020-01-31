@@ -42,7 +42,15 @@ private:
     // ======================================================================
     void on_tracked_component_preferred_size_changed()
     {
-        tracked_component_->set_size(tracked_component_->get_preferred_size());
+        auto const preferred_size = tracked_component_->get_preferred_size();
+        auto const viewport_size = self_.get_size();
+        
+        auto const tracked_component_size = terminalpp::extent{
+            std::max(preferred_size.width, viewport_size.width),
+            std::max(preferred_size.height, viewport_size.height)
+        };
+        
+        tracked_component_->set_size(tracked_component_size);
         self_.on_preferred_size_changed();
     }
     
