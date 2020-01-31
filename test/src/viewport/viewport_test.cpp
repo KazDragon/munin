@@ -133,6 +133,17 @@ TEST_F(a_viewport, with_a_size_larger_than_the_preferred_size_of_the_tracked_com
         EXPECT_CALL(*tracked_component_, do_set_size(viewport_size));
         tracked_component_->on_preferred_size_changed();
     }
+
+    {
+        testing::InSequence _;
+        
+        auto const preferred_size = terminalpp::extent{3, 3};
+        auto const new_viewport_size = terminalpp::extent{7, 7};
+        EXPECT_CALL(*tracked_component_, do_get_preferred_size)
+            .WillOnce(Return(preferred_size));
+        EXPECT_CALL(*tracked_component_, do_set_size(new_viewport_size));
+        viewport_->set_size(new_viewport_size);
+    }
 }
 
 TEST_F(a_viewport, with_a_size_smaller_than_the_tracked_component_allows_the_tracked_component_its_preferred_size)
@@ -160,6 +171,17 @@ TEST_F(a_viewport, with_a_size_smaller_than_the_tracked_component_allows_the_tra
         EXPECT_CALL(*tracked_component_, do_set_size(preferred_size));
 
         tracked_component_->on_preferred_size_changed();
+    }
+
+    {
+        testing::InSequence _;
+        
+        auto const preferred_size = terminalpp::extent{17, 4};
+        auto const new_viewport_size = terminalpp::extent{3, 3};
+        EXPECT_CALL(*tracked_component_, do_get_preferred_size)
+            .WillOnce(Return(preferred_size));
+        EXPECT_CALL(*tracked_component_, do_set_size(preferred_size));
+        viewport_->set_size(new_viewport_size);
     }
 }
 

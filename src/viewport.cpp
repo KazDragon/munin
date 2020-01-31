@@ -36,11 +36,10 @@ struct viewport::impl
         return tracked_component_->event(ev);
     }
     
-private:
     // ======================================================================
-    // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
+    // UPDATE_TRACKED_COMPONENT_SIZE
     // ======================================================================
-    void on_tracked_component_preferred_size_changed()
+    void update_tracked_component_size()
     {
         auto const preferred_size = tracked_component_->get_preferred_size();
         auto const viewport_size = self_.get_size();
@@ -51,6 +50,14 @@ private:
         };
         
         tracked_component_->set_size(tracked_component_size);
+    }
+private:
+    // ======================================================================
+    // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
+    // ======================================================================
+    void on_tracked_component_preferred_size_changed()
+    {
+        update_tracked_component_size();
         self_.on_preferred_size_changed();
     }
     
@@ -72,6 +79,15 @@ viewport::viewport(std::shared_ptr<component> tracked_component)
 // DESTRUCTOR
 // ==========================================================================
 viewport::~viewport() = default;
+
+// ==========================================================================
+// DO_SET_SIZE
+// ==========================================================================
+void viewport::do_set_size(terminalpp::extent const &size)
+{
+    basic_component::do_set_size(size);
+    pimpl_->update_tracked_component_size();
+}
 
 // ==========================================================================
 // DO_GET_PREFERRED_SIZE
