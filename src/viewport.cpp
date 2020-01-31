@@ -9,6 +9,36 @@ namespace munin {
 // ==========================================================================
 struct viewport::impl
 {
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
+    impl(viewport& self, std::shared_ptr<component> tracked_component)
+      : self_(self),
+        tracked_component_(std::move(tracked_component))
+    {
+        tracked_component_->on_preferred_size_changed.connect(
+            [this]{on_tracked_component_preferred_size_changed();});
+    }
+    
+    // ======================================================================
+    // GET_PREFERRED_SIZE
+    // ======================================================================
+    auto get_preferred_size()
+    {
+        return tracked_component_->get_preferred_size();
+    }
+
+private:
+    // ======================================================================
+    // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
+    // ======================================================================
+    void on_tracked_component_preferred_size_changed()
+    {
+        tracked_component_->set_size(tracked_component_->get_preferred_size());
+        self_.on_preferred_size_changed();
+    }
+    
+    viewport &self_;
     std::shared_ptr<component> tracked_component_;
 };
 
@@ -16,11 +46,10 @@ struct viewport::impl
 // CONSTRUCTOR
 // ==========================================================================
 viewport::viewport(std::shared_ptr<component> tracked_component)
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(boost::make_unique<impl>(
+        std::ref(*this), 
+        std::move(tracked_component)))
 {
-    pimpl_->tracked_component_ = std::move(tracked_component);
-    pimpl_->tracked_component_->on_preferred_size_changed.connect(
-        on_preferred_size_changed);
 }
 
 // ==========================================================================
@@ -33,7 +62,7 @@ viewport::~viewport() = default;
 // ==========================================================================
 terminalpp::extent viewport::do_get_preferred_size() const
 {
-    return pimpl_->tracked_component_->get_preferred_size();
+    return pimpl_->get_preferred_size();
 }
 
 // ==========================================================================

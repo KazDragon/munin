@@ -53,12 +53,17 @@ TEST_F(a_new_viewport, of_zero_size_draws_nothing)
 
 namespace {
 
-class viewport_preferred_size_test 
-  : public testing::TestWithParam<terminalpp::extent>
+class a_viewport_with_mock_tracked_component
 {
 protected:
     std::shared_ptr<mock_component> tracked_component_ = make_mock_component();
     std::shared_ptr<munin::viewport> viewport_ = munin::make_viewport(tracked_component_);
+};
+
+class viewport_preferred_size_test 
+  : public a_viewport_with_mock_tracked_component,
+    public testing::TestWithParam<terminalpp::extent>
+{
 };
 
 }
@@ -90,4 +95,40 @@ INSTANTIATE_TEST_CASE_P(
         terminalpp::extent(4, 5)
     )
 );
+
+namespace 
+{
+
+class a_viewport : 
+    public a_viewport_with_mock_tracked_component,
+    public testing::Test
+{
+};
+
+}
+
+TEST_F(a_viewport, allows_the_tracked_component_its_preferred_size)
+{
+    {
+        testing::InSequence _;
+        
+        auto const preferred_size = terminalpp::extent{3, 3};
+        EXPECT_CALL(*tracked_component_, do_get_preferred_size)
+            .WillOnce(Return(preferred_size));
+        EXPECT_CALL(*tracked_component_, do_set_size(preferred_size));
+    }
+    
+    tracked_component_->on_preferred_size_changed();
+
+    {
+        testing::InSequence _;
+        
+        auto const preferred_size = terminalpp::extent{17, 4};
+        EXPECT_CALL(*tracked_component_, do_get_preferred_size)
+            .WillOnce(Return(preferred_size));
+        EXPECT_CALL(*tracked_component_, do_set_size(preferred_size));
+    }
+
+    tracked_component_->on_preferred_size_changed();
+}
 
