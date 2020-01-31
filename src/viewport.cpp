@@ -28,6 +28,14 @@ struct viewport::impl
         return tracked_component_->get_preferred_size();
     }
 
+    // ======================================================================
+    // EVENT
+    // ======================================================================
+    auto event(boost::any const& ev)
+    {
+        return tracked_component_->event(ev);
+    }
+    
 private:
     // ======================================================================
     // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
@@ -79,6 +87,7 @@ void viewport::do_draw(
 // ==========================================================================
 void viewport::do_event(boost::any const &event)
 {
+    pimpl_->event(event);
 }
 
 // ==========================================================================

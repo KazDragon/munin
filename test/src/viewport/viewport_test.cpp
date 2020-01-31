@@ -6,8 +6,10 @@
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
 
+using testing::Invoke;
 using testing::Return;
 using testing::Values;
+using testing::_;
 
 namespace {
     
@@ -132,3 +134,21 @@ TEST_F(a_viewport, allows_the_tracked_component_its_preferred_size)
     tracked_component_->on_preferred_size_changed();
 }
 
+TEST_F(a_viewport, forwards_events_to_the_tracked_component)
+{
+    char const *test_event = "test event";
+    boost::any received_event;
+    
+    EXPECT_CALL(*tracked_component_, do_event(_))
+        .WillOnce(Invoke([&received_event](const boost::any& event)
+        {
+            received_event = event;
+        }));
+
+    viewport_->event(test_event);
+    
+    char const **result = boost::any_cast<char const*>(&received_event);
+    ASSERT_TRUE(result != nullptr);
+    ASSERT_TRUE(*result != nullptr);
+    ASSERT_STREQ(test_event, *result);
+}
