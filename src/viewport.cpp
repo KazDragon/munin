@@ -86,15 +86,23 @@ private:
 
         if (tracked_cursor_position.x >= viewport_position_.x + viewport_size.width)
         {
-            // cursor has scrolled off to the east of the viewport, so the 
+            // Cursor has scrolled off to the east of the viewport, so the 
             // viewport x position needs to change just enough to keep the
             // cursor on the screen.
             viewport_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
         }
 
+        if (tracked_cursor_position.y >= viewport_position_.y + viewport_size.height)
+        {
+            // Cursor has scrolled off to the south of the viewport, so the
+            // viewport y position needs to change just enough to keep the
+            // cursor on the screen.
+            viewport_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
+        }
+
         cursor_position_ = {
             tracked_cursor_position.x - viewport_position_.x,
-            tracked_cursor_position.y
+            tracked_cursor_position.y - viewport_position_.y
         };
 
         if (old_cursor_position != cursor_position_)
