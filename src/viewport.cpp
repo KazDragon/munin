@@ -84,19 +84,23 @@ private:
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
         auto const viewport_size = self_.get_size();
 
-        if (tracked_cursor_position.x >= viewport_position_.x + viewport_size.width)
+        // Check to see if the tracked cursor has scrolled off an edge of the
+        // viewport.  If so, then the viewport position must change just enough
+        // to keep the cursor within the visual area.
+        if (tracked_cursor_position.x < viewport_position_.x)
         {
-            // Cursor has scrolled off to the east of the viewport, so the 
-            // viewport x position needs to change just enough to keep the
-            // cursor on the screen.
+            // Cursor has scrolled off to the west of the viewport.
+            viewport_position_.x = tracked_cursor_position.x;
+        }
+        else if (tracked_cursor_position.x >= viewport_position_.x + viewport_size.width)
+        {
+            // Cursor has scrolled off to the east of the viewport.
             viewport_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
         }
 
         if (tracked_cursor_position.y >= viewport_position_.y + viewport_size.height)
         {
-            // Cursor has scrolled off to the south of the viewport, so the
-            // viewport y position needs to change just enough to keep the
-            // cursor on the screen.
+            // Cursor has scrolled off to the south of the viewport.
             viewport_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
         }
 
