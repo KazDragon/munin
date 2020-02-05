@@ -18,6 +18,8 @@ struct viewport::impl
     {
         tracked_component_->on_preferred_size_changed.connect(
             [this]{on_tracked_component_preferred_size_changed();});
+        tracked_component_->on_cursor_position_changed.connect(
+            [this]{on_tracked_component_cursor_position_changed();});
     }
     
     // ======================================================================
@@ -26,6 +28,14 @@ struct viewport::impl
     auto get_preferred_size()
     {
         return tracked_component_->get_preferred_size();
+    }
+
+    // ======================================================================
+    // GET_CURSOR_POSITION
+    // ======================================================================
+    auto get_cursor_position()
+    {
+        return cursor_position_;
     }
 
     // ======================================================================
@@ -61,6 +71,20 @@ struct viewport::impl
     }
 private:
     // ======================================================================
+    // ON_TRACKED_COMPONENT_CURSOR_POSITION_CHANGED
+    // ======================================================================
+    void on_tracked_component_cursor_position_changed()
+    {
+        auto const old_cursor_position = cursor_position_;
+        cursor_position_ = tracked_component_->get_cursor_position();
+
+        if (old_cursor_position != cursor_position_)
+        {
+            self_.on_cursor_position_changed();
+        }
+    }
+
+    // ======================================================================
     // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
     // ======================================================================
     void on_tracked_component_preferred_size_changed()
@@ -71,6 +95,7 @@ private:
     
     viewport &self_;
     std::shared_ptr<component> tracked_component_;
+    terminalpp::point          cursor_position_;
 };
 
 // ==========================================================================
@@ -103,6 +128,14 @@ void viewport::do_set_size(terminalpp::extent const &size)
 terminalpp::extent viewport::do_get_preferred_size() const
 {
     return pimpl_->get_preferred_size();
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+terminalpp::point viewport::do_get_cursor_position() const
+{
+    return pimpl_->get_cursor_position();
 }
 
 // ==========================================================================

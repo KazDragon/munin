@@ -37,6 +37,13 @@ private:
     terminalpp::extent do_get_preferred_size() const override;
 
     //* =====================================================================
+    /// \brief Called by get_cursor_position().  Derived classes must
+    /// override this function in order to return the cursor position in
+    /// a custom manner.
+    //* =====================================================================
+    terminalpp::point do_get_cursor_position() const override;
+
+    //* =====================================================================
     /// \brief Called by draw().  Derived classes must override this function
     /// in order to draw onto the passed canvas.  A component must only draw
     /// the part of itself specified by the region.
