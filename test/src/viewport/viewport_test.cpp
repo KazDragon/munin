@@ -1,10 +1,11 @@
+#include "viewport_test.hpp"
 #include "fill_canvas.hpp"
-#include "mock/component.hpp"
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 using testing::Invoke;
 using testing::Return;
@@ -54,13 +55,6 @@ TEST_F(a_new_viewport, of_zero_size_draws_nothing)
 }
 
 namespace {
-
-class a_viewport_with_mock_tracked_component
-{
-protected:
-    std::shared_ptr<mock_component> tracked_component_ = make_mock_component();
-    std::shared_ptr<munin::viewport> viewport_ = munin::make_viewport(tracked_component_);
-};
 
 class viewport_preferred_size_test 
   : public a_viewport_with_mock_tracked_component,

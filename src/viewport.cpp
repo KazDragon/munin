@@ -29,6 +29,14 @@ struct viewport::impl
     }
 
     // ======================================================================
+    // DRAW
+    // ======================================================================
+    void draw(render_surface& surface, terminalpp::rectangle const &region)
+    {
+        tracked_component_->draw(surface, region);
+    }
+
+    // ======================================================================
     // EVENT
     // ======================================================================
     auto event(boost::any const& ev)
@@ -104,6 +112,7 @@ void viewport::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
+    pimpl_->draw(surface, region);
 }
 
 // ==========================================================================

@@ -194,7 +194,9 @@ if (MUNIN_WITH_TESTS)
             test/src/toggle_button/toggle_button_test.cpp
             test/src/toggle_button/toggle_button_json_test.cpp
             test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+            test/src/viewport/viewport_test.hpp
             test/src/viewport/viewport_test.cpp
+            test/src/viewport/viewport_cursor_test.cpp
             test/src/window/window_json_test.cpp
             test/src/window/window_test.cpp
             test/src/window/window_repaint_test.cpp
