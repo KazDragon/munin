@@ -168,5 +168,15 @@ INSTANTIATE_TEST_CASE_P(
         viewport_cursor_test_data{
             {0, 5}, {0, 2}, {0, 0}, {0, 0}, {{0, 0}, {3, 3}}
         },
+
+        // Cursor is moved north-west of the visual zone.
+        viewport_cursor_test_data{
+            {5, 5}, {2, 2}, {1, 1}, {0, 0}, {{1, 1}, {3, 3}}
+        },
+
+        // Cursor is moved north-east of the visual zone.
+        viewport_cursor_test_data{
+            {0, 5}, {0, 2}, {5, 0}, {2, 0}, {{3, 0}, {3, 3}}
+        },
     })
 );
