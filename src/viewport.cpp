@@ -98,7 +98,11 @@ private:
             viewport_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
         }
 
-        if (tracked_cursor_position.y >= viewport_position_.y + viewport_size.height)
+        if (tracked_cursor_position.y < viewport_position_.y)
+        {
+            viewport_position_.y = tracked_cursor_position.y;
+        }
+        else if (tracked_cursor_position.y >= viewport_position_.y + viewport_size.height)
         {
             // Cursor has scrolled off to the south of the viewport.
             viewport_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
