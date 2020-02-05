@@ -133,5 +133,14 @@ INSTANTIATE_TEST_CASE_P(
             {0, 0}, {0, 0}, {3, 3}, {2, 2}, {{1, 1}, {3, 3}}
         },
 
+        // Cursor is moved inside the visual zone after the
+        // visual zone is moved.
+        viewport_cursor_test_data{
+            {5, 0}, {2, 0}, {4, 1}, {1, 1}, {{3, 0}, {3, 3}}
+        },
+        viewport_cursor_test_data{
+            {5, 0}, {2, 0}, {3, 2}, {0, 2}, {{3, 0}, {3, 3}}
+        },
+
     })
 );
