@@ -43,7 +43,12 @@ struct viewport::impl
     // ======================================================================
     void draw(render_surface& surface, terminalpp::rectangle const &region)
     {
-        tracked_component_->draw(surface, region);
+        auto const offset_region = terminalpp::rectangle{
+            region.origin + viewport_position_,
+            region.size
+        };
+
+        tracked_component_->draw(surface, offset_region);
     }
 
     // ======================================================================
@@ -76,7 +81,21 @@ private:
     void on_tracked_component_cursor_position_changed()
     {
         auto const old_cursor_position = cursor_position_;
-        cursor_position_ = tracked_component_->get_cursor_position();
+        auto const tracked_cursor_position = tracked_component_->get_cursor_position();
+        auto const viewport_size = self_.get_size();
+
+        if (tracked_cursor_position.x >= viewport_position_.x + viewport_size.width)
+        {
+            // cursor has scrolled off to the east of the viewport, so the 
+            // viewport x position needs to change just enough to keep the
+            // cursor on the screen.
+            viewport_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
+        }
+
+        cursor_position_ = {
+            tracked_cursor_position.x - viewport_position_.x,
+            tracked_cursor_position.y
+        };
 
         if (old_cursor_position != cursor_position_)
         {
@@ -95,6 +114,7 @@ private:
     
     viewport &self_;
     std::shared_ptr<component> tracked_component_;
+    terminalpp::point          viewport_position_;
     terminalpp::point          cursor_position_;
 };
 
