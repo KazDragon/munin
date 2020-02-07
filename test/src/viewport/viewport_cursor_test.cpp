@@ -20,38 +20,8 @@ using viewport_cursor_test_data = std::tuple<
     terminalpp::rectangle  // expected tracked draw area
 >;
 
-class viewport_cursor_tracking_test
-  : public a_viewport_with_mock_tracked_component,
-    public testing::TestWithParam<viewport_cursor_test_data>
-{
-protected:
-    viewport_cursor_tracking_test()
-    {
-        static auto constexpr tracked_component_preferred_size = terminalpp::extent{6, 6};
-        static auto constexpr viewport_size = terminalpp::extent{3, 3};
-
-        // Set the preferred size of the tracked component.  It is tested elsewhere that
-        // a viewport allows the tracked component its preferred size.
-        ON_CALL(*tracked_component_, do_get_preferred_size())
-            .WillByDefault(Return(tracked_component_preferred_size));
-        tracked_component_->on_preferred_size_changed();
-
-        // Mock the cursor position of the tracked component so that it does what it
-        // is told and announces it to the viewport.
-        ON_CALL(*tracked_component_, do_set_cursor_position(_))
-            .WillByDefault(Invoke([this](auto const &pos) { 
-                tracked_cursor_position_ = pos;
-                tracked_component_->on_cursor_position_changed();
-            }));
-        ON_CALL(*tracked_component_, do_get_cursor_position())
-            .WillByDefault(Invoke([this] { return tracked_cursor_position_; }));
-
-        viewport_->set_size(viewport_size);
-    }
-
-private:
-    terminalpp::point tracked_cursor_position_;
-};
+using viewport_cursor_tracking_test = 
+    viewport_mock_test_with_data<viewport_cursor_test_data>;
 
 }
 
