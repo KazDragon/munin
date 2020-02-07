@@ -54,7 +54,26 @@ INSTANTIATE_TEST_CASE_P(
     ValuesIn({
         // Base case: everything stays the same.
         viewport_size_test_data{
-            {6, 6}, {0, 0}, {6, 6}, {0, 0}
+            {6, 6}, {1, 1}, {3, 3}, {1, 1}
         },
+        
+        // Extending the viewport eastward when at the origin does not
+        // move the cursor.
+        viewport_size_test_data{
+            {6, 6}, {1, 1}, {6, 3}, {1, 1}
+        },
+        
+        // Extending the viewport southward when at the origin does not
+        // move the cursor.
+        viewport_size_test_data{
+            {6, 6}, {1, 1}, {3, 6}, {1, 1}
+        },
+        
+        // Shrinking the viewport so that the cursor is still in view does
+        // not move the cursor.
+        viewport_size_test_data{
+            {6, 6}, {1, 1}, {2, 2}, {1, 1}
+        },
+        
     })
 );
