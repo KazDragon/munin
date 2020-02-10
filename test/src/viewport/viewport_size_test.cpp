@@ -42,16 +42,16 @@ TEST_P(viewport_size_test, viewports_track_size_changes)
     tracked_component_->on_preferred_size_changed();
     tracked_component_->set_cursor_position(tracked_component_cursor_position);
     
-    // Change the size of the viewport.  This may cause the viewport to resize
-    // and reposition the tracked component.
-    viewport_->set_size(changed_viewport_size);
-
     // Perform any extra cursor movements to set the viewport up.
     for (auto const &cursor_position : extra_tracked_cursor_movements)
     {
         tracked_component_->set_cursor_position(cursor_position);
     }
     
+    // Change the size of the viewport.  This may cause the viewport to resize
+    // and reposition the tracked component.
+    viewport_->set_size(changed_viewport_size);
+
     // This may have changed the viewport's idea of where the cursor is.
     ASSERT_EQ(expected_viewport_cursor_position, viewport_->get_cursor_position());
     
@@ -97,13 +97,24 @@ INSTANTIATE_TEST_CASE_P(
         viewport_size_test_data{
             {6, 6}, {5, 0}, {2, 3}, {{4, 0}}, {1, 0}, {{3, 0}, {2, 3}}
         },
+
+        // Similarly for scrolling off the bottom and back.
+        viewport_size_test_data{
+            {6, 6}, {0, 5}, {3, 2}, {{0, 4}}, {0, 1}, {{0, 3}, {3, 2}}
+        },
         
         // However, if the viewport has been scrolled to the right, and 
         // shrinking the viewport would move the cursor out of sight, then
         // the viewport will instead draw from a position that contains the
         // cursor.
         viewport_size_test_data{
-            {6, 6}, {5, 0}, {2, 3}, {}, {2, 0}, {{4, 0}, {2, 3}}
+            {6, 6}, {5, 0}, {2, 3}, {}, {1, 0}, {{4, 0}, {2, 3}}
+        },
+
+        // Similarly for scrolling off the bottom and then resizing so that
+        // the cursor is no longer visible.
+        viewport_size_test_data{
+            {6, 6}, {0, 5}, {3, 2}, {}, {0, 1}, {{0, 4}, {3, 2}}
         },
     })
 );

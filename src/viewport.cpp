@@ -74,11 +74,11 @@ struct viewport::impl
         
         tracked_component_->set_size(tracked_component_size);
     }
-private:
+
     // ======================================================================
-    // ON_TRACKED_COMPONENT_CURSOR_POSITION_CHANGED
+    // UPDATE_VIEWPORT_POSITION
     // ======================================================================
-    void on_tracked_component_cursor_position_changed()
+    void update_viewport_position()
     {
         auto const old_cursor_position = cursor_position_;
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
@@ -119,6 +119,15 @@ private:
         }
     }
 
+private:
+    // ======================================================================
+    // ON_TRACKED_COMPONENT_CURSOR_POSITION_CHANGED
+    // ======================================================================
+    void on_tracked_component_cursor_position_changed()
+    {
+        update_viewport_position();
+    }
+
     // ======================================================================
     // ON_TRACKED_COMPONENT_PREFERRED_SIZE_CHANGED
     // ======================================================================
@@ -156,6 +165,7 @@ void viewport::do_set_size(terminalpp::extent const &size)
 {
     basic_component::do_set_size(size);
     pimpl_->update_tracked_component_size();
+    pimpl_->update_viewport_position();
 }
 
 // ==========================================================================
