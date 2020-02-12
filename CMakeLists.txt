@@ -197,6 +197,7 @@ if (MUNIN_WITH_TESTS)
             test/src/viewport/viewport_test.hpp
             test/src/viewport/viewport_test.cpp
             test/src/viewport/viewport_cursor_test.cpp
+            test/src/viewport/viewport_redraw_test.cpp
             test/src/viewport/viewport_size_test.cpp
             test/src/window/window_json_test.cpp
             test/src/window/window_test.cpp
