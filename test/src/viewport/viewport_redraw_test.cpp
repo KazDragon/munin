@@ -60,6 +60,37 @@ INSTANTIATE_TEST_CASE_P(
         cursor_movement_redraw_test_data{
             {}, {}, {}
         },
+        
+        // Moving the cursor within the viewed area will not prompt a redraw.
+        cursor_movement_redraw_test_data{
+            {}, {0, 2}, {}
+        },        
+
+        cursor_movement_redraw_test_data{
+            {}, {2, 0}, {}
+        },        
+
+        cursor_movement_redraw_test_data{
+            {}, {2, 2}, {}
+        },        
+        
+        // Moving the cursor just beyond the viewed area will shift the
+        // viewport, and prompt a redraw of the entire viewed area.
+        cursor_movement_redraw_test_data{
+            {}, {3, 0}, terminalpp::rectangle{{0, 0}, {3, 3}}
+        },        
+        
+        cursor_movement_redraw_test_data{
+            {}, {0, 3}, terminalpp::rectangle{{0, 0}, {3, 3}}
+        },        
+
+        cursor_movement_redraw_test_data{
+            {{0, 3}}, {0, 0}, terminalpp::rectangle{{0, 0}, {3, 3}}
+        },        
+
+        cursor_movement_redraw_test_data{
+            {{3, 0}}, {0, 0}, terminalpp::rectangle{{0, 0}, {3, 3}}
+        },        
     })
 );
 

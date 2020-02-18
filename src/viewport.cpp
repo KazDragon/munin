@@ -81,6 +81,7 @@ struct viewport::impl
     void update_viewport_position()
     {
         auto const old_cursor_position = cursor_position_;
+        auto const old_viewport_position = viewport_position_;
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
         auto const viewport_size = self_.get_size();
 
@@ -113,6 +114,11 @@ struct viewport::impl
             tracked_cursor_position.y - viewport_position_.y
         };
 
+        if (old_viewport_position != viewport_position_)
+        {
+            self_.on_redraw({terminalpp::rectangle{self_.get_position(), self_.get_size()}});
+        }
+        
         if (old_cursor_position != cursor_position_)
         {
             self_.on_cursor_position_changed();
