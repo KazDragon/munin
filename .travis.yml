@@ -106,12 +106,10 @@ before_script:
   - conan remote add nonstd-lite https://api.bintray.com/conan/agauniyal/nonstd-lite || true
   - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
   - conan remote add kazdragon-conan https://api.bintray.com/conan/kazdragon/conan-public || true
-  - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:withTests=True -o munin:shared=$SHARED --build=missing
-  - conan build -c ..
-  - $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:shared=$SHARED --build=missing
 
 script:
-  - make -j2
+  - conan build ..
   - if [ "$COVERAGE" == "ON" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
     fi
