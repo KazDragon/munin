@@ -10,8 +10,6 @@ endif()
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(MUNIN_WITH_TESTS "Build with tests included" False)
-
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
@@ -123,99 +121,97 @@ target_link_libraries(munin
         CONAN_PKG::boost_signals2
 )
 
-if (MUNIN_WITH_TESTS)
-    enable_testing()
+enable_testing()
 
-    add_executable(munin_tester test/src/redraw.cpp)
-    
-    target_sources(munin_tester
-        PRIVATE
-            test/src/container/container_test.hpp
-            test/src/window/window_test.hpp
-            test/include/fill_canvas.hpp
-            test/include/redraw.hpp
-            test/include/mock/component.hpp
-            test/include/mock/layout.hpp
-            test/src/fill_canvas.cpp
-            test/src/redraw.cpp
-            test/src/mock/component.cpp
-            test/src/mock/frame.cpp
-            test/src/algorithm/algorithm_test.cpp
-            test/src/aligned_layout/aligned_layout_test.cpp
-            test/src/basic_component/new_basic_component_test.cpp
-            test/src/basic_component/unfocused_basic_component_test.cpp
-            test/src/basic_component/focused_basic_component_test.cpp
-            test/src/basic_component/basic_component_test.cpp
-            test/src/brush/brush_test.cpp
-            test/src/brush/brush_json_test.cpp
-            test/src/brush/brush_redraw_test.cpp
-            test/src/brush/new_brush_test.cpp
-            test/src/button/button_test.cpp
-            test/src/button/button_json_test.cpp
-            test/src/compass_layout/compass_layout_test.cpp
-            test/src/container/container_test.cpp
-            test/src/container/container_cursor_test.cpp
-            test/src/container/container_draw_test.cpp
-            test/src/container/container_event_test.cpp
-            test/src/container/container_focus_test.cpp
-            test/src/container/container_focus_next_test.cpp
-            test/src/container/container_focus_previous_test.cpp
-            test/src/container/container_json_test.cpp
-            test/src/container/container_redraw_test.cpp
-            test/src/container/container_subcomponent_focus_test.cpp
-            test/src/container/container_layout_test.cpp
-            test/src/edit/edit_test.cpp
-            test/src/edit/edit_mouse_test.cpp
-            test/src/edit/edit_with_content_test.cpp
-            test/src/filled_box/new_filled_box_test.cpp
-            test/src/filled_box/filled_box_test.cpp
-            test/src/filled_box/functional_filled_box_test.cpp
-            test/src/framed_component/framed_component_focus_test.cpp
-            test/src/framed_component/framed_component_json_test.cpp
-            test/src/framed_component/framed_component_test.cpp
-            test/src/framed_component/framed_component_mouse_test.cpp
-            test/src/grid_layout/grid_layout_test.cpp
-            test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
-            test/src/image/image_json_test.cpp
-            test/src/image/image_test.cpp
-            test/src/image/image_redraw_test.cpp
-            test/src/image/new_image_test.cpp
-            test/src/null_layout/null_layout_test.cpp
-            test/src/render_surface/render_surface_capabilities_test.cpp
-            test/src/render_surface/render_surface_test.cpp
-            test/src/solid_frame/solid_frame_json_test.cpp
-            test/src/solid_frame/solid_frame_test.cpp
-            test/src/text_area/new_text_area_test.cpp
-            test/src/text_area/text_area_test.cpp
-            test/src/text_area/text_area_with_text_inserted_test.cpp
-            test/src/text_area/text_area_test.hpp
-            test/src/titled_frame/titled_frame_json_test.cpp
-            test/src/titled_frame/titled_frame_test.cpp
-            test/src/toggle_button/toggle_button_test.cpp
-            test/src/toggle_button/toggle_button_json_test.cpp
-            test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
-            test/src/viewport/viewport_test.hpp
-            test/src/viewport/viewport_test.cpp
-            test/src/viewport/viewport_cursor_test.cpp
-            test/src/viewport/viewport_redraw_test.cpp
-            test/src/viewport/viewport_size_test.cpp
-            test/src/window/window_json_test.cpp
-            test/src/window/window_test.cpp
-            test/src/window/window_repaint_test.cpp
-    ) 
+add_executable(munin_tester test/src/redraw.cpp)
 
-    target_include_directories(munin_tester
-        PRIVATE
-            ${PROJECT_SOURCE_DIR}/test/include
-    )
+target_sources(munin_tester
+    PRIVATE
+        test/src/container/container_test.hpp
+        test/src/window/window_test.hpp
+        test/include/fill_canvas.hpp
+        test/include/redraw.hpp
+        test/include/mock/component.hpp
+        test/include/mock/layout.hpp
+        test/src/fill_canvas.cpp
+        test/src/redraw.cpp
+        test/src/mock/component.cpp
+        test/src/mock/frame.cpp
+        test/src/algorithm/algorithm_test.cpp
+        test/src/aligned_layout/aligned_layout_test.cpp
+        test/src/basic_component/new_basic_component_test.cpp
+        test/src/basic_component/unfocused_basic_component_test.cpp
+        test/src/basic_component/focused_basic_component_test.cpp
+        test/src/basic_component/basic_component_test.cpp
+        test/src/brush/brush_test.cpp
+        test/src/brush/brush_json_test.cpp
+        test/src/brush/brush_redraw_test.cpp
+        test/src/brush/new_brush_test.cpp
+        test/src/button/button_test.cpp
+        test/src/button/button_json_test.cpp
+        test/src/compass_layout/compass_layout_test.cpp
+        test/src/container/container_test.cpp
+        test/src/container/container_cursor_test.cpp
+        test/src/container/container_draw_test.cpp
+        test/src/container/container_event_test.cpp
+        test/src/container/container_focus_test.cpp
+        test/src/container/container_focus_next_test.cpp
+        test/src/container/container_focus_previous_test.cpp
+        test/src/container/container_json_test.cpp
+        test/src/container/container_redraw_test.cpp
+        test/src/container/container_subcomponent_focus_test.cpp
+        test/src/container/container_layout_test.cpp
+        test/src/edit/edit_test.cpp
+        test/src/edit/edit_mouse_test.cpp
+        test/src/edit/edit_with_content_test.cpp
+        test/src/filled_box/new_filled_box_test.cpp
+        test/src/filled_box/filled_box_test.cpp
+        test/src/filled_box/functional_filled_box_test.cpp
+        test/src/framed_component/framed_component_focus_test.cpp
+        test/src/framed_component/framed_component_json_test.cpp
+        test/src/framed_component/framed_component_test.cpp
+        test/src/framed_component/framed_component_mouse_test.cpp
+        test/src/grid_layout/grid_layout_test.cpp
+        test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/image/image_json_test.cpp
+        test/src/image/image_test.cpp
+        test/src/image/image_redraw_test.cpp
+        test/src/image/new_image_test.cpp
+        test/src/null_layout/null_layout_test.cpp
+        test/src/render_surface/render_surface_capabilities_test.cpp
+        test/src/render_surface/render_surface_test.cpp
+        test/src/solid_frame/solid_frame_json_test.cpp
+        test/src/solid_frame/solid_frame_test.cpp
+        test/src/text_area/new_text_area_test.cpp
+        test/src/text_area/text_area_test.cpp
+        test/src/text_area/text_area_with_text_inserted_test.cpp
+        test/src/text_area/text_area_test.hpp
+        test/src/titled_frame/titled_frame_json_test.cpp
+        test/src/titled_frame/titled_frame_test.cpp
+        test/src/toggle_button/toggle_button_test.cpp
+        test/src/toggle_button/toggle_button_json_test.cpp
+        test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
+        test/src/viewport/viewport_test.hpp
+        test/src/viewport/viewport_test.cpp
+        test/src/viewport/viewport_cursor_test.cpp
+        test/src/viewport/viewport_redraw_test.cpp
+        test/src/viewport/viewport_size_test.cpp
+        test/src/window/window_json_test.cpp
+        test/src/window/window_test.cpp
+        test/src/window/window_repaint_test.cpp
+) 
 
-    target_link_libraries(munin_tester
-        munin
-        CONAN_PKG::gtest
-    )
+target_include_directories(munin_tester
+    PRIVATE
+        ${PROJECT_SOURCE_DIR}/test/include
+)
 
-    add_test(munin_test munin_tester)
-endif()
+target_link_libraries(munin_tester
+    munin
+    CONAN_PKG::gtest
+)
+
+add_test(munin_test munin_tester)
 
 if (DOXYGEN_FOUND)
     configure_file(

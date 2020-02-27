@@ -10,8 +10,8 @@ class MuninConan(ConanFile):
     description = "A text-based gui component library build on Terminal++"
     topics = ("ansi-escape-codes", "text-ui")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "withTests": [True, False]}
-    default_options = {"shared": False, "withTests": False}
+    options = {"shared": [True, False]}
+    default_options = {"shared": False}
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
     requires = ("terminalpp/1.3.3@kazdragon/conan-public",
                 "jsonformoderncpp/[>=3.3.0]@vthiery/stable",
@@ -19,12 +19,9 @@ class MuninConan(ConanFile):
                 "boost_optional/[>=1.69]@bincrafters/stable",
                 "boost_scope_exit/[>=1.69]@bincrafters/stable",
                 "boost_signals2/[>=1.69]@bincrafters/stable")
+    build_requires = ("gtest/[>=1.8.1]@bincrafters/stable")
     generators = "cmake"
 
-    def requirements(self):
-        if (self.options.withTests):
-            self.requires("gtest/[>=1.8.1]@bincrafters/stable")
-            
     def imports(self):
         # If Munin is built as shared, then running the tests will
         # rely on the shared object for terminalpp being available
@@ -37,7 +34,6 @@ class MuninConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
-        cmake.definitions["MUNIN_WITH_TESTS"] = self.options.withTests
         cmake.configure()
         cmake.build()
 
