@@ -34,8 +34,8 @@ class MuninConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
-        cmake.definitions["MUNIN_COVERAGE"] = self.options.shared
-        cmake.definitions["MUNIN_SANITIZE"] = self.options.shared
+        cmake.definitions["MUNIN_COVERAGE"] = self.options.coverage
+        cmake.definitions["MUNIN_SANITIZE"] = self.options.sanitize
         cmake.configure()
         cmake.build()
 
