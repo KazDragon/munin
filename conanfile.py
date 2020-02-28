@@ -10,8 +10,8 @@ class MuninConan(ConanFile):
     description = "A text-based gui component library build on Terminal++"
     topics = ("ansi-escape-codes", "text-ui")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = {"shared": False}
+    options = {"shared": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
+    default_options = {"shared": False, "coverage": False, "sanitize": "off"}    
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
     requires = ("terminalpp/1.3.3@kazdragon/conan-public",
                 "jsonformoderncpp/[>=3.3.0]@vthiery/stable",
@@ -34,6 +34,8 @@ class MuninConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.definitions["MUNIN_COVERAGE"] = self.options.coverage
+        cmake.definitions["MUNIN_SANITIZE"] = self.options.sanitize
         cmake.configure()
         cmake.build()
 
