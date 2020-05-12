@@ -144,9 +144,11 @@ protected :
 
         {
             InSequence s1;
+            EXPECT_CALL(*component0, do_has_focus())
+                .WillRepeatedly(Return(false));
             EXPECT_CALL(*component0, do_focus_next());
             EXPECT_CALL(*component0, do_has_focus())
-                .WillOnce(Return(true));
+                .WillRepeatedly(Return(true));
         }
 
         container.focus_next();
@@ -168,9 +170,11 @@ protected :
 
         {
             InSequence s1;
+            EXPECT_CALL(*component1, do_has_focus())
+                .WillRepeatedly(Return(false));
             EXPECT_CALL(*component1, do_focus_previous());
             EXPECT_CALL(*component1, do_has_focus())
-                .WillOnce(Return(true));
+                .WillRepeatedly(Return(true));
         }
 
         container.focus_previous();
@@ -206,9 +210,11 @@ protected :
 
         {
             InSequence s1;
+            EXPECT_CALL(*component0, do_has_focus())
+                .WillRepeatedly(Return(false));
             EXPECT_CALL(*component0, do_focus_next());
             EXPECT_CALL(*component0, do_has_focus())
-                .WillOnce(Return(true));
+                .WillRepeatedly(Return(true));
         }
 
         container.focus_next();
@@ -230,9 +236,11 @@ protected :
 
         {
             InSequence s1;
+            EXPECT_CALL(*component2, do_has_focus())
+                .WillRepeatedly(Return(false));
             EXPECT_CALL(*component2, do_focus_previous());
             EXPECT_CALL(*component2, do_has_focus())
-                .WillOnce(Return(true));
+                .WillRepeatedly(Return(true));
         }
 
         container.focus_previous();
