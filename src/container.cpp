@@ -588,8 +588,17 @@ void container::do_focus_next()
     }
 
     // If we had focus continuously, but the focussed subcomponent changed,
-    // then we also want to announce cursor changes
-    // TODO:
+    // then we also want to announce cursor changes, since even though the
+    // position and state of the cursor in the individual subcomponents hasn't
+    // changed (and therefore they have no reason to send such a signal),
+    // we know that the cursor may have moved about due to focus.
+    if (had_focus 
+     && pimpl_->has_focus_ 
+     && increment_from != next_focussed_component)
+    {
+        on_cursor_position_changed();
+        on_cursor_state_changed();
+    }
 }
 
 // ==========================================================================
@@ -656,8 +665,17 @@ void container::do_focus_previous()
     }
 
     // If we had focus continuously, but the focussed subcomponent changed,
-    // then we also want to announce cursor changes
-    // TODO:
+    // then we also want to announce cursor changes, since even though the
+    // position and state of the cursor in the individual subcomponents hasn't
+    // changed (and therefore they have no reason to send such a signal),
+    // we know that the cursor may have moved about due to focus.
+    if (had_focus 
+     && pimpl_->has_focus_ 
+     && increment_from != previous_focussed_component)
+    {
+        on_cursor_position_changed();
+        on_cursor_state_changed();
+    }
 }
 
 // ==========================================================================
