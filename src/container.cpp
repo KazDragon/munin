@@ -9,6 +9,7 @@
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
@@ -140,19 +141,20 @@ struct container::impl
     // ======================================================================
     void remove_component(std::shared_ptr<component> const &comp)
     {
+        auto const &disconnect_connection =
+            [](auto &cnx)
+            {
+                cnx.disconnect();
+            };
+
         for (auto index = 0; index < components_.size(); ++index)
         {
             if (components_[index] == comp)
             {
                 components_.erase(components_.begin() + index);
                 hints_.erase(hints_.begin() + index);
-                std::for_each(
-                    component_connections_[index].begin(),
-                    component_connections_[index].end(),
-                    [](auto &cnx)
-                    {
-                        cnx.disconnect();
-                    });
+                boost::for_each(
+                    component_connections_[index], disconnect_connection);
 
                 component_connections_.erase(
                     component_connections_.begin() + index);
@@ -227,7 +229,7 @@ struct container::impl
 
         if (!has_focus_)
         {
-            auto const &set_component_focus = 
+            auto const &set_component_focus =
                 [](auto const &comp)
                 {
                     comp->set_focus();
@@ -260,7 +262,6 @@ struct container::impl
             in_focus_operation_ = false;
         };
 
-        
         auto focussed_component = 
             find_first_focussed_component(components_);
 
@@ -279,15 +280,6 @@ struct container::impl
     // ======================================================================
     void focus_next()
     {
-        in_focus_operation_ = true;
-
-        BOOST_SCOPE_EXIT_ALL(this)
-        {
-            in_focus_operation_ = false;
-        };
-
-        bool const had_focus = has_focus_;
-
         auto const &focus_next_component =
             [](auto const &comp)
             {
@@ -295,53 +287,7 @@ struct container::impl
                 return comp->has_focus();
             };
 
-        auto const &first_focussed_component = 
-            find_first_focussed_component(components_);
-        
-        // Since we are focussing the next component, we want to look at
-        // components from the first focussed component if there was one, 
-        // otherwise the first subcomponent.
-        auto const &increment_from =
-            first_focussed_component == components_.cend()
-        ? components_.cbegin()
-        : first_focussed_component;
-
-        auto const &next_focussed_component = 
-            increment_focus(
-                boost::make_iterator_range(
-                    increment_from, components_.cend()),
-                focus_next_component);
-
-        has_focus_ = next_focussed_component != components_.end();
-
-        // Announce a change in focus if that changed.
-        if (had_focus != has_focus_)
-        {
-            if (has_focus_)
-            {
-                self_.on_focus_set();
-            }
-            else
-            {
-                self_.on_focus_lost();
-            }
-
-            self_.on_cursor_position_changed();
-            self_.on_cursor_state_changed();
-        }
-
-        // If we had focus continuously, but the focussed subcomponent changed,
-        // then we also want to announce cursor changes, since even though the
-        // position and state of the cursor in the individual subcomponents 
-        // hasn't changed (and therefore they have no reason to send such a
-        // signal), we know that the cursor may have moved about due to focus.
-        if (had_focus 
-         && has_focus_ 
-         && increment_from != next_focussed_component)
-        {
-            self_.on_cursor_position_changed();
-            self_.on_cursor_state_changed();
-        }
+        focus_incremental(components_, focus_next_component);
     }
 
     // ======================================================================
@@ -350,17 +296,6 @@ struct container::impl
     void focus_previous()
     {
         using boost::adaptors::reversed;
-        using std::cbegin;
-        using std::cend;
-        
-        in_focus_operation_ = true;
-
-        BOOST_SCOPE_EXIT_ALL(this)
-        {
-            in_focus_operation_ = false;
-        };
-
-        bool const had_focus = has_focus_;
 
         auto const &focus_previous_component =
             [](auto const &comp)
@@ -369,55 +304,7 @@ struct container::impl
                 return comp->has_focus();
             };
 
-        auto const &reversed_components = components_ | reversed;
-
-        auto const &first_focussed_component = 
-            find_first_focussed_component(reversed_components);
-        
-        // Since we are focussing the previous component, we want to look at 
-        // components from the last focussed component if there was one,
-        // otherwise the last subcomponent.
-        auto const &increment_from =
-            first_focussed_component == cend(reversed_components)
-        ? cbegin(reversed_components)
-        : first_focussed_component;
-
-        auto const &previous_focussed_component = 
-            increment_focus(
-                boost::make_iterator_range(
-                    increment_from, cend(reversed_components)),
-                focus_previous_component);
-
-        has_focus_ = previous_focussed_component != cend(reversed_components);
-
-        // Announce a change in focus if that changed.
-        if (had_focus != has_focus_)
-        {
-            if (has_focus_)
-            {
-                self_.on_focus_set();
-            }
-            else
-            {
-                self_.on_focus_lost();
-            }
-
-            self_.on_cursor_position_changed();
-            self_.on_cursor_state_changed();
-        }
-
-        // If we had focus continuously, but the focussed subcomponent changed,
-        // then we also want to announce cursor changes, since even though the
-        // position and state of the cursor in the individual subcomponents 
-        // hasn't changed (and therefore they have no reason to send such a
-        // signal), we know that the cursor may have moved about due to focus.
-        if (had_focus 
-         && has_focus_ 
-         && increment_from != previous_focussed_component)
-        {
-            self_.on_cursor_position_changed();
-            self_.on_cursor_state_changed();
-        }
+        focus_incremental(components_ | reversed, focus_previous_component);
     }
 
     // ======================================================================
@@ -529,6 +416,70 @@ private:
     void layout_container()
     {
         (*layout_)(components_, hints_, bounds_.size);
+    }
+
+    // ======================================================================
+    // FOCUS_INCREMENTAL
+    // ======================================================================
+    template <typename ForwardRange, typename Op>
+    void focus_incremental(const ForwardRange &components, Op &&increment_op)
+    {
+        using std::cbegin;
+        using std::cend;
+        
+        in_focus_operation_ = true;
+
+        BOOST_SCOPE_EXIT_ALL(this)
+        {
+            in_focus_operation_ = false;
+        };
+
+        bool const had_focus = has_focus_;
+
+        auto const &first_focussed_component = 
+            find_first_focussed_component(components);
+        
+        auto const &increment_from =
+            first_focussed_component == cend(components)
+          ? cbegin(components)
+          : first_focussed_component;
+
+        auto const &incrementally_focussed_component = 
+            increment_focus(
+                boost::make_iterator_range(
+                    increment_from, cend(components)),
+                std::forward<Op>(increment_op));
+
+        has_focus_ = incrementally_focussed_component != cend(components);
+
+        // Announce a change in focus if that changed.
+        if (had_focus != has_focus_)
+        {
+            if (has_focus_)
+            {
+                self_.on_focus_set();
+            }
+            else
+            {
+                self_.on_focus_lost();
+            }
+
+            self_.on_cursor_position_changed();
+            self_.on_cursor_state_changed();
+        }
+
+        // If we had focus continuously, but the focussed subcomponent changed,
+        // then we also want to announce cursor changes, since even though the
+        // position and state of the cursor in the individual subcomponents 
+        // hasn't changed (and therefore they have no reason to send such a
+        // signal), we know that the cursor may have moved about due to focus.
+        if (had_focus 
+         && has_focus_ 
+         && increment_from != incrementally_focussed_component)
+        {
+            self_.on_cursor_position_changed();
+            self_.on_cursor_state_changed();
+        }
     }
 
     // ======================================================================
