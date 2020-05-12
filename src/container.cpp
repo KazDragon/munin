@@ -6,8 +6,10 @@
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
+#include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/algorithm/find_if.hpp>
+#include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/scope_exit.hpp>
 #include <vector>
@@ -77,11 +79,123 @@ struct container::impl
     }
 
     // ======================================================================
-    // LAYOUT_CONTAINER
+    // SET_LAYOUT
     // ======================================================================
-    void layout_container()
+    void set_layout(std::unique_ptr<munin::layout> &&lyt)
     {
-        (*layout_)(components_, hints_, bounds_.size);
+        layout_ = lyt.get() == nullptr 
+                ? make_null_layout() 
+                : std::move(lyt);
+        layout_container();
+    }
+
+    // ======================================================================
+    // ADD_COMPONENT
+    // ======================================================================
+    void add_component(
+        std::shared_ptr<component> const &comp,
+        boost::any                 const &layout_hint)
+    {
+        component_connections cnx;
+
+        cnx.push_back(comp->on_focus_set.connect(
+            [this, wcomp = std::weak_ptr<component>(comp)]
+            {
+                this->subcomponent_focus_set_handler(wcomp);
+            }));
+
+        cnx.push_back(comp->on_focus_lost.connect(
+            [this]
+            {
+                this->subcomponent_focus_lost_handler();
+            }));
+
+        cnx.push_back(comp->on_cursor_state_changed.connect(
+            [this, wcomp = std::weak_ptr<component>(comp)]
+            {
+                this->subcomponent_cursor_state_change_handler(wcomp);
+            }));
+
+        cnx.push_back(comp->on_cursor_position_changed.connect(
+            [this, wcomp = std::weak_ptr<component>(comp)]
+            {
+                this->subcomponent_cursor_position_change_handler(wcomp);
+            }));
+
+        cnx.push_back(comp->on_redraw.connect(
+            [this, wcomp = std::weak_ptr<component>(comp)](
+                auto const &redraw_regions)
+            {
+                this->subcomponent_redraw_handler(wcomp, redraw_regions);
+            }));
+
+        components_.push_back(comp);
+        hints_.push_back(layout_hint);
+        component_connections_.push_back(cnx);
+        layout_container();
+        self_.on_preferred_size_changed();
+    }
+
+    // ======================================================================
+    // REMOVE_COMPONENT
+    // ======================================================================
+    void remove_component(std::shared_ptr<component> const &comp)
+    {
+        auto const &disconnect_connection =
+            [](auto &cnx)
+            {
+                cnx.disconnect();
+            };
+
+        for (auto index = 0; index < components_.size(); ++index)
+        {
+            if (components_[index] == comp)
+            {
+                components_.erase(components_.begin() + index);
+                hints_.erase(hints_.begin() + index);
+                boost::for_each(
+                    component_connections_[index], disconnect_connection);
+
+                component_connections_.erase(
+                    component_connections_.begin() + index);
+            }
+        }
+
+        layout_container();
+        self_.on_preferred_size_changed();
+    }
+
+    // ======================================================================
+    // SET_POSITION
+    // ======================================================================
+    void set_position(terminalpp::point const &position)
+    {
+        bounds_.origin = position;
+    }
+
+    // ======================================================================
+    // GET_POSITION
+    // ======================================================================
+    terminalpp::point get_position() const
+    {
+        return bounds_.origin;
+    }
+
+    // ======================================================================
+    // SET_SIZE
+    // ======================================================================
+    void set_size(terminalpp::extent const &size)
+    {
+        bounds_.size = size;
+        layout_container();
+    }
+
+    // ======================================================================
+    // GET_SIZE
+    // ======================================================================
+    terminalpp::extent get_size() const
+    {
+        return bounds_.size;
     }
 
     // ======================================================================
@@ -92,15 +206,279 @@ struct container::impl
         return layout_->get_preferred_size(components_, hints_);
     }
 
+
+    // ==========================================================================
+    // DO_HAS_FOCUS
+    // ==========================================================================
+    bool has_focus() const
+    {
+        return has_focus_;
+    }
+
     // ======================================================================
-    // DRAW_COMPONENTS
+    // SET_FOCUS
     // ======================================================================
-    void draw_components(
+    void set_focus()
+    {
+        in_focus_operation_ = true;
+
+        BOOST_SCOPE_EXIT_ALL(this)
+        {
+            in_focus_operation_ = false;
+        };
+
+        if (!has_focus_)
+        {
+            auto const &set_component_focus =
+                [](auto const &comp)
+                {
+                    comp->set_focus();
+                    return comp->has_focus();
+                };
+
+            auto const &focussed_component = 
+                increment_focus(components_, set_component_focus);
+
+            has_focus_ = focussed_component != components_.end();
+
+            if (has_focus_)
+            {
+                self_.on_focus_set();
+                self_.on_cursor_state_changed();
+                self_.on_cursor_position_changed();
+            }
+        }
+    }
+
+    // ======================================================================
+    // LOSE_FOCUS
+    // ======================================================================
+    void lose_focus()
+    {
+        in_focus_operation_ = true;
+
+        BOOST_SCOPE_EXIT_ALL(this)
+        {
+            in_focus_operation_ = false;
+        };
+
+        auto focussed_component = 
+            find_first_focussed_component(components_);
+
+        if (focussed_component != components_.end())
+        {
+            (*focussed_component)->lose_focus();
+            has_focus_ = false;
+            self_.on_focus_lost();
+            self_.on_cursor_state_changed();
+            self_.on_cursor_position_changed();
+        }
+    }
+
+    // ======================================================================
+    // FOCUS_NEXT
+    // ======================================================================
+    void focus_next()
+    {
+        auto const &focus_next_component =
+            [](auto const &comp)
+            {
+                comp->focus_next();
+                return comp->has_focus();
+            };
+
+        focus_incremental(components_, focus_next_component);
+    }
+
+    // ======================================================================
+    // FOCUS_PREVIOUS
+    // ======================================================================
+    void focus_previous()
+    {
+        using boost::adaptors::reversed;
+
+        auto const &focus_previous_component =
+            [](auto const &comp)
+            {
+                comp->focus_previous();
+                return comp->has_focus();
+            };
+
+        focus_incremental(components_ | reversed, focus_previous_component);
+    }
+
+    // ======================================================================
+    // GET_CURSOR_STATE
+    // ======================================================================
+    bool get_cursor_state() const
+    {
+        auto comp = find_first_focussed_component(components_);
+
+        return comp == components_.end()
+             ? false
+             : (*comp)->get_cursor_state();
+    }
+
+    // ======================================================================
+    // GET_CURSOR_POSITION
+    // ======================================================================
+    terminalpp::point get_cursor_position() const
+    {
+        auto comp = find_first_focussed_component(components_);
+
+        return comp == components_.end()
+            ? terminalpp::point{}
+            : (*comp)->get_position() + (*comp)->get_cursor_position();
+    }
+
+    // ======================================================================
+    // SET_CURSOR_POSITION
+    // ======================================================================
+    void set_cursor_position(terminalpp::point const &position)
+    {
+        // Note: Setting the cursor position on a container doesn't really
+        // make too much sense, but an implementation is required to fulfil the
+        // component interface.  Our default implementation sets the relative
+        // cursor position in the focussed component.
+        auto comp = find_first_focussed_component(components_);
+
+        if (comp != components_.end())
+        {
+            (*comp)->set_cursor_position(position - (*comp)->get_position());
+        }
+    }
+
+    // ======================================================================
+    // DRAW
+    // ======================================================================
+    void draw(
         render_surface &surface, terminalpp::rectangle const &region) const
     {
         for (auto const &comp : components_)
         {
             draw_component(comp, surface, region);
+        }
+    }
+
+    // ======================================================================
+    // EVENT
+    // ======================================================================
+    void event(boost::any const &ev)
+    {
+        // We split incoming events into two types:
+        // * Common events (e.g. keypressed, etc.) are passed on to the
+        //   subcomponent with focus.
+        // * Mouse events are passed on to the subcomponent at the location
+        //   of the event, and the co-ordinates of the event are passed on
+        //   relative to the subcomponent's location.
+        auto const *report = 
+            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+
+        if (report == nullptr)
+        {
+            handle_common_event(ev);
+        }
+        else
+        {
+            handle_mouse_event(*report);
+        }
+    }
+
+    // ======================================================================
+    // TO_JSON
+    // ======================================================================
+    nlohmann::json to_json() const
+    {
+        nlohmann::json json = {
+            { "type",            "container" },
+            { "position",        detail::to_json(get_position()) },
+            { "size",            detail::to_json(get_size()) },
+            { "preferred_size",  detail::to_json(get_preferred_size()) },
+            { "has_focus",       has_focus() },
+            { "cursor_state",    get_cursor_state() },
+            { "cursor_position", detail::to_json(get_cursor_position()) },
+        };
+
+        auto &subcomponents = json["subcomponents"];
+
+        for (auto index = size_t{0}; index < components_.size(); ++index)
+        {
+            subcomponents[index] = components_[index]->to_json();
+        }
+
+        return json;
+    }
+
+private:
+    // ======================================================================
+    // LAYOUT_CONTAINER
+    // ======================================================================
+    void layout_container()
+    {
+        (*layout_)(components_, hints_, bounds_.size);
+    }
+
+    // ======================================================================
+    // FOCUS_INCREMENTAL
+    // ======================================================================
+    template <typename ForwardRange, typename Op>
+    void focus_incremental(const ForwardRange &components, Op &&increment_op)
+    {
+        using std::cbegin;
+        using std::cend;
+        
+        in_focus_operation_ = true;
+
+        BOOST_SCOPE_EXIT_ALL(this)
+        {
+            in_focus_operation_ = false;
+        };
+
+        bool const had_focus = has_focus_;
+
+        auto const &first_focussed_component = 
+            find_first_focussed_component(components);
+        
+        auto const &increment_from =
+            first_focussed_component == cend(components)
+          ? cbegin(components)
+          : first_focussed_component;
+
+        auto const &incrementally_focussed_component = 
+            increment_focus(
+                boost::make_iterator_range(
+                    increment_from, cend(components)),
+                std::forward<Op>(increment_op));
+
+        has_focus_ = incrementally_focussed_component != cend(components);
+
+        // Announce a change in focus if that changed.
+        if (had_focus != has_focus_)
+        {
+            if (has_focus_)
+            {
+                self_.on_focus_set();
+            }
+            else
+            {
+                self_.on_focus_lost();
+            }
+
+            self_.on_cursor_position_changed();
+            self_.on_cursor_state_changed();
+        }
+
+        // If we had focus continuously, but the focussed subcomponent changed,
+        // then we also want to announce cursor changes, since even though the
+        // position and state of the cursor in the individual subcomponents 
+        // hasn't changed (and therefore they have no reason to send such a
+        // signal), we know that the cursor may have moved about due to focus.
+        if (had_focus 
+         && has_focus_ 
+         && increment_from != incrementally_focussed_component)
+        {
+            self_.on_cursor_position_changed();
+            self_.on_cursor_state_changed();
         }
     }
 
@@ -252,29 +630,6 @@ struct container::impl
     }
 
     // ======================================================================
-    // DO_EVENT
-    // ======================================================================
-    void do_event(boost::any const &event)
-    {
-        // We split incoming events into two types:
-        // * Common events (e.g. keypressed, etc.) are passed on to the
-        //   subcomponent with focus.
-        // * Mouse events are passed on to the subcomponent at the location
-        //   of the event, and the co-ordinates of the event are passed on
-        //   relative to the subcomponent's location.
-        auto const *report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-
-        if (report == nullptr)
-        {
-            handle_common_event(event);
-        }
-        else
-        {
-            handle_mouse_event(*report);
-        }
-    }
-
-    // ======================================================================
     // HANDLE_COMMON_EVENT
     // ======================================================================
     void handle_common_event(boost::any const &event)
@@ -323,8 +678,8 @@ struct container::impl
 // CONSTRUCTOR
 // ==========================================================================
 container::container()
+  : pimpl_(boost::make_unique<impl>(*this))
 {
-    pimpl_ = std::make_shared<impl>(std::ref(*this));
 }
 
 // ==========================================================================
@@ -339,57 +694,17 @@ container::~container()
 // ==========================================================================
 void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 {
-    pimpl_->layout_ = lyt.get() == nullptr 
-                    ? make_null_layout() 
-                    : std::move(lyt);
-    pimpl_->layout_container();
+    pimpl_->set_layout(std::move(lyt));
 }
 
 // ==========================================================================
 // ADD_COMPONENT
 // ==========================================================================
 void container::add_component(
-    std::shared_ptr<component> const &comp
-  , boost::any                 const &layout_hint)
+    std::shared_ptr<component> const &comp,
+    boost::any                 const &layout_hint)
 {
-    component_connections cnx;
-
-    cnx.push_back(comp->on_focus_set.connect(
-        [this, wcomp = std::weak_ptr<component>(comp)]
-        {
-            pimpl_->subcomponent_focus_set_handler(wcomp);
-        }));
-
-    cnx.push_back(comp->on_focus_lost.connect(
-        [this]
-        {
-            pimpl_->subcomponent_focus_lost_handler();
-        }));
-
-    cnx.push_back(comp->on_cursor_state_changed.connect(
-        [this, wcomp = std::weak_ptr<component>(comp)]
-        {
-            pimpl_->subcomponent_cursor_state_change_handler(wcomp);
-        }));
-
-    cnx.push_back(comp->on_cursor_position_changed.connect(
-        [this, wcomp = std::weak_ptr<component>(comp)]
-        {
-            pimpl_->subcomponent_cursor_position_change_handler(wcomp);
-        }));
-
-    cnx.push_back(comp->on_redraw.connect(
-        [this, wcomp = std::weak_ptr<component>(comp)](
-            auto const &redraw_regions)
-        {
-            pimpl_->subcomponent_redraw_handler(wcomp, redraw_regions);
-        }));
-
-    pimpl_->components_.push_back(comp);
-    pimpl_->hints_.push_back(layout_hint);
-    pimpl_->component_connections_.push_back(cnx);
-    pimpl_->layout_container();
-    on_preferred_size_changed();
+    pimpl_->add_component(comp, layout_hint);
 }
 
 // ==========================================================================
@@ -397,28 +712,7 @@ void container::add_component(
 // ==========================================================================
 void container::remove_component(std::shared_ptr<component> const &comp)
 {
-    for (auto index = 0; index < pimpl_->components_.size(); ++index)
-    {
-        if (pimpl_->components_[index] == comp)
-        {
-            pimpl_->components_.erase(pimpl_->components_.begin() + index);
-            pimpl_->hints_.erase(pimpl_->hints_.begin() + index);
-
-            std::for_each(
-                pimpl_->component_connections_[index].begin(),
-                pimpl_->component_connections_[index].end(),
-                [](auto &cnx)
-                {
-                    cnx.disconnect();
-                });
-
-            pimpl_->component_connections_.erase(
-                pimpl_->component_connections_.begin() + index);
-        }
-    }
-
-    pimpl_->layout_container();
-    on_preferred_size_changed();
+    pimpl_->remove_component(comp);
 }
 
 // ==========================================================================
@@ -426,7 +720,7 @@ void container::remove_component(std::shared_ptr<component> const &comp)
 // ==========================================================================
 void container::do_set_position(terminalpp::point const &position)
 {
-    pimpl_->bounds_.origin = position;
+    pimpl_->set_position(position);
 }
 
 // ==========================================================================
@@ -434,7 +728,7 @@ void container::do_set_position(terminalpp::point const &position)
 // ==========================================================================
 terminalpp::point container::do_get_position() const
 {
-    return pimpl_->bounds_.origin;
+    return pimpl_->get_position();
 }
 
 // ==========================================================================
@@ -442,8 +736,7 @@ terminalpp::point container::do_get_position() const
 // ==========================================================================
 void container::do_set_size(terminalpp::extent const &size)
 {
-    pimpl_->bounds_.size = size;
-    pimpl_->layout_container();
+    pimpl_->set_size(size);
 }
 
 // ==========================================================================
@@ -451,7 +744,7 @@ void container::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent container::do_get_size() const
 {
-    return pimpl_->bounds_.size;
+    return pimpl_->get_size();
 }
 
 // ==========================================================================
@@ -467,7 +760,7 @@ terminalpp::extent container::do_get_preferred_size() const
 // ==========================================================================
 bool container::do_has_focus() const
 {
-    return pimpl_->has_focus_;
+    return pimpl_->has_focus();
 }
 
 // ==========================================================================
@@ -475,34 +768,7 @@ bool container::do_has_focus() const
 // ==========================================================================
 void container::do_set_focus()
 {
-    pimpl_->in_focus_operation_ = true;
-
-    BOOST_SCOPE_EXIT_ALL(this)
-    {
-        pimpl_->in_focus_operation_ = false;
-    };
-
-    if (!pimpl_->has_focus_)
-    {
-        auto const &set_component_focus = 
-            [](auto const &comp)
-            {
-                comp->set_focus();
-                return comp->has_focus();
-            };
-
-        auto const &focussed_component = 
-            increment_focus(pimpl_->components_, set_component_focus);
-
-        pimpl_->has_focus_ = focussed_component != pimpl_->components_.end();
-
-        if (pimpl_->has_focus_)
-        {
-            on_focus_set();
-            on_cursor_state_changed();
-            on_cursor_position_changed();
-        }
-    }
+    pimpl_->set_focus();
 }
 
 // ==========================================================================
@@ -510,25 +776,7 @@ void container::do_set_focus()
 // ==========================================================================
 void container::do_lose_focus()
 {
-    pimpl_->in_focus_operation_ = true;
-
-    BOOST_SCOPE_EXIT_ALL(this)
-    {
-        pimpl_->in_focus_operation_ = false;
-    };
-
-    
-    auto focussed_component = 
-        find_first_focussed_component(pimpl_->components_);
-
-    if (focussed_component != pimpl_->components_.end())
-    {
-        (*focussed_component)->lose_focus();
-        pimpl_->has_focus_ = false;
-        on_focus_lost();
-        on_cursor_state_changed();
-        on_cursor_position_changed();
-    }
+    pimpl_->lose_focus();
 }
 
 // ==========================================================================
@@ -536,69 +784,7 @@ void container::do_lose_focus()
 // ==========================================================================
 void container::do_focus_next()
 {
-    pimpl_->in_focus_operation_ = true;
-
-    BOOST_SCOPE_EXIT_ALL(this)
-    {
-        pimpl_->in_focus_operation_ = false;
-    };
-
-    bool const had_focus = pimpl_->has_focus_;
-
-    auto const &focus_next_component =
-        [](auto const &comp)
-        {
-            comp->focus_next();
-            return comp->has_focus();
-        };
-
-    auto const &first_focussed_component = 
-        find_first_focussed_component(pimpl_->components_);
-    
-    // Since we are focussing the next component, we want to look at components
-    // from the first focussed component if there was one, otherwise the
-    // first subcomponent.
-    auto const &increment_from =
-        first_focussed_component == pimpl_->components_.cend()
-      ? pimpl_->components_.cbegin()
-      : first_focussed_component;
-
-    auto const &next_focussed_component = 
-        increment_focus(
-            boost::make_iterator_range(
-                increment_from, pimpl_->components_.cend()),
-            focus_next_component);
-
-    pimpl_->has_focus_ = next_focussed_component != pimpl_->components_.end();
-
-    // Announce a change in focus if that changed.
-    if (had_focus != pimpl_->has_focus_)
-    {
-        if (pimpl_->has_focus_)
-        {
-            on_focus_set();
-        }
-        else
-        {
-            on_focus_lost();
-        }
-
-        on_cursor_position_changed();
-        on_cursor_state_changed();
-    }
-
-    // If we had focus continuously, but the focussed subcomponent changed,
-    // then we also want to announce cursor changes, since even though the
-    // position and state of the cursor in the individual subcomponents hasn't
-    // changed (and therefore they have no reason to send such a signal),
-    // we know that the cursor may have moved about due to focus.
-    if (had_focus 
-     && pimpl_->has_focus_ 
-     && increment_from != next_focussed_component)
-    {
-        on_cursor_position_changed();
-        on_cursor_state_changed();
-    }
+    pimpl_->focus_next();
 }
 
 // ==========================================================================
@@ -606,76 +792,7 @@ void container::do_focus_next()
 // ==========================================================================
 void container::do_focus_previous()
 {
-    using boost::adaptors::reversed;
-    using std::cbegin;
-    using std::cend;
-    
-    pimpl_->in_focus_operation_ = true;
-
-    BOOST_SCOPE_EXIT_ALL(this)
-    {
-        pimpl_->in_focus_operation_ = false;
-    };
-
-    bool const had_focus = pimpl_->has_focus_;
-
-    auto const &focus_previous_component =
-        [](auto const &comp)
-        {
-            comp->focus_previous();
-            return comp->has_focus();
-        };
-
-    auto const &reversed_components = pimpl_->components_ | reversed;
-
-    auto const &first_focussed_component = 
-        find_first_focussed_component(reversed_components);
-    
-    // Since we are focussing the next component, we want to look at components
-    // from the first focussed component if there was one, otherwise the
-    // first subcomponent.
-    auto const &increment_from =
-        first_focussed_component == cend(reversed_components)
-      ? cbegin(reversed_components)
-      : first_focussed_component;
-
-    auto const &previous_focussed_component = 
-        increment_focus(
-            boost::make_iterator_range(
-                increment_from, cend(reversed_components)),
-            focus_previous_component);
-
-    pimpl_->has_focus_ = 
-        previous_focussed_component != cend(reversed_components);
-
-    // Announce a change in focus if that changed.
-    if (had_focus != pimpl_->has_focus_)
-    {
-        if (pimpl_->has_focus_)
-        {
-            on_focus_set();
-        }
-        else
-        {
-            on_focus_lost();
-        }
-
-        on_cursor_position_changed();
-        on_cursor_state_changed();
-    }
-
-    // If we had focus continuously, but the focussed subcomponent changed,
-    // then we also want to announce cursor changes, since even though the
-    // position and state of the cursor in the individual subcomponents hasn't
-    // changed (and therefore they have no reason to send such a signal),
-    // we know that the cursor may have moved about due to focus.
-    if (had_focus 
-     && pimpl_->has_focus_ 
-     && increment_from != previous_focussed_component)
-    {
-        on_cursor_position_changed();
-        on_cursor_state_changed();
-    }
+    pimpl_->focus_previous();
 }
 
 // ==========================================================================
@@ -683,11 +800,7 @@ void container::do_focus_previous()
 // ==========================================================================
 bool container::do_get_cursor_state() const
 {
-    auto comp = find_first_focussed_component(pimpl_->components_);
-
-    return comp == pimpl_->components_.end()
-         ? false
-         : (*comp)->get_cursor_state();
+    return pimpl_->get_cursor_state();
 }
 
 // ==========================================================================
@@ -695,11 +808,7 @@ bool container::do_get_cursor_state() const
 // ==========================================================================
 terminalpp::point container::do_get_cursor_position() const
 {
-    auto comp = find_first_focussed_component(pimpl_->components_);
-
-    return comp == pimpl_->components_.end()
-         ? terminalpp::point{}
-         : (*comp)->get_position() + (*comp)->get_cursor_position();
+    return pimpl_->get_cursor_position();
 }
 
 // ==========================================================================
@@ -707,16 +816,7 @@ terminalpp::point container::do_get_cursor_position() const
 // ==========================================================================
 void container::do_set_cursor_position(terminalpp::point const &position)
 {
-    // Note: Setting the cursor position on a container doesn't really
-    // make too much sense, but an implementation is required to fulfil the
-    // component interface.  Our default implementation sets the relative
-    // cursor position in the focussed component.
-    auto comp = find_first_focussed_component(pimpl_->components_);
-
-    if (comp != pimpl_->components_.end())
-    {
-        (*comp)->set_cursor_position(position - (*comp)->get_position());
-    }
+    pimpl_->set_cursor_position(position);
 }
 
 // ==========================================================================
@@ -725,7 +825,7 @@ void container::do_set_cursor_position(terminalpp::point const &position)
 void container::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-    pimpl_->draw_components(surface, region);
+    pimpl_->draw(surface, region);
 }
 
 // ==========================================================================
@@ -733,7 +833,15 @@ void container::do_draw(
 // ==========================================================================
 void container::do_event(boost::any const &event)
 {
-    pimpl_->do_event(event);
+    pimpl_->event(event);
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json container::do_to_json() const
+{
+    return pimpl_->to_json();
 }
 
 // ==========================================================================
@@ -742,31 +850,6 @@ void container::do_event(boost::any const &event)
 std::shared_ptr<container> make_container()
 {
     return std::make_shared<container>();
-}
-
-// ==========================================================================
-// DO_TO_JSON
-// ==========================================================================
-nlohmann::json container::do_to_json() const
-{
-    nlohmann::json json = {
-        { "type",            "container" },
-        { "position",        detail::to_json(get_position()) },
-        { "size",            detail::to_json(get_size()) },
-        { "preferred_size",  detail::to_json(get_preferred_size()) },
-        { "has_focus",       has_focus() },
-        { "cursor_state",    get_cursor_state() },
-        { "cursor_position", detail::to_json(get_cursor_position()) },
-    };
-
-    auto &subcomponents = json["subcomponents"];
-
-    for (auto index = size_t{0}; index < pimpl_->components_.size(); ++index)
-    {
-        subcomponents[index] = pimpl_->components_[index]->to_json();
-    }
-
-    return json;
 }
 
 }
