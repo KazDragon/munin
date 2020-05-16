@@ -7,6 +7,8 @@ using testing::Invoke;
 using testing::Return;
 using testing::_;
 
+namespace {
+
 class a_framed_component_with_an_inner_component
   : public testing::Test
 {
@@ -61,6 +63,8 @@ protected:
     }
 };
 
+}
+
 TEST_F(a_framed_component_with_an_inner_component_that_takes_no_focus, refuses_set_focus)
 {
     framed_component_->set_focus();
@@ -87,6 +91,8 @@ TEST_F(a_framed_component_with_an_inner_component_that_takes_no_focus, refuses_p
     ASSERT_EQ(0, focus_set_count_);
     ASSERT_EQ(0, focus_lost_count_);
 }
+
+namespace {
 
 class a_framed_component_with_an_inner_component_that_can_have_focus_set
   : public a_framed_component_with_an_inner_component
@@ -121,6 +127,8 @@ protected:
     bool has_focus_{false};
 };
 
+}
+
 TEST_F(a_framed_component_with_an_inner_component_that_can_have_focus_set, sets_inner_component_focus_when_setting_focus)
 {
     framed_component_->set_focus();
@@ -148,6 +156,8 @@ TEST_F(a_framed_component_with_an_inner_component_that_can_have_focus_set, sets_
     ASSERT_EQ(0, focus_lost_count_);
 }
 
+namespace {
+
 class a_framed_component_with_an_inner_component_that_has_focus
   : public a_framed_component_with_an_inner_component
 {
@@ -168,6 +178,8 @@ protected:
 
     bool has_focus_{false};
 };
+
+}
 
 TEST_F(a_framed_component_with_an_inner_component_that_has_focus, loses_innert_component_focus_when_losing_focus)
 {

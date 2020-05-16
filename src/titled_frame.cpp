@@ -6,37 +6,22 @@
 
 namespace munin {
 
+// ==========================================================================
+// TITLED_FRAME::IMPLEMENTATION STRUCTURE
+// ==========================================================================
 struct titled_frame::impl
 {
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
     impl(titled_frame &self)
       : self(self)
     {
     }
     
-    titled_frame &self;
-    terminalpp::string title_text;
-    std::shared_ptr<image> title;
-    terminalpp::attribute lowlight_attribute;
-    terminalpp::attribute highlight_attribute = {
-        terminalpp::ansi::graphics::colour::cyan,
-        terminalpp::colour(),
-        terminalpp::ansi::graphics::intensity::bold};
-    terminalpp::attribute *current_attribute = &lowlight_attribute;
-
-    void evaluate_focus(std::shared_ptr<component> const &associated_component)
-    {
-        auto *old_attribute = current_attribute;
-        
-        current_attribute = associated_component->has_focus()
-                          ? &highlight_attribute
-                          : &lowlight_attribute;
-                          
-        if (old_attribute != current_attribute)
-        {
-            redraw_frame();
-        }
-    }
-
+    // ======================================================================
+    // REDRAW_FRAME
+    // ======================================================================
     void redraw_frame()
     {
         auto size = self.get_size();
@@ -66,6 +51,11 @@ struct titled_frame::impl
             south_beam_region, west_beam_region, east_beam_region
         });
     }
+
+    titled_frame &self;
+    terminalpp::string title_text;
+    std::shared_ptr<image> title;
+    terminalpp::attribute current_attribute;
 };
 
 // ==========================================================================
@@ -125,46 +115,6 @@ titled_frame::~titled_frame()
 }
 
 // ==========================================================================
-// SET_HIGHLIGHT_ATTRIBUTE
-// ==========================================================================
-void titled_frame::set_highlight_attribute(
-    terminalpp::attribute const &highlight_attribute)
-{
-    pimpl_->highlight_attribute = highlight_attribute;
-}
-
-// ==========================================================================
-// SET_LOWLIGHT_ATTRIBUTE
-// ==========================================================================
-void titled_frame::set_lowlight_attribute(
-    terminalpp::attribute const &lowlight_attribute)
-{
-    pimpl_->lowlight_attribute = lowlight_attribute;
-}
-
-// ==========================================================================
-// HIGHLIGHT_ON_FOCUS
-// ==========================================================================
-void titled_frame::highlight_on_focus(
-    std::shared_ptr<component> const &associated_component)
-{
-    auto const evaluate_focus = 
-        [this, wp = std::weak_ptr<component>(associated_component)]
-        {
-            std::shared_ptr<component> associated_component(wp.lock());
-
-            if (associated_component)
-            {
-                pimpl_->evaluate_focus(associated_component);
-            }
-        };
-
-    associated_component->on_focus_set.connect(evaluate_focus);
-    associated_component->on_focus_lost.connect(evaluate_focus);
-    evaluate_focus();
-}
-
-// ==========================================================================
 // NORTH_BORDER_HEIGHT
 // ==========================================================================
 terminalpp::coordinate_type titled_frame::north_border_height() const
@@ -209,6 +159,15 @@ nlohmann::json titled_frame::do_to_json() const
     json["title"] = to_string(pimpl_->title_text);
     
     return json;
+}
+
+// ==========================================================================
+// DO_INNER_FOCUS_CHANGED
+// ==========================================================================
+void titled_frame::do_inner_focus_changed()
+{
+    pimpl_->current_attribute = get_focus_attribute();
+    pimpl_->redraw_frame();
 }
 
 // ==========================================================================

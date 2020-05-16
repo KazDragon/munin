@@ -75,14 +75,14 @@ auto select_vertical_beam_glyph(render_surface const &surface)
 // MAKE_TOP_LEFT_CORNER_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_top_left_corner_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_top_left_corner_glyph(surface), 
-                *attr
+                attr
             };
         });
 }
@@ -91,14 +91,14 @@ std::shared_ptr<munin::filled_box> make_top_left_corner_fill(
 // MAKE_HORIZONTAL_BEAM_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_horizontal_beam_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_horizontal_beam_glyph(surface), 
-                *attr
+                attr
             };
         });
 }
@@ -107,14 +107,14 @@ std::shared_ptr<munin::filled_box> make_horizontal_beam_fill(
 // MAKE_TOP_RIGHT_CORNER_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_top_right_corner_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_top_right_corner_glyph(surface), 
-                *attr
+                attr
             };
         });
 }
@@ -123,14 +123,14 @@ std::shared_ptr<munin::filled_box> make_top_right_corner_fill(
 // MAKE_VERTICAL_BEAM_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_vertical_beam_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_vertical_beam_glyph(surface), 
-                *attr
+                attr
             };
         });
 }
@@ -139,14 +139,14 @@ std::shared_ptr<munin::filled_box> make_vertical_beam_fill(
 // MAKE_BOTTOM_LEFT_CORNER_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_bottom_left_corner_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_bottom_left_corner_glyph(surface), 
-                *attr
+                attr
             };
         });
 }
@@ -155,14 +155,14 @@ std::shared_ptr<munin::filled_box> make_bottom_left_corner_fill(
 // MAKE_BOTTOM_RIGHT_CORNER_FILL
 // ==========================================================================
 std::shared_ptr<munin::filled_box> make_bottom_right_corner_fill(
-    terminalpp::attribute *&attr)
+    terminalpp::attribute const &attr)
 {
     return munin::make_fill(
         [&attr](render_surface &surface)
         {
             return terminalpp::element{
                 select_bottom_right_corner_glyph(surface), 
-                *attr
+                attr
             };
         });
 }

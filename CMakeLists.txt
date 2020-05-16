@@ -73,6 +73,7 @@ target_sources(munin
         src/container.cpp
         src/edit.cpp
         src/filled_box.cpp
+        src/frame.cpp
         src/framed_component.cpp
         src/grid_layout.cpp
         src/horizontal_strip_layout.cpp
@@ -168,6 +169,7 @@ target_sources(munin_tester
         test/src/filled_box/filled_box_test.cpp
         test/src/filled_box/functional_filled_box_test.cpp
         test/src/framed_component/framed_component_focus_test.cpp
+        test/src/framed_component/framed_component_highlight_test.cpp
         test/src/framed_component/framed_component_json_test.cpp
         test/src/framed_component/framed_component_test.cpp
         test/src/framed_component/framed_component_mouse_test.cpp

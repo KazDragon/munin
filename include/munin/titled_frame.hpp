@@ -27,25 +27,6 @@ public :
     ~titled_frame();
     
     //* =====================================================================
-    /// \brief Sets the highlight attribute.
-    //* =====================================================================
-    void set_highlight_attribute(
-        terminalpp::attribute const &highlight_attribute);
-        
-    //* =====================================================================
-    /// \brief Sets the lowlight attribute.
-    //* =====================================================================
-    void set_lowlight_attribute(
-        terminalpp::attribute const &lowlight_attribute);
-    
-    //* =====================================================================
-    /// \brief Associates a component with this frame, such that its focus
-    /// state is reflected by the highlight state of this frame.
-    //* =====================================================================
-    void highlight_on_focus(
-        std::shared_ptr<component> const &associated_component);
-
-    //* =====================================================================
     /// \brief returns the height of the north border.
     //* =====================================================================
     terminalpp::coordinate_type north_border_height() const override;
@@ -72,6 +53,13 @@ protected :
     /// in a custom manner.
     //* =====================================================================
     nlohmann::json do_to_json() const override;
+
+    //* =====================================================================
+    /// \brief Called when the focus of the associated component has changed
+    /// Derived classes must override this to provide appropriate redraw
+    /// callbacks so that the frame can be redrawn with this new focus.
+    //* =====================================================================
+    void do_inner_focus_changed() override;
 
 private :
     struct impl;

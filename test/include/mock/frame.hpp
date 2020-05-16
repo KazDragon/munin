@@ -160,6 +160,7 @@ public :
     MOCK_CONST_METHOD0(west_border_width, terminalpp::coordinate_type ());
     MOCK_CONST_METHOD0(east_border_width, terminalpp::coordinate_type ());
 
+    MOCK_METHOD0(do_inner_focus_changed, void ());
 };
 
 //* =========================================================================

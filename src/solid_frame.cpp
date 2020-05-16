@@ -6,21 +6,22 @@
 
 namespace munin {
 
+// ==========================================================================
+// SOLID_FRAME::IMPLEMENTATION STRUCTURE
+// ==========================================================================
 struct solid_frame::impl
 {
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
     impl(solid_frame &self)
       : self(self)
     {
     }
-    
-    solid_frame &self;
-    terminalpp::attribute lowlight_attribute;
-    terminalpp::attribute highlight_attribute = {
-        terminalpp::ansi::graphics::colour::cyan,
-        terminalpp::colour(),
-        terminalpp::ansi::graphics::intensity::bold};
-    terminalpp::attribute *current_attribute = &lowlight_attribute;
 
+    // ======================================================================
+    // REDRAW_FRAME
+    // ======================================================================
     void redraw_frame()
     {
         auto size = self.get_size();
@@ -46,20 +47,9 @@ struct solid_frame::impl
             });
         }
     }
-    
-    void evaluate_focus(std::shared_ptr<component> const &associated_component)
-    {
-        auto *old_attribute = current_attribute;
-        
-        current_attribute = associated_component->has_focus()
-                          ? &highlight_attribute
-                          : &lowlight_attribute;
-                          
-        if (current_attribute != old_attribute)
-        {
-            redraw_frame();
-        }
-    }
+
+    solid_frame &self;
+    terminalpp::attribute current_attribute;
 };
 
 // ==========================================================================
@@ -98,46 +88,6 @@ solid_frame::solid_frame()
 // ==========================================================================
 solid_frame::~solid_frame()
 {
-}
-
-// ==========================================================================
-// SET_HIGHLIGHT_ATTRIBUTE
-// ==========================================================================
-void solid_frame::set_highlight_attribute(
-    terminalpp::attribute const &highlight_attribute)
-{
-    pimpl_->highlight_attribute = highlight_attribute;
-}
-
-// ==========================================================================
-// SET_LOWLIGHT_ATTRIBUTE
-// ==========================================================================
-void solid_frame::set_lowlight_attribute(
-    terminalpp::attribute const &lowlight_attribute)
-{
-    pimpl_->lowlight_attribute = lowlight_attribute;
-}
-
-// ==========================================================================
-// HIGHLIGHT_ON_FOCUS
-// ==========================================================================
-void solid_frame::highlight_on_focus(
-    std::shared_ptr<component> const &associated_component)
-{
-    auto evaluate_focus = 
-        [this, wp = std::weak_ptr<component>(associated_component)]()
-        {
-            std::shared_ptr<component> comp(wp);
-            
-            if (comp)
-            {
-                pimpl_->evaluate_focus(comp);
-            }
-        };
-        
-    associated_component->on_focus_set.connect(evaluate_focus);
-    associated_component->on_focus_lost.connect(evaluate_focus);
-    evaluate_focus();
 }
 
 // ==========================================================================
@@ -182,6 +132,15 @@ nlohmann::json solid_frame::do_to_json() const
     ])"_json;
 
     return composite_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
+// DO_INNER_FOCUS_CHANGED
+// ==========================================================================
+void solid_frame::do_inner_focus_changed()
+{
+    pimpl_->current_attribute = get_focus_attribute();
+    pimpl_->redraw_frame();
 }
 
 // ==========================================================================

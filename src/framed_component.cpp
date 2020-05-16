@@ -91,7 +91,7 @@ std::unique_ptr<layout> make_framed_component_layout()
 // ==========================================================================
 struct framed_component::impl
 {
-    std::shared_ptr<component> frame_;
+    std::shared_ptr<frame> frame_;
     std::shared_ptr<component> inner_component_;
 };
 
@@ -109,6 +109,8 @@ framed_component::framed_component(
     add_component(outer_frame);
     add_component(inner_component);
     set_layout(make_framed_component_layout());
+
+    pimpl_->frame_->highlight_on_focus(pimpl_->inner_component_);
 }
 
 // ==========================================================================
