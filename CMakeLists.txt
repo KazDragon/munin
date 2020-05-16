@@ -73,6 +73,7 @@ target_sources(munin
         src/container.cpp
         src/edit.cpp
         src/filled_box.cpp
+        src/frame.cpp
         src/framed_component.cpp
         src/grid_layout.cpp
         src/horizontal_strip_layout.cpp
