@@ -24,6 +24,21 @@ public :
 
 protected :
     //* =====================================================================
+    /// \brief Returns true if it is allowed for the component to receive
+    /// focus, false otherwise.
+    //* =====================================================================
+    bool can_receive_focus() const;
+
+    //* =====================================================================
+    /// \brief Returns true if it is allowed for the component to receive
+    /// focus, false otherwise.  This is used by the focus functions of
+    /// basic_component.  By default, a component may receive focus at all
+    /// times.  Override this function to specify different behaviour in your
+    /// component.
+    //* =====================================================================
+    virtual bool do_can_receive_focus() const;
+
+    //* =====================================================================
     /// \brief Called by set_position().  Derived classes must override this
     /// function in order to set the position of the component in a custom
     /// manner.
