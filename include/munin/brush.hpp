@@ -54,6 +54,15 @@ public :
 
 protected :
     //* =====================================================================
+    /// \brief Returns true if it is allowed for the component to receive
+    /// focus, false otherwise.  This is used by the focus functions of
+    /// basic_component.  By default, a component may receive focus at all
+    /// times.  Override this function to specify different behaviour in your
+    /// component.
+    //* =====================================================================
+    bool do_can_receive_focus() const override;
+
+    //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
     /// this function in order to get the size of the component in a custom
     /// manner.

@@ -62,6 +62,13 @@ TEST(a_new_brush, draws_whitespace_on_the_canvas)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
 
+TEST(a_new_brush, refuses_focus)
+{
+    munin::brush brush;
+    brush.set_focus();
+    ASSERT_FALSE(brush.has_focus());
+}
+
 TEST(a_new_brush_with_a_single_line_pattern, draws_that_pattern_repeatedly)
 {
     using namespace terminalpp::literals;
