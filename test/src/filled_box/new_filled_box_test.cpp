@@ -39,3 +39,10 @@ TEST(a_new_filled_box, draws_whitespace_on_the_canvas)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
+
+TEST(a_new_filled_box, refuses_focus)
+{
+    munin::filled_box filled_box;
+    filled_box.set_focus();
+    ASSERT_FALSE(filled_box.has_focus());
+}
