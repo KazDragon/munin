@@ -79,4 +79,12 @@ terminalpp::attribute frame::get_focus_attribute() const
          : lowlight_attribute_;
 }
 
+// ==========================================================================
+// DO_CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool frame::do_can_receive_focus() const
+{
+    return false;
+}
+
 }

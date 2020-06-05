@@ -104,6 +104,21 @@ TEST(a_new_image, draws_whitespace_on_the_canvas)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
 }
 
+TEST(a_new_image, refuses_focus)
+{
+    munin::image image;
+    image.set_focus();
+    ASSERT_FALSE(image.has_focus());
+}
+
+TEST(a_new_image_that_can_receive_focus, receives_focus)
+{
+    munin::image image;
+    image.set_can_receive_focus(true);
+    image.set_focus();
+    ASSERT_TRUE(image.has_focus());
+}
+
 TEST(a_new_image_with_a_fill, draws_fill_on_the_canvas)
 {
     munin::image image('Z');

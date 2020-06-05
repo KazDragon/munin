@@ -40,6 +40,13 @@ TEST(a_new_button, can_be_constructed_from_a_terminal_string)
     ASSERT_EQ('E', canvas[5][1]);
 }
 
+TEST(a_new_button, can_receive_focus)
+{
+    munin::button button{""};
+    button.set_focus();
+    ASSERT_TRUE(button.has_focus());
+}
+
 using event_emission_data = std::tuple<
     boost::any, // event
     bool        // emits signal

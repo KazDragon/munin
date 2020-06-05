@@ -76,25 +76,6 @@ public :
     MOCK_METHOD0(do_focus_previous, void ());
 
     //* =====================================================================
-    /// \brief Called by enable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    MOCK_METHOD0(do_enable, void ());
-
-    //* =====================================================================
-    /// \brief Called by disable().  Derived classes must override this
-    /// function in order to disable the component in a custom manner.
-    //* =====================================================================
-    MOCK_METHOD0(do_disable, void ());
-
-    //* =====================================================================
-    /// \brief Called by is_enabled().  Derived classes must override this
-    /// function in order to return whether the component is disabled or not
-    /// in a custom manner.
-    //* =====================================================================
-    MOCK_CONST_METHOD0(do_is_enabled, bool ());
-
-    //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
     /// this function in order to return the cursor state in a custom manner.
     //* =====================================================================
@@ -113,14 +94,6 @@ public :
     /// a custom manner.
     //* =====================================================================
     MOCK_METHOD1(do_set_cursor_position, void (terminalpp::point const &));
-
-    //* =====================================================================
-    /// \brief Called by set_attribute().  Derived classes must override this
-    /// function in order to set an attribute in a custom manner.
-    //* =====================================================================
-    MOCK_METHOD2(
-        do_set_attribute,
-        void (std::string const &, boost::any const &));
 
     //* =====================================================================
     /// \brief Called by layout().  Derived classes must override this

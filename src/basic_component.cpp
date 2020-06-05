@@ -57,6 +57,22 @@ basic_component::~basic_component()
 }
 
 // ==========================================================================
+// CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool basic_component::can_receive_focus() const
+{
+    return do_can_receive_focus();
+}
+
+// ==========================================================================
+// DO_CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool basic_component::do_can_receive_focus() const
+{
+    return true;
+}
+
+// ==========================================================================
 // DO_SET_POSITION
 // ==========================================================================
 void basic_component::do_set_position(terminalpp::point const &position)
@@ -101,12 +117,15 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-    bool old_focus = pimpl_->has_focus_;
-    pimpl_->has_focus_ = true;
-
-    if (!old_focus)
+    if (can_receive_focus())
     {
-        on_focus_set();
+        bool old_focus = pimpl_->has_focus_;
+        pimpl_->has_focus_ = true;
+
+        if (!old_focus)
+        {
+            on_focus_set();
+        }
     }
 }
 
@@ -129,7 +148,10 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-    pimpl_->toggle_focus();
+    if (can_receive_focus())
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================
@@ -137,7 +159,10 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-    pimpl_->toggle_focus();
+    if (can_receive_focus())
+    {
+        pimpl_->toggle_focus();
+    }
 }
 
 // ==========================================================================

@@ -18,13 +18,6 @@ protected:
         framed_component_->on_focus_set.connect([this]{++focus_set_count_;});
         framed_component_->on_focus_lost.connect([this]{++focus_lost_count_;});
 
-        // This is technically a test, but it cuts across all tests: the frame
-        // is ignored when reasoning about focus for framed components
-        EXPECT_CALL(*mock_frame_, do_set_focus()).Times(0);
-        EXPECT_CALL(*mock_frame_, do_lose_focus()).Times(0);
-        EXPECT_CALL(*mock_frame_, do_focus_next()).Times(0);
-        EXPECT_CALL(*mock_frame_, do_focus_previous()).Times(0);
-
         // It's possible that during focus transitions of the inner component,
         // the frame is asked whether it has focus.  For our purposes, the
         // answer is always no.
@@ -176,12 +169,12 @@ protected:
             .WillByDefault(Invoke([this]{return has_focus_;}));
     }
 
-    bool has_focus_{false};
+    bool has_focus_{true};
 };
 
 }
 
-TEST_F(a_framed_component_with_an_inner_component_that_has_focus, loses_innert_component_focus_when_losing_focus)
+TEST_F(a_framed_component_with_an_inner_component_that_has_focus, loses_inner_component_focus_when_losing_focus)
 {
     framed_component_->lose_focus();
 

@@ -22,7 +22,7 @@ protected :
         });
     }
     
-    fake_basic_component component_;
+    fake_basic_component_that_receives_focus component_;
     int on_focus_set_count  = 0;
     int on_focus_lost_count = 0;
 };

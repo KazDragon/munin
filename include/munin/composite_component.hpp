@@ -1,6 +1,7 @@
 #pragma once
 
-#include <munin/container.hpp>
+#include "munin/basic_component.hpp"
+#include "munin/container.hpp"
 
 namespace munin {
     
@@ -16,7 +17,7 @@ namespace munin {
 /// provided by the composite_component class.
 //* =========================================================================
 class MUNIN_EXPORT composite_component
-  : public munin::component
+  : public munin::basic_component
 {
 public :
     //* =====================================================================

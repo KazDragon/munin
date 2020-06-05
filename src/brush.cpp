@@ -74,6 +74,14 @@ void brush::set_pattern(std::vector<terminalpp::string> const &pattern)
 }
 
 // ==========================================================================
+// DO_CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool brush::do_can_receive_focus() const
+{
+    return false;
+}
+
+// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent brush::do_get_preferred_size() const

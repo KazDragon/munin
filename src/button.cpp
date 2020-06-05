@@ -13,10 +13,13 @@ namespace munin {
 // ==========================================================================
 button::button(terminalpp::string text)
 {
+    auto image = make_image(text);
+    image->set_can_receive_focus(true);
+
     set_layout(make_grid_layout({1, 1}));
     add_component(make_framed_component(
         make_solid_frame(),
-        make_image(text)));
+        image));
 }
 
 // ==========================================================================

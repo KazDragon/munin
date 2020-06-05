@@ -17,3 +17,24 @@ private :
     {
     }
 };
+
+class fake_basic_component_that_receives_focus : public fake_basic_component
+{
+};
+
+class fake_basic_component_that_does_not_receive_focus 
+  : public fake_basic_component
+{
+private:
+    //* =====================================================================
+    /// \brief Returns true if it is allowed for the component to receive
+    /// focus, false otherwise.  This is used by the focus functions of
+    /// basic_component.  By default, a component may receive focus at all
+    /// times.  Override this function to specify different behaviour in your
+    /// component.
+    //* =====================================================================
+    bool do_can_receive_focus() const override
+    {
+        return false;
+    }
+};

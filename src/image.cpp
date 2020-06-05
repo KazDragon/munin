@@ -15,6 +15,7 @@ struct image::impl
 {
     std::vector<terminalpp::string> content_;
     terminalpp::element fill_;
+    bool can_receive_focus_{false};
 };
 
 // ==========================================================================
@@ -167,24 +168,6 @@ image::~image()
 }
 
 // ==========================================================================
-// DO_GET_PREFERRED_SIZE
-// ==========================================================================
-terminalpp::extent image::do_get_preferred_size() const
-{
-    return pimpl_->content_.empty()
-         ? terminalpp::extent()
-         : terminalpp::extent(
-               std::max_element(
-                   pimpl_->content_.begin(),
-                   pimpl_->content_.end(),
-                   [](auto const &lhs, auto const &rhs)
-                   {
-                       return lhs.size() < rhs.size();
-                   })->size(),
-               pimpl_->content_.size());
-}
-
-// ==========================================================================
 // SET_FILL
 // ==========================================================================
 void image::set_fill(terminalpp::element const &fill)
@@ -242,6 +225,40 @@ void image::set_content(std::vector<terminalpp::string> const &content)
 
     on_preferred_size_changed();
     on_redraw(redraw_regions);
+}
+
+// ==========================================================================
+// SET_CAN_RECEIVE_FOCUS
+// ==========================================================================
+void image::set_can_receive_focus(bool can_receive_focus)
+{
+    pimpl_->can_receive_focus_ = can_receive_focus;
+}
+
+// ==========================================================================
+// DO_CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool image::do_can_receive_focus() const
+{
+    return pimpl_->can_receive_focus_;
+}
+
+// ==========================================================================
+// DO_GET_PREFERRED_SIZE
+// ==========================================================================
+terminalpp::extent image::do_get_preferred_size() const
+{
+    return pimpl_->content_.empty()
+         ? terminalpp::extent()
+         : terminalpp::extent(
+               std::max_element(
+                   pimpl_->content_.begin(),
+                   pimpl_->content_.end(),
+                   [](auto const &lhs, auto const &rhs)
+                   {
+                       return lhs.size() < rhs.size();
+                   })->size(),
+               pimpl_->content_.size());
 }
 
 // ==========================================================================
