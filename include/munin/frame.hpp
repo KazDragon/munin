@@ -56,6 +56,15 @@ public:
 
 protected:    
     //* =====================================================================
+    /// \brief Returns true if it is allowed for the component to receive
+    /// focus, false otherwise.  This is used by the focus functions of
+    /// basic_component.  By default, a component may receive focus at all
+    /// times.  Override this function to specify different behaviour in your
+    /// component.
+    //* =====================================================================
+    bool do_can_receive_focus() const override;
+
+    //* =====================================================================
     /// \brief Gets the current focus attribute (be it the highlight or
     /// the lowlight.)
     //* =====================================================================
@@ -68,7 +77,6 @@ protected:
     //* =====================================================================
     virtual void do_inner_focus_changed() = 0;
 
-private:
     std::weak_ptr<component> inner_component_;
     terminalpp::attribute lowlight_attribute_;
     terminalpp::attribute highlight_attribute_;
