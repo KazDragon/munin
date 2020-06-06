@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class MuninConan(ConanFile):
     name = "munin"
-    version = "0.3.3"
+    version = "0.3.4"
     license = "MIT"
     author = "KazDragon"
     url = "https://github.com/KazDragon/munin"
