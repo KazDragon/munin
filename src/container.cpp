@@ -586,6 +586,9 @@ private:
                 has_focus_ = true;
                 self_.on_focus_set();
             }
+
+            self_.on_cursor_position_changed();
+            self_.on_cursor_state_changed();
         }
     }
 
