@@ -20,6 +20,8 @@ button::button(terminalpp::string text)
     add_component(make_framed_component(
         make_solid_frame(),
         image));
+
+    on_click.connect([this]{ set_focus(); });
 }
 
 // ==========================================================================

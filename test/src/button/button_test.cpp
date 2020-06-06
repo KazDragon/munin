@@ -47,6 +47,14 @@ TEST(a_new_button, can_receive_focus)
     ASSERT_TRUE(button.has_focus());
 }
 
+TEST(a_new_button, receives_focus_when_clicked)
+{
+    munin::button button{""};
+    button.event(terminalpp::ansi::mouse::report{
+        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN});
+    ASSERT_TRUE(button.has_focus());
+}
+
 using event_emission_data = std::tuple<
     boost::any, // event
     bool        // emits signal
