@@ -116,3 +116,11 @@ INSTANTIATE_TEST_CASE_P(
         mouse_test_data{ "TEST", {0, 0}, {2, 0}, mup, {0, 0} },
     })
 );
+
+TEST(an_edit, receives_focus_when_clicked)
+{
+    munin::edit edit;
+    edit.event(terminalpp::ansi::mouse::report{
+        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN});
+    ASSERT_TRUE(edit.has_focus());
+}
