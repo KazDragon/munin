@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(MUNIN VERSION 0.3.4)
+project(MUNIN VERSION 0.3.5)
 
 cmake_policy(VERSION 3.2)
 
