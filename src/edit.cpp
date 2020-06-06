@@ -141,6 +141,8 @@ struct edit::impl
                 new_cursor_x, 
                 current_cursor_position.y
             });
+
+            self_.set_focus();
         }
     }
     
