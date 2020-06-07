@@ -421,3 +421,27 @@ TEST_F(a_viewport, whose_tracked_component_loses_focus_reports_focus_lost)
     ASSERT_TRUE(focus_lost);
     ASSERT_FALSE(viewport_->has_focus());
 }
+
+TEST_F(a_viewport, forwards_set_focus_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_set_focus());
+    viewport_->set_focus();
+}
+
+TEST_F(a_viewport, forwards_lose_focus_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_lose_focus());
+    viewport_->lose_focus();
+}
+
+TEST_F(a_viewport, forwards_focus_next_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_focus_next());
+    viewport_->focus_next();
+}
+
+TEST_F(a_viewport, forwards_focus_previous_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_focus_previous());
+    viewport_->focus_previous();
+}

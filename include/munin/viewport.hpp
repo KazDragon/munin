@@ -44,6 +44,32 @@ private:
     bool do_has_focus() const override;
 
     //* =====================================================================
+    /// \brief Called by set_focus().  Derived classes must override this
+    /// function in order to set the focus to this component in a custom
+    /// manner.
+    //* =====================================================================
+    void do_set_focus() override;
+
+    //* =====================================================================
+    /// \brief Called by lose_focus().  Derived classes must override this
+    /// function in order to lose the focus from this component in a
+    /// custom manner.
+    //* =====================================================================
+    void do_lose_focus() override;
+
+    //* =====================================================================
+    /// \brief Called by focus_next().  Derived classes must override this
+    /// function in order to move the focus in a custom manner.
+    //* =====================================================================
+    void do_focus_next() override;
+
+    //* =====================================================================
+    /// \brief Called by focus_previous().  Derived classes must override
+    /// this function in order to move the focus in a custom manner.
+    //* =====================================================================
+    void do_focus_previous() override;
+
+    //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
     /// this function in order to return the cursor state in a custom manner.
     //* =====================================================================
