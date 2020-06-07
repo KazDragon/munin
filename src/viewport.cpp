@@ -38,9 +38,17 @@ struct viewport::impl
     }
 
     // ======================================================================
+    // GET_CURSOR_STATE
+    // ======================================================================
+    auto get_cursor_state() const
+    {
+        return tracked_component_->get_cursor_state();
+    }
+
+    // ======================================================================
     // GET_CURSOR_POSITION
     // ======================================================================
-    auto get_cursor_position()
+    auto get_cursor_position() const
     {
         return cursor_position_;
     }
@@ -241,6 +249,14 @@ void viewport::do_set_size(terminalpp::extent const &size)
 terminalpp::extent viewport::do_get_preferred_size() const
 {
     return pimpl_->get_preferred_size();
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_STATE
+// ==========================================================================
+bool viewport::do_get_cursor_state() const
+{
+    return pimpl_->get_cursor_state();
 }
 
 // ==========================================================================

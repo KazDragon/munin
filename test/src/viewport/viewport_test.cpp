@@ -318,3 +318,19 @@ TEST_F(a_viewport, translates_repaint_events_when_the_tracked_component_is_offse
     ASSERT_EQ(1u, redraw_regions.size());
     ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
 }
+
+TEST_F(a_viewport, has_a_negative_cursor_state_when_the_tracked_component_has_a_negative_cursor_state)
+{
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(false));
+
+    ASSERT_FALSE(viewport_->get_cursor_state());
+}
+
+TEST_F(a_viewport, has_a_positive_cursor_state_when_the_tracked_component_has_a_positive_cursor_state)
+{
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+
+    ASSERT_TRUE(viewport_->get_cursor_state());
+}
