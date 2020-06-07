@@ -334,3 +334,13 @@ TEST_F(a_viewport, has_a_positive_cursor_state_when_the_tracked_component_has_a_
 
     ASSERT_TRUE(viewport_->get_cursor_state());
 }
+
+TEST_F(a_viewport, forwards_cursor_state_change_events_from_the_tracked_component)
+{
+    bool called = false;
+    viewport_->on_cursor_state_changed.connect([&called] { called = true; });
+
+    tracked_component_->on_cursor_state_changed();
+
+    ASSERT_TRUE(called);
+}

@@ -20,6 +20,8 @@ struct viewport::impl
     {
         tracked_component_->on_preferred_size_changed.connect(
             [this]{on_tracked_component_preferred_size_changed();});
+        tracked_component_->on_cursor_state_changed.connect(
+            self_.on_cursor_state_changed);
         tracked_component_->on_cursor_position_changed.connect(
             [this]{on_tracked_component_cursor_position_changed();});
         tracked_component_->on_redraw.connect(
