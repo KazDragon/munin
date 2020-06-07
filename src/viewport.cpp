@@ -1,5 +1,6 @@
 #include "munin/viewport.hpp"
 #include <boost/make_unique.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include <utility>
 
 namespace munin {
@@ -20,6 +21,11 @@ struct viewport::impl
             [this]{on_tracked_component_preferred_size_changed();});
         tracked_component_->on_cursor_position_changed.connect(
             [this]{on_tracked_component_cursor_position_changed();});
+        tracked_component_->on_redraw.connect(
+            [this](auto const &regions)
+            {
+                this->on_tracked_component_redraw(regions);
+            });
     }
     
     // ======================================================================
@@ -143,6 +149,15 @@ private:
         self_.on_preferred_size_changed();
     }
     
+    // ======================================================================
+    // ON_TRACKED_COMPONENT_REDRAW
+    // ======================================================================
+    void on_tracked_component_redraw(
+        std::vector<terminalpp::rectangle> const &regions)
+    {
+        self_.on_redraw(regions);
+    }
+
     viewport &self_;
     std::shared_ptr<component> tracked_component_;
     terminalpp::point          viewport_position_;

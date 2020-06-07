@@ -197,3 +197,32 @@ TEST_F(a_viewport, forwards_events_to_the_tracked_component)
     ASSERT_TRUE(*result != nullptr);
     ASSERT_STREQ(test_event, *result);
 }
+
+TEST_F(a_viewport, forwards_repaint_events_from_the_tracked_component)
+{
+    auto const preferred_size = terminalpp::extent{3, 3};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+    auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(1u, redraw_regions.size());
+    ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+}
