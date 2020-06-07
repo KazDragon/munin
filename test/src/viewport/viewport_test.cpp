@@ -375,11 +375,6 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
             }
         ));
     
-    /*
-    cvs[0][0] = 'a'; cvs[1][0] = 'b'; cvs[2][0] = 'c'; cvs[3][0] = 'd';
-    cvs[0][1] = 'e'; cvs[1][1] = 'f'; cvs[2][1] = 'g'; cvs[3][1] = 'h';
-    cvs[0][2] = 'i'; cvs[1][2] = 'j'; cvs[2][2] = 'k'; cvs[3][2] = 'l';*/
-
     viewport_->set_position({0, 0});
     viewport_->set_size({3, 2});
 
@@ -399,4 +394,30 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
     ASSERT_EQ(terminalpp::element{'j'}, cvs[0][1]);
     ASSERT_EQ(terminalpp::element{'k'}, cvs[1][1]);
     ASSERT_EQ(terminalpp::element{'l'}, cvs[2][1]);
+}
+
+TEST_F(a_viewport, whose_tracked_component_gains_focus_reports_focus_gained)
+{
+    bool focus_set = false;
+    viewport_->on_focus_set.connect([&focus_set] { focus_set = true; });
+
+    ON_CALL(*tracked_component_, do_has_focus())
+        .WillByDefault(Return(true));
+    tracked_component_->on_focus_set();
+
+    ASSERT_TRUE(focus_set);
+    ASSERT_TRUE(viewport_->has_focus());
+}
+
+TEST_F(a_viewport, whose_tracked_component_loses_focus_reports_focus_lost)
+{
+    bool focus_lost = false;
+    viewport_->on_focus_lost.connect([&focus_lost] { focus_lost = true; });
+
+    ON_CALL(*tracked_component_, do_has_focus())
+        .WillByDefault(Return(false));
+    tracked_component_->on_focus_lost();
+
+    ASSERT_TRUE(focus_lost);
+    ASSERT_FALSE(viewport_->has_focus());
 }

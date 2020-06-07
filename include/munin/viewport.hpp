@@ -37,6 +37,13 @@ private:
     terminalpp::extent do_get_preferred_size() const override;
 
     //* =====================================================================
+    /// \brief Called by has_focus().  Derived classes must override this
+    /// function in order to return whether this component has focus in a
+    /// custom manner.
+    //* =====================================================================
+    bool do_has_focus() const override;
+
+    //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
     /// this function in order to return the cursor state in a custom manner.
     //* =====================================================================

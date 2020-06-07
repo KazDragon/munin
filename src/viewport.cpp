@@ -31,14 +31,24 @@ struct viewport::impl
             {
                 this->on_tracked_component_redraw(regions);
             });
+        tracked_component_->on_focus_set.connect(self_.on_focus_set);
+        tracked_component_->on_focus_lost.connect(self_.on_focus_lost);
     }
     
     // ======================================================================
     // GET_PREFERRED_SIZE
     // ======================================================================
-    auto get_preferred_size()
+    auto get_preferred_size() const
     {
         return tracked_component_->get_preferred_size();
+    }
+
+    // ======================================================================
+    // HAS_FOCUS
+    // ======================================================================
+    auto has_focus() const
+    {
+        return tracked_component_->has_focus();
     }
 
     // ======================================================================
@@ -276,6 +286,14 @@ void viewport::do_set_size(terminalpp::extent const &size)
 terminalpp::extent viewport::do_get_preferred_size() const
 {
     return pimpl_->get_preferred_size();
+}
+
+// ==========================================================================
+// DO_HAS_FOCUS
+// ==========================================================================
+bool viewport::do_has_focus() const
+{
+    return pimpl_->has_focus();
 }
 
 // ==========================================================================
