@@ -4,6 +4,7 @@
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/canvas.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -343,4 +344,59 @@ TEST_F(a_viewport, forwards_cursor_state_change_events_from_the_tracked_componen
     tracked_component_->on_cursor_state_changed();
 
     ASSERT_TRUE(called);
+}
+
+TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
+{
+    terminalpp::canvas cvs{{4, 3}};
+    fill_canvas(cvs, 'x');
+
+    ON_CALL(*tracked_component_, do_draw(_, _))
+        .WillByDefault(Invoke(
+            [](munin::render_surface& surface, 
+               terminalpp::rectangle const &region)
+            {
+                // +---+---+---+---+
+                // | a | b | c | d |
+                // +---+---+---+---+
+                // | e | f | g | h |
+                // +---+---+---+---+
+                // | i | j | k | l |
+                // +---+---+---+---+
+                terminalpp::for_each_in_region(
+                    surface,
+                    region,
+                    [](terminalpp::element &elem,
+                       terminalpp::coordinate_type column,
+                       terminalpp::coordinate_type row)
+                    {
+                        elem = ('a' + column + (row * 4));
+                    });
+            }
+        ));
+    
+    /*
+    cvs[0][0] = 'a'; cvs[1][0] = 'b'; cvs[2][0] = 'c'; cvs[3][0] = 'd';
+    cvs[0][1] = 'e'; cvs[1][1] = 'f'; cvs[2][1] = 'g'; cvs[3][1] = 'h';
+    cvs[0][2] = 'i'; cvs[1][2] = 'j'; cvs[2][2] = 'k'; cvs[3][2] = 'l';*/
+
+    viewport_->set_position({0, 0});
+    viewport_->set_size({3, 2});
+
+    auto const cursor_position = terminalpp::point{3, 2};
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(cursor_position));
+    tracked_component_->on_cursor_position_changed();
+
+    munin::render_surface surface{cvs};
+    viewport_->draw(surface, {{}, viewport_->get_size()});
+    
+    ASSERT_EQ(terminalpp::element{'f'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'g'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'h'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'j'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'k'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{'l'}, cvs[2][1]);
 }

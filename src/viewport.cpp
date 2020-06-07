@@ -1,7 +1,9 @@
 #include "munin/viewport.hpp"
+#include "munin/render_surface.hpp"
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/scope_exit.hpp>
 #include <utility>
 
 namespace munin {
@@ -63,6 +65,29 @@ struct viewport::impl
         auto const offset_region = terminalpp::rectangle{
             region.origin + viewport_position_,
             region.size
+        };
+
+        // The tracked component doesn't know it's in a viewport.  So, when
+        // drawing some subset of its viewable space, we adjust the surface
+        // so that it is aligned with the viewport.  
+        //
+        // As an example, consider that the viewport is offset by (2, 2).
+        // This means that (2, 2) in the tracked component is (0, 0) in the
+        // viewport.  By offsetting by (-2, -2) (the negative of the viewport
+        // position), the tracked component draws in the correct space.
+        surface.offset_by({
+            -viewport_position_.x,
+            -viewport_position_.y
+        });
+
+        // Ensure that the offset is unapplied before exit of this
+        // function.
+        BOOST_SCOPE_EXIT_ALL(&surface, this)
+        {
+            surface.offset_by({
+                viewport_position_.x,
+                viewport_position_.y
+            });
         };
 
         tracked_component_->draw(surface, offset_region);
