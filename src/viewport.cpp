@@ -158,7 +158,7 @@ struct viewport::impl
 
         if (old_viewport_position != viewport_position_)
         {
-            self_.on_redraw({terminalpp::rectangle{self_.get_position(), self_.get_size()}});
+            self_.on_redraw({terminalpp::rectangle{{}, self_.get_size()}});
         }
         
         if (old_cursor_position != cursor_position_)
