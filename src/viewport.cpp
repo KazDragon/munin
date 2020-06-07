@@ -1,5 +1,6 @@
 #include "munin/viewport.hpp"
 #include <boost/make_unique.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <utility>
 
@@ -173,14 +174,21 @@ private:
                 };
             };
 
+        auto const region_is_in_viewable_area =
+            [viewport_size](terminalpp::rectangle const &region)
+            {
+                return region.origin.x < viewport_size.width
+                    && region.origin.y < viewport_size.height;
+            };
+
+        using boost::adaptors::filtered;
         using boost::adaptors::transformed;
 
-        auto const clipped_regions = 
+        self_.on_redraw(
             boost::copy_range<std::vector<terminalpp::rectangle>>(
                 regions | transformed(clip_region)
-            );
-
-        self_.on_redraw(clipped_regions);
+                        | filtered(region_is_in_viewable_area)
+            ));
     }
 
     viewport &self_;
