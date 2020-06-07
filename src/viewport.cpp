@@ -158,6 +158,18 @@ private:
     {
         auto const viewport_size = self_.get_size();
 
+        auto const translate_region =
+            [this](terminalpp::rectangle const &region)
+            {
+                return terminalpp::rectangle{
+                    { 
+                        region.origin.x - viewport_position_.x,
+                        region.origin.y - viewport_position_.y
+                    },
+                    region.size
+                };
+            };
+
         auto const clip_region = 
             [viewport_size](terminalpp::rectangle const &region)
             {
@@ -186,7 +198,8 @@ private:
 
         self_.on_redraw(
             boost::copy_range<std::vector<terminalpp::rectangle>>(
-                regions | transformed(clip_region)
+                regions | transformed(translate_region)
+                        | transformed(clip_region)
                         | filtered(region_is_in_viewable_area)
             ));
     }

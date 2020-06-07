@@ -282,3 +282,39 @@ TEST_F(a_viewport, discards_repaint_events_that_are_not_in_the_visible_area)
 
     ASSERT_EQ(0u, redraw_regions.size());
 }
+
+TEST_F(a_viewport, translates_repaint_events_when_the_tracked_component_is_offset)
+{
+    auto const preferred_size = terminalpp::extent{5, 5};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    auto const cursor_position = terminalpp::point{4, 4};
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(cursor_position));
+    tracked_component_->on_cursor_position_changed();
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{2, 2}, {3, 3}};
+    auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(1u, redraw_regions.size());
+    ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+}
