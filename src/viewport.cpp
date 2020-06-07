@@ -155,7 +155,32 @@ private:
     void on_tracked_component_redraw(
         std::vector<terminalpp::rectangle> const &regions)
     {
-        self_.on_redraw(regions);
+        auto const viewport_size = self_.get_size();
+
+        auto const clip_region = 
+            [viewport_size](terminalpp::rectangle const &region)
+            {
+                return terminalpp::rectangle {
+                    { region.origin.x, region.origin.y },
+                    {
+                        std::min(
+                            region.size.width, 
+                            viewport_size.width - region.origin.x),
+                        std::min(
+                            region.size.height,
+                            viewport_size.height - region.origin.y)
+                    }
+                };
+            };
+
+        using boost::adaptors::transformed;
+
+        auto const clipped_regions = 
+            boost::copy_range<std::vector<terminalpp::rectangle>>(
+                regions | transformed(clip_region)
+            );
+
+        self_.on_redraw(clipped_regions);
     }
 
     viewport &self_;
