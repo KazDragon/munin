@@ -4,6 +4,7 @@
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/canvas.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -196,4 +197,251 @@ TEST_F(a_viewport, forwards_events_to_the_tracked_component)
     ASSERT_TRUE(result != nullptr);
     ASSERT_TRUE(*result != nullptr);
     ASSERT_STREQ(test_event, *result);
+}
+
+TEST_F(a_viewport, forwards_repaint_events_from_the_tracked_component)
+{
+    auto const preferred_size = terminalpp::extent{3, 3};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+    auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(1u, redraw_regions.size());
+    ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+}
+
+TEST_F(a_viewport, clips_repaint_events_that_extend_out_of_the_visible_area)
+{
+    auto const preferred_size = terminalpp::extent{5, 5};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{}, {4, 4}};
+    auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(1u, redraw_regions.size());
+    ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+}
+
+TEST_F(a_viewport, discards_repaint_events_that_are_not_in_the_visible_area)
+{
+    auto const preferred_size = terminalpp::extent{5, 5};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{3, 0}, {1, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(0u, redraw_regions.size());
+}
+
+TEST_F(a_viewport, translates_repaint_events_when_the_tracked_component_is_offset)
+{
+    auto const preferred_size = terminalpp::extent{5, 5};
+    auto const viewport_size  = terminalpp::extent{3, 3};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    viewport_->set_size({3, 3});
+
+    auto const cursor_position = terminalpp::point{4, 4};
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(cursor_position));
+    tracked_component_->on_cursor_position_changed();
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    viewport_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            redraw_regions.insert(
+                redraw_regions.end(), 
+                regions.begin(),
+                regions.end());
+        });
+
+    auto const tracked_redraw_region = terminalpp::rectangle{{2, 2}, {3, 3}};
+    auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
+
+    tracked_component_->on_redraw({tracked_redraw_region});
+
+    ASSERT_EQ(1u, redraw_regions.size());
+    ASSERT_EQ(expected_redraw_region, redraw_regions[0]);
+}
+
+TEST_F(a_viewport, has_a_negative_cursor_state_when_the_tracked_component_has_a_negative_cursor_state)
+{
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(false));
+
+    ASSERT_FALSE(viewport_->get_cursor_state());
+}
+
+TEST_F(a_viewport, has_a_positive_cursor_state_when_the_tracked_component_has_a_positive_cursor_state)
+{
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+
+    ASSERT_TRUE(viewport_->get_cursor_state());
+}
+
+TEST_F(a_viewport, forwards_cursor_state_change_events_from_the_tracked_component)
+{
+    bool called = false;
+    viewport_->on_cursor_state_changed.connect([&called] { called = true; });
+
+    tracked_component_->on_cursor_state_changed();
+
+    ASSERT_TRUE(called);
+}
+
+TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
+{
+    terminalpp::canvas cvs{{4, 3}};
+    fill_canvas(cvs, 'x');
+
+    ON_CALL(*tracked_component_, do_draw(_, _))
+        .WillByDefault(Invoke(
+            [](munin::render_surface& surface, 
+               terminalpp::rectangle const &region)
+            {
+                // +---+---+---+---+
+                // | a | b | c | d |
+                // +---+---+---+---+
+                // | e | f | g | h |
+                // +---+---+---+---+
+                // | i | j | k | l |
+                // +---+---+---+---+
+                terminalpp::for_each_in_region(
+                    surface,
+                    region,
+                    [](terminalpp::element &elem,
+                       terminalpp::coordinate_type column,
+                       terminalpp::coordinate_type row)
+                    {
+                        elem = ('a' + column + (row * 4));
+                    });
+            }
+        ));
+    
+    viewport_->set_position({0, 0});
+    viewport_->set_size({3, 2});
+
+    auto const cursor_position = terminalpp::point{3, 2};
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(cursor_position));
+    tracked_component_->on_cursor_position_changed();
+
+    munin::render_surface surface{cvs};
+    viewport_->draw(surface, {{}, viewport_->get_size()});
+    
+    ASSERT_EQ(terminalpp::element{'f'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'g'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'h'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'j'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'k'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{'l'}, cvs[2][1]);
+}
+
+TEST_F(a_viewport, whose_tracked_component_gains_focus_reports_focus_gained)
+{
+    bool focus_set = false;
+    viewport_->on_focus_set.connect([&focus_set] { focus_set = true; });
+
+    ON_CALL(*tracked_component_, do_has_focus())
+        .WillByDefault(Return(true));
+    tracked_component_->on_focus_set();
+
+    ASSERT_TRUE(focus_set);
+    ASSERT_TRUE(viewport_->has_focus());
+}
+
+TEST_F(a_viewport, whose_tracked_component_loses_focus_reports_focus_lost)
+{
+    bool focus_lost = false;
+    viewport_->on_focus_lost.connect([&focus_lost] { focus_lost = true; });
+
+    ON_CALL(*tracked_component_, do_has_focus())
+        .WillByDefault(Return(false));
+    tracked_component_->on_focus_lost();
+
+    ASSERT_TRUE(focus_lost);
+    ASSERT_FALSE(viewport_->has_focus());
+}
+
+TEST_F(a_viewport, forwards_set_focus_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_set_focus());
+    viewport_->set_focus();
+}
+
+TEST_F(a_viewport, forwards_lose_focus_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_lose_focus());
+    viewport_->lose_focus();
+}
+
+TEST_F(a_viewport, forwards_focus_next_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_focus_next());
+    viewport_->focus_next();
+}
+
+TEST_F(a_viewport, forwards_focus_previous_to_the_tracked_component)
+{
+    EXPECT_CALL(*tracked_component_, do_focus_previous());
+    viewport_->focus_previous();
 }
