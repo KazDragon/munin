@@ -396,6 +396,61 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
     ASSERT_EQ(terminalpp::element{'l'}, cvs[2][1]);
 }
 
+TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
+{
+    auto const tracked_component_preferred_size = terminalpp::extent{5, 5};
+    auto const viewport_size = terminalpp::extent{3, 3};
+    auto const tracked_component_cursor_position = terminalpp::point{4, 4};
+
+    viewport_->set_size(viewport_size);
+    
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(tracked_component_cursor_position));
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_component_preferred_size));
+    tracked_component_->on_preferred_size_changed();
+    tracked_component_->on_cursor_state_changed();
+    tracked_component_->on_cursor_position_changed();
+
+    // The mouse is clicked in the middle of the viewable area.
+    auto const viewport_mouse_event = terminalpp::ansi::mouse::report {
+        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+        1,
+        1
+    };
+
+    // We expect that the result is that the click will be translated to
+    // what the middle of that viewable area is on the tracked component.
+    auto const expected_mouse_event = terminalpp::ansi::mouse::report {
+        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+        3,
+        3
+    };
+
+    boost::optional<terminalpp::ansi::mouse::report> received_mouse_event;
+
+    ON_CALL(*tracked_component_, do_event(_))
+        .WillByDefault(Invoke(
+            [&received_mouse_event](boost::any const &ev)
+            {
+                auto *mouse_event = 
+                    boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+
+                if (mouse_event != nullptr)
+                {
+                    received_mouse_event = *mouse_event;
+                }
+            }
+        ));
+
+    viewport_->event(viewport_mouse_event);
+
+    ASSERT_TRUE(received_mouse_event.is_initialized());
+    ASSERT_EQ(expected_mouse_event, *received_mouse_event);
+}
+
 TEST_F(a_viewport, whose_tracked_component_gains_focus_reports_focus_gained)
 {
     bool focus_set = false;

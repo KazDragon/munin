@@ -140,7 +140,23 @@ struct viewport::impl
     // ======================================================================
     auto event(boost::any const& ev)
     {
-        return tracked_component_->event(ev);
+        auto const *mouse_event = 
+            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+
+        if (mouse_event != nullptr)
+        {
+            auto const translated_event = terminalpp::ansi::mouse::report {
+                mouse_event->button_,
+                mouse_event->x_position_ + viewport_position_.x,
+                mouse_event->y_position_ + viewport_position_.y
+            };
+
+            return tracked_component_->event(translated_event);
+        }
+        else
+        {
+            return tracked_component_->event(ev);
+        }
     }
     
     // ======================================================================
