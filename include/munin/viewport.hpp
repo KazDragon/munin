@@ -27,7 +27,7 @@ private:
     /// function in order to set the size of the component in a custom
     /// manner.
     //* =====================================================================
-    void do_set_size(terminalpp::extent const &size) ;
+    void do_set_size(terminalpp::extent const &size) override;
 
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override

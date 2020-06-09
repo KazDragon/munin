@@ -4,8 +4,23 @@
 class a_viewport_with_mock_tracked_component
 {
 protected:
+    a_viewport_with_mock_tracked_component()
+    {
+        using testing::SaveArg;
+        using testing::ReturnPointee;
+        using testing::_;
+
+        ON_CALL(*tracked_component_, do_get_size())
+            .WillByDefault(ReturnPointee(&tracked_component_size_));
+        ON_CALL(*tracked_component_, do_set_size(_))
+            .WillByDefault(SaveArg<0>(&tracked_component_size_));
+    }
+
     std::shared_ptr<mock_component> tracked_component_ = make_mock_component();
     std::shared_ptr<munin::viewport> viewport_ = munin::make_viewport(tracked_component_);
+
+private:
+    terminalpp::extent tracked_component_size_;
 };
 
 template <typename TestData>
@@ -44,4 +59,10 @@ protected:
 
 private:
     terminalpp::point tracked_cursor_position_;
+};
+
+class a_viewport : 
+    public a_viewport_with_mock_tracked_component,
+    public testing::Test
+{
 };
