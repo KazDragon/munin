@@ -1,5 +1,6 @@
 #include "munin/viewport.hpp"
 #include "munin/render_surface.hpp"
+#include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -176,12 +177,12 @@ struct viewport::impl
     }
 
     // ======================================================================
-    // UPDATE_VIEWPORT_POSITION
+    // UPDATE_ANCHOR_POSITION
     // ======================================================================
-    void update_viewport_position()
+    void update_anchor_position()
     {
         auto const old_cursor_position = cursor_position_;
-        auto const old_viewport_position = anchor_position_;
+        auto const old_anchor_position = anchor_position_;
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
         auto const tracked_component_size = tracked_component_->get_size();
         auto const viewport_size = self_.get_size();
@@ -196,46 +197,36 @@ struct viewport::impl
         // If the viewport has changed its size, look to see if the tracked
         // component is contained entirely in the viewport.  If not, then
         // adjust the anchor appropriately.
-        if (anchor_position_.x + viewport_size.width > tracked_component_size.width)
-        {
-            anchor_position_.x = tracked_component_size.width - viewport_size.width;
-        }
+        auto const max_allowed_anchor_position = terminalpp::point {
+            tracked_component_size.width - viewport_size.width,
+            tracked_component_size.height - viewport_size.height
+        };
 
-        if (anchor_position_.y + viewport_size.height > tracked_component_size.height)
-        {
-            anchor_position_.y = tracked_component_size.height - viewport_size.height;
-        }
+        anchor_position_ = terminalpp::point {
+            std::min(anchor_position_.x, max_allowed_anchor_position.x),
+            std::min(anchor_position_.y, max_allowed_anchor_position.y)
+        };
 
-        // Check to see if the tracked cursor has scrolled off an edge of the
-        // viewport.  If so, then the anchor position must change just enough
-        // to keep the cursor within the visual area.
-        if (tracked_cursor_position.x < anchor_position_.x)
-        {
-            // Cursor has scrolled off to the west of the viewport.
-            anchor_position_.x = tracked_cursor_position.x;
-        }
-        else if (tracked_cursor_position.x >= anchor_position_.x + viewport_size.width)
-        {
-            // Cursor has scrolled off to the east of the viewport.
-            anchor_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
-        }
-
-        if (tracked_cursor_position.y < anchor_position_.y)
-        {
-            anchor_position_.y = tracked_cursor_position.y;
-        }
-        else if (tracked_cursor_position.y >= anchor_position_.y + viewport_size.height)
-        {
-            // Cursor has scrolled off to the south of the viewport.
-            anchor_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
-        }
+        // Check to see if the tracked cursor has scrolled off any of the
+        // edges of the viewport.  If so, then the anchor position must change 
+        // just enough to keep the cursor within the visual area.
+        anchor_position_ = terminalpp::point {
+            boost::algorithm::clamp(
+                anchor_position_.x, 
+                tracked_cursor_position.x - viewport_size.width + 1, 
+                tracked_cursor_position.x),
+            boost::algorithm::clamp(
+                anchor_position_.y,
+                tracked_cursor_position.y - viewport_size.height + 1, 
+                tracked_cursor_position.y)
+        };
 
         cursor_position_ = {
             tracked_cursor_position.x - anchor_position_.x,
             tracked_cursor_position.y - anchor_position_.y
         };
 
-        if (old_viewport_position != anchor_position_)
+        if (old_anchor_position != anchor_position_)
         {
             self_.on_redraw({terminalpp::rectangle{{}, self_.get_size()}});
         }
@@ -252,7 +243,7 @@ private:
     // ======================================================================
     void on_tracked_component_cursor_position_changed()
     {
-        update_viewport_position();
+        update_anchor_position();
     }
 
     // ======================================================================
@@ -346,7 +337,7 @@ void viewport::do_set_size(terminalpp::extent const &size)
 {
     basic_component::do_set_size(size);
     pimpl_->update_tracked_component_size();
-    pimpl_->update_viewport_position();
+    pimpl_->update_anchor_position();
 }
 
 // ==========================================================================
