@@ -105,7 +105,7 @@ struct viewport::impl
     void draw(render_surface& surface, terminalpp::rectangle const &region)
     {
         auto const offset_region = terminalpp::rectangle{
-            region.origin + viewport_position_,
+            region.origin + anchor_position_,
             region.size
         };
 
@@ -115,11 +115,11 @@ struct viewport::impl
         //
         // As an example, consider that the viewport is offset by (2, 2).
         // This means that (2, 2) in the tracked component is (0, 0) in the
-        // viewport.  By offsetting by (-2, -2) (the negative of the viewport
+        // viewport.  By offsetting by (-2, -2) (the negative of the anchor
         // position), the tracked component draws in the correct space.
         surface.offset_by({
-            -viewport_position_.x,
-            -viewport_position_.y
+            -anchor_position_.x,
+            -anchor_position_.y
         });
 
         // Ensure that the offset is unapplied before exit of this
@@ -127,8 +127,8 @@ struct viewport::impl
         BOOST_SCOPE_EXIT_ALL(&surface, this)
         {
             surface.offset_by({
-                viewport_position_.x,
-                viewport_position_.y
+                anchor_position_.x,
+                anchor_position_.y
             });
         };
 
@@ -147,8 +147,8 @@ struct viewport::impl
         {
             auto const translated_event = terminalpp::ansi::mouse::report {
                 mouse_event->button_,
-                mouse_event->x_position_ + viewport_position_.x,
-                mouse_event->y_position_ + viewport_position_.y
+                mouse_event->x_position_ + anchor_position_.x,
+                mouse_event->y_position_ + anchor_position_.y
             };
 
             return tracked_component_->event(translated_event);
@@ -181,40 +181,40 @@ struct viewport::impl
     void update_viewport_position()
     {
         auto const old_cursor_position = cursor_position_;
-        auto const old_viewport_position = viewport_position_;
+        auto const old_viewport_position = anchor_position_;
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
         auto const viewport_size = self_.get_size();
 
         // Check to see if the tracked cursor has scrolled off an edge of the
-        // viewport.  If so, then the viewport position must change just enough
+        // viewport.  If so, then the anchor position must change just enough
         // to keep the cursor within the visual area.
-        if (tracked_cursor_position.x < viewport_position_.x)
+        if (tracked_cursor_position.x < anchor_position_.x)
         {
             // Cursor has scrolled off to the west of the viewport.
-            viewport_position_.x = tracked_cursor_position.x;
+            anchor_position_.x = tracked_cursor_position.x;
         }
-        else if (tracked_cursor_position.x >= viewport_position_.x + viewport_size.width)
+        else if (tracked_cursor_position.x >= anchor_position_.x + viewport_size.width)
         {
             // Cursor has scrolled off to the east of the viewport.
-            viewport_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
+            anchor_position_.x = (tracked_cursor_position.x - viewport_size.width) + 1;
         }
 
-        if (tracked_cursor_position.y < viewport_position_.y)
+        if (tracked_cursor_position.y < anchor_position_.y)
         {
-            viewport_position_.y = tracked_cursor_position.y;
+            anchor_position_.y = tracked_cursor_position.y;
         }
-        else if (tracked_cursor_position.y >= viewport_position_.y + viewport_size.height)
+        else if (tracked_cursor_position.y >= anchor_position_.y + viewport_size.height)
         {
             // Cursor has scrolled off to the south of the viewport.
-            viewport_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
+            anchor_position_.y = (tracked_cursor_position.y - viewport_size.height) + 1;
         }
 
         cursor_position_ = {
-            tracked_cursor_position.x - viewport_position_.x,
-            tracked_cursor_position.y - viewport_position_.y
+            tracked_cursor_position.x - anchor_position_.x,
+            tracked_cursor_position.y - anchor_position_.y
         };
 
-        if (old_viewport_position != viewport_position_)
+        if (old_viewport_position != anchor_position_)
         {
             self_.on_redraw({terminalpp::rectangle{{}, self_.get_size()}});
         }
@@ -256,8 +256,8 @@ private:
             {
                 return terminalpp::rectangle{
                     { 
-                        region.origin.x - viewport_position_.x,
-                        region.origin.y - viewport_position_.y
+                        region.origin.x - anchor_position_.x,
+                        region.origin.y - anchor_position_.y
                     },
                     region.size
                 };
@@ -299,7 +299,7 @@ private:
 
     viewport &self_;
     std::shared_ptr<component> tracked_component_;
-    terminalpp::point          viewport_position_;
+    terminalpp::point          anchor_position_;
     terminalpp::point          cursor_position_;
 };
 
