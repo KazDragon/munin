@@ -183,7 +183,28 @@ struct viewport::impl
         auto const old_cursor_position = cursor_position_;
         auto const old_viewport_position = anchor_position_;
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
+        auto const tracked_component_size = tracked_component_->get_size();
         auto const viewport_size = self_.get_size();
+
+        // Because size changes first match up the size of the tracked
+        // component with the size of the viewport, it must be the case that
+        // the tracked component's size is at least as large as the viewport
+        // itself.
+        assert(tracked_component_size.width >= viewport_size.width);
+        assert(tracked_component_size.height >= viewport_size.height);
+
+        // If the viewport has changed its size, look to see if the tracked
+        // component is contained entirely in the viewport.  If not, then
+        // adjust the anchor appropriately.
+        if (anchor_position_.x + viewport_size.width > tracked_component_size.width)
+        {
+            anchor_position_.x = tracked_component_size.width - viewport_size.width;
+        }
+
+        if (anchor_position_.y + viewport_size.height > tracked_component_size.height)
+        {
+            anchor_position_.y = tracked_component_size.height - viewport_size.height;
+        }
 
         // Check to see if the tracked cursor has scrolled off an edge of the
         // viewport.  If so, then the anchor position must change just enough

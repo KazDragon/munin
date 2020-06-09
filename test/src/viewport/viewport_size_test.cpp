@@ -1,9 +1,13 @@
 #include "viewport_test.hpp"
+#include "fill_canvas.hpp"
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
 
+using testing::Invoke;
+using testing::Return;
 using testing::ValuesIn;
 using testing::_;
 
@@ -118,3 +122,57 @@ INSTANTIATE_TEST_CASE_P(
         },
     })
 );
+
+TEST_F(a_viewport, with_an_offset_anchor_when_extended_southeast_reevaluates_anchor)
+{
+    // +---+---+---+---+
+    // | a | b | c | d |
+    // +---+---+---+---+
+    // | e | f | g | h |
+    // +---+---+---+---+
+    // | i | j | k | l |
+    // +---+---+---+---+
+    //
+    // Consider a (1, 1) viewport that is showing only cell [l].  Growing the
+    // viewport to (2, 2) show then show [g, h, k, l].
+
+    terminalpp::canvas cvs{{2, 2}};
+    fill_canvas(cvs, 'x');
+
+    ON_CALL(*tracked_component_, do_draw(_, _))
+        .WillByDefault(Invoke(
+            [](munin::render_surface& surface, 
+               terminalpp::rectangle const &region)
+            {
+                terminalpp::for_each_in_region(
+                    surface,
+                    region,
+                    [](terminalpp::element &elem,
+                       terminalpp::coordinate_type column,
+                       terminalpp::coordinate_type row)
+                    {
+                        elem = ('a' + column + (row * 4));
+                    });
+            }
+        ));
+    
+    viewport_->set_position({0, 0});
+    viewport_->set_size({1, 1});
+
+    auto const cursor_position = terminalpp::point{3, 2};
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(cursor_position));
+    tracked_component_->on_cursor_position_changed();
+
+    viewport_->set_size({2, 2});
+
+    munin::render_surface surface{cvs};
+    viewport_->draw(surface, {{}, viewport_->get_size()});
+    
+    ASSERT_EQ(terminalpp::element{'g'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'h'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'k'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'l'}, cvs[1][1]);
+}

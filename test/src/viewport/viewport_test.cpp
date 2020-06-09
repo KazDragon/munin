@@ -93,17 +93,6 @@ INSTANTIATE_TEST_CASE_P(
     )
 );
 
-namespace 
-{
-
-class a_viewport : 
-    public a_viewport_with_mock_tracked_component,
-    public testing::Test
-{
-};
-
-}
-
 TEST_F(a_viewport, with_a_size_larger_than_the_preferred_size_of_the_tracked_component_sets_the_tracked_component_to_the_larger_size)
 {
     auto const viewport_size = terminalpp::extent{5, 5};
