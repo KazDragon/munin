@@ -5,15 +5,6 @@
 namespace munin {
 
 // ==========================================================================
-// FILLED_BOX::IMPLEMENTATION STRUCTURE
-// ==========================================================================
-struct filled_box::impl
-{
-    std::function<terminalpp::element (render_surface &)> fill_function_;
-    terminalpp::extent  preferred_size_;
-};
-
-// ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 filled_box::filled_box(terminalpp::element const &element)
@@ -24,18 +15,9 @@ filled_box::filled_box(terminalpp::element const &element)
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-filled_box::filled_box(
-    std::function<terminalpp::element (render_surface &)> fill_function)
-  : pimpl_(std::make_shared<impl>())
-{
-    pimpl_->fill_function_  = std::move(fill_function);
-    pimpl_->preferred_size_ = terminalpp::extent(1, 1);
-}
-
-// ==========================================================================
-// DESTRUCTOR
-// ==========================================================================
-filled_box::~filled_box()
+filled_box::filled_box(std::function<fill_function_type> fill_function)
+  : fill_function_(std::move(fill_function)),
+    preferred_size_({1, 1})
 {
 }
 
@@ -52,7 +34,7 @@ bool filled_box::do_can_receive_focus() const
 // ==========================================================================
 void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 {
-    pimpl_->preferred_size_ = preferred_size;
+    preferred_size_ = preferred_size;
     on_preferred_size_changed();
 }
 
@@ -61,7 +43,7 @@ void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 // ==========================================================================
 terminalpp::extent filled_box::do_get_preferred_size() const
 {
-    return pimpl_->preferred_size_;
+    return preferred_size_;
 }
 
 // ==========================================================================
@@ -70,7 +52,7 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 void filled_box::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-    auto const element = pimpl_->fill_function_(surface);
+    auto const element = fill_function_(surface);
     
     terminalpp::for_each_in_region(
         surface,

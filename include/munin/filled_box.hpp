@@ -13,6 +13,8 @@ namespace munin {
 class MUNIN_EXPORT filled_box : public munin::basic_component
 {
 public :
+    using fill_function_type = terminalpp::element (render_surface &);
+
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
@@ -21,14 +23,8 @@ public :
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    explicit filled_box(
-        std::function<terminalpp::element (render_surface &)> fill_function);
+    explicit filled_box(std::function<fill_function_type> fill_function);
     
-    //* =====================================================================
-    /// \brief Destructor
-    //* =====================================================================
-    ~filled_box() override;
-
     //* =====================================================================
     /// \brief Sets the preferred size of this box.  The default is (1,1).
     //* =====================================================================
@@ -72,8 +68,8 @@ protected :
     nlohmann::json do_to_json() const override;
 
 private :
-    struct impl;
-    std::shared_ptr<impl> pimpl_;
+    std::function<fill_function_type> fill_function_;
+    terminalpp::extent preferred_size_;
 };
 
 //* =========================================================================
@@ -87,6 +83,6 @@ std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill);
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<filled_box> make_fill(
-    std::function<terminalpp::element (render_surface&)> fill_function);
+    std::function<filled_box::fill_function_type> fill_function);
 
 }
