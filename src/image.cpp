@@ -1,6 +1,7 @@
 #include "munin/image.hpp"
 #include "munin/detail/json_adaptors.hpp"
 #include "munin/render_surface.hpp"
+#include <boost/make_unique.hpp>
 #include <algorithm>
 #include <utility>
 
@@ -146,7 +147,7 @@ image::image(terminalpp::string content, terminalpp::element fill)
 image::image(
     std::vector<terminalpp::string> content,
     terminalpp::element fill)
-  : pimpl_(std::make_shared<impl>())
+  : pimpl_(boost::make_unique<impl>())
 {
     // There is a special case for "empty" content, where the content is
     // a single empty string.  In this case, it is not stored, and is as if

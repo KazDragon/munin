@@ -328,9 +328,7 @@ private:
 // CONSTRUCTOR
 // ==========================================================================
 viewport::viewport(std::shared_ptr<component> tracked_component)
-  : pimpl_(boost::make_unique<impl>(
-        std::ref(*this), 
-        std::move(tracked_component)))
+  : pimpl_(boost::make_unique<impl>(*this, std::move(tracked_component)))
 {
 }
 
