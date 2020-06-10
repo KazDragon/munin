@@ -33,11 +33,6 @@ public :
     explicit brush(std::vector<terminalpp::string> pattern);
 
     //* =====================================================================
-    /// \brief Destructor
-    //* =====================================================================
-    ~brush() override;
-
-    //* =====================================================================
     /// \brief Sets the pattern to the default pattern (i.e. whitespace)
     //* =====================================================================
     void set_pattern();
@@ -90,8 +85,7 @@ protected :
     nlohmann::json do_to_json() const override;
 
 private :
-    struct impl;
-    std::shared_ptr<impl> pimpl_;
+    std::vector<terminalpp::string> pattern_;
 };
 
 //* =========================================================================

@@ -1,19 +1,13 @@
 #include "munin/brush.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <boost/range/algorithm/max_element.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 #include <utility>
 
 using namespace terminalpp::literals;
 
 namespace munin {
-
-// ==========================================================================
-// BRUSH::IMPLEMENTATION STRUCTURE
-// ==========================================================================
-struct brush::impl
-{
-    std::vector<terminalpp::string> pattern_;
-};
 
 // ==========================================================================
 // CONSTRUCTOR
@@ -35,15 +29,7 @@ brush::brush(terminalpp::string pattern)
 // CONSTRUCTOR
 // ==========================================================================
 brush::brush(std::vector<terminalpp::string> pattern)
-    : pimpl_(std::make_shared<impl>())
-{
-    pimpl_->pattern_ = std::move(pattern);
-}
-
-// ==========================================================================
-// DESTRUCTOR
-// ==========================================================================
-brush::~brush()
+    : pattern_(std::move(pattern))
 {
 }
 
@@ -68,7 +54,7 @@ void brush::set_pattern(terminalpp::string const &pattern)
 // ==========================================================================
 void brush::set_pattern(std::vector<terminalpp::string> const &pattern)
 {
-    pimpl_->pattern_ = pattern;
+    pattern_ = pattern;
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
 }
@@ -86,17 +72,15 @@ bool brush::do_can_receive_focus() const
 // ==========================================================================
 terminalpp::extent brush::do_get_preferred_size() const
 {
-    return pimpl_->pattern_.empty()
+    auto const &size = [](auto const &val){ return val.size(); };
+
+    using boost::adaptors::transformed;
+
+    return pattern_.empty()
          ? terminalpp::extent(1, 1)
          : terminalpp::extent(
-               std::max_element(
-                   pimpl_->pattern_.begin(),
-                   pimpl_->pattern_.end(),
-                   [](auto const &lhs, auto const &rhs)
-                   {
-                       return lhs.size() < rhs.size();
-                   })->size(),
-               pimpl_->pattern_.size());
+               *boost::max_element(pattern_ | transformed(size)),
+               pattern_.size());
 }
 
 // ==========================================================================
@@ -112,10 +96,10 @@ void brush::do_draw(
                terminalpp::coordinate_type column, 
                terminalpp::coordinate_type row)
         {
-            auto const fill_row = row % pimpl_->pattern_.size();
-            auto const fill_column = column % pimpl_->pattern_[fill_row].size();
+            auto const fill_row = row % pattern_.size();
+            auto const fill_column = column % pattern_[fill_row].size();
 
-            elem = pimpl_->pattern_[fill_row][fill_column];
+            elem = pattern_[fill_row][fill_column];
         });
 }
 
@@ -130,12 +114,12 @@ nlohmann::json brush::do_to_json() const
 
     auto json = basic_component::do_to_json().patch(patch);
 
-    json["pattern"]["size"] = pimpl_->pattern_.size();
+    json["pattern"]["size"] = pattern_.size();
 
-    for (size_t index = 0; index < pimpl_->pattern_.size(); ++index)
+    for (size_t index = 0; index < pattern_.size(); ++index)
     {
         json["pattern"]["content"][index] =
-            terminalpp::to_string(pimpl_->pattern_[index]);
+            terminalpp::to_string(pattern_[index]);
     }
 
     return json;
