@@ -17,11 +17,6 @@ public :
     //* =====================================================================
     basic_component();
 
-    //* =====================================================================
-    /// \brief Destructor
-    //* =====================================================================
-    ~basic_component() override;
-
 protected :
     //* =====================================================================
     /// \brief Returns true if it is allowed for the component to receive
@@ -133,8 +128,8 @@ protected :
     nlohmann::json do_to_json() const override;
 
 private :
-    struct impl;
-    std::shared_ptr<impl> pimpl_;
+    terminalpp::rectangle bounds_;
+    bool has_focus_;
 };
 
 }
