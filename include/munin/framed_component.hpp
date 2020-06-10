@@ -16,13 +16,8 @@ public :
     /// \brief Constructor
     //* =====================================================================
     framed_component(
-        std::shared_ptr<frame> const &outer_frame,
-        std::shared_ptr<component> const &inner_component);
-
-    //* =====================================================================
-    /// \brief Destructor
-    //* =====================================================================
-    ~framed_component() override;
+        std::shared_ptr<frame> outer_frame,
+        std::shared_ptr<component> inner_component);
 
 protected :
     //* =====================================================================
@@ -39,8 +34,8 @@ protected :
     nlohmann::json do_to_json() const override;
 
 private :
-    struct impl;
-    std::shared_ptr<impl> pimpl_;
+    std::shared_ptr<frame> frame_;
+    std::shared_ptr<component> inner_component_;
 };
 
 //* =========================================================================
@@ -48,7 +43,7 @@ private :
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<framed_component> make_framed_component(
-    std::shared_ptr<frame> const &outer_frame,
-    std::shared_ptr<component> const &inner_component);
+    std::shared_ptr<frame> outer_frame,
+    std::shared_ptr<component> inner_component);
 
 }

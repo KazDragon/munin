@@ -4,6 +4,7 @@
 #include "munin/detail/json_adaptors.hpp"
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
+#include <boost/make_unique.hpp>
 
 namespace munin {
 
@@ -50,7 +51,7 @@ struct window::impl
 // CONSTRUCTOR
 // ==========================================================================
 window::window(std::shared_ptr<component> content)
-  : pimpl_(std::make_shared<impl>(std::ref(*this)))
+  : pimpl_(std::make_unique<impl>(*this))
 {
     pimpl_->content_ = std::move(content);
     

@@ -63,7 +63,7 @@ protected :
 
 private :
     struct impl;
-    std::shared_ptr<impl> pimpl_;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================

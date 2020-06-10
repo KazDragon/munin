@@ -5,6 +5,7 @@
 #include "munin/solid_frame.hpp"
 #include <terminalpp/ansi/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
+#include <boost/make_unique.hpp>
 
 namespace munin {
 
@@ -21,7 +22,7 @@ struct toggle_button::impl
 // CONSTRUCTOR
 // ==========================================================================
 toggle_button::toggle_button(bool checked)
-  : pimpl_(std::make_shared<impl>())
+  : pimpl_(boost::make_unique<impl>())
 {
     pimpl_->fill_ = 
         make_fill([this](render_surface&) -> terminalpp::element
@@ -38,6 +39,11 @@ toggle_button::toggle_button(bool checked)
         make_solid_frame(),
         pimpl_->fill_));
 }
+
+// ==========================================================================
+// DESTRUCTOR
+// ==========================================================================
+toggle_button::~toggle_button() = default;
 
 // ==========================================================================
 // SET_TOGGLE_STATE

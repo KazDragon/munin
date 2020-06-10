@@ -15,6 +15,11 @@ public :
     explicit toggle_button(bool checked = false);
 
     //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~toggle_button() override;
+
+    //* =====================================================================
     /// \brief Sets the toggle state of the button.
     //* =====================================================================
     void set_toggle_state(bool checked);
@@ -41,7 +46,7 @@ protected :
 
 private :
     struct impl;
-    std::shared_ptr<impl> pimpl_;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================
