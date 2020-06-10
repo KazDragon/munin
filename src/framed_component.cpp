@@ -87,37 +87,19 @@ std::unique_ptr<layout> make_framed_component_layout()
 }
 
 // ==========================================================================
-// FRAMED_COMPONENT::IMPLEMENTATION STRUCTURE
-// ==========================================================================
-struct framed_component::impl
-{
-    std::shared_ptr<frame> frame_;
-    std::shared_ptr<component> inner_component_;
-};
-
-// ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 framed_component::framed_component(
-    std::shared_ptr<frame> const &outer_frame,
-    std::shared_ptr<component> const &inner_component)
-  : pimpl_(std::make_shared<impl>())
+    std::shared_ptr<frame> outer_frame,
+    std::shared_ptr<component> inner_component)
+  : frame_(std::move(outer_frame)),
+    inner_component_(std::move(inner_component))
 {
-    pimpl_->frame_ = outer_frame;
-    pimpl_->inner_component_ = inner_component;
-    
-    add_component(outer_frame);
-    add_component(inner_component);
+    add_component(frame_);
+    add_component(inner_component_);
     set_layout(make_framed_component_layout());
 
-    pimpl_->frame_->highlight_on_focus(pimpl_->inner_component_);
-}
-
-// ==========================================================================
-// DESTRUCTOR
-// ==========================================================================
-framed_component::~framed_component()
-{
+    frame_->highlight_on_focus(inner_component_);
 }
 
 // ==========================================================================
@@ -137,8 +119,8 @@ void framed_component::do_event(boost::any const &ev)
         // send the event to the frame instead.
 
         // Translate mouse co-ordinates to inner-component co-ordinates
-        auto inner_position = pimpl_->inner_component_->get_position();
-        auto inner_size     = pimpl_->inner_component_->get_size();
+        auto inner_position = inner_component_->get_position();
+        auto inner_size     = inner_component_->get_size();
 
         inner_mouse_event.x_position_ -= inner_position.x;
         inner_mouse_event.y_position_ -= inner_position.y;
@@ -149,7 +131,7 @@ void framed_component::do_event(boost::any const &ev)
         inner_mouse_event.y_position_ = std::max(
             0, std::min(inner_size.height - 1, inner_mouse_event.y_position_));
 
-        pimpl_->inner_component_->event(inner_mouse_event);
+        inner_component_->event(inner_mouse_event);
     }
     else
     {
@@ -167,8 +149,8 @@ nlohmann::json framed_component::do_to_json() const
     ])"_json;
 
     auto json = composite_component::do_to_json().patch(patch);
-    json["frame"] = pimpl_->frame_->to_json();
-    json["component"] = pimpl_->inner_component_->to_json();
+    json["frame"] = frame_->to_json();
+    json["component"] = inner_component_->to_json();
     
     return json;
 }
@@ -177,10 +159,11 @@ nlohmann::json framed_component::do_to_json() const
 // MAKE_FRAMED_COMPONENT
 // ==========================================================================
 std::shared_ptr<framed_component> make_framed_component(
-    std::shared_ptr<frame> const &outer_frame,
-    std::shared_ptr<component> const &inner_component)
+    std::shared_ptr<frame> outer_frame,
+    std::shared_ptr<component> inner_component)
 {
-    return std::make_shared<framed_component>(outer_frame, inner_component);
+    return std::make_shared<framed_component>(
+        std::move(outer_frame), std::move(inner_component));
 }
 
 }
