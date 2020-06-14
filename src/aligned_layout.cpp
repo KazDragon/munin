@@ -4,23 +4,54 @@
 
 namespace munin {
 
+namespace {
+
+// ==========================================================================
+// CALCULATE_COMPONENT_WIDTH
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_width(
+    terminalpp::coordinate_type container_width,
+    terminalpp::coordinate_type component_preferred_width,
+    horizontal_alignment alignment)
+{
+    return std::min(container_width, component_preferred_width);
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_HEIGHT
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_height(
+    terminalpp::coordinate_type container_height,
+    terminalpp::coordinate_type component_preferred_height,
+    vertical_alignment alignment)
+{
+    return std::min(container_height, component_preferred_height);
+}
+
 // ==========================================================================
 // CALCULATE_COMPONENT_SIZE
 // ==========================================================================
-static terminalpp::extent calculate_component_size(
-    terminalpp::extent const &container_size,
-    terminalpp::extent const &preferred_component_size)
+terminalpp::extent calculate_component_size(
+    terminalpp::extent container_size,
+    terminalpp::extent component_preferred_size,
+    alignment alignment)
 {
     return {
-        (std::min)(preferred_component_size.width, container_size.width),
-        (std::min)(preferred_component_size.height, container_size.height)
+        calculate_component_width(
+            container_size.width,
+            component_preferred_size.width,
+            alignment.horizontal),
+        calculate_component_height(
+            container_size.height,
+            component_preferred_size.height,
+            alignment.vertical)
     };
 }
 
 // ==========================================================================
 // CALCULATE_COMPONENT_X_POSITION
 // ==========================================================================
-static terminalpp::coordinate_type calculate_component_x_position(
+terminalpp::coordinate_type calculate_component_x_position(
     terminalpp::coordinate_type container_width,
     terminalpp::coordinate_type component_width,
     horizontal_alignment alignment)
@@ -43,7 +74,7 @@ static terminalpp::coordinate_type calculate_component_x_position(
 // ==========================================================================
 // CALCULATE_COMPONENT_Y_POSITION
 // ==========================================================================
-static terminalpp::coordinate_type calculate_component_y_position(
+terminalpp::coordinate_type calculate_component_y_position(
     terminalpp::coordinate_type container_height,
     terminalpp::coordinate_type component_height,
     vertical_alignment alignment)
@@ -66,7 +97,7 @@ static terminalpp::coordinate_type calculate_component_y_position(
 // ==========================================================================
 // CALCULATE_COMPONENT_POSITION
 // ==========================================================================
-static terminalpp::point calculate_component_position(
+terminalpp::point calculate_component_position(
     terminalpp::extent const &container_size,
     terminalpp::extent const &component_size,
     alignment const &component_alignment)
@@ -86,7 +117,7 @@ static terminalpp::point calculate_component_position(
 // ==========================================================================
 // CALCULATE_ALIGNMENT
 // ==========================================================================
-static alignment calculate_alignment(boost::any const &hint)
+alignment calculate_alignment(boost::any const &hint)
 {
     auto const *alignment_hint =
         boost::any_cast<alignment>(&hint);
@@ -98,6 +129,8 @@ static alignment calculate_alignment(boost::any const &hint)
                horizontal_alignment::centre, 
                vertical_alignment::centre 
            };
+}
+
 }
 
 // ==========================================================================
@@ -139,12 +172,13 @@ void aligned_layout::do_layout(
     {
         auto const &comp = components[index];
         auto const &hint = hints[index];
+        auto const &alignment = calculate_alignment(hint);
 
-        auto const component_size = calculate_component_size(
-            size, comp->get_preferred_size());
+        auto const &component_size = calculate_component_size(
+            size, comp->get_preferred_size(), alignment);
 
-        auto const component_position = calculate_component_position(
-            size, component_size, calculate_alignment(hint));
+        auto const &component_position = calculate_component_position(
+            size, component_size, alignment);
 
         comp->set_position(component_position);
         comp->set_size(component_size);
