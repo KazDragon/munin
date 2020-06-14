@@ -18,6 +18,52 @@ static terminalpp::extent calculate_component_size(
 }
 
 // ==========================================================================
+// CALCULATE_COMPONENT_X_POSITION
+// ==========================================================================
+static terminalpp::coordinate_type calculate_component_x_position(
+    terminalpp::coordinate_type container_width,
+    terminalpp::coordinate_type component_width,
+    horizontal_alignment alignment)
+{
+    switch(alignment)
+    {
+    case horizontal_alignment::left :
+        return 0;
+        break;
+
+    case horizontal_alignment::right :
+        return std::max(container_width - component_width, 0);
+
+    case horizontal_alignment::centre :
+    default :
+        return std::max(container_width - component_width, 0) / 2;
+    }
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_Y_POSITION
+// ==========================================================================
+static terminalpp::coordinate_type calculate_component_y_position(
+    terminalpp::coordinate_type container_height,
+    terminalpp::coordinate_type component_height,
+    vertical_alignment alignment)
+{
+    switch(alignment)
+    {
+    case vertical_alignment::top :
+        return 0;
+        break;
+
+    case vertical_alignment::bottom :
+        return std::max(container_height - component_height, 0);
+
+    case vertical_alignment::centre :
+    default :
+        return std::max(container_height - component_height, 0) / 2;
+    }
+}
+
+// ==========================================================================
 // CALCULATE_COMPONENT_POSITION
 // ==========================================================================
 static terminalpp::point calculate_component_position(
@@ -25,45 +71,16 @@ static terminalpp::point calculate_component_position(
     terminalpp::extent const &component_size,
     alignment const &component_alignment)
 {
-    terminalpp::point position;
-    
-    switch (component_alignment.horizontal)
-    {
-    case horizontal_alignment::left :
-        position.x = 0;
-        break;
-
-    case horizontal_alignment::right :
-        position.x = 
-            (std::max)(container_size.width - component_size.width, 0);
-        break;
-
-    case horizontal_alignment::centre :
-    default :
-        position.x =
-            (std::max)(container_size.width - component_size.width, 0) / 2;
-        break;
+    return {
+        calculate_component_x_position(
+            container_size.width, 
+            component_size.width, 
+            component_alignment.horizontal),
+        calculate_component_y_position(
+            container_size.height, 
+            component_size.height, 
+            component_alignment.vertical),
     };
-
-    switch (component_alignment.vertical)
-    {
-    case vertical_alignment::top :
-        position.y = 0;
-        break;
-
-    case vertical_alignment::bottom :
-        position.y =
-            (std::max)(container_size.height - component_size.height, 0);
-        break;
-
-    case vertical_alignment::centre :
-    default :
-        position.y =
-            (std::max)(container_size.height - component_size.height, 0) / 2;
-        break;
-    };
-    
-    return position;
 }
 
 // ==========================================================================
