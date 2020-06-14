@@ -128,7 +128,13 @@ INSTANTIATE_TEST_CASE_P(
             { 10, 10 },
             { 4,  4  },
             { {6, 6}, {4, 4} }
-        }
+        },
+        aligned_layout_test_data{
+            munin::alignment_fill,
+            { 10, 10 },
+            { 4,  4  },
+            { {0, 0}, {10, 10} }
+        },
     })
 );
 
@@ -191,7 +197,13 @@ INSTANTIATE_TEST_CASE_P(
             { 9, 9 },
             { 4, 4 },
             { {5, 5}, {4, 4} }
-        }
+        },
+        aligned_layout_test_data{
+            munin::alignment_fill,
+            { 9, 9 },
+            { 4, 4 },
+            { {0, 0}, {9, 9} }
+        },
     })
 );
 

@@ -14,7 +14,14 @@ terminalpp::coordinate_type calculate_component_width(
     terminalpp::coordinate_type component_preferred_width,
     horizontal_alignment alignment)
 {
-    return std::min(container_width, component_preferred_width);
+    switch (alignment)
+    {
+    case horizontal_alignment::fill:
+        return container_width;
+
+    default:
+        return std::min(container_width, component_preferred_width);
+    }
 }
 
 // ==========================================================================
@@ -25,7 +32,14 @@ terminalpp::coordinate_type calculate_component_height(
     terminalpp::coordinate_type component_preferred_height,
     vertical_alignment alignment)
 {
-    return std::min(container_height, component_preferred_height);
+    switch (alignment)
+    {
+        case vertical_alignment::fill:
+            return container_height;
+
+        default:
+            return std::min(container_height, component_preferred_height);
+    }
 }
 
 // ==========================================================================
@@ -58,9 +72,10 @@ terminalpp::coordinate_type calculate_component_x_position(
 {
     switch(alignment)
     {
+    case horizontal_alignment::fill :
+        // Fall-through
     case horizontal_alignment::left :
         return 0;
-        break;
 
     case horizontal_alignment::right :
         return std::max(container_width - component_width, 0);
@@ -81,9 +96,10 @@ terminalpp::coordinate_type calculate_component_y_position(
 {
     switch(alignment)
     {
+    case vertical_alignment::fill :
+        // Fall-through
     case vertical_alignment::top :
         return 0;
-        break;
 
     case vertical_alignment::bottom :
         return std::max(container_height - component_height, 0);
