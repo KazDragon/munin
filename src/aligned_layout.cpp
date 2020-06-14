@@ -1,5 +1,6 @@
 #include "munin/aligned_layout.hpp"
 #include "munin/container.hpp"
+#include <boost/range/numeric.hpp>
 #include <algorithm>
 
 namespace munin {
@@ -114,9 +115,9 @@ terminalpp::coordinate_type calculate_component_y_position(
 // CALCULATE_COMPONENT_POSITION
 // ==========================================================================
 terminalpp::point calculate_component_position(
-    terminalpp::extent const &container_size,
-    terminalpp::extent const &component_size,
-    alignment const &component_alignment)
+    terminalpp::extent container_size,
+    terminalpp::extent component_size,
+    alignment component_alignment)
 {
     return {
         calculate_component_x_position(
@@ -158,22 +159,18 @@ terminalpp::extent aligned_layout::do_get_preferred_size(
 {
     // The preferred size of this component is the largest preferred
     // extents of all components.
-    terminalpp::extent maximum_preferred_size(0, 0);
+    return boost::accumulate(
+        components,
+        terminalpp::extent{0, 0},
+        [](terminalpp::extent max, std::shared_ptr<component> const &comp)
+        {
+            auto const preferred_size = comp->get_preferred_size();
 
-    for (auto const &comp : components)
-    {
-        auto preferred_size = comp->get_preferred_size();
-
-        maximum_preferred_size.width = (std::max)(
-            maximum_preferred_size.width,
-            preferred_size.width);
-
-        maximum_preferred_size.height = (std::max)(
-            maximum_preferred_size.height,
-            preferred_size.height);
-    }
-
-    return maximum_preferred_size;
+            return terminalpp::extent {
+                std::max(preferred_size.width, max.width),
+                std::max(preferred_size.height, max.height)
+            };
+        });
 }
 
 // ==========================================================================
