@@ -1,75 +1,140 @@
 #include "munin/aligned_layout.hpp"
 #include "munin/container.hpp"
+#include <boost/range/numeric.hpp>
 #include <algorithm>
 
 namespace munin {
 
+namespace {
+
+// ==========================================================================
+// CALCULATE_COMPONENT_WIDTH
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_width(
+    terminalpp::coordinate_type container_width,
+    terminalpp::coordinate_type component_preferred_width,
+    horizontal_alignment alignment)
+{
+    switch (alignment)
+    {
+    case horizontal_alignment::fill:
+        return container_width;
+
+    default:
+        return std::min(container_width, component_preferred_width);
+    }
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_HEIGHT
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_height(
+    terminalpp::coordinate_type container_height,
+    terminalpp::coordinate_type component_preferred_height,
+    vertical_alignment alignment)
+{
+    switch (alignment)
+    {
+        case vertical_alignment::fill:
+            return container_height;
+
+        default:
+            return std::min(container_height, component_preferred_height);
+    }
+}
+
 // ==========================================================================
 // CALCULATE_COMPONENT_SIZE
 // ==========================================================================
-static terminalpp::extent calculate_component_size(
-    terminalpp::extent const &container_size,
-    terminalpp::extent const &preferred_component_size)
+terminalpp::extent calculate_component_size(
+    terminalpp::extent container_size,
+    terminalpp::extent component_preferred_size,
+    alignment alignment)
 {
     return {
-        (std::min)(preferred_component_size.width, container_size.width),
-        (std::min)(preferred_component_size.height, container_size.height)
+        calculate_component_width(
+            container_size.width,
+            component_preferred_size.width,
+            alignment.horizontal),
+        calculate_component_height(
+            container_size.height,
+            component_preferred_size.height,
+            alignment.vertical)
     };
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_X_POSITION
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_x_position(
+    terminalpp::coordinate_type container_width,
+    terminalpp::coordinate_type component_width,
+    horizontal_alignment alignment)
+{
+    switch(alignment)
+    {
+    case horizontal_alignment::fill :
+        // Fall-through
+    case horizontal_alignment::left :
+        return 0;
+
+    case horizontal_alignment::right :
+        return std::max(container_width - component_width, 0);
+
+    case horizontal_alignment::centre :
+    default :
+        return std::max(container_width - component_width, 0) / 2;
+    }
+}
+
+// ==========================================================================
+// CALCULATE_COMPONENT_Y_POSITION
+// ==========================================================================
+terminalpp::coordinate_type calculate_component_y_position(
+    terminalpp::coordinate_type container_height,
+    terminalpp::coordinate_type component_height,
+    vertical_alignment alignment)
+{
+    switch(alignment)
+    {
+    case vertical_alignment::fill :
+        // Fall-through
+    case vertical_alignment::top :
+        return 0;
+
+    case vertical_alignment::bottom :
+        return std::max(container_height - component_height, 0);
+
+    case vertical_alignment::centre :
+    default :
+        return std::max(container_height - component_height, 0) / 2;
+    }
 }
 
 // ==========================================================================
 // CALCULATE_COMPONENT_POSITION
 // ==========================================================================
-static terminalpp::point calculate_component_position(
-    terminalpp::extent const &container_size,
-    terminalpp::extent const &component_size,
-    alignment const &component_alignment)
+terminalpp::point calculate_component_position(
+    terminalpp::extent container_size,
+    terminalpp::extent component_size,
+    alignment component_alignment)
 {
-    terminalpp::point position;
-    
-    switch (component_alignment.horizontal)
-    {
-    case horizontal_alignment::left :
-        position.x = 0;
-        break;
-
-    case horizontal_alignment::right :
-        position.x = 
-            (std::max)(container_size.width - component_size.width, 0);
-        break;
-
-    case horizontal_alignment::centre :
-    default :
-        position.x =
-            (std::max)(container_size.width - component_size.width, 0) / 2;
-        break;
+    return {
+        calculate_component_x_position(
+            container_size.width, 
+            component_size.width, 
+            component_alignment.horizontal),
+        calculate_component_y_position(
+            container_size.height, 
+            component_size.height, 
+            component_alignment.vertical),
     };
-
-    switch (component_alignment.vertical)
-    {
-    case vertical_alignment::top :
-        position.y = 0;
-        break;
-
-    case vertical_alignment::bottom :
-        position.y =
-            (std::max)(container_size.height - component_size.height, 0);
-        break;
-
-    case vertical_alignment::centre :
-    default :
-        position.y =
-            (std::max)(container_size.height - component_size.height, 0) / 2;
-        break;
-    };
-    
-    return position;
 }
 
 // ==========================================================================
 // CALCULATE_ALIGNMENT
 // ==========================================================================
-static alignment calculate_alignment(boost::any const &hint)
+alignment calculate_alignment(boost::any const &hint)
 {
     auto const *alignment_hint =
         boost::any_cast<alignment>(&hint);
@@ -83,6 +148,8 @@ static alignment calculate_alignment(boost::any const &hint)
            };
 }
 
+}
+
 // ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
@@ -92,22 +159,18 @@ terminalpp::extent aligned_layout::do_get_preferred_size(
 {
     // The preferred size of this component is the largest preferred
     // extents of all components.
-    terminalpp::extent maximum_preferred_size(0, 0);
+    return boost::accumulate(
+        components,
+        terminalpp::extent{0, 0},
+        [](terminalpp::extent max, std::shared_ptr<component> const &comp)
+        {
+            auto const preferred_size = comp->get_preferred_size();
 
-    for (auto const &comp : components)
-    {
-        auto preferred_size = comp->get_preferred_size();
-
-        maximum_preferred_size.width = (std::max)(
-            maximum_preferred_size.width,
-            preferred_size.width);
-
-        maximum_preferred_size.height = (std::max)(
-            maximum_preferred_size.height,
-            preferred_size.height);
-    }
-
-    return maximum_preferred_size;
+            return terminalpp::extent {
+                std::max(preferred_size.width, max.width),
+                std::max(preferred_size.height, max.height)
+            };
+        });
 }
 
 // ==========================================================================
@@ -122,12 +185,13 @@ void aligned_layout::do_layout(
     {
         auto const &comp = components[index];
         auto const &hint = hints[index];
+        auto const &alignment = calculate_alignment(hint);
 
-        auto const component_size = calculate_component_size(
-            size, comp->get_preferred_size());
+        auto const &component_size = calculate_component_size(
+            size, comp->get_preferred_size(), alignment);
 
-        auto const component_position = calculate_component_position(
-            size, component_size, calculate_alignment(hint));
+        auto const &component_position = calculate_component_position(
+            size, component_size, alignment);
 
         comp->set_position(component_position);
         comp->set_size(component_size);

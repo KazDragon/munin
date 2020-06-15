@@ -8,14 +8,16 @@ enum class horizontal_alignment
 {
     left,
     centre,
-    right
+    right,
+    fill,
 };
 
 enum class vertical_alignment
 {
     top,
     centre,
-    bottom
+    bottom,
+    fill,
 };
 
 //* =========================================================================
@@ -122,6 +124,11 @@ static constexpr alignment const alignment_hcvb = {
 static constexpr alignment const alignment_hrvb = {
     horizontal_alignment::right,
     vertical_alignment::bottom
+};
+
+static constexpr alignment const alignment_fill = {
+    horizontal_alignment::fill,
+    vertical_alignment::fill
 };
 
 }
