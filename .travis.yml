@@ -99,14 +99,16 @@ before_install:
   - pip3 install --user --upgrade setuptools
   - pip3 install --user conan
 
+# Important: conan center is rather slow when fetching Boost, and fill fail
+# a decent portion of the time unless it is given a loose timeout.
+  - conan config set general.request_timeout=120
+
 # install coverage software
   - if [ "$COVERAGE" == "True" ]; then gem install coveralls-lcov; fi
 
 before_script:
   - mkdir build || true
   - cd build
-  - conan remote add nonstd-lite https://api.bintray.com/conan/martinmoene/nonstd-lite || true
-  - conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan || true
   - conan remote add kazdragon-conan https://api.bintray.com/conan/kazdragon/conan-public || true
   - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:shared=$SHARED -o munin:sanitize=$SANITIZE -o munin:coverage=$COVERAGE --build=missing
 

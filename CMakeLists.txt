@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(MUNIN VERSION 0.3.6)
+project(MUNIN VERSION 0.3.7)
 
 cmake_policy(VERSION 3.2)
 
@@ -116,10 +116,7 @@ target_link_libraries(munin
     PUBLIC
         CONAN_PKG::terminalpp
         CONAN_PKG::jsonformoderncpp
-        CONAN_PKG::boost_any
-        CONAN_PKG::boost_optional
-        CONAN_PKG::boost_scope_exit
-        CONAN_PKG::boost_signals2
+        CONAN_PKG::boost
 )
 
 enable_testing()

@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class MuninConan(ConanFile):
     name = "munin"
-    version = "0.3.6"
+    version = "0.3.7"
     license = "MIT"
     author = "KazDragon"
     url = "https://github.com/KazDragon/munin"
@@ -13,13 +13,10 @@ class MuninConan(ConanFile):
     options = {"shared": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
     default_options = {"shared": False, "coverage": False, "sanitize": "off"}    
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
-    requires = ("terminalpp/[>=1.3.3]@kazdragon/conan-public",
-                "jsonformoderncpp/[>=3.3.0]@vthiery/stable",
-                "boost_any/[>=1.69]@bincrafters/stable",
-                "boost_optional/[>=1.69]@bincrafters/stable",
-                "boost_scope_exit/[>=1.69]@bincrafters/stable",
-                "boost_signals2/[>=1.69]@bincrafters/stable")
-    build_requires = ("gtest/[>=1.8.1]@bincrafters/stable")
+    requires = ("terminalpp/[>=1.4.0]@kazdragon/conan-public",
+                "jsonformoderncpp/[>=3.3.0]",
+                "boost/[>=1.69]")
+    build_requires = ("gtest/[>=1.8.1]")
     generators = "cmake"
 
     def imports(self):
