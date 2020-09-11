@@ -78,7 +78,7 @@ TEST_P(compass_layouts, place_components_at_these_positions)
     (*lyt)(components, hints, container_size);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     single_components_are_laid_out_on_their_edges,
     compass_layouts,
     ValuesIn(
@@ -135,7 +135,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     centre_components_occupy_unused_space,
     compass_layouts,
     ValuesIn(
@@ -202,7 +202,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     squashed_components_shrink_to_fit,
     compass_layouts,
     ValuesIn(
@@ -259,7 +259,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     order_of_insertion_takes_priority,
     compass_layouts,
     ValuesIn(
@@ -451,7 +451,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     centred_components_are_laid_out_last,
     compass_layouts,
     ValuesIn(
@@ -488,7 +488,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     compass_layouts_preserve_empty_space,
     compass_layouts,
     ValuesIn(

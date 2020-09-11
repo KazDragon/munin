@@ -112,7 +112,7 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
     ASSERT_EQ(expected_mouse_report, received_mouse_report);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     framed_component_mouse_clicks,
     framed_components,
     ValuesIn(

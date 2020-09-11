@@ -86,7 +86,7 @@ auto constexpr rmb = terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN;
 auto constexpr mup = terminalpp::ansi::mouse::report::BUTTON_UP;
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     mouse_events,
     mouse_click_test,
     ValuesIn

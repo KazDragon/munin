@@ -200,7 +200,7 @@ TEST_P(a_toggle_button, emits_on_state_changed)
     ASSERT_EQ(expected_end_state, end_state);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     a_toggle_button_emits_on_state_changed_for_certain_events,
     a_toggle_button,
     ValuesIn({
@@ -212,7 +212,7 @@ INSTANTIATE_TEST_CASE_P(
         event_emission_data{ true, terminalpp::virtual_key{terminalpp::vk::space}, true, false },
     }));
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     a_toggle_button_does_not_emit_on_click_for_certain_events,
     a_toggle_button,
     ValuesIn({

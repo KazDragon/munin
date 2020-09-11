@@ -179,7 +179,7 @@ TEST_P(laying_out_grids, at_these_positions)
     (*lyt)(components, {}, container_size);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     grid_where_the_size_is_divisible_by_the_dimensions_lays_components_out_evenly,
     laying_out_grids,
     ValuesIn(std::vector<grid_layout_test_data>{
@@ -221,7 +221,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     grid_where_the_size_is_not_divisible_by_the_dimensions_distributes_remainder_over_components,
     laying_out_grids,
     ValuesIn(std::vector<grid_layout_test_data>{

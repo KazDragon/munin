@@ -45,7 +45,7 @@ TEST_P(render_surface_with_optional_unicode_capability, returns_that_capability_
     ASSERT_EQ(unicode_support, rs.supports_unicode());
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     render_surfaces_reflect_unicode_support_from_capabilities,
     render_surface_with_optional_unicode_capability,
     Values(true, false)

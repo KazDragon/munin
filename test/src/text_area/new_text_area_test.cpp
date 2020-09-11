@@ -230,7 +230,7 @@ TEST_P(unjustified_text_areas, have_a_specific_cursor_position_after_insertion)
     ASSERT_EQ(expected_cursor_position_, text_area_.get_cursor_position());
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     unjustified_text_areas_behave,
     unjustified_text_areas,
     ValuesIn

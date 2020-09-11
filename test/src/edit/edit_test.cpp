@@ -215,7 +215,7 @@ TEST_P(receiving_keypresses, draws_appropriate_characters_and_moves_the_cursor)
     ASSERT_EQ(terminalpp::element{'x'}, cvs_[3][2]);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     receiving_keypresses_test,
     receiving_keypresses,
     ValuesIn

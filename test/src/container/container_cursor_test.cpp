@@ -49,7 +49,7 @@ TEST_P(containers_with_cursors, returns_the_state_and_position_of_the_focussed_c
     ASSERT_EQ(expected_result, container.get_cursor_position());
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     test,
     containers_with_cursors,
     ValuesIn(std::vector<cursor_state_test_data>{

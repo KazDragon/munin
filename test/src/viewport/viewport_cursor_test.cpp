@@ -62,7 +62,7 @@ TEST_P(viewport_cursor_tracking_test, viewports_track_cursor_movement)
 };
 
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     viewport_cursor_tracking,
     viewport_cursor_tracking_test,
     ValuesIn({

@@ -69,7 +69,7 @@ TEST_P(aligned_layouts, place_components_at_these_positions)
     (*lyt)({component}, {alignment}, container_size);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     laying_out_evenly_spaced_single_components,
     aligned_layouts,
     ValuesIn(std::vector<aligned_layout_test_data>{
@@ -138,7 +138,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     laying_out_unevenly_spaced_single_components,
     aligned_layouts,
     ValuesIn(std::vector<aligned_layout_test_data>{
@@ -207,7 +207,7 @@ INSTANTIATE_TEST_CASE_P(
     })
 );
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     laying_out_squashed_single_components,
     aligned_layouts,
     ValuesIn(std::vector<aligned_layout_test_data>{

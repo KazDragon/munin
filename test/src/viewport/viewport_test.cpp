@@ -82,7 +82,7 @@ TEST_P(viewport_preferred_size_test, the_preferred_size_of_a_viewport_is_the_sam
     ASSERT_TRUE(preferred_size_changed);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     viewport_size,
     viewport_preferred_size_test,
     Values
