@@ -51,7 +51,7 @@ TEST_P(viewport_cursor_movement_redraw_test, cursor_movements)
     ASSERT_EQ(expected_redraw_region, redraw_region);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     moving_cursors_redraw_viewports,
     viewport_cursor_movement_redraw_test,
     ValuesIn({

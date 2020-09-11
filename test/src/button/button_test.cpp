@@ -90,7 +90,7 @@ TEST_P(a_button, emits_on_click)
     ASSERT_EQ(click_should_be_received, click_received);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     a_button_emits_on_click_for_certain_events,
     a_button,
     ValuesIn({
@@ -99,7 +99,7 @@ INSTANTIATE_TEST_CASE_P(
         event_emission_data{ terminalpp::virtual_key{terminalpp::vk::space}, true },
     }));
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     a_button_does_not_emit_on_click_for_certain_events,
     a_button,
     ValuesIn({

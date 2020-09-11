@@ -110,7 +110,7 @@ TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_com
     container.event(report);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     test,
     containers_forwarding_mouse_events,
     ValuesIn(std::vector<mouse_report_test_data>{

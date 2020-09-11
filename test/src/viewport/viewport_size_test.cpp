@@ -68,7 +68,7 @@ TEST_P(viewport_size_test, viewports_track_size_changes)
     viewport_->draw(surface, {{}, viewport_->get_size()});
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     changing_viewport_size,
     viewport_size_test,
     ValuesIn({

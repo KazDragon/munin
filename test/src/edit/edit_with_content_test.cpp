@@ -110,7 +110,7 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
     EXPECT_EQ(expected_text, edit_.get_text());
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     keypresses,
     keypress_test,
     ValuesIn
