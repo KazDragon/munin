@@ -1,7 +1,7 @@
 #include "window_test.hpp"
-#include <terminalpp/ansi_terminal.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/screen.hpp>
+#include <terminalpp/terminal.hpp>
 #include <gtest/gtest.h>
 
 using testing::InSequence;
@@ -55,7 +55,7 @@ TEST_F(a_window, again_requests_repaint_when_content_requests_a_redraw_after_a_p
     content_->on_redraw({{{}, {}}});
     
     terminalpp::canvas canvas(window_size);
-    terminalpp::ansi_terminal terminal;
+    terminalpp::terminal terminal;
     window_->repaint(canvas, terminal);
     
     content_->on_redraw({{{}, {}}});
@@ -126,7 +126,7 @@ protected :
     
     std::shared_ptr<mock_component> content_ = std::make_shared<mock_component>();
     std::shared_ptr<munin::window> window_ = std::make_shared<munin::window>(content_);
-    terminalpp::ansi_terminal terminal_;
+    terminalpp::terminal terminal_;
     terminalpp::canvas canvas_;
     terminalpp::extent content_size_;
 };
@@ -257,7 +257,7 @@ TEST_F(repainting_a_window, with_one_change_returns_paint_data_for_that_region)
 {
     // TODO: this specifies an implementation.  Instead, it should mock a
     // screen-like interface.
-    terminalpp::ansi_terminal terminal;
+    terminalpp::terminal terminal;
     terminalpp::screen screen;
     
     window_->repaint(canvas_, terminal_);
