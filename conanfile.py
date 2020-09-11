@@ -14,7 +14,7 @@ class MuninConan(ConanFile):
     default_options = {"shared": False, "coverage": False, "sanitize": "off"}    
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
     requires = ("terminalpp/[>=1.4.0]@kazdragon/conan-public",
-                "jsonformoderncpp/[>=3.3.0]",
+                "nlohmann_json/[>=3.3.0]",
                 "boost/[>=1.69]")
     build_requires = ("gtest/[>=1.8.1]")
     generators = "cmake"

@@ -115,7 +115,7 @@ target_include_directories(munin
 target_link_libraries(munin
     PUBLIC
         CONAN_PKG::terminalpp
-        CONAN_PKG::jsonformoderncpp
+        CONAN_PKG::nlohmann_json
         CONAN_PKG::boost
 )
 
