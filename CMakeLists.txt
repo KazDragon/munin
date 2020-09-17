@@ -7,16 +7,37 @@ if (POLICY CMP0063)
     cmake_policy(SET CMP0063 NEW)
 endif()
 
+option(MUNIN_COVERAGE  "Build with code coverage options")
+option(MUNIN_SANITIZE "Build using sanitizers" "")
+option(MUNIN_WITH_TESTS "Build with tests" True)
+message("Building Munin with config: ${CMAKE_BUILD_TYPE}")
+message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
+message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
+message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
 include(GenerateExportHeader)
+
+# Munin requires at least Boost 1.69
+find_package(Boost 1.69.0 REQUIRED)
+
+# Munin requires the nlohmann_json package
+find_package(nlohmann_json 3.3.0 REQUIRED)
+
+# And of course, Munin is built atop the Terminal++ library, which
+# also requires fmt.
+find_package(fmt 5.3 REQUIRED)
+find_package(terminalpp 1.4.1 REQUIRED)
+
+# If we are building with tests, then we require the GTest library
+if (${MUNIN_WITH_TESTS})
+    find_package(GTest REQUIRED CONFIG)
+endif()
 
 # For producing automatically-generated documentation, we use Doxygen
 find_package(Doxygen)
@@ -94,16 +115,11 @@ target_sources(munin
         src/detail/json_adaptors.cpp
 )
 
-generate_export_header(munin
-    EXPORT_FILE_NAME
-        "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
-)
-
-set_target_properties(munin
-    PROPERTIES
-        CXX_VISIBILITY_PRESET hidden
-        VERSION ${MUNIN_VERSION}
-        SOVERSION ${MUNIN_VERSION}
+target_link_libraries(munin
+    PUBLIC
+        terminalpp
+        nlohmann_json::nlohmann_json
+        Boost::boost
 )
 
 target_include_directories(munin
@@ -112,16 +128,22 @@ target_include_directories(munin
         $<INSTALL_INTERFACE:include/munin-${MUNIN_VERSION}>
 )
 
-target_link_libraries(munin
-    PUBLIC
-        CONAN_PKG::terminalpp
-        CONAN_PKG::nlohmann_json
-        CONAN_PKG::boost
-)
+set_target_properties(munin
+    PROPERTIES
+        CXX_VISIBILITY_PRESET hidden
+        VERSION ${MUNIN_VERSION}
+        SOVERSION ${MUNIN_VERSION}
+)        
 
+generate_export_header(munin
+    EXPORT_FILE_NAME
+        "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
+)        
+
+if (MUNIN_WITH_TESTS)
 enable_testing()
 
-add_executable(munin_tester test/src/redraw.cpp)
+add_executable(munin_tester)
 
 target_sources(munin_tester
     PRIVATE
@@ -207,10 +229,13 @@ target_include_directories(munin_tester
 
 target_link_libraries(munin_tester
     munin
-    CONAN_PKG::gtest
+    GTest::gtest
+    GTest::gmock
+    GTest::gmock_main
 )
 
 add_test(munin_test munin_tester)
+endif()
 
 if (DOXYGEN_FOUND)
     configure_file(

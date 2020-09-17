@@ -12,10 +12,10 @@ linux_gcc: &linux_gcc
     apt:
       sources:
         - ubuntu-toolchain-r-test
+        - sourceline: 'ppa:mhier/libboost-latest'
       packages:
         - g++-5
-        - python3
-        - python3-pip
+        - boost1.74
 
 linux_clang: &linux_clang
   os: linux
@@ -26,10 +26,10 @@ linux_clang: &linux_clang
       sources:
         - ubuntu-toolchain-r-test
         - llvm-toolchain-trusty-4.0
+        - sourceline: 'ppa:mhier/libboost-latest'
       packages:
         - clang-4.0
-        - python3
-        - python3-pip
+        - boost1.74
 
 jobs:
   include:
@@ -77,7 +77,10 @@ cache:
   - apt: true
   - directories:
     - $HOME/lcov
-    - $HOME/.conan
+    - $HOME/nlohmann_json
+    - $HOME/fmt
+    - $HOME/terminalpp
+    - $HOME/gtest
 
 before_install:
 # Set up CC/CXX variables
@@ -85,6 +88,9 @@ before_install:
   - export CMAKE=cmake
   - export COVERAGE=${COVERAGE:-False}
   - export SANITIZE=${SANITIZE:-off}
+
+# install coverage software
+  - if [ "$COVERAGE" == "True" ]; then gem install coveralls-lcov; fi
 
 # workaround for not having lcov 1.13
   - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
@@ -95,25 +101,61 @@ before_install:
     fi
   - export LCOV=$HOME/lcov/usr/local/bin/lcov
 
-# install conan for package dependencies
-  - pip3 install --user --upgrade setuptools
-  - pip3 install --user conan
+# Install the nlohmann_json package
+  - if [ ! -d "nlohmann_json/include/nlohmann/json.hpp" ]; then
+      wget https://github.com/nlohmann/json/archive/v3.3.0.tar.gz;
+      tar -xzf v3.3.0.tar.gz;
+      mkdir nlohmann_json || true;
+      cd json-3.3.0;
+      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/nlohmann_json -DJSON_BuildTests=OFF .;
+      make -j2 && make install;
+      cd ..;
+    fi
+  - export nlohmann_json_DIR=$HOME/nlohmann_json/lib/cmake/nlohmann_json
 
-# Important: conan center is rather slow when fetching Boost, and fill fail
-# a decent portion of the time unless it is given a loose timeout.
-  - conan config set general.request_timeout=120
+# Install libfmt
+  - if [ ! -d "libfmt/include/fmt/format.h" ]; then
+      wget https://github.com/fmtlib/fmt/archive/5.3.0.tar.gz;
+      tar -xzf 5.3.0.tar.gz;
+      mkdir libfmt || true;
+      cd fmt-5.3.0;
+      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/libfmt -DFMT_TEST=OFF -DCMAKE_CXX_FLAGS='-fPIC' .;
+      make -j2 && make install;
+      cd ..;
+    fi
+  - export fmt_DIR=$HOME/libfmt/lib/cmake/fmt
 
-# install coverage software
-  - if [ "$COVERAGE" == "True" ]; then gem install coveralls-lcov; fi
+# Install Terminal++
+  - if [ ! -d "terminalpp/include/terminalpp-1.4.1/terminalpp/version.hpp" ]; then
+      wget https://github.com/KazDragon/terminalpp/archive/v1.4.1.tar.gz;
+      tar -xzf v1.4.1.tar.gz;
+      mkdir terminalpp || true;
+      cd terminalpp-1.4.1;
+      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/terminalpp -DBUILD_SHARED_LIBS=$SHARED -DTERMINALPP_WITH_TESTS=False .;
+      make -j2 && make install;
+      cd ..;
+    fi
+  - export terminalpp_DIR=$HOME/terminalpp/lib/cmake/terminalpp-1.4.1
 
+# Install the Google Test suite
+  - if [ ! -d "gtest/lib/libgmock.a" ]; then
+      wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz;
+      tar -xzf release-1.10.0.tar.gz;
+      mkdir gtest || true;
+      cd googletest-release-1.10.0;
+      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/gtest .;
+      make -j4 && make install;
+      cd ..;
+    fi
+  - export GTest_DIR=$HOME/gtest/lib/cmake/GTest
+      
 before_script:
   - mkdir build || true
   - cd build
-  - conan remote add kazdragon-conan https://api.bintray.com/conan/kazdragon/conan-public || true
-  - conan install .. -s compiler.libcxx=libstdc++11 -s cppstd=14 -o munin:shared=$SHARED -o munin:sanitize=$SANITIZE -o munin:coverage=$COVERAGE --build=missing
+  - $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
 
 script:
-  - conan build ..
+  - make VERBOSE=1
   - if [ "$COVERAGE" == "True" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory . --zerocounters -q;
     fi
@@ -125,7 +167,7 @@ after_failure:
 after_success:
   - if [ "$COVERAGE" == "True" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory .  --capture --output-file coverage.info;
-        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/ext/*' '*/json/*' '*/.conan/*' --output-file coverage.info;
+        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/ext/*' '*/gtest/*' '*/nlohmann_json/*' '*/terminalpp/*' --output-file coverage.info;
         $LCOV --gcov-tool=gcov-5 --list coverage.info;
         coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info;
     fi
