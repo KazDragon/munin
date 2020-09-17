@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/KazDragon/munin.svg?branch=master)](https://travis-ci.org/KazDragon/munin)
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
-
+[![Download](https://api.bintray.com/packages/kazdragon/conan-public/munin%3Akazdragon/images/download.svg)](https://bintray.com/kazdragon/conan-public/munin%3Akazdragon/_latestVersion)
 [![Github Issues](https://img.shields.io/github/issues/KazDragon/munin.svg)](https://github.com/KazDragon/munin/issues)
 
 [![Gitter](https://badges.gitter.im/KazDragon/munin.svg)](https://gitter.im/KazDragon/munin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -15,7 +15,28 @@ Munin is an enhancement to the Terminal++ library that provides a set of compone
 
 # Requirements
 
-Munin requires a C++14 compiler, Terminal++ and the Boost Libraries.  It also uses Google Test and Google Mock for its testing suite, which are compiled optionally.
+Munin requires a C++14 compiler and the following libraries:
+  * Boost (At least version 1.69.0)
+  * nlohmann_json (At least version 3.3.0)
+  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 1.4.1)
+  * (for Terminal++) libfmt (At least version 5.3)
+  * (for testing only) Google Test and Google Mock
+
+# Installation - CMake 
+
+Munin can be installed from source using CMake.  This requires Boost, Terminal++ and any other dependencies to have been installed beforehand, using their own instructions, or for the call to `cmake --configure` to be adjusted appropriately (e.g. `-DBOOST_ROOT=...` or `-DGtest_DIR=...`).  If you do not wish to install into a system directory, and thus avoid the use of sudo, you can also pass `-DCMAKE_INSTALL_PREFIX=...` into the `cmake --configure` call.
+
+    git clone https://github.com/KazDragon/munin.git && cd munin
+    mkdir build && cd build
+    cmake --configure -DCMAKE_BUILD_TYPE=Release ..
+    cmake --build .
+    sudo cmake --install .
+
+# Installation - Conan
+
+You can also use [the Conan Package Manager](https://conan.io/) to install Munin and its dependencies.
+
+See [the TextRay project](https://github.com/KazDragon/textray) for a project that describes this kind of setup.
 
 # Features / Roadmap / Progress
 
@@ -56,8 +77,8 @@ Implement the fundamentals of the library, providing the basis for further devel
  5. [ ] Scroll Pane - a component that includes a scroll frame and a viewport
  
  Specific text manipulation components:
- 1. [ ] Edit - a single-lined horizontally scrolling text box, with a frame.
- 2. [x] Text Area - a multiple-lined vertically scrolling text box, with a frame.
+ 1. [x] Edit - a single-lined horizontally scrolling text box, with a frame.
+ 2. [ ] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
  ## v0.5 - Lists
  TBD
