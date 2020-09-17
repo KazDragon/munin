@@ -31,18 +31,16 @@ struct text_area::impl
 
         for(auto const &ch : text_)
         {
-            auto &last_line = laid_out_text_.back();
-            
             if (ch.glyph_.character_ == '\n')
             {
                 laid_out_text_.emplace_back();
             }
             else
             {
-                last_line += ch;
+                laid_out_text_.back() += ch;
             }
             
-            if (last_line.size() == text_area_width)
+            if (laid_out_text_.back().size() == text_area_width)
             {
                 laid_out_text_.emplace_back();
             }
