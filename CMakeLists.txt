@@ -56,6 +56,8 @@ add_library(munin)
 
 target_sources(munin
     PRIVATE
+        include/munin/animator.hpp
+        include/munin/background_animator.hpp
         include/munin/basic_component.hpp
         include/munin/brush.hpp
         include/munin/button.hpp
@@ -85,6 +87,8 @@ target_sources(munin
         include/munin/detail/json_adaptors.hpp
     
         src/aligned_layout.cpp
+        src/animator.cpp
+        src/background_animator.cpp
         src/basic_component.cpp
         src/brush.cpp
         src/button.cpp
