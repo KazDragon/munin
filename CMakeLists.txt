@@ -74,6 +74,7 @@ target_sources(munin
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
         include/munin/solid_frame.hpp
+        include/munin/status_bar.hpp
         include/munin/text_area.hpp
         include/munin/titled_frame.hpp
         include/munin/toggle_button.hpp
@@ -107,6 +108,7 @@ target_sources(munin
         src/null_layout.cpp
         src/render_surface.cpp
         src/solid_frame.cpp
+        src/status_bar.cpp
         src/text_area.cpp
         src/titled_frame.cpp
         src/toggle_button.cpp
@@ -209,6 +211,7 @@ target_sources(munin_tester
         test/src/render_surface/render_surface_test.cpp
         test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
+        test/src/status_bar/status_bar_test.cpp
         test/src/text_area/new_text_area_test.cpp
         test/src/text_area/text_area_test.cpp
         test/src/text_area/text_area_with_text_inserted_test.cpp
