@@ -56,6 +56,8 @@ add_library(munin)
 
 target_sources(munin
     PRIVATE
+        include/munin/animator.hpp
+        include/munin/background_animator.hpp
         include/munin/basic_component.hpp
         include/munin/brush.hpp
         include/munin/button.hpp
@@ -72,6 +74,7 @@ target_sources(munin
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
         include/munin/solid_frame.hpp
+        include/munin/status_bar.hpp
         include/munin/text_area.hpp
         include/munin/titled_frame.hpp
         include/munin/toggle_button.hpp
@@ -85,6 +88,8 @@ target_sources(munin
         include/munin/detail/json_adaptors.hpp
     
         src/aligned_layout.cpp
+        src/animator.cpp
+        src/background_animator.cpp
         src/basic_component.cpp
         src/brush.cpp
         src/button.cpp
@@ -103,6 +108,7 @@ target_sources(munin
         src/null_layout.cpp
         src/render_surface.cpp
         src/solid_frame.cpp
+        src/status_bar.cpp
         src/text_area.cpp
         src/titled_frame.cpp
         src/toggle_button.cpp
@@ -151,6 +157,7 @@ target_sources(munin_tester
         test/src/window/window_test.hpp
         test/include/fill_canvas.hpp
         test/include/redraw.hpp
+        test/include/mock/animator.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp
         test/src/fill_canvas.cpp
@@ -159,6 +166,7 @@ target_sources(munin_tester
         test/src/mock/frame.cpp
         test/src/algorithm/algorithm_test.cpp
         test/src/aligned_layout/aligned_layout_test.cpp
+        test/src/animator/animator_test.cpp
         test/src/basic_component/new_basic_component_test.cpp
         test/src/basic_component/unfocused_basic_component_test.cpp
         test/src/basic_component/focused_basic_component_test.cpp
@@ -203,6 +211,7 @@ target_sources(munin_tester
         test/src/render_surface/render_surface_test.cpp
         test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
+        test/src/status_bar/status_bar_test.cpp
         test/src/text_area/new_text_area_test.cpp
         test/src/text_area/text_area_test.cpp
         test/src/text_area/text_area_with_text_inserted_test.cpp
