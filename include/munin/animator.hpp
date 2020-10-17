@@ -12,9 +12,14 @@ class MUNIN_EXPORT animator
 {
 public:
     //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    animator();
+
+    //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    virtual ~animator() = default;
+    virtual ~animator();
 
     //* =====================================================================
     /// \brief Schedules a redraw of the passed component
@@ -29,47 +34,29 @@ public:
     //* =====================================================================
     std::chrono::steady_clock::time_point now() const;
 
+protected:
+    //* =====================================================================
+    /// \brief Redraws components whose animation timers have expired.  This
+    /// must be called from a derived class after its own timer has expired.  
+    /// The timer is set in reset_timer(execution_time).
+    //* =====================================================================
+    void redraw_components();
+
 private:
     //* =====================================================================
     /// \brief Schedules a function to be called at a certain time.
     /// This is used to schedule the requested component redraws.
     //* =====================================================================
-    virtual void do_call_function_at(
-        std::function<void ()> const &fn,
+    virtual void reset_timer(
         std::chrono::steady_clock::time_point execution_time) = 0;
 
     //* =====================================================================
     /// \brief Returns the current time
     //* =====================================================================
     virtual std::chrono::steady_clock::time_point do_now() const = 0;
+
+    class impl;
+    std::unique_ptr<impl> pimpl_;
 };
-
-//* =========================================================================
-/// \brief An animation timer that does nothing.
-//* =========================================================================
-class MUNIN_EXPORT null_animator
-  : public animator
-{
-private:
-    //* =====================================================================
-    /// \brief Schedules a function to be called at a certain time.
-    /// This is used to schedule the requested component redraws.
-    //* =====================================================================
-    void do_call_function_at(
-        std::function<void ()> const &fn,
-        std::chrono::steady_clock::time_point const execution_time) override
-    {
-    }
-
-    //* =====================================================================
-    /// \brief Returns the current time
-    //* =====================================================================
-    virtual std::chrono::steady_clock::time_point do_now() const override
-    {
-        return {};
-    }
-};
-
-extern MUNIN_EXPORT null_animator default_animator;
 
 }
