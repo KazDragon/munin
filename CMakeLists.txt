@@ -71,6 +71,7 @@ target_sources(munin
         include/munin/horizontal_strip_layout.hpp
         include/munin/image.hpp
         include/munin/layout.hpp
+        include/munin/list.hpp
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
         include/munin/solid_frame.hpp
@@ -105,6 +106,7 @@ target_sources(munin
         src/horizontal_strip_layout.cpp
         src/image.cpp
         src/layout.cpp
+        src/list.cpp
         src/null_layout.cpp
         src/render_surface.cpp
         src/solid_frame.cpp
@@ -206,6 +208,7 @@ target_sources(munin_tester
         test/src/image/image_test.cpp
         test/src/image/image_redraw_test.cpp
         test/src/image/new_image_test.cpp
+        test/src/list/list_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/render_surface/render_surface_capabilities_test.cpp
         test/src/render_surface/render_surface_test.cpp
