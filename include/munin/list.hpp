@@ -1,4 +1,6 @@
 #include "munin/basic_component.hpp"
+#include <terminalpp/string.hpp>
+#include <vector>
 
 namespace munin {
 
@@ -7,6 +9,23 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT list : public basic_component
 {
+public:
+    //* =====================================================================
+    /// \brief Gets the index of the selected item, if such an item exists.
+    //* =====================================================================
+    boost::optional<int> get_selected_item_index() const;
+
+    //* =====================================================================
+    /// \brief Sets the selected item.  If the parameter is not initialized,
+    /// or the index is not valid, then de-selects any selected item.
+    //* =====================================================================
+    void set_selected_item_index(boost::optional<int> const &index);
+
+    //* =====================================================================
+    /// \brief Sets the items in the list.
+    //* =====================================================================
+    void set_items(std::vector<terminalpp::string> const &items);
+
 private:
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
