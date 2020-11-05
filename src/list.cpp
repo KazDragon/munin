@@ -3,6 +3,8 @@
 #include <munin/render_surface.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/algorithm/max_element.hpp>
 
 namespace munin {
 
@@ -65,9 +67,26 @@ void list::set_items(std::vector<terminalpp::string> const &items)
 // ==========================================================================
 terminalpp::extent list::do_get_preferred_size() const
 {
-    return pimpl_->items_.empty()
-         ? terminalpp::extent{}
-         : terminalpp::extent(pimpl_->items_[0].size(), 1);
+    using boost::adaptors::transformed;
+
+    auto const &string_size = 
+        [](terminalpp::string const &item)
+        {
+            return item.size();
+        };
+    
+    auto const preferred_width = 
+        static_cast<terminalpp::coordinate_type>(
+            pimpl_->items_.empty()
+          ? 0
+          : *boost::max_element(
+                pimpl_->items_ | transformed(string_size)));
+
+    auto const preferred_height = 
+        static_cast<terminalpp::coordinate_type>(
+            pimpl_->items_.size());
+
+    return { preferred_width, preferred_height };
 }
 
 // ==========================================================================

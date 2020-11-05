@@ -27,8 +27,7 @@ public:
 
     //* =====================================================================
     /// \brief Selects an item in the list.  If the passed index is not
-    /// initialized,
-    /// or the index is not valid, then de-selects any selected item.
+    /// initialized, then de-selects any selected item.
     //* =====================================================================
     void select_item(boost::optional<int> const &index);
 
