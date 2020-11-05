@@ -100,6 +100,19 @@ TEST_F(a_new_list, signals_a_preferred_size_change_when_setting_the_list_items)
     ASSERT_TRUE(preferred_size_changed);    
 }
 
+TEST_F(a_new_list, can_be_clicked)
+{
+    list_->set_size({6, 3});
+    list_->event(
+        terminalpp::ansi::mouse::report{
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            1,
+            1
+        });
+
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+}
+
 namespace {
 
 class a_list_with_an_item : public a_new_list
@@ -190,6 +203,55 @@ TEST_F(a_list_with_an_item, sends_item_changed_signal_when_an_item_is_selected)
 
     list_->select_item(0);
     ASSERT_TRUE(item_changed);
+}
+
+TEST_F(a_list_with_an_item, selects_the_item_when_it_is_clicked)
+{
+    list_->set_size({6, 3});
+
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]()
+        {
+            item_changed = true;
+        });
+
+    list_->event(
+        terminalpp::ansi::mouse::report {
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            0,
+            0
+        });
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
+TEST_F(a_list_with_an_item, deselects_the_item_when_empty_space_is_clicked)
+{
+    list_->set_size({6, 3});
+
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]()
+        {
+            item_changed = true;
+        });
+
+    list_->event(
+        terminalpp::ansi::mouse::report {
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            0,
+            1
+        });
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
 }
 
 namespace {
@@ -345,6 +407,71 @@ TEST_F(a_list_with_two_items, sends_item_changed_signal_when_an_item_is_selected
     item_changed = false;
     list_->select_item(1);
     ASSERT_TRUE(item_changed);
+}
+
+TEST_F(a_list_with_two_items, selects_the_first_item_when_it_is_clicked)
+{
+    list_->set_size({6, 3});
+
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]()
+        {
+            item_changed = true;
+        });
+
+    list_->event(
+        terminalpp::ansi::mouse::report {
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            0,
+            0
+        });
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
+TEST_F(a_list_with_two_items, selects_the_second_item_when_it_is_clicked)
+{
+    list_->set_size({6, 3});
+
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]()
+        {
+            item_changed = true;
+        });
+
+    list_->event(
+        terminalpp::ansi::mouse::report {
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            0,
+            1
+        });
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(1, *selected_item_index);
+}
+
+TEST_F(a_list_with_an_item, selects_no_item_when_empty_space_is_clicked)
+{
+    list_->set_size({6, 3});
+
+    list_->event(
+        terminalpp::ansi::mouse::report {
+            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
+            0,
+            2
+        });
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
 }
 
 namespace {

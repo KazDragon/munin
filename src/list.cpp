@@ -125,6 +125,29 @@ void list::do_draw(
 }
 
 // ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void list::do_event(boost::any const &ev)
+{
+    auto const *mouse_report = 
+        boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+
+    if (mouse_report != nullptr)
+    {
+        auto const clicked_row = mouse_report->y_position_;
+
+        if (clicked_row < pimpl_->items_.size())
+        {
+            select_item(clicked_row);
+        }
+        else
+        {
+            select_item(boost::none);
+        }
+    }
+}
+
+// ==========================================================================
 // MAKE_LIST
 // ==========================================================================
 std::shared_ptr<list> make_list()
