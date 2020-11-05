@@ -11,20 +11,41 @@ class MUNIN_EXPORT list : public basic_component
 {
 public:
     //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    list();
+
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    ~list();
+
+    //* =====================================================================
     /// \brief Gets the index of the selected item, if such an item exists.
     //* =====================================================================
     boost::optional<int> get_selected_item_index() const;
 
     //* =====================================================================
-    /// \brief Sets the selected item.  If the parameter is not initialized,
+    /// \brief Selects an item in the list.  If the passed index is not
+    /// initialized,
     /// or the index is not valid, then de-selects any selected item.
     //* =====================================================================
-    void set_selected_item_index(boost::optional<int> const &index);
+    void select_item(boost::optional<int> const &index);
 
     //* =====================================================================
     /// \brief Sets the items in the list.
     //* =====================================================================
     void set_items(std::vector<terminalpp::string> const &items);
+
+    //* =====================================================================
+    /// \fn on_item_changed
+    /// \brief Connect to this signal to receive notifications when the 
+    /// selected item has changed.
+    //* =====================================================================
+    boost::signals2::signal
+    <
+        void ()
+    > on_item_changed;
 
 private:
     //* =====================================================================
@@ -46,6 +67,9 @@ private:
     void do_draw(
         render_surface &surface,
         terminalpp::rectangle const &region) const override;
+
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================
