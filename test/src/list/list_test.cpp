@@ -191,3 +191,62 @@ TEST_F(a_list_with_an_item, sends_item_changed_signal_when_an_item_is_selected)
     list_->select_item(0);
     ASSERT_TRUE(item_changed);
 }
+
+namespace {
+
+class a_list_with_a_selected_item : public a_list_with_an_item
+{
+protected:
+    a_list_with_a_selected_item()
+    {
+        list_->select_item(0);
+    }
+};
+
+TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
+{
+    list_->set_size({6, 3});
+
+    terminalpp::canvas canvas({6, 3});
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    list_->draw(surface, {{}, list_->get_size()});
+
+    auto const negative_attr = []{
+        terminalpp::attribute attr;
+        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        return attr;
+    }();
+
+    ASSERT_EQ(terminalpp::element('t', negative_attr), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element('e', negative_attr), canvas[1][0]);
+    ASSERT_EQ(terminalpp::element('s', negative_attr), canvas[2][0]);
+    ASSERT_EQ(terminalpp::element('t', negative_attr), canvas[3][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[4][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[5][0]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[1][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[3][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[4][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[5][1]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[0][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[1][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[2][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[3][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[4][2]);
+    ASSERT_EQ(terminalpp::element(' '), canvas[5][2]);
+}
+
+}
+

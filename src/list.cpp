@@ -82,11 +82,16 @@ void list::do_draw(
         region,
         [this](auto &elem, auto const column, auto const row)
         {
-            elem = 
-                row < pimpl_->items_.size()
-             && column < pimpl_->items_[row].size()
-              ? pimpl_->items_[row][column]
-              : ' ';
+            elem = row < pimpl_->items_.size()
+                && column < pimpl_->items_[row].size()
+                 ? pimpl_->items_[row][column]
+                 : ' ';
+                
+            elem.attribute_.polarity_ =
+                pimpl_->selected_item_index_
+             && *pimpl_->selected_item_index_ == row
+              ? terminalpp::ansi::graphics::polarity::negative
+              : terminalpp::ansi::graphics::polarity::positive;
         });
 }
 
