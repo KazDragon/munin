@@ -39,7 +39,7 @@ boost::optional<int> list::get_selected_item_index() const
 }
 
 // ==========================================================================
-// SET_SELECTED_ITEM_INDEX
+// SELECT_ITEM
 // ==========================================================================
 void list::select_item(boost::optional<int> const &index)
 {
@@ -50,6 +50,7 @@ void list::select_item(boost::optional<int> const &index)
 
     pimpl_->selected_item_index_ = index;
     on_item_changed();
+    on_redraw({{{}, get_size()}});
 }
 
 // ==========================================================================
@@ -58,6 +59,13 @@ void list::select_item(boost::optional<int> const &index)
 void list::set_items(std::vector<terminalpp::string> const &items)
 {
     pimpl_->items_ = items;
+    pimpl_->selected_item_index_ = 
+        pimpl_->selected_item_index_
+     && *pimpl_->selected_item_index_ < pimpl_->items_.size()
+      ? pimpl_->selected_item_index_
+      : boost::none;
+
+    on_item_changed();
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
 }

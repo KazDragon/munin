@@ -2,6 +2,7 @@
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <boost/range/algorithm_ext/insert.hpp>
 #include <gtest/gtest.h>
 
 using namespace terminalpp::literals;
@@ -404,6 +405,65 @@ TEST_F(a_list_with_two_items_and_the_first_selected, draws_the_first_item_in_neg
     ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
 }
 
+TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_item_is_deselected)
+{
+    list_->set_size({6, 3});
+
+    terminalpp::canvas canvas({6, 3});
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    list_->draw(surface, {{}, list_->get_size()});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    list_->on_redraw.connect(
+        [&redraw_regions](auto const &regions)
+        {
+            boost::insert(redraw_regions, redraw_regions.end(), regions);
+        });
+
+    list_->select_item(boost::none);
+
+    for (auto const &region : redraw_regions)
+    {
+        list_->draw(surface, region);
+    }
+
+    auto const negative_attr = []{
+        terminalpp::attribute attr;
+        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        return attr;
+    }();
+
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'0'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][0]);
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'i'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'n'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'1'}, canvas[4][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
+}
+
 namespace {
 
 class a_list_with_two_items_and_the_second_selected : public a_list_with_two_items
@@ -460,4 +520,196 @@ TEST_F(a_list_with_two_items_and_the_second_selected, draws_the_second_item_in_n
     ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
+}
+
+TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_second_is_selected)
+{
+    list_->set_size({6, 3});
+
+    terminalpp::canvas canvas({6, 3});
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    list_->draw(surface, {{}, list_->get_size()});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    list_->on_redraw.connect(
+        [&redraw_regions](auto const &regions)
+        {
+            boost::insert(redraw_regions, redraw_regions.end(), regions);
+        });
+
+    list_->select_item(1);
+
+    for (auto const &region : redraw_regions)
+    {
+        list_->draw(surface, region);
+    }
+
+    auto const negative_attr = []{
+        terminalpp::attribute attr;
+        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        return attr;
+    }();
+
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'0'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][0]);
+    ASSERT_EQ(terminalpp::element('l', negative_attr), canvas[0][1]);
+    ASSERT_EQ(terminalpp::element('i', negative_attr), canvas[1][1]);
+    ASSERT_EQ(terminalpp::element('n', negative_attr), canvas[2][1]);
+    ASSERT_EQ(terminalpp::element('e', negative_attr), canvas[3][1]);
+    ASSERT_EQ(terminalpp::element('1', negative_attr), canvas[4][1]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the_first_is_selected)
+{
+    list_->set_size({6, 3});
+
+    terminalpp::canvas canvas({6, 3});
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    list_->draw(surface, {{}, list_->get_size()});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    list_->on_redraw.connect(
+        [&redraw_regions](auto const &regions)
+        {
+            boost::insert(redraw_regions, redraw_regions.end(), regions);
+        });
+
+    list_->select_item(0);
+
+    for (auto const &region : redraw_regions)
+    {
+        list_->draw(surface, region);
+    }
+
+    auto const negative_attr = []{
+        terminalpp::attribute attr;
+        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        return attr;
+    }();
+
+    ASSERT_EQ(terminalpp::element('l', negative_attr), canvas[0][0]);
+    ASSERT_EQ(terminalpp::element('0', negative_attr), canvas[1][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[2][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[3][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[4][0]);
+    ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas[5][0]);
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'i'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'n'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'1'}, canvas[4][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the_item_is_deselected)
+{
+    list_->set_size({6, 3});
+
+    terminalpp::canvas canvas({6, 3});
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    munin::render_surface surface{canvas};
+    list_->draw(surface, {{}, list_->get_size()});
+
+    std::vector<terminalpp::rectangle> redraw_regions;
+    list_->on_redraw.connect(
+        [&redraw_regions](auto const &regions)
+        {
+            boost::insert(redraw_regions, redraw_regions.end(), regions);
+        });
+
+    list_->select_item(boost::none);
+
+    for (auto const &region : redraw_regions)
+    {
+        list_->draw(surface, region);
+    }
+
+    auto const negative_attr = []{
+        terminalpp::attribute attr;
+        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        return attr;
+    }();
+
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][0]);
+    ASSERT_EQ(terminalpp::element{'0'}, canvas[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][0]);
+    ASSERT_EQ(terminalpp::element{'l'}, canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'i'}, canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'n'}, canvas[2][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, canvas[3][1]);
+    ASSERT_EQ(terminalpp::element{'1'}, canvas[4][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[2][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[3][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[4][2]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
+}
+
+TEST_F(a_list_with_an_item, when_items_are_set_to_empty_list_deselects_item)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+
+    list_->set_items({});
+
+    ASSERT_TRUE(item_changed);
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
 }
