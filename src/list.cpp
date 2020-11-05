@@ -60,11 +60,13 @@ void list::set_items(std::vector<terminalpp::string> const &items)
 {
     pimpl_->items_ = items;
     pimpl_->selected_item_index_ = 
-        pimpl_->selected_item_index_
-     && *pimpl_->selected_item_index_ < pimpl_->items_.size()
+        !pimpl_->selected_item_index_.is_initialized()
+     || pimpl_->items_.empty()
+      ? boost::none
+      : *pimpl_->selected_item_index_ < pimpl_->items_.size()
       ? pimpl_->selected_item_index_
-      : boost::none;
-
+      : boost::optional<int>(pimpl_->items_.size() - 1);
+      
     on_item_changed();
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});

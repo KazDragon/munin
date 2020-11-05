@@ -699,7 +699,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
     ASSERT_EQ(terminalpp::element{' '}, canvas[5][2]);
 }
 
-TEST_F(a_list_with_an_item, when_items_are_set_to_empty_list_deselects_item)
+TEST_F(a_list_with_a_selected_item, when_items_are_set_to_empty_list_deselects_item)
 {
     bool item_changed = false;
     list_->on_item_changed.connect(
@@ -712,4 +712,61 @@ TEST_F(a_list_with_an_item, when_items_are_set_to_empty_list_deselects_item)
 
     ASSERT_TRUE(item_changed);
     ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+}
+
+TEST_F(a_list_with_two_items_and_the_first_selected, when_items_are_set_to_empty_list_deselects_item)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+
+    list_->set_items({});
+
+    ASSERT_TRUE(item_changed);
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_empty_list_deselects_item)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+
+    list_->set_items({});
+
+    ASSERT_TRUE(item_changed);
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+}
+
+TEST_F(a_list_with_a_selected_item, when_items_are_set_to_a_one_element_list_the_first_item_remains_selected)
+{
+    list_->set_items({"new item"_ts});
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_a_one_element_list_the_first_item_becomes_selected)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+
+    list_->set_items({"new item"_ts});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
 }
