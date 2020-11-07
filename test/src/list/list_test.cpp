@@ -2,6 +2,7 @@
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 #include <gtest/gtest.h>
 
@@ -126,6 +127,16 @@ TEST_F(a_new_list, can_be_clicked)
 
 TEST_F(a_new_list, ignores_the_up_key)
 {
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+}
+
+TEST_F(a_new_list, ignores_the_down_key)
+{
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
 }
 
 namespace {
@@ -250,6 +261,44 @@ TEST_F(a_list_with_an_item, deselects_the_item_when_empty_space_is_clicked)
     ASSERT_FALSE(selected_item_index.is_initialized());
 }
 
+TEST_F(a_list_with_an_item, selects_the_item_when_the_up_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
+TEST_F(a_list_with_an_item, selects_the_item_when_the_down_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
 namespace {
 
 class a_list_with_a_selected_item : public a_list_with_an_item
@@ -291,6 +340,42 @@ TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
     ASSERT_EQ(terminalpp::element(' '), canvas_[3][2]);
     ASSERT_EQ(terminalpp::element(' '), canvas_[4][2]);
     ASSERT_EQ(terminalpp::element(' '), canvas_[5][2]);
+}
+
+TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_up_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
+}
+
+TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_down_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
 }
 
 namespace {
@@ -421,6 +506,44 @@ TEST_F(a_list_with_two_items, selects_the_second_item_when_it_is_clicked)
     ASSERT_EQ(1, *selected_item_index);
 }
 
+TEST_F(a_list_with_two_items, selects_the_second_item_when_the_up_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(1, *selected_item_index);
+}
+
+TEST_F(a_list_with_two_items, selects_the_first_item_when_the_down_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
+}
+
 TEST_F(a_list_with_an_item, selects_no_item_when_empty_space_is_clicked)
 {
     list_->event(
@@ -521,6 +644,43 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
     ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
 }
 
+TEST_F(a_list_with_two_items_and_the_first_selected, selects_the_second_item_when_the_down_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(1, *selected_item_index);
+}
+
+TEST_F(a_list_with_two_items_and_the_first_selected, deselects_the_first_item_when_the_up_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
+}
+
 namespace {
 
 class a_list_with_two_items_and_the_second_selected : public a_list_with_two_items
@@ -562,6 +722,43 @@ TEST_F(a_list_with_two_items_and_the_second_selected, draws_the_second_item_in_n
     ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
     ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, deselects_the_second_item_when_the_down_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_FALSE(selected_item_index.is_initialized());
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, selects_the_first_item_when_the_up_key_is_pressed)
+{
+    bool item_changed = false;
+    list_->on_item_changed.connect(
+        [&item_changed]
+        {
+            item_changed = true;
+        });
+        
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_up});
+
+    ASSERT_TRUE(item_changed);
+
+    auto const selected_item_index = list_->get_selected_item_index();
+    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_EQ(0, *selected_item_index);
 }
 
 TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_second_is_selected)

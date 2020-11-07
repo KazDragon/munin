@@ -1,11 +1,11 @@
 #include "munin/list.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <munin/render_surface.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/max_element.hpp>
-
 namespace munin {
 
 // ==========================================================================
@@ -13,6 +13,74 @@ namespace munin {
 // ==========================================================================
 struct list::impl
 {
+    impl(list &self)
+      : self_(self)
+    {
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_REPORT
+    // ======================================================================
+    void handle_mouse_report(terminalpp::ansi::mouse::report const &report)
+    {
+        auto const clicked_row = report.y_position_;
+
+        if (clicked_row < items_.size())
+        {
+            self_.select_item(clicked_row);
+        }
+        else
+        {
+            self_.select_item(boost::none);
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_KEYPRESS
+    // ======================================================================
+    void handle_keypress(terminalpp::virtual_key const &vk)
+    {
+        if (items_.empty())
+        {
+            return;
+        }
+
+        auto const currently_selected_item_index = 
+            self_.get_selected_item_index();
+
+        switch (vk.key)
+        {
+            case terminalpp::vk::cursor_up:
+                if (currently_selected_item_index)
+                {
+                    self_.select_item(
+                        *currently_selected_item_index == 0
+                      ? boost::none
+                      : boost::optional<int>(*currently_selected_item_index - 1));
+                }
+                else
+                {
+                    self_.select_item(boost::optional<int>(items_.size() - 1));
+                }
+                break;
+
+            case terminalpp::vk::cursor_down:
+                if (currently_selected_item_index)
+                {
+                    self_.select_item(
+                        *currently_selected_item_index == items_.size() - 1
+                      ? boost::none
+                      : boost::optional<int>(*currently_selected_item_index + 1));
+                }
+                else
+                {
+                    self_.select_item(0);
+                }
+                break;
+        }
+    }
+
+    list &self_;
     std::vector<terminalpp::string> items_;
     boost::optional<int> selected_item_index_;
 };
@@ -21,7 +89,7 @@ struct list::impl
 // CONSTRUCTOR
 // ==========================================================================
 list::list()
-  : pimpl_{boost::make_unique<impl>()}
+  : pimpl_{boost::make_unique<impl>(*this)}
 {
 }
 
@@ -134,16 +202,15 @@ void list::do_event(boost::any const &ev)
 
     if (mouse_report != nullptr)
     {
-        auto const clicked_row = mouse_report->y_position_;
+        pimpl_->handle_mouse_report(*mouse_report);
+    }
 
-        if (clicked_row < pimpl_->items_.size())
-        {
-            select_item(clicked_row);
-        }
-        else
-        {
-            select_item(boost::none);
-        }
+    auto const *keypress =
+        boost::any_cast<terminalpp::virtual_key>(&ev);
+
+    if (keypress != nullptr)
+    {
+        pimpl_->handle_keypress(*keypress);
     }
 }
 
