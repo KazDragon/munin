@@ -19,6 +19,56 @@ struct list::impl
     }
 
     // ======================================================================
+    // GET_PREFERRED_SIZE
+    // ======================================================================
+    terminalpp::extent get_preferred_size() const
+    {
+        using boost::adaptors::transformed;
+
+        auto const &string_size = 
+            [](terminalpp::string const &item)
+            {
+                return item.size();
+            };
+        
+        auto const preferred_width = 
+            static_cast<terminalpp::coordinate_type>(
+                items_.empty()
+              ? 0
+              : *boost::max_element(items_ | transformed(string_size)));
+
+        auto const preferred_height = 
+            static_cast<terminalpp::coordinate_type>(items_.size());
+
+        return { preferred_width, preferred_height };
+    }
+
+    // ======================================================================
+    // DRAW
+    // ======================================================================
+    void draw(
+        render_surface &surface,
+        terminalpp::rectangle const &region) const
+    {
+        terminalpp::for_each_in_region(
+            surface, 
+            region,
+            [this](auto &elem, auto const column, auto const row)
+            {
+                elem = row < items_.size()
+                    && column < items_[row].size()
+                     ? items_[row][column]
+                     : ' ';
+                    
+                elem.attribute_.polarity_ =
+                    selected_item_index_
+                 && *selected_item_index_ == row
+                  ? terminalpp::ansi::graphics::polarity::negative
+                  : terminalpp::ansi::graphics::polarity::positive;
+            });
+    }
+
+    // ======================================================================
     // HANDLE_MOUSE_REPORT
     // ======================================================================
     void handle_mouse_report(terminalpp::ansi::mouse::report const &report)
@@ -36,47 +86,87 @@ struct list::impl
     }
 
     // ======================================================================
+    // HANDLE_CURSOR_UP
+    // ======================================================================
+    void handle_cursor_up()
+    {
+        if (!items_.empty())
+        {
+            auto const current_item = self_.get_selected_item_index();
+
+            if (current_item)
+            {
+                self_.select_item(
+                    *current_item == 0
+                    ? boost::none
+                    : boost::optional<int>(*current_item - 1));
+            }
+            else
+            {
+                self_.select_item(boost::optional<int>(items_.size() - 1));
+            }
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_CURSOR_DOWN
+    // ======================================================================
+    void handle_cursor_down()
+    {
+        if (!items_.empty())
+        {
+            auto const current_item = self_.get_selected_item_index();
+
+            if (current_item)
+            {
+                self_.select_item(
+                    *current_item == items_.size() - 1
+                    ? boost::none
+                    : boost::optional<int>(*current_item + 1));
+            }
+            else
+            {
+                self_.select_item(0);
+            }
+        }
+    }
+
+    // ======================================================================
     // HANDLE_KEYPRESS
     // ======================================================================
     void handle_keypress(terminalpp::virtual_key const &vk)
     {
-        if (items_.empty())
-        {
-            return;
-        }
-
-        auto const currently_selected_item_index = 
-            self_.get_selected_item_index();
-
         switch (vk.key)
         {
             case terminalpp::vk::cursor_up:
-                if (currently_selected_item_index)
-                {
-                    self_.select_item(
-                        *currently_selected_item_index == 0
-                      ? boost::none
-                      : boost::optional<int>(*currently_selected_item_index - 1));
-                }
-                else
-                {
-                    self_.select_item(boost::optional<int>(items_.size() - 1));
-                }
+                handle_cursor_up();
                 break;
 
             case terminalpp::vk::cursor_down:
-                if (currently_selected_item_index)
-                {
-                    self_.select_item(
-                        *currently_selected_item_index == items_.size() - 1
-                      ? boost::none
-                      : boost::optional<int>(*currently_selected_item_index + 1));
-                }
-                else
-                {
-                    self_.select_item(0);
-                }
+                handle_cursor_down();
                 break;
+        }
+    }
+
+    // ======================================================================
+    // EVENT
+    // ======================================================================
+    void event(boost::any const &ev)
+    {
+        auto const *mouse_report = 
+            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+
+        if (mouse_report != nullptr)
+        {
+            handle_mouse_report(*mouse_report);
+        }
+
+        auto const *keypress =
+            boost::any_cast<terminalpp::virtual_key>(&ev);
+
+        if (keypress != nullptr)
+        {
+            handle_keypress(*keypress);
         }
     }
 
@@ -145,26 +235,7 @@ void list::set_items(std::vector<terminalpp::string> const &items)
 // ==========================================================================
 terminalpp::extent list::do_get_preferred_size() const
 {
-    using boost::adaptors::transformed;
-
-    auto const &string_size = 
-        [](terminalpp::string const &item)
-        {
-            return item.size();
-        };
-    
-    auto const preferred_width = 
-        static_cast<terminalpp::coordinate_type>(
-            pimpl_->items_.empty()
-          ? 0
-          : *boost::max_element(
-                pimpl_->items_ | transformed(string_size)));
-
-    auto const preferred_height = 
-        static_cast<terminalpp::coordinate_type>(
-            pimpl_->items_.size());
-
-    return { preferred_width, preferred_height };
+    return pimpl_->get_preferred_size();
 }
 
 // ==========================================================================
@@ -174,22 +245,7 @@ void list::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
-    terminalpp::for_each_in_region(
-        surface, 
-        region,
-        [this](auto &elem, auto const column, auto const row)
-        {
-            elem = row < pimpl_->items_.size()
-                && column < pimpl_->items_[row].size()
-                 ? pimpl_->items_[row][column]
-                 : ' ';
-                
-            elem.attribute_.polarity_ =
-                pimpl_->selected_item_index_
-             && *pimpl_->selected_item_index_ == row
-              ? terminalpp::ansi::graphics::polarity::negative
-              : terminalpp::ansi::graphics::polarity::positive;
-        });
+    pimpl_->draw(surface, region);
 }
 
 // ==========================================================================
@@ -197,21 +253,7 @@ void list::do_draw(
 // ==========================================================================
 void list::do_event(boost::any const &ev)
 {
-    auto const *mouse_report = 
-        boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
-
-    if (mouse_report != nullptr)
-    {
-        pimpl_->handle_mouse_report(*mouse_report);
-    }
-
-    auto const *keypress =
-        boost::any_cast<terminalpp::virtual_key>(&ev);
-
-    if (keypress != nullptr)
-    {
-        pimpl_->handle_keypress(*keypress);
-    }
+    pimpl_->event(ev);
 }
 
 // ==========================================================================
