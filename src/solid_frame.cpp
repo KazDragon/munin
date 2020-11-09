@@ -15,7 +15,7 @@ struct solid_frame::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    impl(solid_frame &self)
+    explicit impl(solid_frame &self)
       : self(self)
     {
     }

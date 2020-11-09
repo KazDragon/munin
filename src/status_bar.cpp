@@ -22,7 +22,7 @@ constexpr auto characters_per_marquee_frame = 2;
 // ==========================================================================
 struct status_bar::impl
 {
-    impl(animator &anim)
+    explicit impl(animator &anim)
       : animator_(anim)
     {
     }

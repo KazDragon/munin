@@ -14,7 +14,7 @@ public:
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    viewport(std::shared_ptr<component> tracked_component);
+    explicit viewport(std::shared_ptr<component> tracked_component);
     
     //* =====================================================================
     /// \brief Destructor
