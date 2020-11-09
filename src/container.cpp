@@ -73,7 +73,7 @@ struct container::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    impl(container &self)
+    explicit impl(container &self)
       : self_(self)
     {
     }

@@ -13,7 +13,7 @@ namespace munin {
 // ==========================================================================
 struct list::impl
 {
-    impl(list &self)
+    explicit impl(list &self)
       : self_(self)
     {
     }

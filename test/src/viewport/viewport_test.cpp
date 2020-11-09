@@ -171,7 +171,7 @@ TEST_F(a_viewport, with_a_size_smaller_than_the_tracked_component_allows_the_tra
 
 TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 {
-    char const *test_event = "test event";
+    std::string const test_event = "test event";
     boost::any received_event;
     
     EXPECT_CALL(*tracked_component_, do_event(_))
@@ -182,10 +182,9 @@ TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 
     viewport_->event(test_event);
     
-    char const **result = boost::any_cast<char const*>(&received_event);
+    auto const *result = boost::any_cast<std::string>(&received_event);
     ASSERT_TRUE(result != nullptr);
-    ASSERT_TRUE(*result != nullptr);
-    ASSERT_STREQ(test_event, *result);
+    ASSERT_EQ(test_event, *result);
 }
 
 TEST_F(a_viewport, forwards_repaint_events_from_the_tracked_component)

@@ -22,7 +22,7 @@ public:
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    background_animator(boost::asio::io_context::strand &strand);
+    explicit background_animator(boost::asio::io_context::strand &strand);
 
     //* =====================================================================
     /// \brief Destructor
