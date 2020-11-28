@@ -34,6 +34,14 @@ linux_clang: &linux_clang
 jobs:
   include:
   - <<: *linux_gcc
+    addons:
+      apt:
+        packages:
+          python3-pip
+    env:
+      - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Release && SHARED=False && USE_CONAN=True"
+    
+  - <<: *linux_gcc
     env:
       - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && CONFIG=Debug && SHARED=False"
 
@@ -77,22 +85,21 @@ cache:
   - apt: true
   - directories:
     - $HOME/lcov
-    - $HOME/nlohmann_json
-    - $HOME/fmt
-    - $HOME/terminalpp
-    - $HOME/gtest
+    - $HOME/3party
+    - $HOME/.conan
 
 before_install:
 # Set up CC/CXX variables
   - eval "${MATRIX_EVAL}"
-  - export CMAKE=cmake
+  - export EXTERNAL_ROOT=$HOME/3party
   - export COVERAGE=${COVERAGE:-False}
   - export SANITIZE=${SANITIZE:-off}
+  - export BUILD_SHARED_LIBRARIES=$SHARED
 
 # install coverage software
   - if [ "$COVERAGE" == "True" ]; then gem install coveralls-lcov; fi
 
-# workaround for not having lcov 1.13
+# Ensure that the correct coverage tools are installed if necessary
   - if [ ! -d "lcov/usr/local/bin/lcov" ]; then
       wget http://ftp.de.debian.org/debian/pool/main/l/lcov/lcov_1.13.orig.tar.gz;
       tar -xzf lcov_1.13.orig.tar.gz;
@@ -101,58 +108,17 @@ before_install:
     fi
   - export LCOV=$HOME/lcov/usr/local/bin/lcov
 
-# Install the nlohmann_json package
-  - if [ ! -d "nlohmann_json/include/nlohmann/json.hpp" ]; then
-      wget https://github.com/nlohmann/json/archive/v3.3.0.tar.gz;
-      tar -xzf v3.3.0.tar.gz;
-      mkdir nlohmann_json || true;
-      cd json-3.3.0;
-      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/nlohmann_json -DJSON_BuildTests=OFF .;
-      make -j2 && make install;
-      cd ..;
+# Install any external dependencies
+  - if [ "$USE_CONAN" == "True" ]; then
+      ./.travis/fetch_conan_dependencies.sh;
+    else
+      ./.travis/fetch_system_dependencies.sh;
     fi
-  - export nlohmann_json_DIR=$HOME/nlohmann_json/lib/cmake/nlohmann_json
 
-# Install libfmt
-  - if [ ! -d "libfmt/include/fmt/format.h" ]; then
-      wget https://github.com/fmtlib/fmt/archive/5.3.0.tar.gz;
-      tar -xzf 5.3.0.tar.gz;
-      mkdir libfmt || true;
-      cd fmt-5.3.0;
-      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/libfmt -DFMT_TEST=OFF -DCMAKE_CXX_FLAGS='-fPIC' .;
-      make -j2 && make install;
-      cd ..;
-    fi
-  - export fmt_DIR=$HOME/libfmt/lib/cmake/fmt
-
-# Install Terminal++
-  - if [ ! -d "terminalpp/include/terminalpp-1.4.1/terminalpp/version.hpp" ]; then
-      wget https://github.com/KazDragon/terminalpp/archive/v1.4.1.tar.gz;
-      tar -xzf v1.4.1.tar.gz;
-      mkdir terminalpp || true;
-      cd terminalpp-1.4.1;
-      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/terminalpp -DBUILD_SHARED_LIBS=$SHARED -DTERMINALPP_WITH_TESTS=False .;
-      make -j2 && make install;
-      cd ..;
-    fi
-  - export terminalpp_DIR=$HOME/terminalpp/lib/cmake/terminalpp-1.4.1
-
-# Install the Google Test suite
-  - if [ ! -d "gtest/lib/libgmock.a" ]; then
-      wget https://github.com/google/googletest/archive/release-1.10.0.tar.gz;
-      tar -xzf release-1.10.0.tar.gz;
-      mkdir gtest || true;
-      cd googletest-release-1.10.0;
-      $CMAKE -DCMAKE_INSTALL_PREFIX=$HOME/gtest .;
-      make -j4 && make install;
-      cd ..;
-    fi
-  - export GTest_DIR=$HOME/gtest/lib/cmake/GTest
-      
 before_script:
   - mkdir build || true
   - cd build
-  - $CMAKE -DCMAKE_BUILD_TYPE=$CONFIG -DBUILD_SHARED_LIBS=$SHARED -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE ..
+  - cmake -DCMAKE_BUILD_TYPE=$CONFIG -DMUNIN_SANITIZE=$SANITIZE -DMUNIN_COVERAGE=$COVERAGE -DCMAKE_PREFIX_PATH=$EXTERNAL_ROOT ..
 
 script:
   - make VERBOSE=1
@@ -167,7 +133,7 @@ after_failure:
 after_success:
   - if [ "$COVERAGE" == "True" ]; then
         $LCOV --gcov-tool=gcov-5 --base-directory . --directory .  --capture --output-file coverage.info;
-        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/ext/*' '*/gtest/*' '*/nlohmann_json/*' '*/terminalpp/*' --output-file coverage.info;
+        $LCOV --gcov-tool=gcov-5 --remove coverage.info '*/test/*' '/usr/*' '*/3party/*' --output-file coverage.info;
         $LCOV --gcov-tool=gcov-5 --list coverage.info;
         coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info;
     fi

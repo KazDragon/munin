@@ -15,29 +15,68 @@ message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
 message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
 message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
 
+if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    message("Using Conan due to conanbuildinfo.cmake")
+    set(MUNIN_USE_CONAN ON)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
+endif()
+
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if (MUNIN_USE_CONAN)
+    set(MUNIN_PUBLIC_LIBRARIES
+        CONAN_PKG::terminalpp
+        CONAN_PKG::nlohmann_json
+        CONAN_PKG::boost
+    )
+
+    set(MUNIN_PRIVATE_LIBRARIES
+    )
+
+    set(MUNIN_TESTER_LIBRARIES
+        munin
+        CONAN_PKG::gtest
+    )
+else()
+    # Munin requires at least Boost 1.69
+    find_package(Boost 1.69.0 REQUIRED)
+
+    # Munin requires the nlohmann_json package
+    find_package(nlohmann_json 3.3.0 REQUIRED)
+
+    # And of course, Munin is built atop the Terminal++ library, which
+    # also requires fmt.
+    find_package(fmt 5.3 REQUIRED)
+    find_package(terminalpp 1.4.1 REQUIRED)
+
+    # If we are building with tests, then we require the GTest library
+    if (${MUNIN_WITH_TESTS})
+        find_package(GTest REQUIRED CONFIG)
+    endif()
+
+    set(MUNIN_PUBLIC_LIBRARIES
+        terminalpp
+        nlohmann_json::nlohmann_json
+        Boost::boost
+    )
+
+    set(MUNIN_PRIVATE_LIBRARIES
+    )
+
+    set(MUNIN_TESTER_LIBRARIES
+        munin
+        GTest::gtest
+        GTest::gmock
+        GTest::gmock_main
+    )
+endif()
 
 # When building shared objects, etc., we only want to export certain symbols.
 # Therefore, we need to generate headers suitable for declaring which symbols
 # should be included.
 include(GenerateExportHeader)
-
-# Munin requires at least Boost 1.69
-find_package(Boost 1.69.0 REQUIRED)
-
-# Munin requires the nlohmann_json package
-find_package(nlohmann_json 3.3.0 REQUIRED)
-
-# And of course, Munin is built atop the Terminal++ library, which
-# also requires fmt.
-find_package(fmt 5.3 REQUIRED)
-find_package(terminalpp 1.4.1 REQUIRED)
-
-# If we are building with tests, then we require the GTest library
-if (${MUNIN_WITH_TESTS})
-    find_package(GTest REQUIRED CONFIG)
-endif()
 
 # For producing automatically-generated documentation, we use Doxygen
 find_package(Doxygen)
@@ -125,9 +164,9 @@ target_sources(munin
 
 target_link_libraries(munin
     PUBLIC
-        terminalpp
-        nlohmann_json::nlohmann_json
-        Boost::boost
+        ${MUNIN_PUBLIC_LIBRARIES}
+    PRIVATE
+        ${MUNIN_PRIVATE_LIBRARIES}
 )
 
 target_include_directories(munin
@@ -240,10 +279,7 @@ target_include_directories(munin_tester
 )
 
 target_link_libraries(munin_tester
-    munin
-    GTest::gtest
-    GTest::gmock
-    GTest::gmock_main
+    ${MUNIN_TESTER_LIBRARIES}
 )
 
 add_test(munin_test munin_tester)
