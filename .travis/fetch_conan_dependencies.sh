@@ -9,6 +9,9 @@ pip3 install --user conan
 # a generous timeout.
 conan config set general.request_timeout=120
 
+# Ensure all Conan repositories are available
+conan remote add kazdragon-conan https://api.bintray.com/conan/kazdragon/conan-public || true
+
 # Install dependencies for our build using Conan.
 mkdir build || true
 cd build
