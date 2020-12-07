@@ -44,6 +44,16 @@ struct list::impl
     }
 
     // ======================================================================
+    // GET_CURSOR_POSITION
+    // ======================================================================
+    terminalpp::point get_cursor_position() const
+    {
+        return selected_item_index_
+             ? terminalpp::point(0, *selected_item_index_)
+             : terminalpp::point(0, 0);
+    }
+
+    // ======================================================================
     // DRAW
     // ======================================================================
     void draw(
@@ -208,6 +218,7 @@ void list::select_item(boost::optional<int> const &index)
 
     pimpl_->selected_item_index_ = index;
     on_item_changed();
+    on_cursor_position_changed();
     on_redraw({{{}, get_size()}});
 }
 
@@ -236,6 +247,14 @@ void list::set_items(std::vector<terminalpp::string> const &items)
 terminalpp::extent list::do_get_preferred_size() const
 {
     return pimpl_->get_preferred_size();
+}
+
+// ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+terminalpp::point list::do_get_cursor_position() const
+{
+    return pimpl_->get_cursor_position();
 }
 
 // ==========================================================================

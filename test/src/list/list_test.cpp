@@ -139,6 +139,16 @@ TEST_F(a_new_list, ignores_the_down_key)
     ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
 }
 
+TEST_F(a_new_list, has_a_zero_cursor_position)
+{
+    ASSERT_EQ(terminalpp::point(0, 0), list_->get_cursor_position());
+}
+
+TEST_F(a_new_list, has_a_disabled_cursor)
+{
+    ASSERT_FALSE(list_->get_cursor_state());
+}
+
 namespace {
 
 class a_list_with_an_item : public a_new_list
@@ -214,6 +224,19 @@ TEST_F(a_list_with_an_item, sends_item_changed_signal_when_an_item_is_selected)
 
     list_->select_item(0);
     ASSERT_TRUE(item_changed);
+}
+
+TEST_F(a_list_with_an_item, signals_a_changed_cursor_position_when_an_item_is_selected)
+{
+    bool cursor_position_changed = false;
+    list_->on_cursor_position_changed.connect(
+        [&cursor_position_changed]()
+        {
+            cursor_position_changed = true;
+        });
+
+    list_->select_item(0);
+    ASSERT_TRUE(cursor_position_changed);
 }
 
 TEST_F(a_list_with_an_item, selects_the_item_when_it_is_clicked)
@@ -681,6 +704,11 @@ TEST_F(a_list_with_two_items_and_the_first_selected, deselects_the_first_item_wh
     ASSERT_FALSE(selected_item_index.is_initialized());
 }
 
+TEST_F(a_list_with_two_items_and_the_first_selected, has_a_cursor_position_on_the_home_row)
+{
+    ASSERT_EQ(terminalpp::point(0, 0), list_->get_cursor_position());
+}
+
 namespace {
 
 class a_list_with_two_items_and_the_second_selected : public a_list_with_two_items
@@ -963,4 +991,9 @@ TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_a_on
     auto const selected_item_index = list_->get_selected_item_index();
     ASSERT_TRUE(selected_item_index.is_initialized());
     ASSERT_EQ(0, *selected_item_index);
+}
+
+TEST_F(a_list_with_two_items_and_the_second_selected, has_a_cursor_position_on_the_second_row)
+{
+    ASSERT_EQ(terminalpp::point(0, 1), list_->get_cursor_position());
 }
