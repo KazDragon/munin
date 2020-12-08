@@ -113,6 +113,21 @@ TEST_F(a_new_list, signals_a_preferred_size_change_when_setting_the_list_items)
     ASSERT_TRUE(preferred_size_changed);    
 }
 
+TEST_F(a_new_list, signals_a_cursor_position_change_when_setting_the_list_items)
+{
+    bool cursor_position_changed = false;
+    list_->on_cursor_position_changed.connect(
+        [&cursor_position_changed]()
+        {
+            cursor_position_changed = true;
+        });
+
+    std::vector<terminalpp::string> items = {"test"_ts};
+    list_->set_items(items);
+    ASSERT_TRUE(cursor_position_changed);
+}
+
+
 TEST_F(a_new_list, can_be_clicked)
 {
     list_->event(
