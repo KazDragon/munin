@@ -237,6 +237,7 @@ void list::set_items(std::vector<terminalpp::string> const &items)
       : boost::optional<int>(pimpl_->items_.size() - 1);
       
     on_item_changed();
+    on_cursor_position_changed();
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});
 }
