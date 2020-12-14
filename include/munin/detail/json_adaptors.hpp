@@ -2,11 +2,11 @@
 #include <nlohmann/json.hpp>
 
 namespace terminalpp {
-    class point;
-    class extent;
-    class glyph;
-    class attribute;
-    class element;
+    struct point;
+    struct extent;
+    struct glyph;
+    struct attribute;
+    struct element;
 }
 
 namespace munin { namespace detail {
