@@ -44,16 +44,16 @@ else()
     find_package(Boost 1.69.0 REQUIRED)
 
     # Munin requires the nlohmann_json package
-    find_package(nlohmann_json 3.3.0 REQUIRED)
+    find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
-    find_package(fmt 5.3 REQUIRED)
-    find_package(terminalpp 1.4.1 REQUIRED)
+    find_package(fmt 5.3 CONFIG REQUIRED)
+    find_package(terminalpp 1.4.1 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})
-        find_package(GTest REQUIRED CONFIG)
+        find_package(GTest CONFIG REQUIRED)
     endif()
 
     set(MUNIN_PUBLIC_LIBRARIES
@@ -67,9 +67,8 @@ else()
 
     set(MUNIN_TESTER_LIBRARIES
         munin
-        GTest::gtest
         GTest::gmock
-        GTest::gmock_main
+        GTest::gtest
     )
 endif()
 
@@ -271,6 +270,8 @@ target_sources(munin_tester
         test/src/window/window_json_test.cpp
         test/src/window/window_test.cpp
         test/src/window/window_repaint_test.cpp
+
+        test/src/main.cpp
 ) 
 
 target_include_directories(munin_tester
