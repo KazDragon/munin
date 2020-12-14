@@ -10,10 +10,36 @@ endif()
 option(MUNIN_COVERAGE  "Build with code coverage options")
 option(MUNIN_SANITIZE "Build using sanitizers" "")
 option(MUNIN_WITH_TESTS "Build with tests" True)
+option(MUNIN_DOC_ONLY "Build only documentation" False)
+
 message("Building Munin with config: ${CMAKE_BUILD_TYPE}")
 message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
 message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
 message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
+
+# For producing automatically-generated documentation, we use Doxygen.
+find_package(Doxygen)
+
+# Add a rule for generating documentation
+if (DOXYGEN_FOUND)
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target(terminalpp_doc
+        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY
+            ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT
+            "Generate API documentation with Doxygen" VERBATIM
+    )
+endif()
+
+if (MUNIN_DOC_ONLY)
+    return()
+endif()
 
 if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     message("Using Conan due to conanbuildinfo.cmake")
@@ -44,16 +70,16 @@ else()
     find_package(Boost 1.69.0 REQUIRED)
 
     # Munin requires the nlohmann_json package
-    find_package(nlohmann_json 3.3.0 REQUIRED)
+    find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
-    find_package(fmt 5.3 REQUIRED)
-    find_package(terminalpp 1.4.1 REQUIRED)
+    find_package(fmt 5.3 CONFIG REQUIRED)
+    find_package(terminalpp 1.4.1 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})
-        find_package(GTest REQUIRED CONFIG)
+        find_package(GTest CONFIG REQUIRED)
     endif()
 
     set(MUNIN_PUBLIC_LIBRARIES
@@ -67,8 +93,6 @@ else()
 
     set(MUNIN_TESTER_LIBRARIES
         munin
-        GTest::gtest
-        GTest::gmock
         GTest::gmock_main
     )
 endif()
@@ -283,6 +307,7 @@ target_link_libraries(munin_tester
 )
 
 add_test(munin_test munin_tester)
+
 endif()
 
 if (DOXYGEN_FOUND)

@@ -5,6 +5,7 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
+#include <vector>
 
 using testing::Invoke;
 using testing::Return;
@@ -17,7 +18,7 @@ using viewport_size_test_data = std::tuple<
     terminalpp::extent,    // component's preferred size
     terminalpp::point,     // initial tracked component cursor position
     terminalpp::extent,    // changed viewport size
-    std::initializer_list<terminalpp::point>, // Extra cursor movements
+    std::vector<terminalpp::point>, // Extra cursor movements
     terminalpp::point,     // expected viewport cursor position
     terminalpp::rectangle  // expected tracked draw area
 >;

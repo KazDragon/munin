@@ -18,12 +18,12 @@ static terminalpp::glyph const bottom_right_corner = '+';
 static terminalpp::glyph const horizontal_beam     = '-';
 static terminalpp::glyph const vertical_beam       = '|';
 
-static terminalpp::glyph const unicode_top_left_corner     = "\\U256D"_ets[0].glyph_;
-static terminalpp::glyph const unicode_top_right_corner    = "\\U256E"_ets[0].glyph_;
-static terminalpp::glyph const unicode_bottom_left_corner  = "\\U2570"_ets[0].glyph_;
-static terminalpp::glyph const unicode_bottom_right_corner = "\\U256F"_ets[0].glyph_;
-static terminalpp::glyph const unicode_horizontal_beam     = "\\U2500"_ets[0].glyph_;
-static terminalpp::glyph const unicode_vertical_beam       = "\\U2502"_ets[0].glyph_;
+static terminalpp::glyph const unicode_top_left_corner     = u8"\\U256D"_ets[0].glyph_;
+static terminalpp::glyph const unicode_top_right_corner    = u8"\\U256E"_ets[0].glyph_;
+static terminalpp::glyph const unicode_bottom_left_corner  = u8"\\U2570"_ets[0].glyph_;
+static terminalpp::glyph const unicode_bottom_right_corner = u8"\\U256F"_ets[0].glyph_;
+static terminalpp::glyph const unicode_horizontal_beam     = u8"\\U2500"_ets[0].glyph_;
+static terminalpp::glyph const unicode_vertical_beam       = u8"\\U2502"_ets[0].glyph_;
 
 static auto const highlight_attribute = terminalpp::attribute(
     terminalpp::ansi::graphics::colour::cyan,
