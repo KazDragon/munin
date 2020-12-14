@@ -93,8 +93,7 @@ else()
 
     set(MUNIN_TESTER_LIBRARIES
         munin
-        GTest::gmock
-        GTest::gtest
+        GTest::gmock_main
     )
 endif()
 
@@ -296,8 +295,6 @@ target_sources(munin_tester
         test/src/window/window_json_test.cpp
         test/src/window/window_test.cpp
         test/src/window/window_repaint_test.cpp
-
-        test/src/main.cpp
 ) 
 
 target_include_directories(munin_tester
@@ -310,6 +307,7 @@ target_link_libraries(munin_tester
 )
 
 add_test(munin_test munin_tester)
+
 endif()
 
 if (DOXYGEN_FOUND)
