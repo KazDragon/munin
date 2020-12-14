@@ -29,14 +29,6 @@ init:
   - echo Generator = %generator%
 
 install:
-  - mkdir c:\Source
-  - cd C:\Source
-  - git clone https://github.com/KazDragon/terminalpp
-  - cd terminalpp
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries .
-  - cmake --build . --config %configuration%
-  - cmake --install .
-
   - cd C:\Tools\vcpkg
   - git pull
   - .\bootstrap-vcpkg.bat
@@ -49,7 +41,16 @@ install:
   - vcpkg install fmt:%platform%-windows
   - vcpkg install gtest:%platform%-windows
 
+  - mkdir c:\Source
+  - cd C:\Source
+  - git clone https://github.com/KazDragon/terminalpp
+  - cd terminalpp
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries .
+  - cmake --build . --config %configuration%
+  - cmake --install .
+
 build_script:
+  - cd %appveyor_build_folder%
   - mkdir build
   - cd build
   - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries  ..
