@@ -47,7 +47,7 @@ install:
   - cd terminalpp
   - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries .
   - cmake --build . --config %configuration%
-  - cmake --install .
+  - cmake --install --config %configuration% .
 
 build_script:
   - cd %appveyor_build_folder%
