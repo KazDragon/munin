@@ -39,6 +39,7 @@ install:
   - vcpkg install boost-range:%platform%-windows
   - vcpkg install boost-variant:%platform%-windows
   - vcpkg install fmt:%platform%-windows
+  - vcpkg install nlohmann-json:%platform%-windows
   - vcpkg install gtest:%platform%-windows
 
   - mkdir c:\Source
