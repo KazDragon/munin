@@ -79,8 +79,9 @@ terminalpp::extent brush::do_get_preferred_size() const
     return pattern_.empty()
          ? terminalpp::extent(1, 1)
          : terminalpp::extent(
-               *boost::max_element(pattern_ | transformed(size)),
-               pattern_.size());
+               terminalpp::coordinate_type(
+                   *boost::max_element(pattern_ | transformed(size))),
+               terminalpp::coordinate_type(pattern_.size()));
 }
 
 // ==========================================================================

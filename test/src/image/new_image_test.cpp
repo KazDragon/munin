@@ -28,7 +28,13 @@ TEST(a_new_image_with_single_line_content, has_a_preferred_size_with_the_width_o
     auto const content = "abcde"_ts;
     munin::image image(content);
 
-    ASSERT_EQ(terminalpp::extent(content.size(), 1), image.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(content.size()),
+            1
+        };
+
+    ASSERT_EQ(expected_preferred_size, image.get_preferred_size());
 }
 
 TEST(a_new_image_with_single_line_content_and_a_fill, has_a_preferred_size_with_the_width_of_that_line)
@@ -37,7 +43,13 @@ TEST(a_new_image_with_single_line_content_and_a_fill, has_a_preferred_size_with_
     auto const content = "abcde"_ts;
     munin::image image(content, terminalpp::element('Y'));
 
-    ASSERT_EQ(terminalpp::extent(content.size(), 1), image.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(content.size()),
+            1
+        };
+
+    ASSERT_EQ(expected_preferred_size, image.get_preferred_size());
 }
 
 TEST(a_new_image_with_empty_multi_line_content, has_a_zero_preferred_size)
@@ -57,7 +69,13 @@ TEST(a_new_image_with_multi_line_content, has_a_preferred_size_with_the_width_of
 
     munin::image image(content);
 
-    ASSERT_EQ(terminalpp::extent(content[1].size(), 2), image.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(content[1].size()),
+            2
+        };
+
+    ASSERT_EQ(expected_preferred_size, image.get_preferred_size());
 }
 
 TEST(a_new_image_with_multi_line_content_and_a_fill, has_a_preferred_size_with_the_width_of_the_longest_line_and_height_of_the_number_of_lines)
@@ -70,7 +88,13 @@ TEST(a_new_image_with_multi_line_content_and_a_fill, has_a_preferred_size_with_t
 
     munin::image image(content, 'Z');
 
-    ASSERT_EQ(terminalpp::extent(content[1].size(), 2), image.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            static_cast<terminalpp::coordinate_type>(content[1].size()),
+            2
+        };
+
+    ASSERT_EQ(expected_preferred_size, image.get_preferred_size());
 }
 
 TEST(a_new_image, draws_whitespace_on_the_canvas)

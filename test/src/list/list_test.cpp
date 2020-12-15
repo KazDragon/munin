@@ -188,7 +188,7 @@ TEST_F(a_list_with_an_item, has_no_selected_item)
 TEST_F(a_list_with_an_item, has_a_preferred_size_of_that_item)
 {
     auto const expected_preferred_size = terminalpp::extent{
-        static_cast<terminalpp::coordinate_type>(item_text.size()),
+        terminalpp::coordinate_type(item_text.size()),
         1
     };
 
@@ -435,7 +435,7 @@ protected:
 TEST_F(a_list_with_two_items, has_a_preferred_size_of_the_largest_item_and_the_number_of_items)
 {
     auto const expected_preferred_size = terminalpp::extent{
-        static_cast<terminalpp::coordinate_type>(item_text1.size()),
+        terminalpp::coordinate_type(item_text1.size()),
         2
     };
 

@@ -47,7 +47,8 @@ struct edit::impl
                     && !is_control_element(element);
             };
             
-        terminalpp::coordinate_type const old_content_size = content.size();
+        auto const old_content_size = 
+            terminalpp::coordinate_type(content.size());
         
         auto const insertable_text = 
             text | boost::adaptors::filtered(is_visible_in_edits);
@@ -59,9 +60,8 @@ struct edit::impl
             begin(insertable_text),
             end(insertable_text));
         
-        terminalpp::coordinate_type const new_content_size = content.size();
-        terminalpp::coordinate_type const added_content_size = 
-            new_content_size - old_content_size;
+        auto const new_content_size = terminalpp::coordinate_type(content.size());
+        auto const added_content_size = new_content_size - old_content_size;
 
         self_.set_cursor_position({
             cursor_position.x + added_content_size,
@@ -113,7 +113,7 @@ struct edit::impl
                 break;
                 
             case terminalpp::vk::bs:
-                [[fallthrough]];
+                // Fall-through
             case terminalpp::vk::del:
                 handle_backspace();
                 break;
@@ -188,7 +188,8 @@ private:
     // ======================================================================
     void handle_end()
     {
-        terminalpp::coordinate_type rightmost_cursor_position = content.size();
+        auto const rightmost_cursor_position = 
+            terminalpp::coordinate_type(content.size());
         self_.set_cursor_position({
             rightmost_cursor_position, cursor_position.y});
     }
@@ -267,7 +268,9 @@ void edit::insert_text(terminalpp::string const &text)
 // ==========================================================================
 terminalpp::extent edit::do_get_preferred_size() const
 {
-    return terminalpp::extent(pimpl_->content.size() + 1, 1);
+    return terminalpp::extent(
+        terminalpp::coordinate_type(pimpl_->content.size() + 1),
+        1);
 }
 
 // ==========================================================================

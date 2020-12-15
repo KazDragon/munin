@@ -67,7 +67,8 @@ terminalpp::extent status_bar::do_get_preferred_size() const
 {
     return pimpl_->message_.empty()
          ? terminalpp::extent{1, 1}
-         : terminalpp::extent(pimpl_->message_.size(), 1);
+         : terminalpp::extent{
+               terminalpp::coordinate_type(pimpl_->message_.size()), 1};
 }
 
 // ==========================================================================
@@ -92,20 +93,23 @@ void status_bar::do_draw(
         is_in_frame_0 ? 0 : ((now - frame_1_time) / marquee_frame_time) + 1;
     auto const character_index = frame_number * characters_per_marquee_frame;
 
+    auto const message_width = 
+        terminalpp::coordinate_type(pimpl_->message_.size());
+
     terminalpp::for_each_in_region(
         surface,
         region,
-        [this, character_index](
+        [this, character_index, message_width](
             terminalpp::element &elem,
             terminalpp::coordinate_type column,
             terminalpp::coordinate_type row)
         {
-            elem = (character_index + column) < pimpl_->message_.size()
+            elem = (character_index + column) < message_width
                  ? pimpl_->message_[character_index + column]
                  : ' ';
         });
 
-    if (character_index < pimpl_->message_.size())
+    if (character_index < message_width)
     {
         auto const next_frame_time =
             is_in_frame_0

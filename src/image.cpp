@@ -252,14 +252,15 @@ terminalpp::extent image::do_get_preferred_size() const
     return pimpl_->content_.empty()
          ? terminalpp::extent()
          : terminalpp::extent(
-               std::max_element(
-                   pimpl_->content_.begin(),
-                   pimpl_->content_.end(),
-                   [](auto const &lhs, auto const &rhs)
-                   {
-                       return lhs.size() < rhs.size();
-                   })->size(),
-               pimpl_->content_.size());
+               terminalpp::coordinate_type(
+                   std::max_element(
+                       pimpl_->content_.begin(),
+                       pimpl_->content_.end(),
+                       [](auto const &lhs, auto const &rhs)
+                       {
+                           return lhs.size() < rhs.size();
+                       })->size()),
+               terminalpp::coordinate_type(pimpl_->content_.size()));
 }
 
 // ==========================================================================
