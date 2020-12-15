@@ -15,7 +15,13 @@ TEST(a_new_brush_with_a_single_line_pattern, has_a_preferred_size_with_the_width
     auto const pattern = "abcde"_ts;
     munin::brush brush(pattern);
 
-    ASSERT_EQ(terminalpp::extent(pattern.size(), 1), brush.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(pattern.size()),
+            1
+        };
+
+    ASSERT_EQ(expected_preferred_size, brush.get_preferred_size());
 }
 
 TEST(a_new_brush_with_a_multi_line_pattern, has_a_preferred_size_with_the_width_of_the_longest_line_and_height_of_the_number_of_lines)
@@ -28,7 +34,13 @@ TEST(a_new_brush_with_a_multi_line_pattern, has_a_preferred_size_with_the_width_
 
     munin::brush brush(pattern);
 
-    ASSERT_EQ(terminalpp::extent(pattern[1].size(), 2), brush.get_preferred_size());
+    auto const expected_preferred_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(pattern[1].size()),
+            2
+        };
+
+    ASSERT_EQ(expected_preferred_size, brush.get_preferred_size());
 }
 
 TEST(a_new_brush, draws_whitespace_on_the_canvas)

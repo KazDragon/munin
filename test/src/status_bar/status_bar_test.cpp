@@ -74,7 +74,12 @@ TEST_F(a_new_status_bar, has_a_preferred_size_of_the_message_when_a_message_is_s
 
     status_bar_->set_message(message);
 
-    auto const expected_size = terminalpp::extent(message.size(), 1);
+    auto const expected_size =
+        terminalpp::extent{
+            terminalpp::coordinate_type(message.size()),
+            1
+    };
+
     ASSERT_TRUE(preferred_size.is_initialized());
     ASSERT_EQ(expected_size, *preferred_size);
 }

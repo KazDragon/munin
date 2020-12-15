@@ -133,7 +133,10 @@ text_area::text_index text_area::get_length() const
 void text_area::insert_text(terminalpp::string const &text)
 {
     insert_text(text, pimpl_->caret_position_);
-    pimpl_->move_caret(pimpl_->caret_position_ + text.size());
+
+    auto const new_caret_position = static_cast<text_area::text_index>(
+        pimpl_->caret_position_ + text.size());
+    pimpl_->move_caret(new_caret_position);
 }
 
 // ==========================================================================

@@ -206,6 +206,11 @@ set_target_properties(munin
         SOVERSION ${MUNIN_VERSION}
 )        
 
+target_compile_options(munin
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/WX>
+)
+
 generate_export_header(munin
     EXPORT_FILE_NAME
         "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
@@ -304,6 +309,11 @@ target_include_directories(munin_tester
 
 target_link_libraries(munin_tester
     ${MUNIN_TESTER_LIBRARIES}
+)
+
+target_compile_options(munin_tester
+    PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/WX>
 )
 
 add_test(munin_test munin_tester)

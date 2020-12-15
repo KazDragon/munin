@@ -32,13 +32,13 @@ struct list::impl
             };
         
         auto const preferred_width = 
-            static_cast<terminalpp::coordinate_type>(
+            terminalpp::coordinate_type(
                 items_.empty()
               ? 0
               : *boost::max_element(items_ | transformed(string_size)));
 
         auto const preferred_height = 
-            static_cast<terminalpp::coordinate_type>(items_.size());
+            terminalpp::coordinate_type(items_.size());
 
         return { preferred_width, preferred_height };
     }
