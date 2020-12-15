@@ -1,15 +1,12 @@
 # Munin
 
-[![Documentation](https://codedocs.xyz/KazDragon/munin.svg)](https://codedocs.xyz/KazDragon/munin/)
+[![Documentation](https://img.shields.io/badge/code-documented-brightgreen.svg?style=flat)](https://kazdragon.github.io/munin/) 
 [![License](https://img.shields.io/github/license/KazDragon/munin.svg)](https://en.wikipedia.org/wiki/MIT_License)
-[![Build Status](https://travis-ci.org/KazDragon/munin.svg?branch=master)](https://travis-ci.org/KazDragon/munin)
+[![MSVC Build status](https://ci.appveyor.com/api/projects/status/p7wcwnd4xapnetkl/branch/master?svg=true)](https://ci.appveyor.com/project/KazDragon/munin/branch/master)
+[![Linux Build status](https://github.com/KazDragon/munin/workflows/build/badge.svg)](https://github.com/KazDragon/munin/actions?query=event%3Apush) 
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
 [![Download](https://api.bintray.com/packages/kazdragon/conan-public/munin%3Akazdragon/images/download.svg)](https://bintray.com/kazdragon/conan-public/munin%3Akazdragon/_latestVersion)
-[![Github Issues](https://img.shields.io/github/issues/KazDragon/munin.svg)](https://github.com/KazDragon/munin/issues)
-
-[![Gitter](https://badges.gitter.im/KazDragon/munin.svg)](https://gitter.im/KazDragon/munin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![This is a forkable respository](https://img.shields.io/badge/forkable-yes-brightgreen.svg)](https://basicallydan.github.io/forkability/?u=KazDragon&r=munin)
 
 Munin is an enhancement to the Terminal++ library that provides a set of component-based UI widgets.
 
@@ -70,7 +67,7 @@ Implement the fundamentals of the library, providing the basis for further devel
  
  ## v0.4 - Text Areas
  Fundamentals for all types of text components:
- 1. [ ] Viewport - a component that sees a smaller portion of the underlying component
+ 1. [X] Viewport - a component that sees a smaller portion of the underlying component
  2. [ ] Horizontal Scroll Bar
  3. [ ] Vertical Scroll Bar
  4. [ ] Scroll Frame - a frame that includes scroll bars
@@ -81,7 +78,7 @@ Implement the fundamentals of the library, providing the basis for further devel
  2. [ ] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
  ## v0.5 - Lists
- TBD
+ 1. [x] List - A vertical list of elements that can be individually selected.
 
 # Status
 
