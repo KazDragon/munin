@@ -18,7 +18,7 @@ public :
     //* =====================================================================
     /// \brief A proxy into a column of elements on the canvas
     //* =====================================================================
-    class column_proxy
+    class MUNIN_EXPORT column_proxy
     {
     public :
         using size_type = terminalpp::coordinate_type;

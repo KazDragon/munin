@@ -208,6 +208,9 @@ set_target_properties(munin
 
 target_compile_options(munin
     PRIVATE
+        # Do not generate warning C4251 (member needs dll linkage) on MSVC
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4251>
+        # No warnings are generated on MSVC
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
 )
 
@@ -313,6 +316,9 @@ target_link_libraries(munin_tester
 
 target_compile_options(munin_tester
     PRIVATE
+        # Do not generate warning C4251 (member needs dll linkage) on MSVC
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4251>
+        # No warnings are generated on MSVC
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
 )
 
