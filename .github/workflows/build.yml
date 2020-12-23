@@ -217,7 +217,7 @@ jobs:
     - name: Build
       working-directory: ${{runner.workspace}}/build
       shell: bash
-      run: cmake --build . --target terminalpp_doc
+      run: cmake --build . --target munin_doc
 
     - uses: peaceiris/actions-gh-pages@v3
       with:

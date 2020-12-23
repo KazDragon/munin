@@ -28,7 +28,7 @@ if (DOXYGEN_FOUND)
         @ONLY
     )
 
-    add_custom_target(terminalpp_doc
+    add_custom_target(munin_doc
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY
             ${CMAKE_CURRENT_BINARY_DIR}
