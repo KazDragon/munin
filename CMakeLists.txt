@@ -28,7 +28,7 @@ if (DOXYGEN_FOUND)
         @ONLY
     )
 
-    add_custom_target(munin_doc
+    add_custom_target(${CMAKE_PROJECT_NAME}_doc
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
         WORKING_DIRECTORY
             ${CMAKE_CURRENT_BINARY_DIR}
@@ -339,22 +339,6 @@ if (MSVC AND NOT MUNIN_USE_CONAN)
 endif()
 
 
-endif()
-
-if (DOXYGEN_FOUND)
-    configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
-        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-        @ONLY
-    )
-
-    add_custom_target("${CMAKE_PROJECT_NAME}_doc"
-        ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
-        WORKING_DIRECTORY
-            ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT
-            "Generate API documentation with Doxygen" VERBATIM
-    )
 endif()
 
 include(GNUInstallDirs)
