@@ -324,6 +324,21 @@ target_compile_options(munin_tester
 
 add_test(munin_test munin_tester)
 
+# For an MSVC, non-Conan build where terminalpp is a shared library, ensure that
+# the DLL gets copied into the executable directory so that the tests can run.
+if (MSVC AND NOT MUNIN_USE_CONAN)
+    get_target_property(terminalpp_type terminalpp TYPE)
+
+    if (terminalpp_type STREQUAL "SHARED_LIBRARY")
+        add_custom_command(TARGET munin_tester POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:terminalpp>
+            $<TARGET_FILE_DIR:munin_tester>
+       )
+    endif()
+endif()
+
+
 endif()
 
 if (DOXYGEN_FOUND)
@@ -342,14 +357,45 @@ if (DOXYGEN_FOUND)
     )
 endif()
 
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(
+    ${PROJECT_SOURCE_DIR}/cmake/munin-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/munin
+)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
+    VERSION
+        "${MUNIN_VERSION}"
+    COMPATIBILITY AnyNewerVersion
+)
+
+export(
+    TARGETS 
+        munin
+    FILE ${PROJECT_BINARY_DIR}/munin-targets.cmake
+)
+
 install(
     TARGETS
         munin
     EXPORT
-        munin-config
-    ARCHIVE DESTINATION
-        lib/munin-${MUNIN_VERSION}
+        munin-targets
     LIBRARY DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION
+        ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION
+        ${CMAKE_INSTALL_BINDIR}
+)
+
+install(
+    EXPORT
+        munin-targets
+    DESTINATION
         lib/munin-${MUNIN_VERSION}
 )
 
@@ -360,31 +406,9 @@ install(
         include/munin-${MUNIN_VERSION}
 )
 
-export(
-    EXPORT
-        munin-config
-    FILE
-        "${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake"
-)
-
-install(
-    EXPORT
-        munin-config
-    DESTINATION
-        lib/munin-${MUNIN_VERSION}
-)
-
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
-    VERSION
-        "${MUNIN_VERSION}"
-    COMPATIBILITY AnyNewerVersion
-)
-
 install(
     FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
     DESTINATION
         lib/munin-${MUNIN_VERSION}
