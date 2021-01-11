@@ -14,11 +14,15 @@ configuration:
   - Debug
   - Release
 
+platform: 
+  - x64
+
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
   matrix:
-    - platform: x64
+    - shared: True
+    - shared: False
 
 cache:
   - C:\Tools\vcpkg\installed
@@ -51,7 +55,7 @@ install:
   - cd C:\Source
   - git clone https://github.com/KazDragon/terminalpp
   - cd terminalpp
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries .
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
   - cmake --build . --config %configuration%
   - cmake --install . --config %configuration%
 
@@ -59,8 +63,10 @@ build_script:
   - cd %appveyor_build_folder%
   - mkdir build
   - cd build
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries  ..
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries -DBUILD_SHARED_LIBS=%shared% ..
   - cmake --build . --config %configuration%
 
 test_script:
-  - ctest . -C %configuration%
+  - cd %configuration%
+  - dir
+  - ctest .. -C %configuration%
