@@ -27,8 +27,8 @@ static terminalpp::point get_content_basis(
     terminalpp::extent const &content_size)
 {
     return {
-        (component_size.width - content_size.width) / 2,
-        (component_size.height - content_size.height) / 2
+        (component_size.width_ - content_size.width_) / 2,
+        (component_size.height_ - content_size.height_) / 2
     };
 }
 
@@ -40,8 +40,8 @@ static terminalpp::extent get_content_extent(
         terminalpp::extent const &content_size)
 {
     return {
-        (std::min)(content_size.width, component_size.width),
-        (std::min)(content_size.height, component_size.height)
+        (std::min)(content_size.width_, component_size.width_),
+        (std::min)(content_size.height_, component_size.height_)
     };
 }
 
@@ -63,7 +63,7 @@ static terminalpp::rectangle get_content_bounds(
 // ==========================================================================
 static bool has_zero_dimension(terminalpp::rectangle const &bounds)
 {
-    return bounds.size.width == 0 || bounds.size.height == 0;
+    return bounds.size_.width_ == 0 || bounds.size_.height_ == 0;
 }
 
 // ==========================================================================
@@ -93,11 +93,11 @@ static void draw_fill_line(
     terminalpp::coordinate_type const &width,
     terminalpp::element const &fill)
 {
-    for (terminalpp::coordinate_type column = origin.x;
-         column < origin.x + width;
+    for (terminalpp::coordinate_type column = origin.x_;
+         column < origin.x_ + width;
          ++column)
     {
-        surface[column][origin.y] = fill;
+        surface[column][origin.y_] = fill;
     }
 }
 
@@ -112,13 +112,13 @@ static void draw_content_line(
     terminalpp::string const &content,
     terminalpp::element const &fill)
 {
-    for (auto column = origin.x; column < origin.x + line_width; ++column)
+    for (auto column = origin.x_; column < origin.x_ + line_width; ++column)
     {
         bool const column_has_content =
             column >= content_start
          && column <  content_start + content.size();
 
-        surface[column][origin.y] =
+        surface[column][origin.y_] =
             column_has_content
           ? content[column - content_start]
           : fill;
@@ -273,30 +273,30 @@ void image::do_draw(
     auto const content_size = get_preferred_size();
     auto const content_basis = get_content_basis(size, content_size);
 
-    for (terminalpp::coordinate_type row = region.origin.y;
-         row < region.origin.y + region.size.height;
+    for (terminalpp::coordinate_type row = region.origin_.y_;
+         row < region.origin_.y_ + region.size_.height_;
          ++row)
     {
         bool const row_has_content =
-            row >= content_basis.y
-         && row < content_basis.y + pimpl_->content_.size();
+            row >= content_basis.y_
+         && row < content_basis.y_ + pimpl_->content_.size();
 
         if (row_has_content)
         {
             draw_content_line(
                 surface,
-                { region.origin.x, row },
-                content_basis.x,
-                region.size.width,
-                pimpl_->content_[row - content_basis.y],
+                { region.origin_.x_, row },
+                content_basis.x_,
+                region.size_.width_,
+                pimpl_->content_[row - content_basis.y_],
                 pimpl_->fill_);
         }
         else
         {
             draw_fill_line(
                 surface,
-                { region.origin.x, row },
-                region.size.width,
+                { region.origin_.x_, row },
+                region.size_.width_,
                 pimpl_->fill_);
         }
     }

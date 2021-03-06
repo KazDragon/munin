@@ -11,8 +11,8 @@ static terminalpp::extent calculate_bounds(
         terminalpp::extent{},
         [](auto &bounds, auto const &region)
         {
-            bounds.width = std::max(bounds.width, region.origin.x + region.size.width);
-            bounds.height = std::max(bounds.height, region.origin.y + region.size.height);
+            bounds.width_ = std::max(bounds.width_, region.origin_.x_ + region.size_.width_);
+            bounds.height_ = std::max(bounds.height_, region.origin_.y_ + region.size_.height_);
             return bounds;
         });
 }
@@ -21,15 +21,15 @@ static std::vector<bool> create_redraw_map(
     std::vector<terminalpp::rectangle> const &regions)
 {
     auto extent = calculate_bounds(regions);
-    std::vector<bool> redraw_map(extent.width * extent.height);
+    std::vector<bool> redraw_map(extent.width_ * extent.height_);
     
     for(auto const &region : regions)
     {
-        for (auto row = region.origin.y; row < region.origin.y + region.size.height; ++row)
+        for (auto row = region.origin_.y_; row < region.origin_.y_ + region.size_.height_; ++row)
         {
-            for (auto col = region.origin.x; col < region.origin.x + region.size.width; ++col)
+            for (auto col = region.origin_.x_; col < region.origin_.x_ + region.size_.width_; ++col)
             {
-                redraw_map[(row * extent.width) + col] = true;
+                redraw_map[(row * extent.width_) + col] = true;
             }
         }
     }

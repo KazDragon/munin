@@ -89,7 +89,7 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
                     EXPECT_EQ(expected_content[column - 1], cvs_[column][row])
                         << "at position [" << column << "," << row << "]";
                 }
-                else if (column - 1 < edit_.get_size().width)
+                else if (column - 1 < edit_.get_size().width_)
                 {
                     EXPECT_EQ(' ', cvs_[column][row])
                         << "at position [" << column << "," << row << "]";

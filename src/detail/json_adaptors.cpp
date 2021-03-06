@@ -8,16 +8,16 @@ namespace munin { namespace detail {
 nlohmann::json to_json(terminalpp::point const &pt)
 {
     return {
-        { "x", pt.x },
-        { "y", pt.y }
+        { "x", pt.x_ },
+        { "y", pt.y_ }
     };
 }
 
 nlohmann::json to_json(terminalpp::extent const &ext)
 {
     return {
-        { "width", ext.width },
-        { "height", ext.height }
+        { "width", ext.width_ },
+        { "height", ext.height_ }
     };
 }
 

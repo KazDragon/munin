@@ -27,7 +27,7 @@ struct text_area::impl
         laid_out_text_.clear();
         laid_out_text_.emplace_back();
 
-        auto const text_area_width = self_.get_size().width;
+        auto const text_area_width = self_.get_size().width_;
 
         for(auto const &ch : text_)
         {
@@ -52,7 +52,7 @@ struct text_area::impl
     // ======================================================================
     void move_caret(text_area::text_index to_index)
     {
-        auto const text_area_width = self_.get_size().width;
+        auto const text_area_width = self_.get_size().width_;
         auto last_newline_index = text_area::text_index{0};
         
         // For now, assume advance.
@@ -67,22 +67,22 @@ struct text_area::impl
                 
                 if (line_length != text_area_width)
                 {
-                    cursor_position_.x = 0;
-                    ++cursor_position_.y;
+                    cursor_position_.x_ = 0;
+                    ++cursor_position_.y_;
                 }
                 
                 last_newline_index = caret_position_;
             }
             else
             {
-                ++cursor_position_.x;
+                ++cursor_position_.x_;
             }
             
             // Wrap the cursor if necessary.
-            if (cursor_position_.x >= text_area_width)
+            if (cursor_position_.x_ >= text_area_width)
             {
-                cursor_position_.x = 0;
-                ++cursor_position_.y;
+                cursor_position_.x_ = 0;
+                ++cursor_position_.y_;
             }
         }
 

@@ -1,6 +1,7 @@
 #include "mock/component.hpp"
 #include "mock/frame.hpp"
 #include <munin/framed_component.hpp>
+#include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 
 using testing::_;
@@ -84,32 +85,32 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
 
     framed_component_->set_size(component_size);
 
-    auto received_mouse_report = terminalpp::ansi::mouse::report{};
+    auto received_mouse_event = terminalpp::mouse::event{};
     EXPECT_CALL(*mock_inner_, do_event(_))
-        .WillOnce(Invoke([&received_mouse_report](auto ev)
+        .WillOnce(Invoke([&received_mouse_event](auto ev)
         {
-            auto *mouse_report = 
-                boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+            auto *mouse_event = 
+                boost::any_cast<terminalpp::mouse::event>(&ev);
                 
-            if (mouse_report)
+            if (mouse_event)
             {
-                received_mouse_report = *mouse_report;
+                received_mouse_event = *mouse_event;
             }
         }));
 
-    auto const sent_mouse_report = terminalpp::ansi::mouse::report{
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        initial_click.x, initial_click.y
+    auto const sent_mouse_report = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        initial_click
     };
     
     framed_component_->event(sent_mouse_report);
 
-    auto const expected_mouse_report = terminalpp::ansi::mouse::report{
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        expected_click.x, expected_click.y
+    auto const expected_mouse_report = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        expected_click
     };
 
-    ASSERT_EQ(expected_mouse_report, received_mouse_report);
+    ASSERT_EQ(expected_mouse_report, received_mouse_event);
 }
 
 INSTANTIATE_TEST_SUITE_P(

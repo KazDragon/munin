@@ -1,5 +1,6 @@
 #include "munin/viewport.hpp"
 #include "munin/render_surface.hpp"
+#include <terminalpp/mouse.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -106,8 +107,8 @@ struct viewport::impl
     void draw(render_surface& surface, terminalpp::rectangle const &region)
     {
         auto const offset_region = terminalpp::rectangle{
-            region.origin + anchor_position_,
-            region.size
+            region.origin_ + anchor_position_,
+            region.size_
         };
 
         // The tracked component doesn't know it's in a viewport.  So, when
@@ -119,8 +120,8 @@ struct viewport::impl
         // viewport.  By offsetting by (-2, -2) (the negative of the anchor
         // position), the tracked component draws in the correct space.
         surface.offset_by({
-            -anchor_position_.x,
-            -anchor_position_.y
+            -anchor_position_.x_,
+            -anchor_position_.y_
         });
 
         // Ensure that the offset is unapplied before exit of this
@@ -128,8 +129,8 @@ struct viewport::impl
         BOOST_SCOPE_EXIT_ALL(&surface, this)
         {
             surface.offset_by({
-                anchor_position_.x,
-                anchor_position_.y
+                anchor_position_.x_,
+                anchor_position_.y_
             });
         };
 
@@ -142,14 +143,13 @@ struct viewport::impl
     auto event(boost::any const& ev)
     {
         auto const *mouse_event = 
-            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+            boost::any_cast<terminalpp::mouse::event>(&ev);
 
         if (mouse_event != nullptr)
         {
-            auto const translated_event = terminalpp::ansi::mouse::report {
-                mouse_event->button_,
-                mouse_event->x_position_ + anchor_position_.x,
-                mouse_event->y_position_ + anchor_position_.y
+            auto const translated_event = terminalpp::mouse::event {
+                mouse_event->action_,
+                mouse_event->position_ + anchor_position_
             };
 
             return tracked_component_->event(translated_event);
@@ -169,8 +169,8 @@ struct viewport::impl
         auto const viewport_size = self_.get_size();
         
         auto const tracked_component_size = terminalpp::extent{
-            std::max(preferred_size.width, viewport_size.width),
-            std::max(preferred_size.height, viewport_size.height)
+            std::max(preferred_size.width_, viewport_size.width_),
+            std::max(preferred_size.height_, viewport_size.height_)
         };
         
         tracked_component_->set_size(tracked_component_size);
@@ -190,20 +190,20 @@ struct viewport::impl
         // component with the size of the viewport, it must be the case that
         // the tracked component's size is at least as large as the viewport
         // itself.
-        assert(tracked_component_size.width >= viewport_size.width);
-        assert(tracked_component_size.height >= viewport_size.height);
+        assert(tracked_component_size.width_ >= viewport_size.width_);
+        assert(tracked_component_size.height_ >= viewport_size.height_);
 
         // If the viewport has changed its size, look to see if the tracked
         // component is contained entirely in the viewport.  If not, then
         // adjust the anchor appropriately.
         auto const max_allowed_anchor_position = terminalpp::point {
-            tracked_component_size.width - viewport_size.width,
-            tracked_component_size.height - viewport_size.height
+            tracked_component_size.width_ - viewport_size.width_,
+            tracked_component_size.height_ - viewport_size.height_
         };
 
         anchor_position_ = {
-            std::min(anchor_position_.x, max_allowed_anchor_position.x),
-            std::min(anchor_position_.y, max_allowed_anchor_position.y)
+            std::min(anchor_position_.x_, max_allowed_anchor_position.x_),
+            std::min(anchor_position_.y_, max_allowed_anchor_position.y_)
         };
 
         // Check to see if the tracked cursor has scrolled off any of the
@@ -211,13 +211,13 @@ struct viewport::impl
         // just enough to keep the cursor within the visual area.
         anchor_position_ = {
             boost::algorithm::clamp(
-                anchor_position_.x, 
-                tracked_cursor_position.x - viewport_size.width + 1, 
-                tracked_cursor_position.x),
+                anchor_position_.x_, 
+                tracked_cursor_position.x_ - viewport_size.width_ + 1, 
+                tracked_cursor_position.x_),
             boost::algorithm::clamp(
-                anchor_position_.y,
-                tracked_cursor_position.y - viewport_size.height + 1, 
-                tracked_cursor_position.y)
+                anchor_position_.y_,
+                tracked_cursor_position.y_ - viewport_size.height_ + 1, 
+                tracked_cursor_position.y_)
         };
 
         if (old_anchor_position != anchor_position_)
@@ -235,8 +235,8 @@ struct viewport::impl
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
 
         cursor_position_ = {
-            tracked_cursor_position.x - anchor_position_.x,
-            tracked_cursor_position.y - anchor_position_.y
+            tracked_cursor_position.x_ - anchor_position_.x_,
+            tracked_cursor_position.y_ - anchor_position_.y_
         };
 
         if (old_cursor_position != cursor_position_)
@@ -277,10 +277,10 @@ private:
             {
                 return terminalpp::rectangle{
                     { 
-                        region.origin.x - anchor_position_.x,
-                        region.origin.y - anchor_position_.y
+                        region.origin_.x_ - anchor_position_.x_,
+                        region.origin_.y_ - anchor_position_.y_
                     },
-                    region.size
+                    region.size_
                 };
             };
 
@@ -288,14 +288,14 @@ private:
             [viewport_size](terminalpp::rectangle const &region)
             {
                 return terminalpp::rectangle {
-                    { region.origin.x, region.origin.y },
+                    { region.origin_.x_, region.origin_.y_ },
                     {
                         std::min(
-                            region.size.width, 
-                            viewport_size.width - region.origin.x),
+                            region.size_.width_, 
+                            viewport_size.width_ - region.origin_.x_),
                         std::min(
-                            region.size.height,
-                            viewport_size.height - region.origin.y)
+                            region.size_.height_,
+                            viewport_size.height_ - region.origin_.y_)
                     }
                 };
             };
@@ -303,8 +303,8 @@ private:
         auto const region_is_in_viewable_area =
             [viewport_size](terminalpp::rectangle const &region)
             {
-                return region.origin.x < viewport_size.width
-                    && region.origin.y < viewport_size.height;
+                return region.origin_.x_ < viewport_size.width_
+                    && region.origin_.y_ < viewport_size.height_;
             };
 
         using boost::adaptors::filtered;

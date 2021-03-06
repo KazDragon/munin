@@ -26,9 +26,9 @@ static terminalpp::glyph const unicode_horizontal_beam     = u8"\\U2500"_ets[0].
 static terminalpp::glyph const unicode_vertical_beam       = u8"\\U2502"_ets[0].glyph_;
 
 static auto const highlight_attribute = terminalpp::attribute(
-    terminalpp::ansi::graphics::colour::cyan,
+    terminalpp::graphics::colour::cyan,
     terminalpp::colour(),
-    terminalpp::ansi::graphics::intensity::bold);
+    terminalpp::graphics::intensity::bold);
 
 TEST_F(a_titled_frame, is_a_component)
 {
@@ -186,9 +186,9 @@ TEST_F(a_titled_frame_with_unicode_support, draws_a_border_with_box_drawing_glyp
 TEST_F(a_titled_frame, can_be_displayed_with_a_custom_lowlight)
 {
     static auto const lowlight_attribute = terminalpp::attribute(
-        terminalpp::ansi::graphics::colour::green,
+        terminalpp::graphics::colour::green,
         terminalpp::colour(),
-        terminalpp::ansi::graphics::intensity::bold);
+        terminalpp::graphics::intensity::bold);
         
     auto const size = terminalpp::extent{11, 3};
     frame_.set_size(size);
@@ -388,10 +388,10 @@ TEST_F(a_titled_frame_with_an_associated_unfocussed_component, redraws_a_reduced
 
     for (auto region : redraw_regions)
     {
-        ASSERT_GE(region.origin.x, 0);
-        ASSERT_GE(region.origin.y, 0);
-        ASSERT_GE(region.size.width, 0);
-        ASSERT_GE(region.size.height, 0);
+        ASSERT_GE(region.origin_.x_, 0);
+        ASSERT_GE(region.origin_.y_, 0);
+        ASSERT_GE(region.size_.width_, 0);
+        ASSERT_GE(region.size_.height_, 0);
     }
 }
 
@@ -422,10 +422,10 @@ TEST_F(a_titled_frame_with_an_associated_unfocussed_component, redraws_a_reduced
 
     for (auto region : redraw_regions)
     {
-        ASSERT_GE(region.origin.x, 0);
-        ASSERT_GE(region.origin.y, 0);
-        ASSERT_GE(region.size.width, 0);
-        ASSERT_GE(region.size.height, 0);
+        ASSERT_GE(region.origin_.x_, 0);
+        ASSERT_GE(region.origin_.y_, 0);
+        ASSERT_GE(region.size_.width_, 0);
+        ASSERT_GE(region.size_.height_, 0);
     }
 }
 
@@ -530,8 +530,8 @@ TEST_F(a_titled_frame_with_an_associated_focussed_component, when_unfocussed_dra
 TEST_F(a_titled_frame_with_an_associated_focussed_component, can_have_a_custom_highlight)
 {
     terminalpp::attribute highlight_attribute = {
-        terminalpp::ansi::graphics::colour::green,
-        terminalpp::ansi::graphics::colour::magenta
+        terminalpp::graphics::colour::green,
+        terminalpp::graphics::colour::magenta
     };
     
     auto const size = terminalpp::extent{11, 3};

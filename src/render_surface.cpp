@@ -103,7 +103,7 @@ terminalpp::element &render_surface::get_element(
     terminalpp::coordinate_type column, 
     terminalpp::coordinate_type row)
 {
-    return canvas_[column + offset_.width][row + offset_.height];
+    return canvas_[column + offset_.width_][row + offset_.height_];
 }
 
 }

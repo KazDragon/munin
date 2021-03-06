@@ -1,6 +1,6 @@
 #include "fake_basic_component.hpp"
 #include <munin/basic_component.hpp>
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 #include <memory>
 #include <cassert>
@@ -67,10 +67,9 @@ TEST_F(an_unfocused_basic_component_that_receives_focus, gains_focus_when_previo
 
 TEST_F(an_unfocused_basic_component_that_receives_focus, sets_focus_on_mouse_down)
 {
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.x_position_ = 0;
-    mouse_event.y_position_ = 0;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
+    terminalpp::mouse::event mouse_event;
+    mouse_event.action_ = terminalpp::mouse::event_type::left_button_down;
+    mouse_event.position_ = {0, 0};
     
     component_.event(mouse_event);
     
@@ -80,10 +79,9 @@ TEST_F(an_unfocused_basic_component_that_receives_focus, sets_focus_on_mouse_dow
 
 TEST_F(an_unfocused_basic_component_that_receives_focus, does_nothing_on_mouse_up)
 {
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.x_position_ = 0;
-    mouse_event.y_position_ = 0;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::BUTTON_UP;
+    terminalpp::mouse::event mouse_event;
+    mouse_event.action_ = terminalpp::mouse::event_type::button_up;
+    mouse_event.position_ = {0, 0};
     
     component_.event(mouse_event);
     
@@ -152,10 +150,9 @@ TEST_F(an_unfocused_basic_component_that_does_not_receive_focus, does_not_gain_f
 
 TEST_F(an_unfocused_basic_component_that_does_not_receive_focus, does_not_set_focus_on_mouse_down)
 {
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.x_position_ = 0;
-    mouse_event.y_position_ = 0;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
+    terminalpp::mouse::event mouse_event;
+    mouse_event.action_ = terminalpp::mouse::event_type::left_button_down;
+    mouse_event.position_ = {0, 0};
     
     component_.event(mouse_event);
     
@@ -165,10 +162,9 @@ TEST_F(an_unfocused_basic_component_that_does_not_receive_focus, does_not_set_fo
 
 TEST_F(an_unfocused_basic_component_that_does_not_receive_focus, does_nothing_on_mouse_up)
 {
-    terminalpp::ansi::mouse::report mouse_event;
-    mouse_event.x_position_ = 0;
-    mouse_event.y_position_ = 0;
-    mouse_event.button_ = terminalpp::ansi::mouse::report::BUTTON_UP;
+    terminalpp::mouse::event mouse_event;
+    mouse_event.action_ = terminalpp::mouse::event_type::button_up;
+    mouse_event.position_ = {0, 0};
     
     component_.event(mouse_event);
     

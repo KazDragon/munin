@@ -25,19 +25,19 @@ void a_text_area::verify_oob_is_untouched()
     
     // For now, assume IB and OOB are both based at {0,0}.
     for (auto oob_y = terminalpp::coordinate_type{0};
-         oob_y < in_bounds.height; 
+         oob_y < in_bounds.height_; 
          ++oob_y)
     {
-        for (auto oob_x = in_bounds.width; oob_x < out_of_bounds.width; ++oob_x)
+        for (auto oob_x = in_bounds.width_; oob_x < out_of_bounds.width_; ++oob_x)
         {
             ASSERT_EQ(canvas_[oob_x][oob_y], a_text_area::fill);
         }
     }
 
-    for (auto oob_y = in_bounds.height; oob_y < out_of_bounds.height; ++oob_y)
+    for (auto oob_y = in_bounds.height_; oob_y < out_of_bounds.height_; ++oob_y)
     {
         for (auto oob_x = terminalpp::coordinate_type{0};
-             oob_x < out_of_bounds.width;
+             oob_x < out_of_bounds.width_;
              ++oob_x)
         {
             ASSERT_EQ(canvas_[oob_x][oob_y], a_text_area::fill);

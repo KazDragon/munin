@@ -16,18 +16,18 @@ boost::optional<terminalpp::rectangle> intersection(
     // Note: the rectangle that is not the leftmost is not necessarily the
     // rightmost, since the leftmost rectangle may extend further than its
     // counterpart.
-    auto const &leftmost     = lhs.origin.x < rhs.origin.x ? lhs : rhs;
-    auto const &not_leftmost = lhs.origin.x < rhs.origin.x ? rhs : lhs;
+    auto const &leftmost     = lhs.origin_.x_ < rhs.origin_.x_ ? lhs : rhs;
+    auto const &not_leftmost = lhs.origin_.x_ < rhs.origin_.x_ ? rhs : lhs;
 
     // Calculate the rectangle with the topmost origin.
-    auto const &topmost        = lhs.origin.y < rhs.origin.y ? lhs : rhs;
-    auto const &not_topmost    = lhs.origin.y < rhs.origin.y ? rhs : lhs;
+    auto const &topmost        = lhs.origin_.y_ < rhs.origin_.y_ ? lhs : rhs;
+    auto const &not_topmost    = lhs.origin_.y_ < rhs.origin_.y_ ? rhs : lhs;
 
     bool overlaps =
-        not_leftmost.origin.x >= leftmost.origin.x
-     && not_leftmost.origin.x <  leftmost.origin.x + leftmost.size.width
-     && not_topmost.origin.y  >= topmost.origin.y
-     && not_topmost.origin.y  <  topmost.origin.y + topmost.size.height;
+        not_leftmost.origin_.x_ >= leftmost.origin_.x_
+     && not_leftmost.origin_.x_ <  leftmost.origin_.x_ + leftmost.size_.width_
+     && not_topmost.origin_.y_  >= topmost.origin_.y_
+     && not_topmost.origin_.y_  <  topmost.origin_.y_ + topmost.size_.height_;
 
     if (!overlaps)
     {
@@ -39,34 +39,34 @@ boost::optional<terminalpp::rectangle> intersection(
     // co-ordinate as the not-leftmost rectangle, and at the same y-co-ordinate
     // as the not-topmost rectangle.
     terminalpp::rectangle overlap;
-    overlap.origin.x = not_leftmost.origin.x;
-    overlap.origin.y = not_topmost.origin.y;
+    overlap.origin_.x_ = not_leftmost.origin_.x_;
+    overlap.origin_.y_ = not_topmost.origin_.y_;
 
     // If the leftmost rectangle completely contains the other rectangle,
     // then the width is simply that of the enclosed rectangle.
-    if (leftmost.origin.x + leftmost.size.width
-      > not_leftmost.origin.x + not_leftmost.size.width)
+    if (leftmost.origin_.x_ + leftmost.size_.width_
+      > not_leftmost.origin_.x_ + not_leftmost.size_.width_)
     {
-        overlap.size.width = not_leftmost.size.width;
+        overlap.size_.width_ = not_leftmost.size_.width_;
     }
     // Otherwise, the calculated width is the width of the leftmost rectangle
     // minus the difference between the origins of the two rectangles.
     else
     {
-        overlap.size.width =
-            leftmost.size.width - (not_leftmost.origin.x - leftmost.origin.x);
+        overlap.size_.width_ =
+            leftmost.size_.width_ - (not_leftmost.origin_.x_ - leftmost.origin_.x_);
     }
 
     // Same as above, but with height instead of width.
-    if (topmost.origin.y + topmost.size.height
-      > not_topmost.origin.y + not_topmost.size.height)
+    if (topmost.origin_.y_ + topmost.size_.height_
+      > not_topmost.origin_.y_ + not_topmost.size_.height_)
     {
-        overlap.size.height = not_topmost.size.height;
+        overlap.size_.height_ = not_topmost.size_.height_;
     }
     else
     {
-        overlap.size.height =
-            topmost.size.height - (not_topmost.origin.y - topmost.origin.y);
+        overlap.size_.height_ =
+            topmost.size_.height_ - (not_topmost.origin_.y_ - topmost.origin_.y_);
     }
 
     return overlap;

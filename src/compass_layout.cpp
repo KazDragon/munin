@@ -20,12 +20,12 @@ struct used_headings
 
     terminalpp::coordinate_type remaining_width() const
     {
-        return size_.width - west - east;
+        return size_.width_ - west - east;
     }
 
     terminalpp::coordinate_type remaining_height() const
     {
-        return size_.height - north - south;
+        return size_.height_ - north - south;
     }
 
 private :
@@ -51,7 +51,7 @@ static void layout_north_component(
     used_headings &headings)
 {
     auto const height = (std::min)(
-        comp.get_preferred_size().height,
+        comp.get_preferred_size().height_,
         headings.remaining_height());
 
     comp.set_position({headings.west, 0});
@@ -70,12 +70,12 @@ static void layout_south_component(
     auto const preferred_size   = comp.get_preferred_size();
     auto const remaining_height = headings.remaining_height();
     auto const remaining_width  = headings.remaining_width();
-    auto const height = (std::min)(preferred_size.height, remaining_height);
+    auto const height = (std::min)(preferred_size.height_, remaining_height);
 
     comp.set_position({
         headings.west,
         (std::max)(
-            (headings.north + remaining_height) - preferred_size.height,
+            (headings.north + remaining_height) - preferred_size.height_,
             0)
     });
     comp.set_size({remaining_width, height});
@@ -91,7 +91,7 @@ static void layout_west_component(
     used_headings &headings)
 {
     auto const width = (std::min)(
-        comp.get_preferred_size().width,
+        comp.get_preferred_size().width_,
         headings.remaining_width());
 
     comp.set_position({0, headings.north});
@@ -110,11 +110,11 @@ static void layout_east_component(
     auto const preferred_size   = comp.get_preferred_size();
     auto const remaining_height = headings.remaining_height();
     auto const remaining_width  = headings.remaining_width();
-    auto const width = (std::min)(preferred_size.width, remaining_width);
+    auto const width = (std::min)(preferred_size.width_, remaining_width);
 
     comp.set_position({
         (std::max)(
-            (headings.west + remaining_width) - preferred_size.width,
+            (headings.west + remaining_width) - preferred_size.width_,
             0),
         headings.north});
     comp.set_size({width, remaining_height});
@@ -158,55 +158,55 @@ terminalpp::extent compass_layout::do_get_preferred_size(
             default :
                 // Fall-through
             case heading::centre :
-                preferred_centre.width = std::max(
-                    preferred_centre.width,
-                    comp_preferred_size.width);
-                preferred_centre.height = std::max(
-                    preferred_centre.height,
-                    comp_preferred_size.height);
+                preferred_centre.width_ = std::max(
+                    preferred_centre.width_,
+                    comp_preferred_size.width_);
+                preferred_centre.height_ = std::max(
+                    preferred_centre.height_,
+                    comp_preferred_size.height_);
                 break;
 
             case heading::north :
                 // fall-through
             case heading::south :
-                preferred_size.width += std::max(
-                    comp_preferred_size.width - unused_size.width, 0);
-                unused_size.width += std::max(
-                    comp_preferred_size.width - unused_size.width, 0);
+                preferred_size.width_ += std::max(
+                    comp_preferred_size.width_ - unused_size.width_, 0);
+                unused_size.width_ += std::max(
+                    comp_preferred_size.width_ - unused_size.width_, 0);
                 
-                preferred_size.height += std::max(
-                    comp_preferred_size.height - unused_size.height, 0);
-                unused_size.height -= std::min(
-                    unused_size.height,
-                    comp_preferred_size.height);
+                preferred_size.height_ += std::max(
+                    comp_preferred_size.height_ - unused_size.height_, 0);
+                unused_size.height_ -= std::min(
+                    unused_size.height_,
+                    comp_preferred_size.height_);
                 break;
                 
             case heading::west :
                 // fall-through
             case heading::east :
-                preferred_size.height += std::max(
-                    comp_preferred_size.height - unused_size.height, 0);
-                unused_size.height += std::max(
-                    comp_preferred_size.height - unused_size.height, 0);
+                preferred_size.height_ += std::max(
+                    comp_preferred_size.height_ - unused_size.height_, 0);
+                unused_size.height_ += std::max(
+                    comp_preferred_size.height_ - unused_size.height_, 0);
                 
-                preferred_size.width += std::max(
-                    comp_preferred_size.width - unused_size.width, 0);
-                unused_size.width -= std::min(
-                    unused_size.width,
-                    comp_preferred_size.width);
+                preferred_size.width_ += std::max(
+                    comp_preferred_size.width_ - unused_size.width_, 0);
+                unused_size.width_ -= std::min(
+                    unused_size.width_,
+                    comp_preferred_size.width_);
               break;
         }
     }
 
-    preferred_centre.width = std::max(
-        preferred_centre.width - unused_size.width,
+    preferred_centre.width_ = std::max(
+        preferred_centre.width_ - unused_size.width_,
         0);
-    preferred_centre.height = std::max(
-        preferred_centre.height - unused_size.height,
+    preferred_centre.height_ = std::max(
+        preferred_centre.height_ - unused_size.height_,
         0);
         
-    preferred_size.width += preferred_centre.width;
-    preferred_size.height += preferred_centre.height;
+    preferred_size.width_ += preferred_centre.width_;
+    preferred_size.height_ += preferred_centre.height_;
     
     return preferred_size;
 }
