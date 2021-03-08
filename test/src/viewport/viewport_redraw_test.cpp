@@ -1,12 +1,13 @@
 #include "viewport_test.hpp"
 #include <tuple>
+#include <vector>
 
 using testing::ValuesIn;
 
 namespace {
 
 using cursor_movement_redraw_test_data = std::tuple<
-    std::initializer_list<terminalpp::point>, // initial cursor movements
+    std::vector<terminalpp::point>,           // initial cursor movements
     terminalpp::point,                        // cursor movement whose redraw 
                                               // we want to track
     boost::optional<terminalpp::rectangle>    // expected redraw region
