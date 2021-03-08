@@ -15,7 +15,7 @@ Munin is an enhancement to the Terminal++ library that provides a set of compone
 Munin requires a C++14 compiler and the following libraries:
   * Boost (At least version 1.69.0)
   * nlohmann_json (At least version 3.3.0)
-  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 1.4.1)
+  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 2.0.0)
   * (for Terminal++) libfmt (At least version 5.3)
   * (for testing only) Google Test and Google Mock
 
