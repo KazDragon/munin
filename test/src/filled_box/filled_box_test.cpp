@@ -80,12 +80,12 @@ TEST(a_filled_box, reports_attributes_as_json)
 
     nlohmann::json json = component.to_json();
     ASSERT_EQ("filled_box",          json["type"]);
-    ASSERT_EQ(position.x,            json["position"]["x"]);
-    ASSERT_EQ(position.y,            json["position"]["y"]);
-    ASSERT_EQ(size.width,            json["size"]["width"]);
-    ASSERT_EQ(size.height,           json["size"]["height"]);
-    ASSERT_EQ(preferred_size.width,  json["preferred_size"]["width"]);
-    ASSERT_EQ(preferred_size.height, json["preferred_size"]["height"]);
+    ASSERT_EQ(position.x_,            json["position"]["x"]);
+    ASSERT_EQ(position.y_,            json["position"]["y"]);
+    ASSERT_EQ(size.width_,            json["size"]["width"]);
+    ASSERT_EQ(size.height_,           json["size"]["height"]);
+    ASSERT_EQ(preferred_size.width_,  json["preferred_size"]["width"]);
+    ASSERT_EQ(preferred_size.height_, json["preferred_size"]["height"]);
     ASSERT_EQ(false,                 json["has_focus"]);
     ASSERT_EQ(false,                 json["cursor_state"]);
     ASSERT_EQ(0,                     json["cursor_position"]["x"]);

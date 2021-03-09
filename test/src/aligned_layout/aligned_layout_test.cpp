@@ -61,8 +61,8 @@ TEST_P(aligned_layouts, place_components_at_these_positions)
     auto component = std::make_shared<mock_component>();
     EXPECT_CALL(*component, do_get_preferred_size())
         .WillRepeatedly(Return(component_size));
-    EXPECT_CALL(*component, do_set_position(expected_placement.origin));
-    EXPECT_CALL(*component, do_set_size(expected_placement.size));
+    EXPECT_CALL(*component, do_set_position(expected_placement.origin_));
+    EXPECT_CALL(*component, do_set_size(expected_placement.size_));
     
     auto lyt = munin::make_aligned_layout();
     

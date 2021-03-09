@@ -1,6 +1,6 @@
 #include <munin/button.hpp>
 #include <munin/render_surface.hpp>
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
@@ -50,8 +50,8 @@ TEST(a_new_button, can_receive_focus)
 TEST(a_new_button, receives_focus_when_clicked)
 {
     munin::button button{""};
-    button.event(terminalpp::ansi::mouse::report{
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN});
+    button.event(terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down});
     ASSERT_TRUE(button.has_focus());
 }
 
@@ -94,7 +94,7 @@ INSTANTIATE_TEST_SUITE_P(
     a_button_emits_on_click_for_certain_events,
     a_button,
     ValuesIn({
-        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN}, true },
+        event_emission_data{ terminalpp::mouse::event{terminalpp::mouse::event_type::left_button_down}, true },
         event_emission_data{ terminalpp::virtual_key{terminalpp::vk::enter}, true },
         event_emission_data{ terminalpp::virtual_key{terminalpp::vk::space}, true },
     }));
@@ -103,8 +103,8 @@ INSTANTIATE_TEST_SUITE_P(
     a_button_does_not_emit_on_click_for_certain_events,
     a_button,
     ValuesIn({
-        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN}, false },
-        event_emission_data{ terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::BUTTON_UP}, false },
+        event_emission_data{ terminalpp::mouse::event{terminalpp::mouse::event_type::right_button_down}, false },
+        event_emission_data{ terminalpp::mouse::event{terminalpp::mouse::event_type::button_up}, false },
         event_emission_data{ terminalpp::virtual_key{terminalpp::vk::slash}, false },
         event_emission_data{ terminalpp::virtual_key{terminalpp::vk::tilde}, false },
     }));

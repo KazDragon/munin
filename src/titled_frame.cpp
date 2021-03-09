@@ -26,25 +26,25 @@ struct titled_frame::impl
     void redraw_frame()
     {
         auto size = self.get_size();
-        auto northwest_beam_region = size.width > 4
+        auto northwest_beam_region = size.width_ > 4
           ? terminalpp::rectangle{{0, 0}, {2, 1}}
-          : terminalpp::rectangle{{0, 0}, {size.width, 1}};
+          : terminalpp::rectangle{{0, 0}, {size.width_, 1}};
         
-        auto skipped_section_width = 3 + title->get_size().width + 1;
+        auto skipped_section_width = 3 + title->get_size().width_ + 1;
         auto northeast_beam_region = terminalpp::rectangle{
             {skipped_section_width, 0},
-            {size.width - (skipped_section_width), 1}};
+            {size.width_ - (skipped_section_width), 1}};
         
-        auto south_beam_region = size.height > 1
-          ? terminalpp::rectangle{{0, size.height - 1}, {size.width, 1}}
+        auto south_beam_region = size.height_ > 1
+          ? terminalpp::rectangle{{0, size.height_ - 1}, {size.width_, 1}}
           : terminalpp::rectangle{};
           
-        auto west_beam_region  = size.height > 2
-          ? terminalpp::rectangle{{0, 1}, {1, size.height - 2}}
+        auto west_beam_region  = size.height_ > 2
+          ? terminalpp::rectangle{{0, 1}, {1, size.height_ - 2}}
           : terminalpp::rectangle{};
           
-        auto east_beam_region  = size.height > 2
-          ? terminalpp::rectangle{{size.width - 1, 1}, {1, size.height - 2}}
+        auto east_beam_region  = size.height_ > 2
+          ? terminalpp::rectangle{{size.width_ - 1, 1}, {1, size.height_ - 2}}
           : terminalpp::rectangle{};
 
         self.on_redraw({

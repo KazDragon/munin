@@ -4,6 +4,7 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/point.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/string.hpp>
 #include <gtest/gtest.h>
 #include <tuple>
@@ -13,13 +14,13 @@ using testing::ValuesIn;
 namespace {
 
 using mouse_test_data = std::tuple<
-    terminalpp::string, // text content
-    terminalpp::point,  // cursor position
+    terminalpp::string,            // text content
+    terminalpp::point,             // cursor position
     
-    terminalpp::point,  // mouse position
-    terminalpp::byte,   // mouse button
+    terminalpp::point,             // mouse position
+    terminalpp::mouse::event_type, // mouse button
     
-    terminalpp::point   // expected cursor position
+    terminalpp::point              // expected cursor position
 >;
 
 class mouse_click_test : public testing::TestWithParam<mouse_test_data>
@@ -69,10 +70,9 @@ TEST_P(mouse_click_test, when_an_edit_receives_a_mouse_event)
     edit_.set_cursor_position(initial_pos);
     assert(edit_.get_cursor_position() == initial_pos);
     
-    terminalpp::ansi::mouse::report mouse_event = {
+    terminalpp::mouse::event mouse_event = {
         mouse_button,
-        mouse_position.x,
-        mouse_position.y,
+        mouse_position
     };
     
     edit_.event(mouse_event);
@@ -81,9 +81,9 @@ TEST_P(mouse_click_test, when_an_edit_receives_a_mouse_event)
 }
 
 namespace {
-auto constexpr lmb = terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN;
-auto constexpr rmb = terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN;
-auto constexpr mup = terminalpp::ansi::mouse::report::BUTTON_UP;
+auto constexpr lmb = terminalpp::mouse::event_type::left_button_down;
+auto constexpr rmb = terminalpp::mouse::event_type::right_button_down;
+auto constexpr mup = terminalpp::mouse::event_type::button_up;
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -120,7 +120,7 @@ INSTANTIATE_TEST_SUITE_P(
 TEST(an_edit, receives_focus_when_clicked)
 {
     munin::edit edit;
-    edit.event(terminalpp::ansi::mouse::report{
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN});
+    edit.event(terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down});
     ASSERT_TRUE(edit.has_focus());
 }

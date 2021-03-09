@@ -27,13 +27,13 @@ struct solid_frame::impl
     {
         auto size = self.get_size();
         
-        if (size.width > 2 && size.height > 2)
+        if (size.width_ > 2 && size.height_ > 2)
         {
             // Here we individually pick out the frame edges and redraw them.
-            auto north_beam_region = terminalpp::rectangle{{0,0}, {size.width, 1}};
-            auto south_beam_region = terminalpp::rectangle{{0, size.height - 1}, {size.width, 1}};
-            auto west_beam_region  = terminalpp::rectangle{{0, 1}, {1, size.height - 2}};
-            auto east_beam_region  = terminalpp::rectangle{{size.width - 1, 1}, {1, size.height - 2}};
+            auto north_beam_region = terminalpp::rectangle{{0,0}, {size.width_, 1}};
+            auto south_beam_region = terminalpp::rectangle{{0, size.height_ - 1}, {size.width_, 1}};
+            auto west_beam_region  = terminalpp::rectangle{{0, 1}, {1, size.height_ - 2}};
+            auto east_beam_region  = terminalpp::rectangle{{size.width_ - 1, 1}, {1, size.height_ - 2}};
     
             self.on_redraw({
                 north_beam_region, south_beam_region, west_beam_region, east_beam_region

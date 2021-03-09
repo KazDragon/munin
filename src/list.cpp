@@ -1,11 +1,13 @@
 #include "munin/list.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <munin/render_surface.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/max_element.hpp>
+
 namespace munin {
 
 // ==========================================================================
@@ -73,17 +75,17 @@ struct list::impl
                 elem.attribute_.polarity_ =
                     selected_item_index_
                  && *selected_item_index_ == row
-                  ? terminalpp::ansi::graphics::polarity::negative
-                  : terminalpp::ansi::graphics::polarity::positive;
+                  ? terminalpp::graphics::polarity::negative
+                  : terminalpp::graphics::polarity::positive;
             });
     }
 
     // ======================================================================
     // HANDLE_MOUSE_REPORT
     // ======================================================================
-    void handle_mouse_report(terminalpp::ansi::mouse::report const &report)
+    void handle_mouse_report(terminalpp::mouse::event const &ev)
     {
-        auto const clicked_row = report.y_position_;
+        auto const clicked_row = ev.position_.y_;
 
         if (clicked_row < items_.size())
         {
@@ -164,7 +166,7 @@ struct list::impl
     void event(boost::any const &ev)
     {
         auto const *mouse_report = 
-            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+            boost::any_cast<terminalpp::mouse::event>(&ev);
 
         if (mouse_report != nullptr)
         {

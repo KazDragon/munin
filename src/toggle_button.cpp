@@ -3,7 +3,7 @@
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
 #include "munin/solid_frame.hpp"
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <boost/make_unique.hpp>
 
@@ -65,12 +65,12 @@ void toggle_button::set_toggle_state(bool checked)
 // ==========================================================================
 void toggle_button::do_event(boost::any const &ev)
 {
-    auto const* report = 
-        boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+    auto const* mouse_event = 
+        boost::any_cast<terminalpp::mouse::event>(&ev);
         
-    if (report != nullptr)
+    if (mouse_event != nullptr)
     {
-        if (report->button_ == terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN)
+        if (mouse_event->action_ == terminalpp::mouse::event_type::left_button_down)
         {
             set_toggle_state(!pimpl_->toggle_state_);
         }

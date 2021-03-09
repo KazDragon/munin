@@ -24,8 +24,8 @@ terminalpp::point component::get_position() const
 // ==========================================================================
 void component::set_size(terminalpp::extent const &size)
 {
-    assert(size.width >= 0);
-    assert(size.height >= 0);
+    assert(size.width_ >= 0);
+    assert(size.height_ >= 0);
     do_set_size(size);
 }
 

@@ -161,7 +161,7 @@ TEST(a_framed_component, draws_the_inner_component_inside_the_frame)
 {
     static constexpr terminalpp::attribute default_attribute;
     static constexpr terminalpp::attribute fill_attribute{
-        terminalpp::ansi::graphics::colour::green
+        terminalpp::graphics::colour::green
     };
     
     std::shared_ptr<munin::framed_component> comp = munin::make_framed_component(

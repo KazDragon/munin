@@ -75,7 +75,7 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 1.4.1 CONFIG REQUIRED)
+    find_package(terminalpp 2.0.1 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})

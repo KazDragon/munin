@@ -7,9 +7,9 @@ namespace {
 constexpr terminalpp::attribute default_lowlight_attribute = {};
 
 constexpr terminalpp::attribute default_highlight_attribute = {
-    terminalpp::ansi::graphics::colour::cyan,
+    terminalpp::graphics::colour::cyan,
     {},
-    terminalpp::ansi::graphics::intensity::bold
+    terminalpp::graphics::intensity::bold
 };
 
 }

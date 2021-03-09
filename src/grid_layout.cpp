@@ -14,17 +14,17 @@ terminalpp::point increment_of_dimension(
     terminalpp::point current_dimension,
     terminalpp::extent const &dimensions)
 {
-    ++current_dimension.x;
+    ++current_dimension.x_;
 
-    if ((current_dimension.x % dimensions.width) == 0)
+    if ((current_dimension.x_ % dimensions.width_) == 0)
     {
-        current_dimension.x = 0;
-        ++current_dimension.y;
+        current_dimension.x_ = 0;
+        ++current_dimension.y_;
     }
 
-    if ((current_dimension.y % dimensions.height) == 0)
+    if ((current_dimension.y_ % dimensions.height_) == 0)
     {
-        current_dimension.y = 0;
+        current_dimension.y_ = 0;
     }
 
     return current_dimension;
@@ -54,17 +54,17 @@ terminalpp::extent grid_layout::do_get_preferred_size(
         [this](auto preferred_size, auto const &component)
     {
         auto const &component_preferred_size = component->get_preferred_size();
-        preferred_size.width  = std::max(
-            component_preferred_size.width, preferred_size.width);
-        preferred_size.height = std::max(
-            component_preferred_size.height, preferred_size.height);
+        preferred_size.width_  = std::max(
+            component_preferred_size.width_, preferred_size.width_);
+        preferred_size.height_ = std::max(
+            component_preferred_size.height_, preferred_size.height_);
 
         return preferred_size;
     });
 
     return {
-        max_preferred_sizes.width  * dimensions_.width,
-        max_preferred_sizes.height * dimensions_.height
+        max_preferred_sizes.width_  * dimensions_.width_,
+        max_preferred_sizes.height_ * dimensions_.height_
     };
 }
 
@@ -77,13 +77,13 @@ void grid_layout::do_layout(
     terminalpp::extent                             size) const
 {
     terminalpp::extent const component_size = {
-        size.width / dimensions_.width,
-        size.height / dimensions_.height
+        size.width_ / dimensions_.width_,
+        size.height_ / dimensions_.height_
     };
 
     terminalpp::extent const total_excess = {
-        size.width % dimensions_.width,
-        size.height % dimensions_.height
+        size.width_ % dimensions_.width_,
+        size.height_ % dimensions_.height_
     };
 
     terminalpp::point current_dimension;
@@ -91,28 +91,28 @@ void grid_layout::do_layout(
     for (auto &component : components)
     {
         auto current_component_position = terminalpp::point{
-            component_size.width * current_dimension.x,
-            component_size.height * current_dimension.y
+            component_size.width_ * current_dimension.x_,
+            component_size.height_ * current_dimension.y_
         };
 
-        current_component_position.x +=
-            std::min(current_dimension.x, total_excess.width);
-        current_component_position.y +=
-            std::min(current_dimension.y, total_excess.height);
+        current_component_position.x_ +=
+            std::min(current_dimension.x_, total_excess.width_);
+        current_component_position.y_ +=
+            std::min(current_dimension.y_, total_excess.height_);
 
         auto current_component_size = terminalpp::extent{
-            component_size.width,
-            component_size.height
+            component_size.width_,
+            component_size.height_
         };
 
-        if (current_dimension.x < total_excess.width)
+        if (current_dimension.x_ < total_excess.width_)
         {
-            ++current_component_size.width;
+            ++current_component_size.width_;
         }
 
-        if (current_dimension.y < total_excess.height)
+        if (current_dimension.y_ < total_excess.height_)
         {
-            ++current_component_size.height;
+            ++current_component_size.height_;
         }
 
         component->set_position(current_component_position);

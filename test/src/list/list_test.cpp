@@ -2,6 +2,7 @@
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 #include <gtest/gtest.h>
@@ -131,10 +132,9 @@ TEST_F(a_new_list, signals_a_cursor_position_change_when_setting_the_list_items)
 TEST_F(a_new_list, can_be_clicked)
 {
     list_->event(
-        terminalpp::ansi::mouse::report{
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            1,
-            1
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down,
+            { 1, 1 }
         });
 
     ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
@@ -264,10 +264,9 @@ TEST_F(a_list_with_an_item, selects_the_item_when_it_is_clicked)
         });
 
     list_->event(
-        terminalpp::ansi::mouse::report {
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            0,
-            0
+        terminalpp::mouse::event {
+            terminalpp::mouse::event_type::left_button_down,
+            { 0, 0 }
         });
 
     ASSERT_TRUE(item_changed);
@@ -287,10 +286,9 @@ TEST_F(a_list_with_an_item, deselects_the_item_when_empty_space_is_clicked)
         });
 
     list_->event(
-        terminalpp::ansi::mouse::report {
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            0,
-            1
+        terminalpp::mouse::event {
+            terminalpp::mouse::event_type::left_button_down,
+            { 0, 1 }
         });
 
     ASSERT_TRUE(item_changed);
@@ -356,7 +354,7 @@ TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -508,10 +506,9 @@ TEST_F(a_list_with_two_items, selects_the_first_item_when_it_is_clicked)
         });
 
     list_->event(
-        terminalpp::ansi::mouse::report {
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            0,
-            0
+        terminalpp::mouse::event {
+            terminalpp::mouse::event_type::left_button_down,
+            { 0, 0 }
         });
 
     ASSERT_TRUE(item_changed);
@@ -531,10 +528,9 @@ TEST_F(a_list_with_two_items, selects_the_second_item_when_it_is_clicked)
         });
 
     list_->event(
-        terminalpp::ansi::mouse::report {
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            0,
-            1
+        terminalpp::mouse::event {
+            terminalpp::mouse::event_type::left_button_down,
+            { 0, 1 }
         });
 
     ASSERT_TRUE(item_changed);
@@ -585,10 +581,9 @@ TEST_F(a_list_with_two_items, selects_the_first_item_when_the_down_key_is_presse
 TEST_F(a_list_with_an_item, selects_no_item_when_empty_space_is_clicked)
 {
     list_->event(
-        terminalpp::ansi::mouse::report {
-            terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-            0,
-            2
+        terminalpp::mouse::event {
+            terminalpp::mouse::event_type::left_button_down,
+            { 0, 2 }
         });
 
     auto const selected_item_index = list_->get_selected_item_index();
@@ -614,7 +609,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, draws_the_first_item_in_neg
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -658,7 +653,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -743,7 +738,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, draws_the_second_item_in_n
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -824,7 +819,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -868,7 +863,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 
@@ -912,7 +907,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
 
     auto const negative_attr = []{
         terminalpp::attribute attr;
-        attr.polarity_ = terminalpp::ansi::graphics::polarity::negative;
+        attr.polarity_ = terminalpp::graphics::polarity::negative;
         return attr;
     }();
 

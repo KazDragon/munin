@@ -46,7 +46,9 @@ install:
   - vcpkg install boost-scope-exit:%platform%-windows
   - vcpkg install boost-signals2:%platform%-windows
   - vcpkg install boost-smart-ptr:%platform%-windows
+  - vcpkg install boost-spirit:%platform%-windows
   - vcpkg install boost-variant:%platform%-windows
+  - vcpkg install gsl-lite:%platform%-windows
   - vcpkg install fmt:%platform%-windows
   - vcpkg install nlohmann-json:%platform%-windows
   - vcpkg install gtest:%platform%-windows

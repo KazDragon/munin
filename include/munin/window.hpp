@@ -1,17 +1,19 @@
 #pragma once
 
 #include "munin/export.hpp"
+#include <munin/component.hpp>
+#include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/extent.hpp>
+#include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
 #include <nlohmann/json.hpp>
 #include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <memory>
+#include <vector>
 
 namespace munin {
-
-class component;
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
@@ -41,8 +43,35 @@ public :
     /// \brief Returns a string that represents the change in state of the
     /// window since the last repaint.
     //* =====================================================================
-    std::string repaint(
-        terminalpp::canvas &cvs, terminalpp::terminal &term);
+    template <typename WriteContinuation>
+    void repaint(
+        terminalpp::canvas &cvs,
+        terminalpp::terminal &term,
+        WriteContinuation &&wc)
+    {
+        auto const canvas_size = cvs.size();
+        
+        std::vector<terminalpp::rectangle> repaint_regions;
+        
+        if (cvs.size() != content_->get_size())
+        {
+            content_->set_size(cvs.size());
+            repaint_regions.clear();
+            repaint_regions.push_back({{}, canvas_size});
+        }
+        else
+        {
+            repaint_regions.swap(repaint_regions_);
+        }
+
+        render_surface surface(cvs);
+        for (auto const &region : repaint_regions)
+        {
+            content_->draw(surface, region);
+        }
+
+        screen_.draw(term, cvs, std::forward<WriteContinuation>(wc));
+    }
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the
@@ -61,8 +90,9 @@ public :
     > on_repaint_request;
     
 private :
-    struct impl;
-    std::unique_ptr<impl> pimpl_;
+    std::shared_ptr<component> content_;
+    std::vector<terminalpp::rectangle> repaint_regions_;
+    terminalpp::screen screen_;
 };
 
 }

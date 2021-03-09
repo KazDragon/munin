@@ -53,12 +53,12 @@ terminalpp::extent calculate_component_size(
 {
     return {
         calculate_component_width(
-            container_size.width,
-            component_preferred_size.width,
+            container_size.width_,
+            component_preferred_size.width_,
             alignment.horizontal),
         calculate_component_height(
-            container_size.height,
-            component_preferred_size.height,
+            container_size.height_,
+            component_preferred_size.height_,
             alignment.vertical)
     };
 }
@@ -121,12 +121,12 @@ terminalpp::point calculate_component_position(
 {
     return {
         calculate_component_x_position(
-            container_size.width, 
-            component_size.width, 
+            container_size.width_, 
+            component_size.width_, 
             component_alignment.horizontal),
         calculate_component_y_position(
-            container_size.height, 
-            component_size.height, 
+            container_size.height_, 
+            component_size.height_, 
             component_alignment.vertical),
     };
 }
@@ -167,8 +167,8 @@ terminalpp::extent aligned_layout::do_get_preferred_size(
             auto const preferred_size = comp->get_preferred_size();
 
             return terminalpp::extent {
-                std::max(preferred_size.width, max.width),
-                std::max(preferred_size.height, max.height)
+                std::max(preferred_size.width_, max.width_),
+                std::max(preferred_size.height_, max.height_)
             };
         });
 }

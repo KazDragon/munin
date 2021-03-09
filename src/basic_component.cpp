@@ -1,6 +1,6 @@
 #include "munin/basic_component.hpp"
 #include "munin/detail/json_adaptors.hpp"
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 
 namespace munin {
 
@@ -52,7 +52,7 @@ bool basic_component::do_can_receive_focus() const
 // ==========================================================================
 void basic_component::do_set_position(terminalpp::point const &position)
 {
-    bounds_.origin = position;
+    bounds_.origin_ = position;
 }
 
 // ==========================================================================
@@ -60,7 +60,7 @@ void basic_component::do_set_position(terminalpp::point const &position)
 // ==========================================================================
 terminalpp::point basic_component::do_get_position() const
 {
-    return bounds_.origin;
+    return bounds_.origin_;
 }
 
 // ==========================================================================
@@ -68,7 +68,7 @@ terminalpp::point basic_component::do_get_position() const
 // ==========================================================================
 void basic_component::do_set_size(terminalpp::extent const &size)
 {
-    bounds_.size = size;
+    bounds_.size_ = size;
 }
 
 // ==========================================================================
@@ -76,7 +76,7 @@ void basic_component::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent basic_component::do_get_size() const
 {
-    return bounds_.size;
+    return bounds_.size_;
 }
 
 // ==========================================================================
@@ -166,10 +166,10 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 void basic_component::do_event(boost::any const &event)
 {
     auto const *mouse =
-        boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+        boost::any_cast<terminalpp::mouse::event>(&event);
 
     if (mouse
-     && mouse->button_ != terminalpp::ansi::mouse::report::BUTTON_UP)
+     && mouse->action_ != terminalpp::mouse::event_type::button_up)
     {
         if (!has_focus())
         {

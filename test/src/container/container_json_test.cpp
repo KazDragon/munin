@@ -48,8 +48,8 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
     ASSERT_EQ(0,                  json["position"]["y"]);
     ASSERT_EQ(0,                  json["size"]["height"]);
     ASSERT_EQ(0,                  json["size"]["width"]);
-    ASSERT_EQ(layout_size.width,  json["preferred_size"]["width"]);
-    ASSERT_EQ(layout_size.height, json["preferred_size"]["height"]);
+    ASSERT_EQ(layout_size.width_,  json["preferred_size"]["width"]);
+    ASSERT_EQ(layout_size.height_, json["preferred_size"]["height"]);
     ASSERT_EQ(false,              json["has_focus"]);
     ASSERT_EQ(false,              json["cursor_state"]);
     ASSERT_EQ(0,                  json["cursor_position"]["x"]);
@@ -93,8 +93,8 @@ TEST_F(a_container_with_two_components, reports_attributes_as_json)
     ASSERT_EQ(0,                  json["position"]["y"]);
     ASSERT_EQ(0,                  json["size"]["height"]);
     ASSERT_EQ(0,                  json["size"]["width"]);
-    ASSERT_EQ(layout_size.width,  json["preferred_size"]["width"]);
-    ASSERT_EQ(layout_size.height, json["preferred_size"]["height"]);
+    ASSERT_EQ(layout_size.width_,  json["preferred_size"]["width"]);
+    ASSERT_EQ(layout_size.height_, json["preferred_size"]["height"]);
     ASSERT_EQ(false,              json["has_focus"]);
     ASSERT_EQ(false,              json["cursor_state"]);
     ASSERT_EQ(0,                  json["cursor_position"]["x"]);

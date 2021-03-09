@@ -1,6 +1,6 @@
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 
 namespace munin {
 namespace {
@@ -21,10 +21,10 @@ protected :
         auto inner_preferred_size = components[1]->get_preferred_size();
         
         return terminalpp::extent{
-            inner_preferred_size.width
+            inner_preferred_size.width_
           + outer_frame->west_border_width()
           + outer_frame->east_border_width(),
-            inner_preferred_size.height
+            inner_preferred_size.height_
           + outer_frame->north_border_height()
           + outer_frame->south_border_height()
         };
@@ -51,20 +51,20 @@ protected :
         
         auto const &inner = components[1];
         inner->set_position({
-            std::min(size.width, west_border_width),
-            std::min(size.height, north_border_height)
+            std::min(size.width_, west_border_width),
+            std::min(size.height_, north_border_height)
         });
 
         auto const border_height = north_border_height + south_border_height;
         auto const border_width = west_border_width + east_border_width;
 
         inner->set_size({
-            size.width < border_width 
-          ? size.width 
-          : size.width - border_width,
-            size.height < border_height 
-          ? size.height 
-          : size.height - border_height
+            size.width_ < border_width 
+          ? size.width_ 
+          : size.width_ - border_width,
+            size.height_ < border_height 
+          ? size.height_ 
+          : size.height_ - border_height
         });
     }
 
@@ -107,7 +107,7 @@ framed_component::framed_component(
 // ==========================================================================
 void framed_component::do_event(boost::any const &ev)
 {
-    auto *mouse_event = boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+    auto *mouse_event = boost::any_cast<terminalpp::mouse::event>(&ev);
     
     if (mouse_event)
     {
@@ -122,14 +122,13 @@ void framed_component::do_event(boost::any const &ev)
         auto inner_position = inner_component_->get_position();
         auto inner_size     = inner_component_->get_size();
 
-        inner_mouse_event.x_position_ -= inner_position.x;
-        inner_mouse_event.y_position_ -= inner_position.y;
+        inner_mouse_event.position_ -= inner_position;
 
         // And clamp it to the bounds of the component itself.
-        inner_mouse_event.x_position_ = std::max(
-            0, std::min(inner_size.width - 1, inner_mouse_event.x_position_));
-        inner_mouse_event.y_position_ = std::max(
-            0, std::min(inner_size.height - 1, inner_mouse_event.y_position_));
+        inner_mouse_event.position_.x_ = std::max(
+            0, std::min(inner_size.width_ - 1, inner_mouse_event.position_.x_));
+        inner_mouse_event.position_.y_ = std::max(
+            0, std::min(inner_size.height_ - 1, inner_mouse_event.position_.y_));
 
         inner_component_->event(inner_mouse_event);
     }

@@ -37,10 +37,10 @@ TEST(a_basic_component, reports_attributes_as_json)
 
     nlohmann::json json = component.to_json();
     ASSERT_EQ("basic_component", json["type"]);
-    ASSERT_EQ(position.x,        json["position"]["x"]);
-    ASSERT_EQ(position.y,        json["position"]["y"]);
-    ASSERT_EQ(size.width,        json["size"]["width"]);
-    ASSERT_EQ(size.height,       json["size"]["height"]);
+    ASSERT_EQ(position.x_,        json["position"]["x"]);
+    ASSERT_EQ(position.y_,        json["position"]["y"]);
+    ASSERT_EQ(size.width_,        json["size"]["width"]);
+    ASSERT_EQ(size.height_,       json["size"]["height"]);
     ASSERT_EQ(0,                 json["preferred_size"]["width"]);
     ASSERT_EQ(0,                 json["preferred_size"]["height"]);
     ASSERT_EQ(false,             json["has_focus"]);

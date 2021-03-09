@@ -22,11 +22,11 @@ terminalpp::extent vertical_strip_layout::do_get_preferred_size(
     {
         auto const &comp_preferred_size = comp->get_preferred_size();
         
-        preferred_size.height = (std::max)(
-            preferred_size.height
-          , comp_preferred_size.height);
+        preferred_size.height_ = (std::max)(
+            preferred_size.height_
+          , comp_preferred_size.height_);
 
-        preferred_size.width += comp_preferred_size.width;
+        preferred_size.width_ += comp_preferred_size.width_;
         
         return preferred_size;
     });
@@ -48,9 +48,9 @@ void vertical_strip_layout::do_layout(
             auto preferred_size = comp->get_preferred_size();
     
             comp->set_position(terminalpp::point(x_coord, 0));
-            comp->set_size(terminalpp::extent(preferred_size.width, size.height));
+            comp->set_size(terminalpp::extent(preferred_size.width_, size.height_));
     
-            x_coord += preferred_size.width;
+            x_coord += preferred_size.width_;
         });
 }
 

@@ -4,7 +4,7 @@
 #include "munin/render_surface.hpp"
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/optional.hpp>
@@ -54,10 +54,10 @@ auto find_component_at_point(
 
             // Check to see if the reported position is within the component's
             // bounds.
-            return (location.x >= position.x
-                 && location.x  < position.x + size.width
-                 && location.y >= position.y
-                 && location.y < position.y + size.height);
+            return (location.x_ >= position.x_
+                 && location.x_  < position.x_ + size.width_
+                 && location.y_ >= position.y_
+                 && location.y_ < position.y_ + size.height_);
         };
 
     return boost::find_if(rng, has_location_at_point);
@@ -170,7 +170,7 @@ struct container::impl
     // ======================================================================
     void set_position(terminalpp::point const &position)
     {
-        bounds_.origin = position;
+        bounds_.origin_ = position;
     }
 
     // ======================================================================
@@ -178,7 +178,7 @@ struct container::impl
     // ======================================================================
     terminalpp::point get_position() const
     {
-        return bounds_.origin;
+        return bounds_.origin_;
     }
 
     // ======================================================================
@@ -186,7 +186,7 @@ struct container::impl
     // ======================================================================
     void set_size(terminalpp::extent const &size)
     {
-        bounds_.size = size;
+        bounds_.size_ = size;
         layout_container();
     }
 
@@ -195,7 +195,7 @@ struct container::impl
     // ======================================================================
     terminalpp::extent get_size() const
     {
-        return bounds_.size;
+        return bounds_.size_;
     }
 
     // ======================================================================
@@ -371,16 +371,16 @@ struct container::impl
         // * Mouse events are passed on to the subcomponent at the location
         //   of the event, and the co-ordinates of the event are passed on
         //   relative to the subcomponent's location.
-        auto const *report = 
-            boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+        auto const *mouse_event = 
+            boost::any_cast<terminalpp::mouse::event>(&ev);
 
-        if (report == nullptr)
+        if (mouse_event == nullptr)
         {
             handle_common_event(ev);
         }
         else
         {
-            handle_mouse_event(*report);
+            handle_mouse_event(*mouse_event);
         }
     }
 
@@ -415,7 +415,7 @@ private:
     // ======================================================================
     void layout_container()
     {
-        (*layout_)(components_, hints_, bounds_.size);
+        (*layout_)(components_, hints_, bounds_.size_);
     }
 
     // ======================================================================
@@ -501,14 +501,14 @@ private:
         {
             // The draw region is currently relative to this container's
             // origin.  It should be relative to the child's origin.
-            draw_region->origin -= component_region.origin;
+            draw_region->origin_ -= component_region.origin_;
 
             // The canvas must have an offset applied to it so that the
             // inner component can pretend that it is being drawn with its
             // container being at position (0,0).
             surface.offset_by({
-                component_region.origin.x,
-                component_region.origin.y
+                component_region.origin_.x_,
+                component_region.origin_.y_
             });
 
             // Ensure that the offset is unapplied before exit of this
@@ -516,8 +516,8 @@ private:
             BOOST_SCOPE_EXIT_ALL(&surface, &component_region)
             {
                 surface.offset_by({
-                    -component_region.origin.x,
-                    -component_region.origin.y
+                    -component_region.origin_.x_,
+                    -component_region.origin_.y_
                 });
             };
 
@@ -544,8 +544,8 @@ private:
 
             for (auto &rect : regions)
             {
-                rect.origin.x += origin.x;
-                rect.origin.y += origin.y;
+                rect.origin_.x_ += origin.x_;
+                rect.origin_.y_ += origin.y_;
             }
 
             // This new information must be passed up the component heirarchy.
@@ -648,21 +648,20 @@ private:
     // ======================================================================
     // HANDLE_MOUSE_EVENT
     // ======================================================================
-    void handle_mouse_event(terminalpp::ansi::mouse::report const &report)
+    void handle_mouse_event(terminalpp::mouse::event const &ev)
     {
         auto const &comp = find_component_at_point(
             components_,
-            terminalpp::point(report.x_position_, report.y_position_));
+            ev.position_);
 
         if (comp != components_.end())
         {
             auto const &position = (*comp)->get_position();
 
             (*comp)->event(
-                terminalpp::ansi::mouse::report {
-                    report.button_,
-                    report.x_position_ - position.x,
-                    report.y_position_ - position.y
+                terminalpp::mouse::event {
+                    ev.action_,
+                    ev.position_ - position
                 });
         }
     }

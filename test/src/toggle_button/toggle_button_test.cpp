@@ -1,6 +1,6 @@
 #include <munin/render_surface.hpp>
 #include <munin/toggle_button.hpp>
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
@@ -204,10 +204,10 @@ INSTANTIATE_TEST_SUITE_P(
     a_toggle_button_emits_on_state_changed_for_certain_events,
     a_toggle_button,
     ValuesIn({
-        event_emission_data{ false, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN}, true, true },
+        event_emission_data{ false, terminalpp::mouse::event{terminalpp::mouse::event_type::left_button_down}, true, true },
         event_emission_data{ false, terminalpp::virtual_key{terminalpp::vk::enter}, true, true },
         event_emission_data{ false, terminalpp::virtual_key{terminalpp::vk::space}, true, true },
-        event_emission_data{ true, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN}, true, false },
+        event_emission_data{ true, terminalpp::mouse::event{terminalpp::mouse::event_type::left_button_down}, true, false },
         event_emission_data{ true, terminalpp::virtual_key{terminalpp::vk::enter}, true, false },
         event_emission_data{ true, terminalpp::virtual_key{terminalpp::vk::space}, true, false },
     }));
@@ -216,13 +216,13 @@ INSTANTIATE_TEST_SUITE_P(
     a_toggle_button_does_not_emit_on_click_for_certain_events,
     a_toggle_button,
     ValuesIn({
-        event_emission_data{ false, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN}, false, false },
-        event_emission_data{ false, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::BUTTON_UP}, false, false },
+        event_emission_data{ false, terminalpp::mouse::event{terminalpp::mouse::event_type::right_button_down}, false, false },
+        event_emission_data{ false, terminalpp::mouse::event{terminalpp::mouse::event_type::button_up}, false, false },
         event_emission_data{ false, terminalpp::virtual_key{terminalpp::vk::slash}, false, false },
         event_emission_data{ false, terminalpp::virtual_key{terminalpp::vk::tilde}, false, false },
 
-        event_emission_data{ true, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::RIGHT_BUTTON_DOWN}, false, true },
-        event_emission_data{ true, terminalpp::ansi::mouse::report{terminalpp::ansi::mouse::report::BUTTON_UP}, false, true },
+        event_emission_data{ true, terminalpp::mouse::event{terminalpp::mouse::event_type::right_button_down}, false, true },
+        event_emission_data{ true, terminalpp::mouse::event{terminalpp::mouse::event_type::button_up}, false, true },
         event_emission_data{ true, terminalpp::virtual_key{terminalpp::vk::slash}, false, true },
         event_emission_data{ true, terminalpp::virtual_key{terminalpp::vk::tilde}, false, true },
     }));

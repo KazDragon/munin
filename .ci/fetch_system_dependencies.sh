@@ -25,11 +25,21 @@ if [ ! -f "$EXTERNAL_ROOT/include/fmt/format.hpp" ]; then
     make -j2 && make install;
 fi
 
+# Install gsl-lite dependency
+if [ ! -f "$EXTERNAL_ROOT/include/gsl/gsl-lite.hpp" ]; then
+    cd "$EXTERNAL_BUILD_ROOT";
+    wget https://github.com/gsl-lite/gsl-lite/archive/v0.34.0.tar.gz;
+    tar -xzf v0.34.0.tar.gz;
+    cd gsl-lite-0.34.0;
+    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DGSL_LITE_OPT_BUILD_TESTS=Off .;
+    make -j2 && make install;
+fi
+
 # Install Terminal++ dependency
 if [ ! -f "$EXTERNAL_ROOT/include/terminalpp/version/hpp" ]; then
-    wget https://github.com/KazDragon/terminalpp/archive/v1.4.1.tar.gz;
-    tar -xzf v1.4.1.tar.gz;
-    cd terminalpp-1.4.1;
+    wget https://github.com/KazDragon/terminalpp/archive/v2.0.1.tar.gz;
+    tar -xzf v2.0.1.tar.gz;
+    cd terminalpp-2.0.1;
     cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False .;
     make -j2 && make install;
     cd ..;

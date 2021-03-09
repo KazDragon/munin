@@ -1,5 +1,5 @@
 #include "container_test.hpp"
-#include <terminalpp/ansi/mouse.hpp>
+#include <terminalpp/mouse.hpp>
 #include <tuple>
 #include <vector>
 
@@ -54,10 +54,9 @@ TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first
 
 TEST_F(a_container_with_one_component, forwards_mouse_events_even_though_the_component_has_no_focus)
 {
-    static terminalpp::ansi::mouse::report const report {
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        0,
-        0
+    static terminalpp::mouse::event const ev {
+        terminalpp::mouse::event_type::left_button_down,
+        { 0, 0 }
     };
 
     EXPECT_CALL(*component, do_get_position())
@@ -69,19 +68,19 @@ TEST_F(a_container_with_one_component, forwards_mouse_events_even_though_the_com
     EXPECT_CALL(*component, do_event(_))
         .WillOnce(Invoke([](boost::any const &event)
         {
-            auto *p = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+            auto *p = boost::any_cast<terminalpp::mouse::event>(&event);
             ASSERT_NE(nullptr, p);
-            ASSERT_EQ(report, *p);
+            ASSERT_EQ(ev, *p);
         }));
 
-    container.event(report);
+    container.event(ev);
 }
 
 using mouse_report_test_data = std::tuple<
-    terminalpp::point,                  // Position of component
-    terminalpp::extent,                 // Size of component
-    terminalpp::ansi::mouse::report,    // Report as received by component
-    terminalpp::ansi::mouse::report>;   // Expected forwarded report
+    terminalpp::point,           // Position of component
+    terminalpp::extent,          // Size of component
+    terminalpp::mouse::event,    // Event as received by component
+    terminalpp::mouse::event>;   // Expected forwarded event
 
 using containers_forwarding_mouse_events =
     containers_with_a_component<mouse_report_test_data>;
@@ -91,7 +90,7 @@ TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_com
     auto const &param = GetParam();
     auto const &component_position = std::get<0>(param);
     auto const &component_size     = std::get<1>(param);
-    auto const &report             = std::get<2>(param);
+    auto const &event              = std::get<2>(param);
     auto const &expected_value     = std::get<3>(param);
 
     EXPECT_CALL(*component, do_get_position())
@@ -103,11 +102,12 @@ TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_com
     EXPECT_CALL(*component, do_event(_))
         .WillOnce(Invoke([&expected_value](boost::any event)
         {
-            auto *report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
-            ASSERT_NE(nullptr, report);
-            ASSERT_EQ(expected_value, *report);
+            auto *mouse_event = 
+                boost::any_cast<terminalpp::mouse::event>(&event);
+            ASSERT_NE(nullptr, mouse_event);
+            ASSERT_EQ(expected_value, *mouse_event);
         }));
-    container.event(report);
+    container.event(event);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -117,41 +117,39 @@ INSTANTIATE_TEST_SUITE_P(
         mouse_report_test_data {
             {0, 0},
             {20, 20},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 15},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 15}
+            {terminalpp::mouse::event_type::left_button_down, { 15, 15 }},
+            {terminalpp::mouse::event_type::left_button_down, { 15, 15 }}
         },
         mouse_report_test_data {
             {10, 0},
             {20, 20},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 15},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 5, 15}
+            {terminalpp::mouse::event_type::left_button_down, { 15, 15 }},
+            {terminalpp::mouse::event_type::left_button_down, { 5,  15 }}
         },
         mouse_report_test_data {
             {0, 10},
             {20, 20},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 15},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 5}
+            {terminalpp::mouse::event_type::left_button_down, { 15, 15 }},
+            {terminalpp::mouse::event_type::left_button_down, { 15, 5  }}
         },
         mouse_report_test_data {
             {10, 10},
             {20, 20},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 15, 15},
-            {terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN, 5,  5}
+            {terminalpp::mouse::event_type::left_button_down, { 15, 15 }},
+            {terminalpp::mouse::event_type::left_button_down, { 5,  5  }}
         }
     }));
 
 TEST_F(a_container_with_two_components, skips_components_that_are_not_at_the_mouse_report_location)
 {
-    static terminalpp::ansi::mouse::report const report = {
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        20,
-        20
+    static terminalpp::mouse::event const event = {
+        terminalpp::mouse::event_type::left_button_down,
+        { 20, 20 }
     };
 
-    static terminalpp::ansi::mouse::report const expected_value = {
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        5,
-        5
+    static terminalpp::mouse::event const expected_value = {
+        terminalpp::mouse::event_type::left_button_down,
+        { 5, 5 }
     };
 
     EXPECT_CALL(*component0, do_get_position())
@@ -169,10 +167,10 @@ TEST_F(a_container_with_two_components, skips_components_that_are_not_at_the_mou
     EXPECT_CALL(*component1, do_event(_))
         .WillOnce(Invoke([](boost::any event)
         {
-            auto *report = boost::any_cast<terminalpp::ansi::mouse::report>(&event);
+            auto *report = boost::any_cast<terminalpp::mouse::event>(&event);
             ASSERT_NE(nullptr, report);
             ASSERT_EQ(expected_value, *report);
         }));
 
-    container.event(report);
+    container.event(event);
 }

@@ -3,8 +3,9 @@
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
-#include <terminalpp/canvas.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/canvas.hpp>
+#include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -403,28 +404,26 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
     tracked_component_->on_cursor_position_changed();
 
     // The mouse is clicked in the middle of the viewable area.
-    auto const viewport_mouse_event = terminalpp::ansi::mouse::report {
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        1,
-        1
+    auto const viewport_mouse_event = terminalpp::mouse::event {
+        terminalpp::mouse::event_type::left_button_down,
+        { 1, 1 }
     };
 
     // We expect that the result is that the click will be translated to
     // what the middle of that viewable area is on the tracked component.
-    auto const expected_mouse_event = terminalpp::ansi::mouse::report {
-        terminalpp::ansi::mouse::report::LEFT_BUTTON_DOWN,
-        3,
-        3
+    auto const expected_mouse_event = terminalpp::mouse::event {
+        terminalpp::mouse::event_type::left_button_down,
+        { 3, 3 }
     };
 
-    boost::optional<terminalpp::ansi::mouse::report> received_mouse_event;
+    boost::optional<terminalpp::mouse::event> received_mouse_event;
 
     ON_CALL(*tracked_component_, do_event(_))
         .WillByDefault(Invoke(
             [&received_mouse_event](boost::any const &ev)
             {
                 auto *mouse_event = 
-                    boost::any_cast<terminalpp::ansi::mouse::report>(&ev);
+                    boost::any_cast<terminalpp::mouse::event>(&ev);
 
                 if (mouse_event != nullptr)
                 {
