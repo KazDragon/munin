@@ -92,7 +92,7 @@ else()
     )
 
     set(MUNIN_TESTER_LIBRARIES
-        munin
+        KazDragon::munin
         GTest::gmock_main
     )
 endif()
