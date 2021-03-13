@@ -334,7 +334,7 @@ if (MSVC AND NOT MUNIN_USE_CONAN)
     if (terminalpp_type STREQUAL "SHARED_LIBRARY")
         add_custom_command(TARGET munin_tester POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:terminalpp>
+            $<TARGET_FILE:KazDragon::terminalpp>
             $<TARGET_FILE_DIR:munin_tester>
        )
     endif()
