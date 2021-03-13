@@ -75,7 +75,7 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 2.0.1 CONFIG REQUIRED)
+    find_package(terminalpp 2.0.2 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})
@@ -329,7 +329,7 @@ add_test(munin_test munin_tester)
 # For an MSVC, non-Conan build where terminalpp is a shared library, ensure that
 # the DLL gets copied into the executable directory so that the tests can run.
 if (MSVC AND NOT MUNIN_USE_CONAN)
-    get_target_property(terminalpp_type terminalpp TYPE)
+    get_target_property(terminalpp_type KazDragon::terminalpp TYPE)
 
     if (terminalpp_type STREQUAL "SHARED_LIBRARY")
         add_custom_command(TARGET munin_tester POST_BUILD
