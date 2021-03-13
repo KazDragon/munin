@@ -83,7 +83,7 @@ else()
     endif()
 
     set(MUNIN_PUBLIC_LIBRARIES
-        terminalpp
+        KazDragon::terminalpp
         nlohmann_json::nlohmann_json
         Boost::boost
     )
@@ -116,6 +116,7 @@ if (MUNIN_COVERAGE)
 endif()
 
 add_library(munin)
+add_library(KazDragon::munin ALIAS munin)
 
 target_sources(munin
     PRIVATE
@@ -204,6 +205,7 @@ set_target_properties(munin
         CXX_VISIBILITY_PRESET hidden
         VERSION ${MUNIN_VERSION}
         SOVERSION ${MUNIN_VERSION}
+        DEBUG_POSTFIX "d"
 )        
 
 target_compile_options(munin
@@ -360,6 +362,8 @@ write_basic_package_version_file(
 export(
     TARGETS 
         munin
+    NAMESPACE
+        KazDragon::
     FILE ${PROJECT_BINARY_DIR}/munin-targets.cmake
 )
 
@@ -369,25 +373,27 @@ install(
     EXPORT
         munin-targets
     LIBRARY DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}
+        ${CMAKE_INSTALL_LIBDIR}/munin-${MUNIN_VERSION}
     ARCHIVE DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}
+        ${CMAKE_INSTALL_LIBDIR}/munin-${MUNIN_VERSION}
     RUNTIME DESTINATION
-        ${CMAKE_INSTALL_BINDIR}
+        ${CMAKE_INSTALL_BINDIR}/munin-${MUNIN_VERSION}
 )
 
 install(
     EXPORT
         munin-targets
+    NAMESPACE
+        KazDragon::
     DESTINATION
-        lib/munin-${MUNIN_VERSION}
+        ${CMAKE_INSTALL_DATADIR}/munin-${MUNIN_VERSION}
 )
 
 install(
     DIRECTORY
         include/
     DESTINATION
-        include/munin-${MUNIN_VERSION}
+        ${CMAKE_INSTALL_INCLUDEDIR}/munin-${MUNIN_VERSION}
 )
 
 install(
@@ -395,7 +401,7 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/munin-config.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/munin-config-version.cmake"
     DESTINATION
-        lib/munin-${MUNIN_VERSION}
+        ${CMAKE_INSTALL_DATADIR}/munin-${MUNIN_VERSION}
 )
 
 # Add customizations for packaging
