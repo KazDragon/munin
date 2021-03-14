@@ -62,7 +62,7 @@ if (MUNIN_USE_CONAN)
     )
 
     set(MUNIN_TESTER_LIBRARIES
-        munin
+        KazDragon::munin
         CONAN_PKG::gtest
     )
 else()
