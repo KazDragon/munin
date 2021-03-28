@@ -158,6 +158,23 @@ void text_area::insert_text(
 }
 
 // ==========================================================================
+// DO_SET_SIZE
+// ==========================================================================
+void text_area::do_set_size(terminalpp::extent const &size)
+{
+    basic_component::do_set_size(size);
+
+    // The current caret/cursor position is based on the previous dimensions,
+    // but that has now all changed, so it needs to be worked out from first
+    // principles.
+    auto const saved_caret_position = pimpl_->caret_position_;
+    pimpl_->caret_position_ = 0;
+    pimpl_->cursor_position_ = {0, 0};
+    pimpl_->move_caret(saved_caret_position);
+    on_cursor_position_changed();
+}
+
+// ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
 terminalpp::extent text_area::do_get_preferred_size() const

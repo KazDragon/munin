@@ -108,3 +108,27 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_that_pushes_existi
     verify_oob_is_untouched();
 }
 
+TEST_F(a_text_area_with_text_inserted, lays_out_its_text_when_the_size_changes)
+{
+    text_area_.set_size({4, 2});
+
+    fill_canvas({5, 3});
+    munin::render_surface surface{canvas_};
+
+    text_area_.draw(surface, {{0, 0}, {4, 2}});
+
+    ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
+    ASSERT_EQ(terminalpp::element{'b'}, canvas_[1][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[2][1]);
+    ASSERT_EQ(terminalpp::element{' '}, canvas_[3][1]);
+
+    auto const expected_cursor_position = terminalpp::point{2, 0};
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+
+    verify_oob_is_untouched();
+}
+
