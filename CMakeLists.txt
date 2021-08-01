@@ -132,6 +132,7 @@ target_sources(munin
         include/munin/filled_box.hpp
         include/munin/framed_component.hpp
         include/munin/grid_layout.hpp
+        include/munin/horizontal_scrollbar.hpp
         include/munin/horizontal_strip_layout.hpp
         include/munin/image.hpp
         include/munin/layout.hpp
@@ -167,6 +168,7 @@ target_sources(munin
         src/frame.cpp
         src/framed_component.cpp
         src/grid_layout.cpp
+        src/horizontal_scrollbar.cpp
         src/horizontal_strip_layout.cpp
         src/image.cpp
         src/layout.cpp
@@ -277,6 +279,7 @@ target_sources(munin_tester
         test/src/framed_component/framed_component_mouse_test.cpp
         test/src/grid_layout/grid_layout_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/horizontal_scrollbar/horizontal_scroll_bar_test.cpp
         test/src/image/image_json_test.cpp
         test/src/image/image_test.cpp
         test/src/image/image_redraw_test.cpp
