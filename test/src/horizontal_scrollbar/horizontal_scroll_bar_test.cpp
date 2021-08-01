@@ -18,6 +18,11 @@ using a_new_horizontal_scrollbar = a_horizontal_scrollbar;
 
 }
 
+TEST_F(a_new_horizontal_scrollbar, has_a_0x1_preferred_size)
+{
+    ASSERT_EQ(terminalpp::extent(0, 1), scrollbar_->get_preferred_size());
+}
+
 TEST_F(a_new_horizontal_scrollbar, draws_nothing)
 {
     terminalpp::canvas canvas({4, 4});
@@ -51,6 +56,15 @@ TEST_F(a_new_horizontal_scrollbar, draws_nothing)
     ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
     ASSERT_EQ(terminalpp::element{'X'}, canvas[3][3]);
+}
+
+TEST_F(a_horizontal_scrollbar, has_a_preferred_size_relative_to_its_width)
+{
+    scrollbar_->set_size({4, 4});
+    ASSERT_EQ(terminalpp::extent(4, 1), scrollbar_->get_preferred_size());
+
+    scrollbar_->set_size({7, 3});
+    ASSERT_EQ(terminalpp::extent(7, 1), scrollbar_->get_preferred_size());
 }
 
 TEST_F(a_horizontal_scrollbar, with_size_but_no_slider_draws_a_frame_border)
