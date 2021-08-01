@@ -8,7 +8,7 @@ namespace munin {
 
 terminalpp::extent horizontal_scrollbar::do_get_preferred_size() const
 {
-    return {};
+    return {get_size().width_, 1};
 }
 
 void horizontal_scrollbar::do_draw(
