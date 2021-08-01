@@ -4,6 +4,34 @@ namespace munin {
 
 class MUNIN_EXPORT horizontal_scrollbar : public basic_component
 {
+public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    horizontal_scrollbar();
+
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~horizontal_scrollbar() override;
+
+    //* =====================================================================
+    /// \brief Sets the slider position.  
+    ///
+    /// x_position and width relate the the bounds of the viewport that this
+    /// scrollbar is showing.  For example, if a viewport has size 20, and 
+    /// the underlying component is size 50, then the width of the slider 
+    /// would be (50 - 20) = 30, which corresponds to the number of possible
+    /// places for the viewport to be based.  x_position thus relates to the 
+    /// where the viewport is based.
+    ///
+    /// If width is zero, then that indicates that the entire underlying 
+    /// component is in view, and therefore no slider is shown.
+    //* =====================================================================
+    void set_slider_position(
+        terminalpp::coordinate_type x_position,
+        terminalpp::coordinate_type width);
+
 private:
     //* =====================================================================
     /// \brief Called by get_preferred_size().  Derived classes must override
@@ -24,6 +52,9 @@ private:
     void do_draw(
         render_surface &surface,
         terminalpp::rectangle const &region) const override;
+
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 MUNIN_EXPORT
