@@ -209,3 +209,44 @@ INSTANTIATE_TEST_SUITE_P(
     horizontal_scroll_bar_slider_position,
     ValuesIn(test_data)
 );
+
+TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->set_slider_position(75, 100);
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(munin::detail::single_lined_cross,           canvas[2][0]);
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[3][0]);
+    ASSERT_EQ('X', canvas[4][0]);
+    ASSERT_EQ('X', canvas[5][0]);
+    ASSERT_EQ('X', canvas[6][0]);
+    ASSERT_EQ('X', canvas[7][0]);
+
+    scrollbar_->set_size({8, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[0][0]) << " expected beam on position 0";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]) << " expected beam on position 1";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][0]) << " expected beam on position 2";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[3][0]) << " expected beam on position 3";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[4][0]) << " expected beam on position 4";
+    ASSERT_EQ(munin::detail::single_lined_cross,           canvas[5][0]) << " expected cross on position 5";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[6][0]) << " expected beam on position 6";
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[7][0]) << " expected beam on position 7";
+}
