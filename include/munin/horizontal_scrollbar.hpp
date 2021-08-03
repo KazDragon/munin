@@ -55,6 +55,20 @@ public:
     void set_highlight_attribute(
         terminalpp::attribute const &highlight_attribute);
 
+    //* =====================================================================
+    /// \brief Connect to this signal to receive notifications when a scroll
+    /// left instruction was received (e.g. by clicking to the left of the
+    /// slider)
+    //* =====================================================================
+    boost::signals2::signal<void ()> on_scroll_left;
+
+    //* =====================================================================
+    /// \brief Connect to this signal to receive notifications when a scroll
+    /// right instruction was received (e.g. by clicking to the right of the
+    /// slider)
+    //* =====================================================================
+    boost::signals2::signal<void ()> on_scroll_right;
+
 protected:
     //* =====================================================================
     /// \brief Called by set_size().  Derived classes must override this
@@ -82,6 +96,12 @@ protected:
     void do_draw(
         render_surface &surface,
         terminalpp::rectangle const &region) const override;
+
+    //* =====================================================================
+    /// \brief Called by event().  Derived classes must override this
+    /// function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(boost::any const &event) override;
 
 private:
     struct impl;

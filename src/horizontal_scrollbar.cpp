@@ -2,6 +2,7 @@
 #include "munin/detail/unicode_glyphs.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <boost/make_unique.hpp>
 #include <memory>
 
@@ -12,21 +13,13 @@ namespace munin {
 // ==========================================================================
 struct horizontal_scrollbar::impl
 {
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
     impl(horizontal_scrollbar &self)
       : self_(self)
     {
     }
-
-    horizontal_scrollbar &self_;
-
-    std::weak_ptr<component> associated_component_;
-    terminalpp::attribute lowlight_attribute;
-    terminalpp::attribute highlight_attribute;
-    bool associated_component_has_focus = false;
-
-    terminalpp::coordinate_type viewport_x_position  = 0;
-    terminalpp::coordinate_type viewport_basis_width = 0;
-    boost::optional<terminalpp::coordinate_type> slider_position;
 
     // ======================================================================
     // UPDATE_ATTRIBUTE
@@ -95,6 +88,39 @@ struct horizontal_scrollbar::impl
               : interpolate_slider_position();
         }
     }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(terminalpp::mouse::event const &mouse_event)
+    {
+        if (mouse_event.action_ == terminalpp::mouse::event_type::left_button_down)
+        {
+            if (slider_position.is_initialized())
+            {
+                if (mouse_event.position_.x_ < *slider_position)
+                {
+                    self_.on_scroll_left();
+                }
+                else if (mouse_event.position_.x_ > *slider_position)
+                {
+                    self_.on_scroll_right();
+                }
+            }
+        }
+    }
+
+    horizontal_scrollbar &self_;
+
+    std::weak_ptr<component> associated_component_;
+    terminalpp::attribute lowlight_attribute;
+    terminalpp::attribute highlight_attribute;
+    bool associated_component_has_focus = false;
+
+    terminalpp::coordinate_type viewport_x_position  = 0;
+    terminalpp::coordinate_type viewport_basis_width = 0;
+    boost::optional<terminalpp::coordinate_type> slider_position;
+
 };
 
 // ==========================================================================
@@ -202,6 +228,20 @@ void horizontal_scrollbar::do_draw(
               : munin::detail::single_lined_horizontal_beam,
                 attribute};
         });
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void horizontal_scrollbar::do_event(boost::any const &event)
+{
+    terminalpp::mouse::event const *mouse_event = 
+        boost::any_cast<terminalpp::mouse::event>(&event);
+
+    if (mouse_event != nullptr)
+    {
+        pimpl_->handle_mouse_event(*mouse_event);
+    }
 }
 
 // ==========================================================================

@@ -3,6 +3,7 @@
 #include <munin/detail/unicode_glyphs.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 
 using testing::ValuesIn;
@@ -465,4 +466,119 @@ TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_new_highli
     ASSERT_EQ(new_highlight_horizontal_beam, canvas[1][0]);
     ASSERT_EQ(new_highlight_horizontal_beam, canvas[2][0]);
     ASSERT_EQ(new_highlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar, with_no_slider_emits_no_scroll_events_when_clicked)
+{
+    scrollbar_->set_size({5, 1});
+
+    auto const mouse_event = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        {0, 1}
+    };
+
+    bool scroll_left_clicked = false;
+    bool scroll_right_clicked = false;
+
+    scrollbar_->on_scroll_left.connect(
+        [&]{
+            scroll_left_clicked = true;
+        });
+        
+    scrollbar_->on_scroll_right.connect(
+        [&]{
+            scroll_right_clicked = true;
+        });
+
+    scrollbar_->event(mouse_event);
+
+    ASSERT_FALSE(scroll_left_clicked);
+    ASSERT_FALSE(scroll_right_clicked);
+}
+
+TEST_F(a_horizontal_scrollbar, with_a_slider_emits_scroll_left_when_clicked_to_the_left_of_the_slider)
+{
+    scrollbar_->set_size({5, 1});
+    scrollbar_->set_slider_position(50, 100);
+
+    auto const mouse_event = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        {0, 0}
+    };
+
+    bool scroll_left_clicked = false;
+    bool scroll_right_clicked = false;
+
+    scrollbar_->on_scroll_left.connect(
+        [&]{
+            scroll_left_clicked = true;
+        });
+        
+    scrollbar_->on_scroll_right.connect(
+        [&]{
+            scroll_right_clicked = true;
+        });
+
+    scrollbar_->event(mouse_event);
+
+    ASSERT_TRUE(scroll_left_clicked);
+    ASSERT_FALSE(scroll_right_clicked);
+}
+
+TEST_F(a_horizontal_scrollbar, with_a_slider_emits_scroll_right_when_clicked_to_the_right_of_the_slider)
+{
+    scrollbar_->set_size({5, 1});
+    scrollbar_->set_slider_position(50, 100);
+
+    auto const mouse_event = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        {4, 0}
+    };
+
+    bool scroll_left_clicked = false;
+    bool scroll_right_clicked = false;
+
+    scrollbar_->on_scroll_left.connect(
+        [&]{
+            scroll_left_clicked = true;
+        });
+        
+    scrollbar_->on_scroll_right.connect(
+        [&]{
+            scroll_right_clicked = true;
+        });
+
+    scrollbar_->event(mouse_event);
+
+    ASSERT_FALSE(scroll_left_clicked);
+    ASSERT_TRUE(scroll_right_clicked);
+}
+
+TEST_F(a_horizontal_scrollbar, with_a_slider_emits_nothing_when_clicked_on_the_slider)
+{
+    scrollbar_->set_size({5, 1});
+    scrollbar_->set_slider_position(50, 100);
+
+    auto const mouse_event = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down,
+        {2, 0}
+    };
+
+    bool scroll_left_clicked = false;
+    bool scroll_right_clicked = false;
+
+    scrollbar_->on_scroll_left.connect(
+        [&]{
+            scroll_left_clicked = true;
+        });
+        
+    scrollbar_->on_scroll_right.connect(
+        [&]{
+            scroll_right_clicked = true;
+        });
+
+    scrollbar_->event(mouse_event);
+
+    ASSERT_FALSE(scroll_left_clicked);
+    ASSERT_FALSE(scroll_right_clicked);
 }
