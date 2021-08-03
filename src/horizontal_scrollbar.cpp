@@ -54,11 +54,8 @@ struct horizontal_scrollbar::impl
                     // Starting from co-ordinate 1, increment by
                     // slider_positions / viewport_basis_width per viewport x
                     // position
-                    auto const calculated_slider_position =  1 + (((viewport_x_position - 1) * slider_positions) 
+                    return 1 + (((viewport_x_position - 1) * slider_positions) 
                                 / viewport_basis_positions);
-
-                    std::cout << "calcualted position = " << calculated_slider_position << "\n";
-                    return calculated_slider_position;
                 };
             
             // Otherwise, it is an interpolated position between those points.
@@ -66,8 +63,6 @@ struct horizontal_scrollbar::impl
                 slider_is_in_leftmost_position() ? 0
               : slider_is_in_rightmost_position() ? (scrollbar_width - 1)
               : interpolate_slider_position();
-
-            std::cout << "slider position = " << (slider_position ? *slider_position : -1) << "\n";
         }
     }
 };
@@ -130,7 +125,6 @@ void horizontal_scrollbar::do_draw(
                terminalpp::coordinate_type column, 
                terminalpp::coordinate_type row)
         {
-            std::cout << "draw elem " << column << "," << row << '\n';
             elem = 
                 column == pimpl_->slider_position
               ? munin::detail::single_lined_cross
