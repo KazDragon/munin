@@ -51,6 +51,7 @@ jobs:
       run: ctest -C $BUILD_TYPE || (cat Testing/Temporary/LastTest.log && false)
 
   build-conan:
+    if: ${{ false }} # disable due to conan repo being defunct
     runs-on: ubuntu-latest
 
     env:
