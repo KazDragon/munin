@@ -12,10 +12,40 @@ namespace munin {
 // ==========================================================================
 struct horizontal_scrollbar::impl
 {
+    impl(horizontal_scrollbar &self)
+      : self_(self)
+    {
+    }
+
+    horizontal_scrollbar &self_;
+
+    std::weak_ptr<component> associated_component_;
+    terminalpp::attribute lowlight_attribute;
+    terminalpp::attribute highlight_attribute;
+    bool associated_component_has_focus = false;
+
     terminalpp::coordinate_type viewport_x_position  = 0;
     terminalpp::coordinate_type viewport_basis_width = 0;
     boost::optional<terminalpp::coordinate_type> slider_position;
 
+    // ======================================================================
+    // UPDATE_ATTRIBUTE
+    // ======================================================================
+    void redraw_according_to_associated_focus()
+    {
+        auto associated_component = associated_component_.lock();
+
+        if (associated_component)
+        {
+            associated_component_has_focus = 
+                associated_component->has_focus();
+            self_.on_redraw({{{}, self_.get_size()}});
+        }
+    }
+
+    // ======================================================================
+    // CALCULATE_SLIDER_POSITION
+    // ======================================================================
     void calculate_slider_position(
         terminalpp::coordinate_type const scrollbar_width)
     {
@@ -71,7 +101,7 @@ struct horizontal_scrollbar::impl
 // CONSTRUCTOR
 // ==========================================================================
 horizontal_scrollbar::horizontal_scrollbar()
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(boost::make_unique<impl>(*this))
 {
 }
 
@@ -92,6 +122,42 @@ void horizontal_scrollbar::set_slider_position(
     pimpl_->calculate_slider_position(get_size().width_);
 
     on_redraw({{{}, get_size()}});
+}
+
+// ==========================================================================
+// HIGHLIGHT_ON_FOCUS
+// ==========================================================================
+void horizontal_scrollbar::highlight_on_focus(
+    std::shared_ptr<component> const &associated_component)
+{
+    pimpl_->associated_component_ = associated_component;
+
+    associated_component->on_focus_set.connect(
+        [this]{ pimpl_->redraw_according_to_associated_focus(); });
+    associated_component->on_focus_lost.connect(
+        [this]{ pimpl_->redraw_according_to_associated_focus(); });
+
+    pimpl_->redraw_according_to_associated_focus();
+}
+
+// ==========================================================================
+// SET_LOWLIGHT_ATTRIBUTE
+// ==========================================================================
+void horizontal_scrollbar::set_lowlight_attribute(
+    terminalpp::attribute const &lowlight_attribute)
+{
+    pimpl_->lowlight_attribute = lowlight_attribute;
+    pimpl_->redraw_according_to_associated_focus();
+}
+
+// ==========================================================================
+// SET_HIGHLIGHT_ATTRIBUTE
+// ==========================================================================
+void horizontal_scrollbar::set_highlight_attribute(
+    terminalpp::attribute const &highlight_attribute)
+{
+    pimpl_->highlight_attribute = highlight_attribute;
+    pimpl_->redraw_according_to_associated_focus();
 }
 
 // ==========================================================================
@@ -118,17 +184,23 @@ void horizontal_scrollbar::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
+    auto const attribute = 
+        pimpl_->associated_component_has_focus
+      ? pimpl_->highlight_attribute
+      : pimpl_->lowlight_attribute;
+
     terminalpp::for_each_in_region(
         surface,
         region,
-        [this](terminalpp::element &elem, 
-               terminalpp::coordinate_type column, 
-               terminalpp::coordinate_type row)
+        [this, attribute](terminalpp::element &elem, 
+                          terminalpp::coordinate_type column, 
+                          terminalpp::coordinate_type row)
         {
-            elem = 
+            elem = {
                 column == pimpl_->slider_position
               ? munin::detail::single_lined_cross
-              : munin::detail::single_lined_horizontal_beam;
+              : munin::detail::single_lined_horizontal_beam,
+                attribute};
         });
 }
 

@@ -1,3 +1,4 @@
+#include "mock/component.hpp"
 #include <munin/horizontal_scrollbar.hpp>
 #include <munin/detail/unicode_glyphs.hpp>
 #include <munin/render_surface.hpp>
@@ -5,6 +6,7 @@
 #include <gtest/gtest.h>
 
 using testing::ValuesIn;
+using testing::Return;
 
 namespace {
 
@@ -249,4 +251,218 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
     ASSERT_EQ(munin::detail::single_lined_cross,           canvas[5][0]) << " expected cross on position 5";
     ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[6][0]) << " expected beam on position 6";
     ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[7][0]) << " expected beam on position 7";
+}
+
+namespace {
+
+constexpr auto lowlight_attribute = terminalpp::attribute{
+    terminalpp::greyscale_colour{ 5 }
+};
+
+constexpr auto lowlight_horizontal_beam = terminalpp::element{
+    munin::detail::single_lined_horizontal_beam,
+    lowlight_attribute
+};
+
+constexpr auto highlight_attribute = terminalpp::attribute{ 
+    terminalpp::high_colour{4, 5, 1}
+};
+
+constexpr auto highlight_horizontal_beam = terminalpp::element{
+    munin::detail::single_lined_horizontal_beam,
+    highlight_attribute
+};
+
+class a_horizontal_scrollbar_with_an_associated_component
+  : public a_horizontal_scrollbar
+{
+public:
+    a_horizontal_scrollbar_with_an_associated_component()
+    {
+        scrollbar_->highlight_on_focus(associated_component_);
+        scrollbar_->set_lowlight_attribute(lowlight_attribute);
+        scrollbar_->set_highlight_attribute(highlight_attribute);
+    }
+
+protected:
+    std::shared_ptr<mock_component> associated_component_ { 
+        make_mock_component() 
+    };
+};
+
+}
+
+TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_lowlight_attribute_by_default)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_highlight_attribute_after_the_associated_component_gains_focus)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    scrollbar_->on_redraw.connect(
+        [&, this](std::vector<terminalpp::rectangle> const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                scrollbar_->draw(surface, region);
+            }
+        });
+
+    ON_CALL(*associated_component_, do_has_focus())
+        .WillByDefault(Return(true));
+    associated_component_->on_focus_set();
+
+    ASSERT_EQ(highlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_lowlight_attribute_after_the_associated_component_loses_focus)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    scrollbar_->on_redraw.connect(
+        [&, this](std::vector<terminalpp::rectangle> const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                scrollbar_->draw(surface, region);
+            }
+        });
+
+    ON_CALL(*associated_component_, do_has_focus())
+        .WillByDefault(Return(true));
+    associated_component_->on_focus_set();
+
+    ON_CALL(*associated_component_, do_has_focus())
+        .WillByDefault(Return(false));
+    associated_component_->on_focus_lost();
+
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(lowlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar, draws_the_highlight_attribute_when_associated_with_a_focused_component)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    scrollbar_->on_redraw.connect(
+        [&, this](std::vector<terminalpp::rectangle> const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                scrollbar_->draw(surface, region);
+            }
+        });
+
+    auto associated_component = make_mock_component();
+    ON_CALL(*associated_component, do_has_focus())
+        .WillByDefault(Return(true));
+
+    scrollbar_->set_lowlight_attribute(lowlight_attribute);
+    scrollbar_->set_highlight_attribute(highlight_attribute);
+    scrollbar_->highlight_on_focus(associated_component);
+
+    ASSERT_EQ(highlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(highlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_new_lowlight_attribute_when_it_is_changed)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    scrollbar_->on_redraw.connect(
+        [&, this](std::vector<terminalpp::rectangle> const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                scrollbar_->draw(surface, region);
+            }
+        });
+
+    constexpr auto new_lowlight_attribute = terminalpp::attribute{
+        terminalpp::high_colour(2, 2, 2)
+    };
+
+    constexpr auto new_lowlight_horizontal_beam = terminalpp::element{
+        munin::detail::single_lined_horizontal_beam,
+        new_lowlight_attribute
+    };
+
+    scrollbar_->set_lowlight_attribute(new_lowlight_attribute);
+
+    ASSERT_EQ(new_lowlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(new_lowlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(new_lowlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(new_lowlight_horizontal_beam, canvas[3][0]);
+}
+
+TEST_F(a_horizontal_scrollbar_with_an_associated_component, draws_the_new_highlight_attribute_when_it_is_changed)
+{
+    terminalpp::canvas canvas({8, 1});
+    munin::render_surface surface{canvas};
+
+    scrollbar_->set_size({4, 1});
+    scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+    scrollbar_->on_redraw.connect(
+        [&, this](std::vector<terminalpp::rectangle> const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                scrollbar_->draw(surface, region);
+            }
+        });
+
+    constexpr auto new_highlight_attribute = terminalpp::attribute{
+        terminalpp::high_colour(6, 6, 5)
+    };
+
+    constexpr auto new_highlight_horizontal_beam = terminalpp::element{
+        munin::detail::single_lined_horizontal_beam,
+        new_highlight_attribute
+    };
+
+    ON_CALL(*associated_component_, do_has_focus())
+        .WillByDefault(Return(true));
+    associated_component_->on_focus_set();
+
+    scrollbar_->set_highlight_attribute(new_highlight_attribute);
+
+    ASSERT_EQ(new_highlight_horizontal_beam, canvas[0][0]);
+    ASSERT_EQ(new_highlight_horizontal_beam, canvas[1][0]);
+    ASSERT_EQ(new_highlight_horizontal_beam, canvas[2][0]);
+    ASSERT_EQ(new_highlight_horizontal_beam, canvas[3][0]);
 }

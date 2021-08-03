@@ -1,4 +1,5 @@
 #include "munin/basic_component.hpp"
+#include <terminalpp/element.hpp>
 
 namespace munin {
 
@@ -31,6 +32,28 @@ public:
     void set_slider_position(
         terminalpp::coordinate_type x_position,
         terminalpp::coordinate_type width);
+
+    //* =====================================================================
+    /// \brief Associates the scrollbar with another component, whose focus
+    /// it will track for highlighting.
+    //* =====================================================================
+    void highlight_on_focus(
+        std::shared_ptr<component> const &associated_component);
+
+    //* =====================================================================
+    /// \brief Sets the lowlight attribute.  This is the attribute shown
+    /// when there is no associated component, or the associated component 
+    /// does not have focus.
+    //* =====================================================================
+    void set_lowlight_attribute(
+        terminalpp::attribute const &lowlight_attribute);
+
+    //* =====================================================================
+    /// \brief Sets the highlight attribute.  This is the attribute hsown
+    /// when there an associated component has focus.
+    //* =====================================================================
+    void set_highlight_attribute(
+        terminalpp::attribute const &highlight_attribute);
 
 protected:
     //* =====================================================================
