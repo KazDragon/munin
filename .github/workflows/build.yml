@@ -197,7 +197,7 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
 #   Only build documentation for valid builds on master.
-    needs: [build, build-conan]
+    needs: [build] # Todo: add build-conan as dependency when it is restored
     if: github.ref == 'refs/heads/master'
 
     steps:
