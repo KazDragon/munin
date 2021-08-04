@@ -146,6 +146,7 @@ target_sources(munin
         include/munin/toggle_button.hpp
         include/munin/vertical_strip_layout.hpp
         include/munin/window.hpp
+        include/munin/vertical_scrollbar.hpp
         include/munin/view.hpp
         include/munin/viewport.hpp
     
@@ -182,6 +183,7 @@ target_sources(munin
         src/toggle_button.cpp
         src/vertical_strip_layout.cpp
         src/window.cpp
+        src/vertical_scrollbar.cpp
         src/viewport.cpp
     
         src/detail/adaptive_fill.cpp
@@ -279,7 +281,7 @@ target_sources(munin_tester
         test/src/framed_component/framed_component_mouse_test.cpp
         test/src/grid_layout/grid_layout_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
-        test/src/horizontal_scrollbar/horizontal_scroll_bar_test.cpp
+        test/src/horizontal_scrollbar/horizontal_scrollbar_test.cpp
         test/src/image/image_json_test.cpp
         test/src/image/image_test.cpp
         test/src/image/image_redraw_test.cpp
@@ -299,6 +301,7 @@ target_sources(munin_tester
         test/src/titled_frame/titled_frame_test.cpp
         test/src/toggle_button/toggle_button_test.cpp
         test/src/toggle_button/toggle_button_json_test.cpp
+        test/src/vertical_scrollbar/vertical_scrollbar_test.cpp
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/viewport/viewport_test.hpp
         test/src/viewport/viewport_test.cpp

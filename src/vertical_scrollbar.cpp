@@ -1,4 +1,4 @@
-#include "munin/horizontal_scrollbar.hpp"
+#include "munin/vertical_scrollbar.hpp"
 #include "munin/detail/unicode_glyphs.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
@@ -9,14 +9,14 @@
 namespace munin {
 
 // ==========================================================================
-// HORIZONTAL_SCROLLBAR IMPLEMENTATION STRUCTURE
+// VERTICAL_SCROLLBAR IMPLEMENTATION STRUCTURE
 // ==========================================================================
-struct horizontal_scrollbar::impl
+struct vertical_scrollbar::impl
 {
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    impl(horizontal_scrollbar &self)
+    impl(vertical_scrollbar &self)
       : self_(self)
     {
     }
@@ -40,51 +40,51 @@ struct horizontal_scrollbar::impl
     // CALCULATE_SLIDER_POSITION
     // ======================================================================
     void calculate_slider_position(
-        terminalpp::coordinate_type const scrollbar_width)
+        terminalpp::coordinate_type const scrollbar_height)
     {
-        if (viewport_basis_width == 0)
+        if (viewport_basis_height == 0)
         {
             slider_position = boost::none;
         }
         else
         {
-            // The slider is in the leftmost position only if the viewport 
-            // x position is precisely 0.
-            auto const &slider_is_in_leftmost_position =
+            // The slider is in the topmost position only if the viewport 
+            // y position is precisely 0.
+            auto const &slider_is_in_topmost_position =
                 [=]
                 {
-                    return viewport_x_position == 0;
+                    return viewport_y_position == 0;
                 };
 
-            // The slider is in the rightmost position only if the viewport
-            // basis is as far right as it can be.
-            auto const &slider_is_in_rightmost_position =
+            // The slider is in the bottommost position only if the viewport
+            // basis is as far down as it can be.
+            auto const &slider_is_in_bottommost_position =
                 [=]
                 {
-                    return viewport_x_position == viewport_basis_width - 1;
+                    return viewport_y_position == viewport_basis_height - 1;
                 };
 
             auto const &interpolate_slider_position =
                 [=]
                 {
-                    // There are scrollbar_width - 2 possible positions.
+                    // There are scrollbar_height - 2 possible positions.
                     // The leftmost but one starts at 1, and increments
-                    // by (scrollbar_width - 2) / (viewport_basis_width - 2)
-                    // per viewport_x_position.
-                    auto const slider_positions = scrollbar_width - 2;
-                    auto const viewport_basis_positions = viewport_basis_width - 2;
+                    // by (scrollbar_height - 2) / (viewport_basis_height - 2)
+                    // per viewport_y_position.
+                    auto const slider_positions = scrollbar_height - 2;
+                    auto const viewport_basis_positions = viewport_basis_height - 2;
 
                     // Starting from co-ordinate 1, increment by
-                    // slider_positions / viewport_basis_width per viewport x
+                    // slider_positions / viewport_basis_height per viewport y
                     // position
-                    return 1 + (((viewport_x_position - 1) * slider_positions) 
+                    return 1 + (((viewport_y_position - 1) * slider_positions)
                                 / viewport_basis_positions);
                 };
             
             // Otherwise, it is an interpolated position between those points.
             slider_position =
-                slider_is_in_leftmost_position() ? 0
-              : slider_is_in_rightmost_position() ? (scrollbar_width - 1)
+                slider_is_in_topmost_position() ? 0
+              : slider_is_in_bottommost_position() ? (scrollbar_height - 1)
               : interpolate_slider_position();
         }
     }
@@ -98,27 +98,27 @@ struct horizontal_scrollbar::impl
         {
             if (slider_position.is_initialized())
             {
-                if (mouse_event.position_.x_ < *slider_position)
+                if (mouse_event.position_.y_ < *slider_position)
                 {
-                    self_.on_scroll_left();
+                    self_.on_scroll_up();
                 }
-                else if (mouse_event.position_.x_ > *slider_position)
+                else if (mouse_event.position_.y_ > *slider_position)
                 {
-                    self_.on_scroll_right();
+                    self_.on_scroll_down();
                 }
             }
         }
     }
 
-    horizontal_scrollbar &self_;
+    vertical_scrollbar &self_;
 
     std::weak_ptr<component> associated_component_;
     terminalpp::attribute lowlight_attribute;
     terminalpp::attribute highlight_attribute;
     bool associated_component_has_focus = false;
 
-    terminalpp::coordinate_type viewport_x_position  = 0;
-    terminalpp::coordinate_type viewport_basis_width = 0;
+    terminalpp::coordinate_type viewport_y_position  = 0;
+    terminalpp::coordinate_type viewport_basis_height = 0;
     boost::optional<terminalpp::coordinate_type> slider_position;
 
 };
@@ -126,7 +126,7 @@ struct horizontal_scrollbar::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-horizontal_scrollbar::horizontal_scrollbar()
+vertical_scrollbar::vertical_scrollbar()
   : pimpl_(boost::make_unique<impl>(*this))
 {
 }
@@ -134,18 +134,18 @@ horizontal_scrollbar::horizontal_scrollbar()
 // ==========================================================================
 // DESTRUCTOR
 // ==========================================================================
-horizontal_scrollbar::~horizontal_scrollbar() = default;
+vertical_scrollbar::~vertical_scrollbar() = default;
 
 // ==========================================================================
 // SET_SLIDER_POSITION
 // ==========================================================================
-void horizontal_scrollbar::set_slider_position(
-    terminalpp::coordinate_type x_position,
-    terminalpp::coordinate_type width)
+void vertical_scrollbar::set_slider_position(
+    terminalpp::coordinate_type y_position,
+    terminalpp::coordinate_type height)
 {
-    pimpl_->viewport_x_position = x_position;
-    pimpl_->viewport_basis_width = width;
-    pimpl_->calculate_slider_position(get_size().width_);
+    pimpl_->viewport_y_position = y_position;
+    pimpl_->viewport_basis_height = height;
+    pimpl_->calculate_slider_position(get_size().height_);
 
     on_redraw({{{}, get_size()}});
 }
@@ -153,7 +153,7 @@ void horizontal_scrollbar::set_slider_position(
 // ==========================================================================
 // HIGHLIGHT_ON_FOCUS
 // ==========================================================================
-void horizontal_scrollbar::highlight_on_focus(
+void vertical_scrollbar::highlight_on_focus(
     std::shared_ptr<component> const &associated_component)
 {
     pimpl_->associated_component_ = associated_component;
@@ -169,7 +169,7 @@ void horizontal_scrollbar::highlight_on_focus(
 // ==========================================================================
 // SET_LOWLIGHT_ATTRIBUTE
 // ==========================================================================
-void horizontal_scrollbar::set_lowlight_attribute(
+void vertical_scrollbar::set_lowlight_attribute(
     terminalpp::attribute const &lowlight_attribute)
 {
     pimpl_->lowlight_attribute = lowlight_attribute;
@@ -179,7 +179,7 @@ void horizontal_scrollbar::set_lowlight_attribute(
 // ==========================================================================
 // SET_HIGHLIGHT_ATTRIBUTE
 // ==========================================================================
-void horizontal_scrollbar::set_highlight_attribute(
+void vertical_scrollbar::set_highlight_attribute(
     terminalpp::attribute const &highlight_attribute)
 {
     pimpl_->highlight_attribute = highlight_attribute;
@@ -189,24 +189,24 @@ void horizontal_scrollbar::set_highlight_attribute(
 // ==========================================================================
 // DO_SET_SIZE
 // ==========================================================================
-void horizontal_scrollbar::do_set_size(terminalpp::extent const &size)
+void vertical_scrollbar::do_set_size(terminalpp::extent const &size)
 {
-    pimpl_->calculate_slider_position(size.width_);
+    pimpl_->calculate_slider_position(size.height_);
     basic_component::do_set_size(size);
 }
 
 // ==========================================================================
 // DO_GET_PREFERRED_SIZE
 // ==========================================================================
-terminalpp::extent horizontal_scrollbar::do_get_preferred_size() const
+terminalpp::extent vertical_scrollbar::do_get_preferred_size() const
 {
-    return {get_size().width_, 1};
+    return {1, get_size().height_};
 }
 
 // ==========================================================================
 // DO_DRAW
 // ==========================================================================
-void horizontal_scrollbar::do_draw(
+void vertical_scrollbar::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
@@ -223,9 +223,9 @@ void horizontal_scrollbar::do_draw(
                           terminalpp::coordinate_type row)
         {
             elem = {
-                column == pimpl_->slider_position
+                row == pimpl_->slider_position
               ? munin::detail::single_lined_cross
-              : munin::detail::single_lined_horizontal_beam,
+              : munin::detail::single_lined_vertical_beam,
                 attribute};
         });
 }
@@ -233,7 +233,7 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void horizontal_scrollbar::do_event(boost::any const &event)
+void vertical_scrollbar::do_event(boost::any const &event)
 {
     terminalpp::mouse::event const *mouse_event = 
         boost::any_cast<terminalpp::mouse::event>(&event);
@@ -245,11 +245,11 @@ void horizontal_scrollbar::do_event(boost::any const &event)
 }
 
 // ==========================================================================
-// MAKE_HORIZONTAL_SCROLLBAR
+// MAKE_VERTICAL_SCROLLBAR
 // ==========================================================================
-std::shared_ptr<horizontal_scrollbar> make_horizontal_scrollbar()
+std::shared_ptr<vertical_scrollbar> make_vertical_scrollbar()
 {
-    return std::make_shared<horizontal_scrollbar>();
+    return std::make_shared<vertical_scrollbar>();
 }
 
 }
