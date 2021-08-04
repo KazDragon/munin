@@ -1,4 +1,5 @@
 #include "viewport_test.hpp"
+#include <boost/optional/optional_io.hpp>
 #include <tuple>
 #include <vector>
 

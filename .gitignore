@@ -36,4 +36,5 @@ Munin.*
 build
 
 /.vs
+/.vscode
 /CMakeSettings.json
