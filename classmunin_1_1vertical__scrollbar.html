@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Munin: munin::list Class Reference</title>
+<title>Munin: munin::vertical_scrollbar Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,7 +64,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>munin</b></li><li class="navelem"><a class="el" href="classmunin_1_1list.html">list</a></li>  </ul>
+<li class="navelem"><b>munin</b></li><li class="navelem"><a class="el" href="classmunin_1_1vertical__scrollbar.html">vertical_scrollbar</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,24 +72,25 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="classmunin_1_1list-members.html">List of all members</a>  </div>
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="classmunin_1_1vertical__scrollbar-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">munin::list Class Reference</div>  </div>
+<div class="title">munin::vertical_scrollbar Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>A class that displays a list of elements.  
- <a href="classmunin_1_1list.html#details">More...</a></p>
+<p>A class that displays a vertical scrollbar that displays the vertical position of e.g. a viewport relative to its underlying component.  
+ <a href="classmunin_1_1vertical__scrollbar.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="list_8hpp_source.html">list.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="vertical__scrollbar_8hpp_source.html">vertical_scrollbar.hpp</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for munin::list:</div>
+Inheritance diagram for munin::vertical_scrollbar:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classmunin_1_1list.png" usemap="#munin::list_map" alt=""/>
-  <map id="munin::list_map" name="munin::list_map">
-<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="0,56,149,80"/>
-<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="0,0,149,24"/>
+  <img src="classmunin_1_1vertical__scrollbar.png" usemap="#munin::vertical_5Fscrollbar_map" alt=""/>
+  <map id="munin::vertical_5Fscrollbar_map" name="munin::vertical_5Fscrollbar_map">
+<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="0,56,150,80"/>
+<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="0,0,150,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -100,26 +101,30 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a662c42f82879961c389b4c97b73732c9"><td class="memItemLeft" align="right" valign="top"><a id="a662c42f82879961c389b4c97b73732c9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a662c42f82879961c389b4c97b73732c9">list</a> ()</td></tr>
-<tr class="memdesc:a662c42f82879961c389b4c97b73732c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
-<tr class="separator:a662c42f82879961c389b4c97b73732c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a5d32f7d57a903020dae54ae6c5599f"><td class="memItemLeft" align="right" valign="top"><a id="a1a5d32f7d57a903020dae54ae6c5599f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a1a5d32f7d57a903020dae54ae6c5599f">~list</a> ()</td></tr>
-<tr class="memdesc:a1a5d32f7d57a903020dae54ae6c5599f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
-<tr class="separator:a1a5d32f7d57a903020dae54ae6c5599f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a230451cef085d51cb8a53744ee2f9f0d"><td class="memItemLeft" align="right" valign="top"><a id="a230451cef085d51cb8a53744ee2f9f0d"></a>
-boost::optional&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a230451cef085d51cb8a53744ee2f9f0d">get_selected_item_index</a> () const</td></tr>
-<tr class="memdesc:a230451cef085d51cb8a53744ee2f9f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the index of the selected item, if such an item exists. <br /></td></tr>
-<tr class="separator:a230451cef085d51cb8a53744ee2f9f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9501be1e2497e564047f5e3f38ac1015"><td class="memItemLeft" align="right" valign="top"><a id="a9501be1e2497e564047f5e3f38ac1015"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a9501be1e2497e564047f5e3f38ac1015">select_item</a> (boost::optional&lt; int &gt; const &amp;index)</td></tr>
-<tr class="memdesc:a9501be1e2497e564047f5e3f38ac1015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects an item in the list. If the passed index is not initialized, then de-selects any selected item. <br /></td></tr>
-<tr class="separator:a9501be1e2497e564047f5e3f38ac1015"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20f202e9f08a0be92d15a41e72aaa16c"><td class="memItemLeft" align="right" valign="top"><a id="a20f202e9f08a0be92d15a41e72aaa16c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a20f202e9f08a0be92d15a41e72aaa16c">set_items</a> (std::vector&lt; terminalpp::string &gt; const &amp;items)</td></tr>
-<tr class="memdesc:a20f202e9f08a0be92d15a41e72aaa16c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the items in the list. <br /></td></tr>
-<tr class="separator:a20f202e9f08a0be92d15a41e72aaa16c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06c31bb9890f0e31d44d34207153abc0"><td class="memItemLeft" align="right" valign="top"><a id="a06c31bb9890f0e31d44d34207153abc0"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a06c31bb9890f0e31d44d34207153abc0">vertical_scrollbar</a> ()</td></tr>
+<tr class="memdesc:a06c31bb9890f0e31d44d34207153abc0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
+<tr class="separator:a06c31bb9890f0e31d44d34207153abc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a861015f57446712727c86dcf28f68d86"><td class="memItemLeft" align="right" valign="top"><a id="a861015f57446712727c86dcf28f68d86"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a861015f57446712727c86dcf28f68d86">~vertical_scrollbar</a> () override</td></tr>
+<tr class="memdesc:a861015f57446712727c86dcf28f68d86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
+<tr class="separator:a861015f57446712727c86dcf28f68d86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba258077167b20c47df585ac4040c9f4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#aba258077167b20c47df585ac4040c9f4">set_slider_position</a> (terminalpp::coordinate_type y_position, terminalpp::coordinate_type height)</td></tr>
+<tr class="memdesc:aba258077167b20c47df585ac4040c9f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the slider position. <br  />
+  <a href="classmunin_1_1vertical__scrollbar.html#aba258077167b20c47df585ac4040c9f4">More...</a><br /></td></tr>
+<tr class="separator:aba258077167b20c47df585ac4040c9f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf81f48f437c128ea56d5644f7619fba"><td class="memItemLeft" align="right" valign="top"><a id="abf81f48f437c128ea56d5644f7619fba"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#abf81f48f437c128ea56d5644f7619fba">highlight_on_focus</a> (std::shared_ptr&lt; <a class="el" href="classmunin_1_1component.html">component</a> &gt; const &amp;associated_component)</td></tr>
+<tr class="memdesc:abf81f48f437c128ea56d5644f7619fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Associates the scrollbar with another component, whose focus it will track for highlighting. <br /></td></tr>
+<tr class="separator:abf81f48f437c128ea56d5644f7619fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3457df9451b5c13771258d637fe859"><td class="memItemLeft" align="right" valign="top"><a id="a4e3457df9451b5c13771258d637fe859"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a4e3457df9451b5c13771258d637fe859">set_lowlight_attribute</a> (terminalpp::attribute const &amp;lowlight_attribute)</td></tr>
+<tr class="memdesc:a4e3457df9451b5c13771258d637fe859"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the lowlight attribute. This is the attribute shown when there is no associated component, or the associated component does not have focus. <br /></td></tr>
+<tr class="separator:a4e3457df9451b5c13771258d637fe859"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fde4a22f3330e65d4abf8a5708ebb63"><td class="memItemLeft" align="right" valign="top"><a id="a5fde4a22f3330e65d4abf8a5708ebb63"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a5fde4a22f3330e65d4abf8a5708ebb63">set_highlight_attribute</a> (terminalpp::attribute const &amp;highlight_attribute)</td></tr>
+<tr class="memdesc:a5fde4a22f3330e65d4abf8a5708ebb63"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the highlight attribute. This is the attribute hsown when there an associated component has focus. <br /></td></tr>
+<tr class="separator:a5fde4a22f3330e65d4abf8a5708ebb63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classmunin_1_1basic__component"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classmunin_1_1basic__component')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classmunin_1_1basic__component.html">munin::basic_component</a></td></tr>
 <tr class="memitem:a6135eb53b14424cd45333b9193b53305 inherit pub_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="a6135eb53b14424cd45333b9193b53305"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a6135eb53b14424cd45333b9193b53305">basic_component</a> ()</td></tr>
@@ -195,10 +200,14 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a59ecace60cfc652b3ec60701259a35d2"><td class="memItemLeft" align="right" valign="top"><a id="a59ecace60cfc652b3ec60701259a35d2"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1list.html#a59ecace60cfc652b3ec60701259a35d2">on_item_changed</a></td></tr>
-<tr class="memdesc:a59ecace60cfc652b3ec60701259a35d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal to receive notifications when the selected item has changed. <br /></td></tr>
-<tr class="separator:a59ecace60cfc652b3ec60701259a35d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae96ace52b4e24c87f2f7566a33c17bf0"><td class="memItemLeft" align="right" valign="top"><a id="ae96ace52b4e24c87f2f7566a33c17bf0"></a>
+boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#ae96ace52b4e24c87f2f7566a33c17bf0">on_scroll_up</a></td></tr>
+<tr class="memdesc:ae96ace52b4e24c87f2f7566a33c17bf0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal to receive notifications when a scroll left instruction was received (e.g. by clicking above the slider). <br /></td></tr>
+<tr class="separator:ae96ace52b4e24c87f2f7566a33c17bf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a7543e82c95a00e8496e865dc371247"><td class="memItemLeft" align="right" valign="top"><a id="a3a7543e82c95a00e8496e865dc371247"></a>
+boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a3a7543e82c95a00e8496e865dc371247">on_scroll_down</a></td></tr>
+<tr class="memdesc:a3a7543e82c95a00e8496e865dc371247"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal to receive notifications when a scroll right instruction was received (e.g. by clicking below the slider). <br /></td></tr>
+<tr class="separator:a3a7543e82c95a00e8496e865dc371247"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_classmunin_1_1component"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classmunin_1_1component')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classmunin_1_1component.html">munin::component</a></td></tr>
 <tr class="memitem:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top">boost::signals2::signal&lt; void(std::vector&lt; terminalpp::rectangle &gt; const &amp;regions) &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">on_redraw</a></td></tr>
 <tr class="memdesc:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component should be redrawn.  <a href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">More...</a><br /></td></tr>
@@ -224,8 +233,23 @@ boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valig
 <tr class="memdesc:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor position changes. <br /></td></tr>
 <tr class="separator:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a265420f53694bb96582166e20bbf5f21"><td class="memItemLeft" align="right" valign="top"><a id="a265420f53694bb96582166e20bbf5f21"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a265420f53694bb96582166e20bbf5f21">do_set_size</a> (terminalpp::extent const &amp;size) override</td></tr>
+<tr class="memdesc:a265420f53694bb96582166e20bbf5f21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a1c41d4901b62df7c1058d637e5eb4ed0" title="Sets the size of this component. This does not cause a redraw, on the basis that the entity performin...">set_size()</a>. Derived classes must override this function in order to set the size of the component in a custom manner. <br /></td></tr>
+<tr class="separator:a265420f53694bb96582166e20bbf5f21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a726fc0e4d2d084a18978b3016b391bce"><td class="memItemLeft" align="right" valign="top"><a id="a726fc0e4d2d084a18978b3016b391bce"></a>
+terminalpp::extent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a726fc0e4d2d084a18978b3016b391bce">do_get_preferred_size</a> () const override</td></tr>
+<tr class="memdesc:a726fc0e4d2d084a18978b3016b391bce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a805b7b399ed5d53c81784f98d69de9e5" title="Retrieves the preferred size of this component.">get_preferred_size()</a>. Derived classes must override this function in order to get the size of the component in a custom manner. <br /></td></tr>
+<tr class="separator:a726fc0e4d2d084a18978b3016b391bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5682c002ce5fca11055f99a75cf7a14e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a5682c002ce5fca11055f99a75cf7a14e">do_draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const override</td></tr>
+<tr class="memdesc:a5682c002ce5fca11055f99a75cf7a14e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed context. A component must only draw the part of itself specified by the region.  <a href="classmunin_1_1vertical__scrollbar.html#a5682c002ce5fca11055f99a75cf7a14e">More...</a><br /></td></tr>
+<tr class="separator:a5682c002ce5fca11055f99a75cf7a14e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a9b4af4ca7cf33ecec727e20589ef89"><td class="memItemLeft" align="right" valign="top"><a id="a7a9b4af4ca7cf33ecec727e20589ef89"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a7a9b4af4ca7cf33ecec727e20589ef89">do_event</a> (boost::any const &amp;<a class="el" href="classmunin_1_1component.html#ae6071f08b73feaf2ae57009a20737a51">event</a>) override</td></tr>
+<tr class="memdesc:a7a9b4af4ca7cf33ecec727e20589ef89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ae6071f08b73feaf2ae57009a20737a51" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner. <br /></td></tr>
+<tr class="separator:a7a9b4af4ca7cf33ecec727e20589ef89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classmunin_1_1basic__component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classmunin_1_1basic__component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classmunin_1_1basic__component.html">munin::basic_component</a></td></tr>
 <tr class="memitem:a8754db3a75a9fdb963374fff3983c730 inherit pro_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="a8754db3a75a9fdb963374fff3983c730"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a8754db3a75a9fdb963374fff3983c730">can_receive_focus</a> () const</td></tr>
@@ -243,10 +267,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 terminalpp::point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a99300bbbd9aa8bbf335099774e42d8f3">do_get_position</a> () const override</td></tr>
 <tr class="memdesc:a99300bbbd9aa8bbf335099774e42d8f3 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a88e7df61005ffb948195419f5be21a82" title="Retrieve the position of this component.">get_position()</a>. Derived classes must override this function in order to get the position of the component in a custom manner. <br /></td></tr>
 <tr class="separator:a99300bbbd9aa8bbf335099774e42d8f3 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa50e2a335fbf96b240eb14a1034422c8 inherit pro_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="aa50e2a335fbf96b240eb14a1034422c8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#aa50e2a335fbf96b240eb14a1034422c8">do_set_size</a> (terminalpp::extent const &amp;size) override</td></tr>
-<tr class="memdesc:aa50e2a335fbf96b240eb14a1034422c8 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a1c41d4901b62df7c1058d637e5eb4ed0" title="Sets the size of this component. This does not cause a redraw, on the basis that the entity performin...">set_size()</a>. Derived classes must override this function in order to set the size of the component in a custom manner. <br /></td></tr>
-<tr class="separator:aa50e2a335fbf96b240eb14a1034422c8 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04955732f096ea8bcc76fcb4e3b9a50e inherit pro_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="a04955732f096ea8bcc76fcb4e3b9a50e"></a>
 terminalpp::extent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a04955732f096ea8bcc76fcb4e3b9a50e">do_get_size</a> () const override</td></tr>
 <tr class="memdesc:a04955732f096ea8bcc76fcb4e3b9a50e inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a43796fb65b89a0168f12dfdf5d439e2c" title="Retreives the size of this component.">get_size()</a>. Derived classes must override this function in order to get the size of the component in a custom manner. <br /></td></tr>
@@ -275,6 +295,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a3c8506596c601229471ab1e456326b57">do_get_cursor_state</a> () const override</td></tr>
 <tr class="memdesc:a3c8506596c601229471ab1e456326b57 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a4426c3d7970258dd12754334b8e4defe" title="Returns true if this component has a visible cursor, false otherwise.">get_cursor_state()</a>. Derived classes must override this function in order to return the cursor state in a custom manner. <br /></td></tr>
 <tr class="separator:a3c8506596c601229471ab1e456326b57 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdf293d0a95eaeec6dea4d46caea3123 inherit pro_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="acdf293d0a95eaeec6dea4d46caea3123"></a>
+terminalpp::point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#acdf293d0a95eaeec6dea4d46caea3123">do_get_cursor_position</a> () const override</td></tr>
+<tr class="memdesc:acdf293d0a95eaeec6dea4d46caea3123 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a94e67634045cb8848184d7384275ff9e" title="Returns the cursor&#39;s current position within the component.">get_cursor_position()</a>. Derived classes must override this function in order to return the cursor position in a custom manner. <br /></td></tr>
+<tr class="separator:acdf293d0a95eaeec6dea4d46caea3123 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac133ec74e18cb0d6467d3b65a5555ce8 inherit pro_methods_classmunin_1_1basic__component"><td class="memItemLeft" align="right" valign="top"><a id="ac133ec74e18cb0d6467d3b65a5555ce8"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#ac133ec74e18cb0d6467d3b65a5555ce8">do_set_cursor_position</a> (terminalpp::point const &amp;position) override</td></tr>
 <tr class="memdesc:ac133ec74e18cb0d6467d3b65a5555ce8 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a1e5dfa6321a6a4596e698835a86de22b" title="Sets the cursor&#39;s current position within the component.">set_cursor_position()</a>. Derived classes must override this function in order to set the cursor position in a custom manner. <br /></td></tr>
@@ -290,10 +314,91 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="separator:aabb9db037926e10d515a9b732539358f inherit pro_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A class that displays a list of elements. </p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
-<li>/home/runner/work/munin/munin/include/munin/<a class="el" href="list_8hpp_source.html">list.hpp</a></li>
-<li>/home/runner/work/munin/munin/src/list.cpp</li>
+<div class="textblock"><p>A class that displays a vertical scrollbar that displays the vertical position of e.g. a viewport relative to its underlying component. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5682c002ce5fca11055f99a75cf7a14e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5682c002ce5fca11055f99a75cf7a14e">&#9670;&nbsp;</a></span>do_draw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void munin::vertical_scrollbar::do_draw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;&#160;</td>
+          <td class="paramname"><em>surface</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">terminalpp::rectangle const &amp;&#160;</td>
+          <td class="paramname"><em>region</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called by <a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed context. A component must only draw the part of itself specified by the region. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">surface</td><td>the surface on which the component should draw itself. </td></tr>
+    <tr><td class="paramname">region</td><td>the region relative to this component's origin that should be drawn. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classmunin_1_1component.html#a595a774abe1b8c06f5d73bab7ad2bc60">munin::component</a>.</p>
+
+</div>
+</div>
+<a id="aba258077167b20c47df585ac4040c9f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba258077167b20c47df585ac4040c9f4">&#9670;&nbsp;</a></span>set_slider_position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void munin::vertical_scrollbar::set_slider_position </td>
+          <td>(</td>
+          <td class="paramtype">terminalpp::coordinate_type&#160;</td>
+          <td class="paramname"><em>y_position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">terminalpp::coordinate_type&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the slider position. <br  />
+ </p>
+<p>y_position and height relate the the bounds of the viewport that this scrollbar is showing. For example, if a viewport has size 20, and the underlying component is size 50, then the height of the slider would be (50 - 20) = 30, which corresponds to the number of possible places for the viewport to be based. y_position thus relates to the where the viewport is based.</p>
+<p>If height is zero, then that indicates that the entire underlying component is in view, and therefore no slider is shown. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>/home/runner/work/munin/munin/include/munin/<a class="el" href="vertical__scrollbar_8hpp_source.html">vertical_scrollbar.hpp</a></li>
+<li>/home/runner/work/munin/munin/src/vertical_scrollbar.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
