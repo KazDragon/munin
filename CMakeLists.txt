@@ -139,6 +139,7 @@ target_sources(munin
         include/munin/list.hpp
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
+        include/munin/scroll_pane.hpp
         include/munin/scroll_frame.hpp
         include/munin/solid_frame.hpp
         include/munin/status_bar.hpp
@@ -177,6 +178,7 @@ target_sources(munin
         src/list.cpp
         src/null_layout.cpp
         src/render_surface.cpp
+        src/scroll_pane.cpp
         src/scroll_frame.cpp
         src/solid_frame.cpp
         src/status_bar.cpp
@@ -293,6 +295,7 @@ target_sources(munin_tester
         test/src/render_surface/render_surface_capabilities_test.cpp
         test/src/render_surface/render_surface_test.cpp
         test/src/scroll_frame/scroll_frame_test.cpp
+        test/src/scroll_pane/scroll_pane_test.cpp
         test/src/solid_frame/solid_frame_json_test.cpp
         test/src/solid_frame/solid_frame_test.cpp
         test/src/status_bar/status_bar_test.cpp

@@ -57,7 +57,7 @@ scroll_frame::~scroll_frame() = default;
 // ==========================================================================
 terminalpp::coordinate_type scroll_frame::north_border_height() const
 {
-    return 0;
+    return 1;
 }
 
 // ==========================================================================
@@ -65,7 +65,7 @@ terminalpp::coordinate_type scroll_frame::north_border_height() const
 // ==========================================================================
 terminalpp::coordinate_type scroll_frame::south_border_height() const
 {
-    return 0;
+    return 1;
 }
 
 // ==========================================================================
@@ -73,7 +73,7 @@ terminalpp::coordinate_type scroll_frame::south_border_height() const
 // ==========================================================================
 terminalpp::coordinate_type scroll_frame::west_border_width() const
 {
-    return 0;
+    return 1;
 }
 
 // ==========================================================================
@@ -81,7 +81,7 @@ terminalpp::coordinate_type scroll_frame::west_border_width() const
 // ==========================================================================
 terminalpp::coordinate_type scroll_frame::east_border_width() const
 {
-    return 0;
+    return 1;
 }
 
 // ==========================================================================
