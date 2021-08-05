@@ -57,6 +57,30 @@ public:
 
 protected:
     //* =====================================================================
+    /// \brief Override this to describe how to highlight the frame on
+    /// focus.  For example, if there are other sub-components that will
+    /// need to listen to the focus of the inner component.
+    //* =====================================================================
+    void do_highlight_on_focus(
+        std::shared_ptr<component> const &inner_component) override;
+
+    //* =====================================================================
+    /// \brief Override this to set the lowlight attribute in a custom
+    /// manner.  For example, if there are other sub-components that will
+    /// use the same attribute.
+    //* =====================================================================
+    void do_set_lowlight_attribute(
+        terminalpp::attribute const &lowlight_attribute) override;
+
+    //* =====================================================================
+    /// \brief Override this to set the highlight attribute in a custom
+    /// manner.  For example, if there are other sub-components that will
+    /// use the same attribute.
+    //* =====================================================================
+    void do_set_highlight_attribute(
+        terminalpp::attribute const &highlight_attribute) override;
+
+    //* =====================================================================
     /// \brief Called when the focus of the associated component has changed
     /// Derived classes must override this to provide appropriate redraw
     /// callbacks so that the frame can be redrawn with this new focus.

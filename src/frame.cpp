@@ -29,6 +29,33 @@ frame::frame()
 void frame::highlight_on_focus(
     std::shared_ptr<component> const &inner_component)
 {
+    do_highlight_on_focus(inner_component);
+}
+
+// ==========================================================================
+// SET_LOWLIGHT_ATTRIBUTE
+// ==========================================================================
+void frame::set_lowlight_attribute(
+    terminalpp::attribute const &lowlight_attribute)
+{
+    do_set_lowlight_attribute(lowlight_attribute);
+}
+
+// ==========================================================================
+// SET_HIGHLIGHT_ATTRIBUTE
+// ==========================================================================
+void frame::set_highlight_attribute(
+    terminalpp::attribute const &highlight_attribute)
+{
+    do_set_highlight_attribute(highlight_attribute);
+}
+
+// ==========================================================================
+// DO_HIGHLIGHT_ON_FOCUS
+// ==========================================================================
+void frame::do_highlight_on_focus(
+    std::shared_ptr<component> const &inner_component)
+{
     inner_component_ = inner_component;
 
     auto evaluate_focus = 
@@ -48,9 +75,9 @@ void frame::highlight_on_focus(
 }
 
 // ==========================================================================
-// HIGHLIGHT_ON_FOCUS
+// DO_SET_LOWLIGHT_ATTRIBUTE
 // ==========================================================================
-void frame::set_lowlight_attribute(
+void frame::do_set_lowlight_attribute(
     terminalpp::attribute const &lowlight_attribute)
 {
     lowlight_attribute_ = lowlight_attribute;
@@ -58,9 +85,9 @@ void frame::set_lowlight_attribute(
 }
 
 // ==========================================================================
-// HIGHLIGHT_ON_FOCUS
+// DO_SET_HIGHLIGHT_ATTRIBUTE
 // ==========================================================================
-void frame::set_highlight_attribute(
+void frame::do_set_highlight_attribute(
     terminalpp::attribute const &highlight_attribute)
 {
     highlight_attribute_ = highlight_attribute;
@@ -68,7 +95,7 @@ void frame::set_highlight_attribute(
 }
 
 // ==========================================================================
-// HIGHLIGHT_ON_FOCUS
+// GET_FOCUS_ATTRIBUTE
 // ==========================================================================
 terminalpp::attribute frame::get_focus_attribute() const
 {

@@ -110,10 +110,44 @@ terminalpp::coordinate_type scroll_frame::east_border_width() const
 }
 
 // ==========================================================================
+// DO_HIGHLIGHT_ON_FOCUS
+// ==========================================================================
+void scroll_frame::do_highlight_on_focus(
+    std::shared_ptr<component> const &inner_component)
+{
+    pimpl_->horizontal_scrollbar_->highlight_on_focus(inner_component);
+    pimpl_->vertical_scrollbar_->highlight_on_focus(inner_component);
+    frame::do_highlight_on_focus(inner_component);
+}
+
+// ==========================================================================
+// DO_SET_LOWLIGHT_ATTRIBUTE
+// ==========================================================================
+void scroll_frame::do_set_lowlight_attribute(
+    terminalpp::attribute const &lowlight_attribute)
+{
+    pimpl_->horizontal_scrollbar_->set_lowlight_attribute(lowlight_attribute);
+    pimpl_->vertical_scrollbar_->set_lowlight_attribute(lowlight_attribute);
+    frame::do_set_lowlight_attribute(lowlight_attribute);
+}
+
+// ==========================================================================
+// DO_SET_HIGHLIGHT_ATTRIBUTE
+// ==========================================================================
+void scroll_frame::do_set_highlight_attribute(
+    terminalpp::attribute const &highlight_attribute)
+{
+    pimpl_->horizontal_scrollbar_->set_highlight_attribute(highlight_attribute);
+    pimpl_->vertical_scrollbar_->set_highlight_attribute(highlight_attribute);
+    frame::do_set_highlight_attribute(highlight_attribute);
+}
+
+// ==========================================================================
 // DO_INNER_FOCUS_CHANGE
 // ==========================================================================
 void scroll_frame::do_inner_focus_changed()
 {
+    pimpl_->current_attribute_ = get_focus_attribute();
 }
 
 // ==========================================================================

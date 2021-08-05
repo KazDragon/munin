@@ -63,6 +63,14 @@ scroll_pane::scroll_pane(
 scroll_pane::~scroll_pane() = default;
 
 // ==========================================================================
+// SET_HIGHLIGHT_ATTRIBUTE
+// ==========================================================================
+void scroll_pane::set_highlight_attribute(terminalpp::attribute const &attr)
+{
+    pimpl_->frame_->set_highlight_attribute(attr);
+}
+
+// ==========================================================================
 // MAKE_SCROLL_PANE
 // ==========================================================================
 std::shared_ptr<scroll_pane> make_scroll_pane(

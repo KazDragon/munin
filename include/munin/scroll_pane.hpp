@@ -10,6 +10,8 @@ public:
     scroll_pane(std::shared_ptr<component> const &inner_component);
     ~scroll_pane();
 
+    void set_highlight_attribute(terminalpp::attribute const &attr);
+
 private:
     scroll_pane(
         std::shared_ptr<component> const &frame,
