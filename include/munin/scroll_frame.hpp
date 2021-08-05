@@ -1,5 +1,6 @@
 #pragma once
 #include "munin/frame.hpp"
+#include "munin/viewport.hpp"
 #include <memory>
 
 namespace munin {
@@ -10,6 +11,16 @@ namespace munin {
 class MUNIN_EXPORT scroll_frame : public frame
 {
 public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    scroll_frame();
+
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    ~scroll_frame() override;
+
     //* =====================================================================
     /// \brief returns the height of the north border.
     //* =====================================================================
@@ -37,6 +48,10 @@ protected:
     /// callbacks so that the frame can be redrawn with this new focus.
     //* =====================================================================
     void do_inner_focus_changed() override;
+
+private:
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================
