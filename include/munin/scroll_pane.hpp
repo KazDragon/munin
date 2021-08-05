@@ -8,6 +8,16 @@ class MUNIN_EXPORT scroll_pane : public framed_component
 {
 public:
     scroll_pane(std::shared_ptr<component> const &inner_component);
+    ~scroll_pane();
+
+private:
+    scroll_pane(
+        std::shared_ptr<component> const &frame,
+        std::shared_ptr<component> const &viewport,
+        std::shared_ptr<component> const &inner_component);
+
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 

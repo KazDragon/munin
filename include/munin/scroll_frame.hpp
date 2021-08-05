@@ -22,6 +22,20 @@ public:
     ~scroll_frame() override;
 
     //* =====================================================================
+    /// \brief Sets the horizontal slider position
+    //* =====================================================================
+    void set_horizontal_slider_position(
+        terminalpp::coordinate_type x_position,
+        terminalpp::coordinate_type width);
+
+    //* =====================================================================
+    /// \brief Sets the vertical slider position
+    //* =====================================================================
+    void set_vertical_slider_position(
+        terminalpp::coordinate_type y_position,
+        terminalpp::coordinate_type height);
+
+    //* =====================================================================
     /// \brief returns the height of the north border.
     //* =====================================================================
     terminalpp::coordinate_type north_border_height() const override;

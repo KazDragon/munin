@@ -12,7 +12,9 @@ namespace munin {
 // ==========================================================================
 struct scroll_frame::impl
 {
-    terminalpp::attribute current_attribute;
+    terminalpp::attribute current_attribute_;
+    std::shared_ptr<horizontal_scrollbar> horizontal_scrollbar_;
+    std::shared_ptr<vertical_scrollbar> vertical_scrollbar_;
 };
 
 // ==========================================================================
@@ -21,7 +23,10 @@ struct scroll_frame::impl
 scroll_frame::scroll_frame()
   : pimpl_(boost::make_unique<impl>())
 {
-    auto &attr = pimpl_->current_attribute;
+    pimpl_->horizontal_scrollbar_ = make_horizontal_scrollbar();
+    pimpl_->vertical_scrollbar_ = make_vertical_scrollbar();
+
+    auto &attr = pimpl_->current_attribute_;
 
     auto north_beam = view(
         make_compass_layout(),
@@ -32,12 +37,12 @@ scroll_frame::scroll_frame()
     auto south_beam = view(
         make_compass_layout(),
         detail::make_bottom_left_corner_fill(attr), compass_layout::heading::west,
-        make_horizontal_scrollbar(), compass_layout::heading::centre,
+        pimpl_->horizontal_scrollbar_, compass_layout::heading::centre,
         detail::make_bottom_right_corner_fill(attr), compass_layout::heading::east);
 
 
     auto west_beam = detail::make_vertical_beam_fill(attr);
-    auto east_beam = make_vertical_scrollbar();
+    auto east_beam = pimpl_->vertical_scrollbar_;
 
     set_layout(make_compass_layout());
 
@@ -51,6 +56,26 @@ scroll_frame::scroll_frame()
 // DESTRUCTOR
 // ==========================================================================
 scroll_frame::~scroll_frame() = default;
+
+// ==========================================================================
+// SET_HORIZONTAL_SLIDER_POSITION
+// ==========================================================================
+void scroll_frame::set_horizontal_slider_position(
+    terminalpp::coordinate_type x_position,
+    terminalpp::coordinate_type width)
+{
+    pimpl_->horizontal_scrollbar_->set_slider_position(x_position, width);
+}
+
+// ==========================================================================
+// SET_VERTICAL_SLIDER_POSITION
+// ==========================================================================
+void scroll_frame::set_vertical_slider_position(
+    terminalpp::coordinate_type y_position,
+    terminalpp::coordinate_type height)
+{
+    pimpl_->vertical_scrollbar_->set_slider_position(y_position, height);
+}
 
 // ==========================================================================
 // NORTH_BORDER_HEIGHT

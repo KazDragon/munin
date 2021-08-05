@@ -53,6 +53,7 @@ public:
 protected:
     terminalpp::point mock_position;
     terminalpp::extent mock_size;
+    terminalpp::point cursor_position;
     std::shared_ptr<mock_component> inner_component_ {
         make_mock_component()
     };
@@ -89,13 +90,55 @@ TEST_F(a_new_scroll_pane, draws_the_component_within_its_frame)
     ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[0][1]);
     ASSERT_EQ(terminalpp::element{'0'},                                canvas[1][1]);
     ASSERT_EQ(terminalpp::element{'1'},                                canvas[2][1]);
-    ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[3][1]);
+    ASSERT_EQ(munin::detail::single_lined_cross,                       canvas[3][1]);
     ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[0][2]);
     ASSERT_EQ(terminalpp::element{'1'},                                canvas[1][2]);
     ASSERT_EQ(terminalpp::element{'2'},                                canvas[2][2]);
     ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[3][2]);
     ASSERT_EQ(munin::detail::single_lined_rounded_bottom_left_corner,  canvas[0][3]);
-    ASSERT_EQ(munin::detail::single_lined_horizontal_beam,             canvas[1][3]);
+    ASSERT_EQ(munin::detail::single_lined_cross,                       canvas[1][3]);
     ASSERT_EQ(munin::detail::single_lined_horizontal_beam,             canvas[2][3]);
+    ASSERT_EQ(munin::detail::single_lined_rounded_bottom_right_corner, canvas[3][3]);
+}
+
+TEST_F(a_new_scroll_pane, tracks_the_cursor_in_the_inner_component)
+{
+    terminalpp::canvas canvas({4, 4});
+    munin::render_surface surface{canvas};
+
+    terminalpp::for_each_in_region(
+        canvas,
+        {{}, canvas.size()},
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,
+           terminalpp::coordinate_type row)
+        {
+            elem = 'X';
+        });
+
+    scroll_pane->set_size({4, 4});
+
+
+    ON_CALL(*inner_component_, do_get_cursor_position())
+        .WillByDefault(Return(terminalpp::point(9, 9)));
+    inner_component_->on_cursor_position_changed();
+
+    scroll_pane->draw(surface, {{0, 0}, {4, 4}});
+
+    ASSERT_EQ(munin::detail::single_lined_rounded_top_left_corner,     canvas[0][0]);
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam,             canvas[1][0]);
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam,             canvas[2][0]);
+    ASSERT_EQ(munin::detail::single_lined_rounded_top_right_corner,    canvas[3][0]);
+    ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[0][1]);
+    ASSERT_EQ(terminalpp::element{'6'},                                canvas[1][1]);
+    ASSERT_EQ(terminalpp::element{'7'},                                canvas[2][1]);
+    ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[3][1]);
+    ASSERT_EQ(munin::detail::single_lined_vertical_beam,               canvas[0][2]);
+    ASSERT_EQ(terminalpp::element{'7'},                                canvas[1][2]);
+    ASSERT_EQ(terminalpp::element{'8'},                                canvas[2][2]);
+    ASSERT_EQ(munin::detail::single_lined_cross,                       canvas[3][2]);
+    ASSERT_EQ(munin::detail::single_lined_rounded_bottom_left_corner,  canvas[0][3]);
+    ASSERT_EQ(munin::detail::single_lined_horizontal_beam,             canvas[1][3]);
+    ASSERT_EQ(munin::detail::single_lined_cross,                       canvas[2][3]);
     ASSERT_EQ(munin::detail::single_lined_rounded_bottom_right_corner, canvas[3][3]);
 }
