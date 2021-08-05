@@ -11,6 +11,7 @@ public:
     ~scroll_pane();
 
     void set_highlight_attribute(terminalpp::attribute const &attr);
+    void set_lowlight_attribute(terminalpp::attribute const &attr);
 
 private:
     scroll_pane(
