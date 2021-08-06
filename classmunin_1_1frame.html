@@ -88,11 +88,12 @@ Inheritance diagram for munin::frame:</div>
  <div class="center">
   <img src="classmunin_1_1frame.png" usemap="#munin::frame_map" alt=""/>
   <map id="munin::frame_map" name="munin::frame_map">
-<area href="classmunin_1_1composite__component.html" title="Implements a component that simply forwards from and to an underlying container." alt="munin::composite_component" shape="rect" coords="92,112,267,136"/>
-<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="92,56,267,80"/>
-<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="92,0,267,24"/>
-<area href="classmunin_1_1solid__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::solid_frame" shape="rect" coords="0,224,175,248"/>
-<area href="classmunin_1_1titled__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::titled_frame" shape="rect" coords="185,224,360,248"/>
+<area href="classmunin_1_1composite__component.html" title="Implements a component that simply forwards from and to an underlying container." alt="munin::composite_component" shape="rect" coords="185,112,360,136"/>
+<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="185,56,360,80"/>
+<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="185,0,360,24"/>
+<area href="classmunin_1_1scroll__frame.html" title="A class that frames a viewport using scrollbars." alt="munin::scroll_frame" shape="rect" coords="0,224,175,248"/>
+<area href="classmunin_1_1solid__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::solid_frame" shape="rect" coords="185,224,360,248"/>
+<area href="classmunin_1_1titled__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::titled_frame" shape="rect" coords="370,224,545,248"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -210,6 +211,18 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:a4460113c91db64439e8cc635fd63c80e"><td class="memItemLeft" align="right" valign="top"><a id="a4460113c91db64439e8cc635fd63c80e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1frame.html#a4460113c91db64439e8cc635fd63c80e">do_highlight_on_focus</a> (std::shared_ptr&lt; <a class="el" href="classmunin_1_1component.html">component</a> &gt; const &amp;inner_component)</td></tr>
+<tr class="memdesc:a4460113c91db64439e8cc635fd63c80e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override this to describe how to highlight the frame on focus. For example, if there are other sub-components that will need to listen to the focus of the inner component. <br /></td></tr>
+<tr class="separator:a4460113c91db64439e8cc635fd63c80e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ad2254336a4e54bb4e0678c2a49365f"><td class="memItemLeft" align="right" valign="top"><a id="a3ad2254336a4e54bb4e0678c2a49365f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1frame.html#a3ad2254336a4e54bb4e0678c2a49365f">do_set_lowlight_attribute</a> (terminalpp::attribute const &amp;lowlight_attribute)</td></tr>
+<tr class="memdesc:a3ad2254336a4e54bb4e0678c2a49365f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override this to set the lowlight attribute in a custom manner. For example, if there are other sub-components that will use the same attribute. <br /></td></tr>
+<tr class="separator:a3ad2254336a4e54bb4e0678c2a49365f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a339205eeed9e90d683f9b3b41e9688b6"><td class="memItemLeft" align="right" valign="top"><a id="a339205eeed9e90d683f9b3b41e9688b6"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1frame.html#a339205eeed9e90d683f9b3b41e9688b6">do_set_highlight_attribute</a> (terminalpp::attribute const &amp;highlight_attribute)</td></tr>
+<tr class="memdesc:a339205eeed9e90d683f9b3b41e9688b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override this to set the highlight attribute in a custom manner. For example, if there are other sub-components that will use the same attribute. <br /></td></tr>
+<tr class="separator:a339205eeed9e90d683f9b3b41e9688b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35fba1ff0c66e011dd4b837716b3e651"><td class="memItemLeft" align="right" valign="top"><a id="a35fba1ff0c66e011dd4b837716b3e651"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1frame.html#a35fba1ff0c66e011dd4b837716b3e651">do_can_receive_focus</a> () const override</td></tr>
 <tr class="memdesc:a35fba1ff0c66e011dd4b837716b3e651"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if it is allowed for the component to receive focus, false otherwise. This is used by the focus functions of <a class="el" href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...">basic_component</a>. By default, a component may receive focus at all times. Override this function to specify different behaviour in your component. <br /></td></tr>
@@ -353,7 +366,7 @@ boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valig
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 4 2021 08:00:57 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Fri Aug 6 2021 18:32:49 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
