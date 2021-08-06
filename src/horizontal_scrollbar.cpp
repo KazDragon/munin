@@ -61,7 +61,7 @@ struct horizontal_scrollbar::impl
             auto const &slider_is_in_rightmost_position =
                 [=]
                 {
-                    return viewport_x_position == viewport_basis_width - 1;
+                    return viewport_x_position == viewport_basis_width;
                 };
 
             auto const &interpolate_slider_position =

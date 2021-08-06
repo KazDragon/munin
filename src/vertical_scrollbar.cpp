@@ -61,7 +61,7 @@ struct vertical_scrollbar::impl
             auto const &slider_is_in_bottommost_position =
                 [=]
                 {
-                    return viewport_y_position == viewport_basis_height - 1;
+                    return viewport_y_position == viewport_basis_height;
                 };
 
             auto const &interpolate_slider_position =

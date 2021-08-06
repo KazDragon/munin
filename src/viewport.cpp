@@ -271,6 +271,8 @@ private:
     void on_tracked_component_preferred_size_changed()
     {
         update_tracked_component_size();
+        update_anchor_position();
+        update_cursor_position();
         self_.on_preferred_size_changed();
     }
     
