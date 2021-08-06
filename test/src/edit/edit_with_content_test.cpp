@@ -123,7 +123,7 @@ INSTANTIATE_TEST_SUITE_P(
         keypress_data{ "tes", {0, 0}, terminalpp::vk::uppercase_t, "Ttes", "Ttes", {1, 0} },
         keypress_data{ "tes", {1, 0}, terminalpp::vk::uppercase_t, "tTes", "tTes", {2, 0} },
         keypress_data{ "tes", {2, 0}, terminalpp::vk::uppercase_t, "teTs", "teTs", {3, 0} },
-        keypress_data{ "tes", {3, 0}, terminalpp::vk::uppercase_t, "tesT", "tesT", {4, 0} },
+        keypress_data{ "tes", {3, 0}, terminalpp::vk::uppercase_t, "tesT", "tesT", {3, 0} },
 
         // Cursor movement.
         keypress_data{ "t", {1, 0}, terminalpp::vk::cursor_right, "t", "t", {1, 0} },
@@ -142,11 +142,11 @@ INSTANTIATE_TEST_SUITE_P(
 
         keypress_data{ "t",    {0, 0}, terminalpp::vk::end, "t",    "t",    {1, 0} },
         keypress_data{ "t",    {1, 0}, terminalpp::vk::end, "t",    "t",    {1, 0} },
-        keypress_data{ "test", {0, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
-        keypress_data{ "test", {1, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
-        keypress_data{ "test", {2, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
-        keypress_data{ "test", {4, 0}, terminalpp::vk::end, "test", "test", {4, 0} },
+        keypress_data{ "test", {0, 0}, terminalpp::vk::end, "test", "test", {3, 0} },
+        keypress_data{ "test", {1, 0}, terminalpp::vk::end, "test", "test", {3, 0} },
+        keypress_data{ "test", {2, 0}, terminalpp::vk::end, "test", "test", {3, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::end, "test", "test", {3, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::end, "test", "test", {3, 0} },
 
         // Test writing off the end of the viewable portion of the edit.
         // In all cases, this should continue exactly as it did, but should
@@ -157,8 +157,8 @@ INSTANTIATE_TEST_SUITE_P(
         keypress_data{ "test", {0, 0}, terminalpp::vk::lowercase_z, "ztes", "ztest", {1, 0} },
         keypress_data{ "test", {1, 0}, terminalpp::vk::lowercase_z, "tzes", "tzest", {2, 0} },
         keypress_data{ "test", {2, 0}, terminalpp::vk::lowercase_z, "tezs", "tezst", {3, 0} },
-        keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", "teszt", {4, 0} },
-        keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", "testz", {5, 0} },
+        keypress_data{ "test", {3, 0}, terminalpp::vk::lowercase_z, "tesz", "teszt", {3, 0} },
+        keypress_data{ "test", {4, 0}, terminalpp::vk::lowercase_z, "test", "testz", {3, 0} },
         
         // Pressing the backspace or DEL keys result in deleting the character
         // to the left of the cursor and retreating the cursor one step.
