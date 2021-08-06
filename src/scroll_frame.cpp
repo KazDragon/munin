@@ -7,6 +7,18 @@
 #include <boost/make_unique.hpp>
 namespace munin {
 
+namespace {
+
+constexpr terminalpp::attribute default_lowlight_attribute = {};
+
+constexpr terminalpp::attribute default_highlight_attribute = {
+    terminalpp::graphics::colour::cyan,
+    {},
+    terminalpp::graphics::intensity::bold
+};
+
+}
+
 // ==========================================================================
 // SCROLL_FRAME IMPLEMENTATION STRUCTURE
 // ==========================================================================
@@ -24,7 +36,15 @@ scroll_frame::scroll_frame()
   : pimpl_(boost::make_unique<impl>())
 {
     pimpl_->horizontal_scrollbar_ = make_horizontal_scrollbar();
+    pimpl_->horizontal_scrollbar_->set_lowlight_attribute(
+        default_lowlight_attribute);
+    pimpl_->horizontal_scrollbar_->set_highlight_attribute(
+        default_highlight_attribute);
     pimpl_->vertical_scrollbar_ = make_vertical_scrollbar();
+    pimpl_->vertical_scrollbar_->set_lowlight_attribute(
+        default_lowlight_attribute);
+    pimpl_->vertical_scrollbar_->set_highlight_attribute(
+        default_highlight_attribute);
 
     auto &attr = pimpl_->current_attribute_;
 
