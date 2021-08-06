@@ -15,12 +15,12 @@ public:
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
-    scroll_pane(std::shared_ptr<component> const &inner_component);
+    explicit scroll_pane(std::shared_ptr<component> const &inner_component);
 
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
-    ~scroll_pane();
+    ~scroll_pane() override;
 
     //* =====================================================================
     /// \brief Sets the attribute of the elements when the inner component
