@@ -123,7 +123,7 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
 
     edit_->insert_text("za"_ts);
     
-    ASSERT_EQ(terminalpp::point(2, 0), edit_->get_cursor_position());
+    ASSERT_EQ(terminalpp::point(1, 0), edit_->get_cursor_position());
     ASSERT_TRUE(edit_->get_cursor_state());
     
     munin::render_surface surface{cvs};
@@ -251,3 +251,38 @@ INSTANTIATE_TEST_SUITE_P(
         keypress_data{ terminalpp::vk::pgdn,         ' ', {0, 0} },
     })
 );
+
+namespace {
+class an_edit_with_a_caret_out_of_view : public a_new_edit
+{
+public:
+    an_edit_with_a_caret_out_of_view()
+    {
+        edit_->set_size({4, 1});
+        edit_->insert_text("testtest"_ts);
+        edit_->event(terminalpp::virtual_key{ terminalpp::vk::cursor_left});
+        edit_->event(terminalpp::virtual_key{ terminalpp::vk::cursor_left});
+        assert(edit_->get_cursor_position() == terminalpp::point(3, 0));
+    }
+};
+
+}
+
+TEST_F(an_edit_with_a_caret_out_of_view, updates_the_cursor_position_when_setting_the_edit_size)
+{
+    // Because the content is larger than the size and the caret is off
+    // the end, the cursor should be moved to match as far right as it can.
+    {
+        edit_->set_size({6, 1});
+        auto const expected_cursor_position = terminalpp::point{5, 0};
+        ASSERT_EQ(expected_cursor_position, edit_->get_cursor_position());
+    }
+
+    // If we grow the size larger than the content, then the cursor should
+    // max out where the caret was.
+    {
+        edit_->set_size({10, 1});
+        auto const expected_cursor_position = terminalpp::point{6, 0};
+        ASSERT_EQ(expected_cursor_position, edit_->get_cursor_position());
+    }
+}

@@ -38,6 +38,14 @@ struct viewport::impl
     }
     
     // ======================================================================
+    // GET_ANCHOR_BOUNDS
+    // ======================================================================
+    auto get_anchor_bounds() const
+    {
+        return anchor_bounds_;
+    }
+ 
+    // ======================================================================
     // GET_PREFERRED_SIZE
     // ======================================================================
     auto get_preferred_size() const
@@ -107,7 +115,7 @@ struct viewport::impl
     void draw(render_surface& surface, terminalpp::rectangle const &region)
     {
         auto const offset_region = terminalpp::rectangle{
-            region.origin_ + anchor_position_,
+            region.origin_ + anchor_bounds_.origin_,
             region.size_
         };
 
@@ -120,8 +128,8 @@ struct viewport::impl
         // viewport.  By offsetting by (-2, -2) (the negative of the anchor
         // position), the tracked component draws in the correct space.
         surface.offset_by({
-            -anchor_position_.x_,
-            -anchor_position_.y_
+            -anchor_bounds_.origin_.x_,
+            -anchor_bounds_.origin_.y_
         });
 
         // Ensure that the offset is unapplied before exit of this
@@ -129,8 +137,8 @@ struct viewport::impl
         BOOST_SCOPE_EXIT_ALL(&surface, this)
         {
             surface.offset_by({
-                anchor_position_.x_,
-                anchor_position_.y_
+                anchor_bounds_.origin_.x_,
+                anchor_bounds_.origin_.y_
             });
         };
 
@@ -149,7 +157,7 @@ struct viewport::impl
         {
             auto const translated_event = terminalpp::mouse::event {
                 mouse_event->action_,
-                mouse_event->position_ + anchor_position_
+                mouse_event->position_ + anchor_bounds_.origin_
             };
 
             return tracked_component_->event(translated_event);
@@ -182,7 +190,7 @@ struct viewport::impl
     void update_anchor_position()
     {
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
-        auto const old_anchor_position = anchor_position_;
+        auto const old_anchor_bounds = anchor_bounds_;
         auto const tracked_component_size = tracked_component_->get_size();
         auto const viewport_size = self_.get_size();
 
@@ -196,32 +204,33 @@ struct viewport::impl
         // If the viewport has changed its size, look to see if the tracked
         // component is contained entirely in the viewport.  If not, then
         // adjust the anchor appropriately.
-        auto const max_allowed_anchor_position = terminalpp::point {
+        anchor_bounds_.size_ = {
             tracked_component_size.width_ - viewport_size.width_,
             tracked_component_size.height_ - viewport_size.height_
         };
 
-        anchor_position_ = {
-            std::min(anchor_position_.x_, max_allowed_anchor_position.x_),
-            std::min(anchor_position_.y_, max_allowed_anchor_position.y_)
+        anchor_bounds_.origin_ = {
+            std::min(anchor_bounds_.origin_.x_, anchor_bounds_.size_.width_),
+            std::min(anchor_bounds_.origin_.y_, anchor_bounds_.size_.height_)
         };
 
         // Check to see if the tracked cursor has scrolled off any of the
         // edges of the viewport.  If so, then the anchor position must change 
         // just enough to keep the cursor within the visual area.
-        anchor_position_ = {
+        anchor_bounds_.origin_ = {
             boost::algorithm::clamp(
-                anchor_position_.x_, 
+                anchor_bounds_.origin_.x_, 
                 tracked_cursor_position.x_ - viewport_size.width_ + 1, 
                 tracked_cursor_position.x_),
             boost::algorithm::clamp(
-                anchor_position_.y_,
+                anchor_bounds_.origin_.y_,
                 tracked_cursor_position.y_ - viewport_size.height_ + 1, 
                 tracked_cursor_position.y_)
         };
 
-        if (old_anchor_position != anchor_position_)
+        if (old_anchor_bounds != anchor_bounds_)
         {
+            self_.on_anchor_bounds_changed();
             self_.on_redraw({terminalpp::rectangle{{}, self_.get_size()}});
         }
     }
@@ -235,8 +244,8 @@ struct viewport::impl
         auto const tracked_cursor_position = tracked_component_->get_cursor_position();
 
         cursor_position_ = {
-            tracked_cursor_position.x_ - anchor_position_.x_,
-            tracked_cursor_position.y_ - anchor_position_.y_
+            tracked_cursor_position.x_ - anchor_bounds_.origin_.x_,
+            tracked_cursor_position.y_ - anchor_bounds_.origin_.y_
         };
 
         if (old_cursor_position != cursor_position_)
@@ -261,6 +270,8 @@ private:
     void on_tracked_component_preferred_size_changed()
     {
         update_tracked_component_size();
+        update_anchor_position();
+        update_cursor_position();
         self_.on_preferred_size_changed();
     }
     
@@ -277,8 +288,8 @@ private:
             {
                 return terminalpp::rectangle{
                     { 
-                        region.origin_.x_ - anchor_position_.x_,
-                        region.origin_.y_ - anchor_position_.y_
+                        region.origin_.x_ - anchor_bounds_.origin_.x_,
+                        region.origin_.y_ - anchor_bounds_.origin_.y_
                     },
                     region.size_
                 };
@@ -320,7 +331,7 @@ private:
 
     viewport &self_;
     std::shared_ptr<component> tracked_component_;
-    terminalpp::point          anchor_position_;
+    terminalpp::rectangle      anchor_bounds_;
     terminalpp::point          cursor_position_;
 };
 
@@ -336,6 +347,14 @@ viewport::viewport(std::shared_ptr<component> tracked_component)
 // DESTRUCTOR
 // ==========================================================================
 viewport::~viewport() = default;
+
+// ==========================================================================
+// GET_ANCHOR_BOUNDS
+// ==========================================================================
+terminalpp::rectangle viewport::get_anchor_bounds() const
+{
+    return pimpl_->get_anchor_bounds();
+}
 
 // ==========================================================================
 // DO_SET_SIZE

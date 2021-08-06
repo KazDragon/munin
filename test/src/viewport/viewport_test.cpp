@@ -30,6 +30,13 @@ TEST_F(a_new_viewport, is_a_component)
     std::shared_ptr<munin::component> comp = viewport_;
 }
 
+TEST_F(a_new_viewport, has_zero_anchor_bounds)
+{
+    auto const expected_bounds = terminalpp::rectangle{};
+
+    ASSERT_EQ(expected_bounds, viewport_->get_anchor_bounds());
+}
+
 TEST_F(a_new_viewport, of_zero_size_draws_nothing)
 {
     terminalpp::canvas cvs{{4, 3}};
@@ -486,4 +493,66 @@ TEST_F(a_viewport, forwards_focus_previous_to_the_tracked_component)
 {
     EXPECT_CALL(*tracked_component_, do_focus_previous());
     viewport_->focus_previous();
+}
+
+TEST_F(a_viewport, when_the_same_size_as_the_tracked_component_has_zero_anchor_bounds)
+{
+    auto const tracked_size = terminalpp::extent{5, 5};
+
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_size));
+    tracked_component_->on_preferred_size_changed();
+
+    viewport_->set_size(tracked_size);
+
+    auto const expected_bounds = terminalpp::rectangle{};
+    ASSERT_EQ(expected_bounds, viewport_->get_anchor_bounds());
+}
+
+TEST_F(a_viewport, when_smaller_than_the_tracked_component_extends_possible_bounds)
+{
+    auto const tracked_size = terminalpp::extent{8, 6};
+    
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_size));
+    tracked_component_->on_preferred_size_changed();
+
+    auto const viewport_size = terminalpp::extent{4, 4};
+    viewport_->set_size(viewport_size);
+
+    // bounds.size_ = number of positions that the viewport could be anchored
+    // to, meaning tracked_size - viewport_size in general.
+    auto const expected_bounds = terminalpp::rectangle{{}, {4, 2}};
+    ASSERT_EQ(expected_bounds, viewport_->get_anchor_bounds());
+}
+
+TEST_F(a_viewport, when_the_cursor_is_moved_beyond_the_bounds_of_the_viewport_moves_the_anchor_origin)
+{
+    auto const tracked_size = terminalpp::extent{8, 6};
+    
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_size));
+    tracked_component_->on_preferred_size_changed();
+
+    auto const viewport_size = terminalpp::extent{4, 4};
+    viewport_->set_size(viewport_size);
+
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+    tracked_component_->on_cursor_state_changed();
+
+    bool anchor_point_changed = false;
+    viewport_->on_anchor_bounds_changed.connect([&]{ anchor_point_changed = true; });
+
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(Return(terminalpp::point{4, 5}));
+    tracked_component_->on_cursor_position_changed();
+
+    EXPECT_TRUE(anchor_point_changed);
+
+    // bounds.origin_ = anchor point of the viewport, i.e. position in the
+    // tracked component that is shown at the top-left of the viewport.
+    // Moving the origin does not affect the bounds.
+    auto const expected_bounds = terminalpp::rectangle{{1, 2}, {4, 2}};
+    ASSERT_EQ(expected_bounds, viewport_->get_anchor_bounds());
 }

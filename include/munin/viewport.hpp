@@ -21,6 +21,25 @@ public:
     //* =====================================================================
     ~viewport() override;
     
+    //* =====================================================================
+    /// \brief Returns the anchor bounds of the viewport.
+    ///
+    /// The anchor bounds are defined as the bounds in which the top-left
+    /// corner of the viewport could possibly be in relation to the tracked
+    /// component.  For example, if the underlying component is (20,20), and
+    /// the viewport was (5,5), then the bounds could by from (0,0)->(15,15)
+    /// before running out of space.  In the rectangle returned, the
+    /// origin refers to the actual anchor position, and the size refers
+    /// to the extent of the bounds as described above.
+    //* =====================================================================
+    terminalpp::rectangle get_anchor_bounds() const;
+
+    //* =====================================================================
+    /// \brief Connect to this signal in order to receive notifications when
+    /// the anchor bounds have changed.
+    //* =====================================================================
+    boost::signals2::signal<void ()> on_anchor_bounds_changed;
+
 private:
     //* =====================================================================
     /// \brief Called by set_size().  Derived classes must override this
