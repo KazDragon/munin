@@ -24,6 +24,32 @@ constexpr terminalpp::attribute default_highlight_attribute = {
 // ==========================================================================
 struct scroll_frame::impl
 {
+    // ======================================================================
+    // CONSTRUCTOR
+    // ======================================================================
+    impl(scroll_frame &self)
+      : self_(self)
+    {
+    }
+
+    // ======================================================================
+    // REDRAW_FRAME
+    // ======================================================================
+    void redraw_frame()
+    {
+        auto size = self_.get_size();
+        
+        auto north_beam_region = terminalpp::rectangle{{0,0}, {size.width_, 1}};
+        auto south_beam_region = terminalpp::rectangle{{0, size.height_ - 1}, {size.width_, 1}};
+        auto west_beam_region  = terminalpp::rectangle{{0, 1}, {1, size.height_ - 2}};
+        auto east_beam_region  = terminalpp::rectangle{{size.width_ - 1, 1}, {1, size.height_ - 2}};
+
+        self_.on_redraw({
+            north_beam_region, south_beam_region, west_beam_region, east_beam_region
+        });
+    }
+
+    scroll_frame &self_;
     terminalpp::attribute current_attribute_;
     std::shared_ptr<horizontal_scrollbar> horizontal_scrollbar_;
     std::shared_ptr<vertical_scrollbar> vertical_scrollbar_;
@@ -33,7 +59,7 @@ struct scroll_frame::impl
 // CONSTRUCTOR
 // ==========================================================================
 scroll_frame::scroll_frame()
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(boost::make_unique<impl>(*this))
 {
     pimpl_->horizontal_scrollbar_ = make_horizontal_scrollbar();
     pimpl_->horizontal_scrollbar_->set_lowlight_attribute(
@@ -168,6 +194,7 @@ void scroll_frame::do_set_highlight_attribute(
 void scroll_frame::do_inner_focus_changed()
 {
     pimpl_->current_attribute_ = get_focus_attribute();
+    pimpl_->redraw_frame();
 }
 
 // ==========================================================================
