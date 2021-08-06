@@ -230,6 +230,7 @@ struct viewport::impl
 
         if (old_anchor_bounds != anchor_bounds_)
         {
+            std::cout << "anchor bounds changed: " << anchor_bounds_ << std::endl;
             self_.on_anchor_bounds_changed();
             self_.on_redraw({terminalpp::rectangle{{}, self_.get_size()}});
         }
