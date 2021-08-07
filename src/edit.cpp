@@ -171,10 +171,7 @@ private:
     // ======================================================================
     void handle_cursor_left()
     {
-        if (caret_position != 0)
-        {
-            set_caret_position(caret_position - 1);
-        }
+        set_caret_position(caret_position - 1);
     }
 
     // ======================================================================
@@ -182,10 +179,7 @@ private:
     // ======================================================================
     void handle_cursor_right()
     {
-        if (caret_position < content.size())
-        {
-            set_caret_position(caret_position + 1);
-        }
+        set_caret_position(caret_position + 1);
     }
 
     // ======================================================================
