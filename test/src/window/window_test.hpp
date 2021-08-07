@@ -12,7 +12,7 @@ protected:
     {
     }
     
-    std::shared_ptr<mock_component> content_ = std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> content_ { make_mock_component() };
     std::unique_ptr<munin::window>  window_;
 
     terminalpp::byte_storage result_;
