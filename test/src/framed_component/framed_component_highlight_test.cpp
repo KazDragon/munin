@@ -32,7 +32,8 @@ public:
 std::shared_ptr<mock_frame_with_focus_attribute>
     make_mock_frame_with_focus_attribute()
 {
-    return std::make_shared<mock_frame_with_focus_attribute>();
+    return std::make_shared<
+        testing::NiceMock<mock_frame_with_focus_attribute>>();
 }
 
 class a_framed_component_with_an_inner_component
