@@ -6,10 +6,8 @@
 class container_test_base : public testing::Test
 {
 protected :
-    void SetUp() override
+    container_test_base()
     {
-        Test::SetUp();
-
         container.on_preferred_size_changed.connect(
             [this]()
             {
@@ -78,10 +76,8 @@ class a_new_container : public container_test_base
 class a_container_with_one_component : public a_container
 {
 protected :
-    void SetUp() override
+    a_container_with_one_component()
     {
-        a_container::SetUp();
-
         container.add_component(component);
 
         ResetCounters();
@@ -93,12 +89,10 @@ protected :
 class a_container_with_one_component_that_has_focus : public a_container_with_one_component
 {
 protected :
-    void SetUp() override
+    a_container_with_one_component_that_has_focus()
     {
         using testing::InSequence;
         using testing::Return;
-
-        a_container_with_one_component::SetUp();
 
         {
             InSequence s1;
@@ -117,10 +111,8 @@ protected :
 class a_container_with_two_components : public a_container
 {
 protected :
-    void SetUp() override
+    a_container_with_two_components()
     {
-        a_container::SetUp();
-
         container.add_component(component0);
         container.add_component(component1);
     }
@@ -132,12 +124,10 @@ protected :
 class a_container_with_two_components_where_the_first_has_focus : public a_container_with_two_components
 {
 protected :
-    void SetUp() override
+    a_container_with_two_components_where_the_first_has_focus()
     {
         using testing::InSequence;
         using testing::Return;
-
-        a_container_with_two_components::SetUp();
 
         {
             InSequence s1;
@@ -158,12 +148,10 @@ protected :
 class a_container_with_two_components_where_the_last_has_focus : public a_container_with_two_components
 {
 protected :
-    void SetUp() override
+    a_container_with_two_components_where_the_last_has_focus()
     {
         using testing::InSequence;
         using testing::Return;
-
-        a_container_with_two_components::SetUp();
 
         {
             InSequence s1;
@@ -184,10 +172,8 @@ protected :
 class a_container_with_three_components : public a_container_with_two_components
 {
 protected :
-    void SetUp() override
+    a_container_with_three_components()
     {
-        a_container_with_two_components::SetUp();
-
         container.add_component(component2);
     }
 
@@ -197,12 +183,10 @@ protected :
 class a_container_with_three_components_where_the_first_has_focus : public a_container_with_three_components
 {
 protected :
-    void SetUp() override
+    a_container_with_three_components_where_the_first_has_focus()
     {
         using testing::InSequence;
         using testing::Return;
-
-        a_container_with_three_components::SetUp();
 
         {
             InSequence s1;
@@ -223,12 +207,10 @@ protected :
 class a_container_with_three_components_where_the_last_has_focus : public a_container_with_three_components
 {
 protected :
-    void SetUp() override
+    a_container_with_three_components_where_the_last_has_focus()
     {
         using testing::InSequence;
         using testing::Return;
-
-        a_container_with_three_components::SetUp();
 
         {
             InSequence s1;
@@ -251,9 +233,8 @@ class containers_with_a_component
   : public testing::TestWithParam<TestData>
 {
 protected :
-    void SetUp() override
+    containers_with_a_component()
     {
-        testing::TestWithParam<TestData>::SetUp();
         container.add_component(component);
     }
 
@@ -266,12 +247,10 @@ class containers_with_a_focussed_component
   : public containers_with_a_component<TestData>
 {
 protected :
-    void SetUp() override
+    containers_with_a_focussed_component()
     {
         using testing::InSequence;
         using testing::Return;
-
-        containers_with_a_component<TestData>::SetUp();
 
         {
             InSequence s1;

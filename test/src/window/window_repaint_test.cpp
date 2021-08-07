@@ -71,10 +71,6 @@ protected :
     repainting_a_window()
       : canvas_(window_size)
     {
-    }
-    
-    void SetUp()
-    {
         reset_canvas(canvas_);
         
         ON_CALL(*content_, do_draw(_, _))

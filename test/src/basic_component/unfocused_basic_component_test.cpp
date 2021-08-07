@@ -9,10 +9,8 @@ namespace {
 class an_unfocused_basic_component_that_receives_focus : public testing::Test
 {
 protected :
-    void SetUp() override
+    an_unfocused_basic_component_that_receives_focus()
     {
-        Test::SetUp();
-     
         assert(!component_.has_focus());
 
         component_.on_focus_set.connect([this]
@@ -91,11 +89,9 @@ TEST_F(an_unfocused_basic_component_that_receives_focus, does_nothing_on_mouse_u
 namespace {
 class an_unfocused_basic_component_that_does_not_receive_focus : public testing::Test
 {
-protected :
-    void SetUp() override
+protected:
+    an_unfocused_basic_component_that_does_not_receive_focus()
     {
-        Test::SetUp();
-     
         assert(!component_.has_focus());
 
         component_.on_focus_set.connect([this]

@@ -7,7 +7,7 @@
 class a_solid_frame_with_no_unicode_support : public testing::Test
 {
 protected :
-    void SetUp() override
+    a_solid_frame_with_no_unicode_support()
     {
         using testing::Return;
 
@@ -24,7 +24,7 @@ using a_solid_frame = a_solid_frame_with_no_unicode_support;
 class a_solid_frame_with_unicode_support : public testing::Test
 {
 protected :
-    void SetUp() override
+    a_solid_frame_with_unicode_support()
     {
         using testing::Return;
 

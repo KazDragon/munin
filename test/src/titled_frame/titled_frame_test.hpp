@@ -4,7 +4,7 @@
 class a_titled_frame_with_no_unicode_support : public testing::Test
 {
 protected :
-    void SetUp() override
+    a_titled_frame_with_no_unicode_support()
     {
         using testing::Return;
         
@@ -21,7 +21,7 @@ using a_titled_frame = a_titled_frame_with_no_unicode_support;
 class a_titled_frame_with_unicode_support : public testing::Test
 {
 protected :
-    void SetUp() override
+    a_titled_frame_with_unicode_support()
     {
         using testing::Return;
         
