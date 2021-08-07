@@ -25,7 +25,7 @@ TEST_F(a_new_container, reports_attributes_as_json)
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
-    auto lyt = std::unique_ptr<mock_layout>(new mock_layout);
+    auto lyt = make_mock_layout();
 
     EXPECT_CALL(*lyt, do_get_preferred_size(_, _))
         .WillRepeatedly(Return(layout_size));
@@ -63,7 +63,7 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
 TEST_F(a_container_with_two_components, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
-    auto lyt = std::unique_ptr<mock_layout>(new mock_layout);
+    auto lyt = make_mock_layout();
 
     EXPECT_CALL(*lyt, do_get_preferred_size(_, _))
         .WillRepeatedly(Return(layout_size));

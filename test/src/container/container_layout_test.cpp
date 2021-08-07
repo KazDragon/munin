@@ -9,7 +9,7 @@ using testing::Return;
 
 TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_component_is_added)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
 
     munin::container container;
 
@@ -19,7 +19,7 @@ TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_compone
 
 TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
     auto component = std::make_shared<mock_component>();
 
     munin::container container;
@@ -31,7 +31,7 @@ TEST(a_container_with_elements, lays_the_container_out_when_a_component_is_added
 
 TEST_F(a_container, lays_out_the_container_when_a_component_is_added)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
     auto hint = std::string{"hint"};
     auto component = std::make_shared<mock_component>();
     auto size = terminalpp::extent{80, 24};
@@ -54,7 +54,7 @@ TEST_F(a_container, reports_a_preferred_size_change_when_a_component_is_added)
 
 TEST_F(a_container, lays_out_the_container_when_a_component_is_removed)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
     auto component = std::make_shared<mock_component>();
 
     container.add_component(component);
@@ -69,7 +69,7 @@ TEST_F(a_container, lays_out_the_container_when_a_component_is_removed)
 
 TEST_F(a_container, lays_out_the_container_when_its_size_is_changed)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
 
     EXPECT_CALL(*layout, do_layout(_, _, _))
         .Times(2);
@@ -80,7 +80,7 @@ TEST_F(a_container, lays_out_the_container_when_its_size_is_changed)
 
 TEST_F(a_container, has_the_preferred_size_of_its_layout)
 {
-    auto layout = std::unique_ptr<mock_layout>(new mock_layout);
+    auto layout = make_mock_layout();
     auto hint = std::string{"preferred hint"};
     auto component = std::make_shared<mock_component>();
 
