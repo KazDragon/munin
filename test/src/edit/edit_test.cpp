@@ -36,6 +36,11 @@ TEST_F(a_new_edit, has_its_cursor_at_home)
     ASSERT_EQ(terminalpp::point(0, 0), edit_->get_cursor_position());
 }
 
+TEST_F(a_new_edit, has_its_caret_in_the_0_position)
+{
+    ASSERT_EQ(terminalpp::coordinate_type(0), edit_->get_caret_position());
+}
+
 TEST_F(a_new_edit, draws_blanks)
 {
     terminalpp::canvas cvs{{4, 3}};

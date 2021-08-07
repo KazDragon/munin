@@ -23,6 +23,11 @@ public:
     ~edit() override;
     
     //* =====================================================================
+    /// \brief Returns the position of the text caret (insert position)
+    //* =====================================================================
+    terminalpp::coordinate_type get_caret_position() const;
+
+    //* =====================================================================
     /// \brief Returns the total text content of the edit.
     //* =====================================================================
     terminalpp::string get_text() const;
