@@ -29,6 +29,18 @@ struct edit::impl
     }
 
     // ======================================================================
+    // SET_CARET_POSITION
+    // ======================================================================
+    void set_caret_position(terminalpp::coordinate_type position)
+    {
+        caret_position = boost::algorithm::clamp(
+            position,
+            0,
+            content.size());
+        update_cursor_position();
+    }
+
+    // ======================================================================
     // UPDATE_CURSOR_POSITION
     // ======================================================================
     void update_cursor_position()
@@ -38,7 +50,7 @@ struct edit::impl
             boost::algorithm::clamp(
                 caret_position,
                 0,
-                self_.get_size().width_ - 1),
+                std::max(0, self_.get_size().width_ - 1)),
             0
         });
         updating_cursor_position = false;
@@ -82,8 +94,7 @@ struct edit::impl
         auto const new_content_size = terminalpp::coordinate_type(content.size());
         auto const added_content_size = new_content_size - old_content_size;
 
-        caret_position += added_content_size;
-        update_cursor_position();
+        set_caret_position(caret_position + added_content_size);
 
         // Adding new text causes not only the space under the old cursor to
         // be redrawn, but also everything to the right of that as it is shifted
@@ -152,8 +163,7 @@ struct edit::impl
                 terminalpp::coordinate_type(content.size()),
                 mouse.position_.x_);
             
-            caret_position = new_cursor_x;
-            update_cursor_position();
+            set_caret_position(new_cursor_x);
             self_.set_focus();
         }
     }
@@ -166,8 +176,7 @@ private:
     {
         if (caret_position != 0)
         {
-            --caret_position;
-            update_cursor_position();
+            set_caret_position(caret_position - 1);
         }
     }
 
@@ -178,8 +187,7 @@ private:
     {
         if (caret_position < content.size())
         {
-            ++caret_position;
-            update_cursor_position();
+            set_caret_position(caret_position + 1);
         }
     }
 
@@ -188,8 +196,7 @@ private:
     // ======================================================================
     void handle_home()
     {
-        caret_position = 0;
-        update_cursor_position();
+        set_caret_position(0);
     }
 
     // ======================================================================
@@ -199,8 +206,7 @@ private:
     {
         auto const rightmost_cursor_position = 
             terminalpp::coordinate_type(content.size());
-        caret_position = rightmost_cursor_position;
-        update_cursor_position();
+        set_caret_position(rightmost_cursor_position);
     }
 
     // ======================================================================
@@ -217,8 +223,7 @@ private:
                 content.begin() + (caret_position - 1);
             content.erase(erased_content, erased_content + 1);
     
-            --caret_position;
-            update_cursor_position();
+            set_caret_position(caret_position - 1);
             self_.on_preferred_size_changed();
             
             self_.on_redraw({{
@@ -252,6 +257,14 @@ edit::edit()
 // DESTRUCTOR
 // ==========================================================================
 edit::~edit() = default;
+
+// ==========================================================================
+// SET_CARET_POSITION
+// ==========================================================================
+void edit::set_caret_position(terminalpp::coordinate_type position)
+{
+    pimpl_->set_caret_position(position);
+}
 
 // ==========================================================================
 // GET_CARET_POSITION
