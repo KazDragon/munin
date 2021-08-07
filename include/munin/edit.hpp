@@ -12,6 +12,7 @@ namespace munin {
 class MUNIN_EXPORT edit : public basic_component
 {
 public:
+    using text_index = std::int32_t;
     //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
@@ -25,12 +26,12 @@ public:
     //* =====================================================================
     /// \brief Sets the text caret position
     //* =====================================================================
-    void set_caret_position(terminalpp::coordinate_type position);
+    void set_caret_position(text_index position);
 
     //* =====================================================================
     /// \brief Returns the position of the text caret (insert position)
     //* =====================================================================
-    terminalpp::coordinate_type get_caret_position() const;
+    text_index get_caret_position() const;
 
     //* =====================================================================
     /// \brief Returns the total text content of the edit.

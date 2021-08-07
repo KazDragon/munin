@@ -16,7 +16,7 @@ struct edit::impl
 {
     edit &self_;
     terminalpp::string content;
-    terminalpp::coordinate_type caret_position = 0;
+    edit::text_index caret_position = 0;
     terminalpp::point cursor_position{0, 0};
 
     // ======================================================================
@@ -30,7 +30,7 @@ struct edit::impl
     // ======================================================================
     // SET_CARET_POSITION
     // ======================================================================
-    void set_caret_position(terminalpp::coordinate_type position)
+    void set_caret_position(edit::text_index position)
     {
         caret_position = boost::algorithm::clamp(
             position,
@@ -75,8 +75,7 @@ struct edit::impl
                     && !is_control_element(element);
             };
             
-        auto const old_content_size = 
-            terminalpp::coordinate_type(content.size());
+        auto const old_content_size = edit::text_index(content.size());
         
         auto const insertable_text = 
             text | boost::adaptors::filtered(is_visible_in_edits);
@@ -88,7 +87,7 @@ struct edit::impl
             begin(insertable_text),
             end(insertable_text));
         
-        auto const new_content_size = terminalpp::coordinate_type(content.size());
+        auto const new_content_size = edit::text_index(content.size());
         auto const added_content_size = new_content_size - old_content_size;
 
         set_caret_position(caret_position + added_content_size);
@@ -99,11 +98,11 @@ struct edit::impl
 
         // This must then be trimmed to the extents of the space currently taken 
         // by the edit.
-        terminalpp::coordinate_type const remaining_space = std::max(
-            terminalpp::coordinate_type(self_.get_size().width_ - old_caret_position),
-            terminalpp::coordinate_type(0));
+        auto const remaining_space = std::max(
+            self_.get_size().width_ - old_caret_position,
+            0);
 
-        terminalpp::coordinate_type const changed_text_length = std::min(
+        auto const changed_text_length = std::min(
             new_content_size - old_caret_position,
             remaining_space);
             
@@ -160,7 +159,7 @@ struct edit::impl
                 terminalpp::coordinate_type(content.size()),
                 mouse.position_.x_);
             
-            set_caret_position(new_cursor_x);
+            set_caret_position(edit::text_index(new_cursor_x));
             self_.set_focus();
         }
     }
@@ -196,7 +195,7 @@ private:
     void handle_end()
     {
         auto const rightmost_cursor_position = 
-            terminalpp::coordinate_type(content.size());
+            edit::text_index(content.size());
         set_caret_position(rightmost_cursor_position);
     }
 
@@ -208,7 +207,7 @@ private:
         if (caret_position != 0)
         {
             auto const redraw_amount = 
-                (terminalpp::coordinate_type(content.size()) - caret_position) + 1;
+                (edit::text_index(content.size()) - caret_position) + 1;
 
             auto const erased_content = 
                 content.begin() + (caret_position - 1);
@@ -252,7 +251,7 @@ edit::~edit() = default;
 // ==========================================================================
 // SET_CARET_POSITION
 // ==========================================================================
-void edit::set_caret_position(terminalpp::coordinate_type position)
+void edit::set_caret_position(edit::text_index position)
 {
     pimpl_->set_caret_position(position);
 }
@@ -260,7 +259,7 @@ void edit::set_caret_position(terminalpp::coordinate_type position)
 // ==========================================================================
 // GET_CARET_POSITION
 // ==========================================================================
-terminalpp::coordinate_type edit::get_caret_position() const
+edit::text_index edit::get_caret_position() const
 {
     return pimpl_->caret_position;
 }

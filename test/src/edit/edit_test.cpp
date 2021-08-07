@@ -38,13 +38,13 @@ TEST_F(a_new_edit, has_its_cursor_at_home)
 
 TEST_F(a_new_edit, has_its_caret_in_the_0_position)
 {
-    ASSERT_EQ(terminalpp::coordinate_type(0), edit_->get_caret_position());
+    ASSERT_EQ(munin::edit::text_index(0), edit_->get_caret_position());
 }
 
 TEST_F(a_new_edit, when_setting_the_caret_position_keeps_it_at_the_0_position)
 {
     edit_->set_caret_position(5);
-    ASSERT_EQ(terminalpp::coordinate_type(0), edit_->get_caret_position());
+    ASSERT_EQ(munin::edit::text_index(0), edit_->get_caret_position());
 }
 
 TEST_F(a_new_edit, draws_blanks)
@@ -135,7 +135,7 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
     
     ASSERT_EQ(terminalpp::point(1, 0), edit_->get_cursor_position());
     ASSERT_TRUE(edit_->get_cursor_state());
-    ASSERT_EQ(terminalpp::coordinate_type(2), edit_->get_caret_position());
+    ASSERT_EQ(munin::edit::text_index(2), edit_->get_caret_position());
     
     munin::render_surface surface{cvs};
     surface.offset_by({1, 1});
@@ -158,10 +158,10 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
 namespace {
 
 using keypress_data = std::tuple<
-    terminalpp::vk,             // character code
-    terminalpp::element,        // representation
-    terminalpp::point,          // expected cursor position
-    terminalpp::coordinate_type // expected caret position
+    terminalpp::vk,         // character code
+    terminalpp::element,    // representation
+    terminalpp::point,      // expected cursor position
+    munin::edit::text_index // expected caret position
 >;
 
 class receiving_keypresses 
@@ -276,7 +276,7 @@ public:
         edit_->insert_text("testtest"_ts);
         edit_->event(terminalpp::virtual_key{ terminalpp::vk::cursor_left});
         edit_->event(terminalpp::virtual_key{ terminalpp::vk::cursor_left});
-        assert(edit_->get_caret_position() == terminalpp::coordinate_type(6));
+        assert(edit_->get_caret_position() == munin::edit::text_index(6));
         assert(edit_->get_cursor_position() == terminalpp::point(3, 0));
     }
 };
@@ -342,7 +342,7 @@ TEST_F(an_edit_with_content, updates_the_cursor_position_when_the_caret_is_set)
         });
 
     {
-        auto const expected_caret_position = terminalpp::coordinate_type{0};
+        auto const expected_caret_position = munin::edit::text_index{0};
         auto const expected_cursor_position = terminalpp::point{0, 0};
         edit_->set_caret_position(0);
 
@@ -351,7 +351,7 @@ TEST_F(an_edit_with_content, updates_the_cursor_position_when_the_caret_is_set)
     }
 
     {
-        auto const expected_caret_position = terminalpp::coordinate_type{2};
+        auto const expected_caret_position = munin::edit::text_index{2};
         auto const expected_cursor_position = terminalpp::point{2, 0};
         edit_->set_caret_position(2);
 
@@ -362,7 +362,7 @@ TEST_F(an_edit_with_content, updates_the_cursor_position_when_the_caret_is_set)
     {
         // Setting the caret position beyond the bounds of the content should
         // pin it to the right of the content.
-        auto const expected_caret_position = terminalpp::coordinate_type{4};
+        auto const expected_caret_position = munin::edit::text_index{4};
         auto const expected_cursor_position = terminalpp::point{4, 0};
         edit_->set_caret_position(100);
 
