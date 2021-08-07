@@ -34,7 +34,7 @@ public:
                         });
                 });
 
-        ON_CALL(*inner_component_, do_get_preferred_size)
+        ON_CALL(*inner_component_, do_get_preferred_size())
             .WillByDefault(Return(terminalpp::extent{10, 10}));
 
         ON_CALL(*inner_component_, do_set_position(_))

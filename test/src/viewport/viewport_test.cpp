@@ -11,6 +11,8 @@
 
 using testing::Invoke;
 using testing::Return;
+using testing::ReturnPointee;
+using testing::SaveArg;
 using testing::Values;
 using testing::_;
 
@@ -555,4 +557,56 @@ TEST_F(a_viewport, when_the_cursor_is_moved_beyond_the_bounds_of_the_viewport_mo
     // Moving the origin does not affect the bounds.
     auto const expected_bounds = terminalpp::rectangle{{1, 2}, {4, 2}};
     ASSERT_EQ(expected_bounds, viewport_->get_anchor_bounds());
+}
+
+TEST_F(a_viewport, when_the_preferred_size_is_changed_so_that_the_anchor_is_too_far_right_reanchors)
+{
+    // tracked component will be whatever size we tell it.
+    auto tracked_size = terminalpp::extent{};
+    ON_CALL(*tracked_component_, do_set_size(_))
+        .WillByDefault(SaveArg<0>(&tracked_size));
+    ON_CALL(*tracked_component_, do_get_size())
+        .WillByDefault(ReturnPointee(&tracked_size));
+
+    auto tracked_preferred_size = terminalpp::extent{};
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(ReturnPointee(&tracked_preferred_size));
+
+    auto tracked_cursor_position = terminalpp::point{};
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(ReturnPointee(&tracked_cursor_position));
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+
+    auto anchor = terminalpp::rectangle{};
+    viewport_->on_anchor_bounds_changed.connect(
+        [&]{ anchor = viewport_->get_anchor_bounds(); });
+
+    auto const viewport_size = terminalpp::extent{12, 8};
+    viewport_->set_size(viewport_size);
+    
+    // Now make the tracked component bigger.
+    tracked_preferred_size = terminalpp::extent{16, 12};
+    tracked_component_->on_preferred_size_changed();
+
+    // Move the cursor to the bottom right so that the parts of the
+    // tracked component that will fall out of view are visible.
+    tracked_cursor_position = {15, 11};
+    tracked_component_->on_cursor_position_changed();
+
+    // Move the cursor into the safe space in the view.  This should
+    // not reanchor the viewport.
+    tracked_cursor_position = {10, 6};
+    tracked_component_->on_cursor_position_changed();
+
+    // This is the actual test.  By shrinking the preferred size of the 
+    // tracked component, this will cause a re-anchor of the viewport, since
+    // some of the view is no longer relevant and more display can be pulled
+    // in from the left.  However, this also necessitates a cursor change
+    // since it will have to move in the same relation as the anchor.
+    tracked_preferred_size = terminalpp::extent{14, 10};
+    tracked_component_->on_preferred_size_changed();
+
+    ASSERT_EQ(terminalpp::rectangle({2, 2}, {2, 2}), anchor);
+    ASSERT_EQ(terminalpp::point(8, 4), viewport_->get_cursor_position());
 }
