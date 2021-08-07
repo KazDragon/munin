@@ -87,8 +87,7 @@ protected :
         ResetCounters();
     }
 
-    std::shared_ptr<mock_component> component =
-        std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> component { make_mock_component() };
 };
 
 class a_container_with_one_component_that_has_focus : public a_container_with_one_component
@@ -126,10 +125,8 @@ protected :
         container.add_component(component1);
     }
 
-    std::shared_ptr<mock_component> component0 =
-        std::make_shared<mock_component>();
-    std::shared_ptr<mock_component> component1 =
-        std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> component0 { make_mock_component() };
+    std::shared_ptr<mock_component> component1 { make_mock_component() };
 };
 
 class a_container_with_two_components_where_the_first_has_focus : public a_container_with_two_components
@@ -194,8 +191,7 @@ protected :
         container.add_component(component2);
     }
 
-    std::shared_ptr<mock_component> component2 =
-        std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> component2 { make_mock_component() };
 };
 
 class a_container_with_three_components_where_the_first_has_focus : public a_container_with_three_components
@@ -262,8 +258,7 @@ protected :
     }
 
     munin::container container;
-    std::shared_ptr<mock_component> component =
-        std::make_shared<mock_component>();
+    std::shared_ptr<mock_component> component { make_mock_component() };
 };
 
 template <class TestData>
