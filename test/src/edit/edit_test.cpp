@@ -286,3 +286,32 @@ TEST_F(an_edit_with_a_caret_out_of_view, updates_the_cursor_position_when_settin
         ASSERT_EQ(expected_cursor_position, edit_->get_cursor_position());
     }
 }
+
+namespace {
+
+class an_edit_with_content : public a_new_edit
+{
+public:
+    an_edit_with_content()
+    {
+        edit_->insert_text("test"_ts);
+    }
+};
+
+}
+
+TEST_F(an_edit_with_content, updates_the_preferred_size_when_text_is_deleted)
+{
+    auto preferred_size = terminalpp::extent{};
+    edit_->on_preferred_size_changed.connect(
+        [&]
+        {
+            preferred_size = edit_->get_preferred_size();
+        });
+
+    edit_->event(terminalpp::virtual_key{terminalpp::vk::bs});
+
+    // Prefer enough space for "tes_" (including cursor).
+    auto const expected_preferred_size = terminalpp::extent{4, 1};
+    ASSERT_EQ(expected_preferred_size, preferred_size);
+}
