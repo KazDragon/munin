@@ -28,6 +28,14 @@ struct edit::impl
     }
 
     // ======================================================================
+    // GET_LENGTH
+    // ======================================================================
+    edit::text_index get_length() const
+    {
+        return edit::text_index(content.size());
+    }
+
+    // ======================================================================
     // SET_CARET_POSITION
     // ======================================================================
     void set_caret_position(edit::text_index position)
@@ -35,7 +43,7 @@ struct edit::impl
         caret_position = boost::algorithm::clamp(
             position,
             0,
-            content.size());
+            get_length());
         update_cursor_position();
     }
 
@@ -75,7 +83,7 @@ struct edit::impl
                     && !is_control_element(element);
             };
             
-        auto const old_content_size = edit::text_index(content.size());
+        auto const old_content_length = get_length();
         
         auto const insertable_text = 
             text | boost::adaptors::filtered(is_visible_in_edits);
@@ -87,10 +95,10 @@ struct edit::impl
             begin(insertable_text),
             end(insertable_text));
         
-        auto const new_content_size = edit::text_index(content.size());
-        auto const added_content_size = new_content_size - old_content_size;
+        auto const new_content_length = get_length();
+        auto const added_content_length = new_content_length - old_content_length;
 
-        set_caret_position(caret_position + added_content_size);
+        set_caret_position(caret_position + added_content_length);
 
         // Adding new text causes not only the space under the old cursor to
         // be redrawn, but also everything to the right of that as it is shifted
@@ -103,7 +111,7 @@ struct edit::impl
             0);
 
         auto const changed_text_length = std::min(
-            new_content_size - old_caret_position,
+            new_content_length - old_caret_position,
             remaining_space);
             
         self_.on_preferred_size_changed();
@@ -156,7 +164,7 @@ struct edit::impl
         if (mouse.action_ == terminalpp::mouse::event_type::left_button_down)
         {
             auto const new_cursor_x = std::min(
-                terminalpp::coordinate_type(content.size()),
+                get_length(),
                 mouse.position_.x_);
             
             set_caret_position(edit::text_index(new_cursor_x));
@@ -194,9 +202,7 @@ private:
     // ======================================================================
     void handle_end()
     {
-        auto const rightmost_cursor_position = 
-            edit::text_index(content.size());
-        set_caret_position(rightmost_cursor_position);
+        set_caret_position(get_length());
     }
 
     // ======================================================================
@@ -207,7 +213,7 @@ private:
         if (caret_position != 0)
         {
             auto const redraw_amount = 
-                (edit::text_index(content.size()) - caret_position) + 1;
+                (get_length() - caret_position) + 1;
 
             auto const erased_content = 
                 content.begin() + (caret_position - 1);
@@ -269,7 +275,7 @@ edit::text_index edit::get_caret_position() const
 // ==========================================================================
 edit::text_index edit::get_length() const
 {
-    return edit::text_index(pimpl_->content.size());
+    return pimpl_->get_length();
 }
 
 // ==========================================================================
@@ -303,9 +309,9 @@ void edit::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent edit::do_get_preferred_size() const
 {
-    return terminalpp::extent(
-        terminalpp::coordinate_type(pimpl_->content.size() + 1),
-        1);
+    // An edit would prefer to have a width that is the length of the text
+    // content, plus one space for a cursor to sit at the end.
+    return terminalpp::extent{get_length() + 1, 1};
 }
 
 // ==========================================================================
@@ -350,7 +356,7 @@ void edit::do_draw(
             terminalpp::coordinate_type column,
             terminalpp::coordinate_type row)
         {
-            if (column < pimpl_->content.size())
+            if (column < get_length())
             {
                 elem = pimpl_->content[column];
             }
