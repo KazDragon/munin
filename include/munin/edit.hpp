@@ -34,6 +34,11 @@ public:
     text_index get_caret_position() const;
 
     //* =====================================================================
+    /// \brief Returns the length of the text.
+    //* =====================================================================
+    text_index get_length() const;
+
+    //* =====================================================================
     /// \brief Returns the total text content of the edit.
     //* =====================================================================
     terminalpp::string get_text() const;

@@ -370,3 +370,11 @@ TEST_F(an_edit_with_content, updates_the_cursor_position_when_the_caret_is_set)
         ASSERT_EQ(expected_cursor_position, edit_->get_cursor_position());
     }
 }
+
+TEST_F(an_edit_with_content, can_have_its_caret_set_to_the_end)
+{
+    edit_->set_caret_position(edit_->get_length());
+    auto const expected_caret_position = munin::edit::text_index{4};
+
+    ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
+}
