@@ -13,7 +13,7 @@ class a_framed_component_with_an_inner_component
   : public testing::Test
 {
 protected:
-    void SetUp() override
+    a_framed_component_with_an_inner_component()
     {
         framed_component_->on_focus_set.connect([this]{++focus_set_count_;});
         framed_component_->on_focus_lost.connect([this]{++focus_lost_count_;});
@@ -39,10 +39,8 @@ class a_framed_component_with_an_inner_component_that_takes_no_focus
   : public a_framed_component_with_an_inner_component
 {
 protected:
-    void SetUp() override
+    a_framed_component_with_an_inner_component_that_takes_no_focus()
     {
-        a_framed_component_with_an_inner_component::SetUp();
-
         ON_CALL(*mock_inner_, do_set_focus())
             .WillByDefault(Return());
         ON_CALL(*mock_inner_, do_lose_focus())
@@ -91,10 +89,8 @@ class a_framed_component_with_an_inner_component_that_can_have_focus_set
   : public a_framed_component_with_an_inner_component
 {
 protected:
-    void SetUp() override
+    a_framed_component_with_an_inner_component_that_can_have_focus_set()
     {
-        a_framed_component_with_an_inner_component::SetUp();
-
         ON_CALL(*mock_inner_, do_set_focus())
             .WillByDefault(Invoke([this]{
                 has_focus_ = true;
@@ -155,10 +151,8 @@ class a_framed_component_with_an_inner_component_that_has_focus
   : public a_framed_component_with_an_inner_component
 {
 protected:
-    void SetUp() override
+    a_framed_component_with_an_inner_component_that_has_focus()
     {
-        a_framed_component_with_an_inner_component::SetUp();
-
         ON_CALL(*mock_inner_, do_lose_focus())
             .WillByDefault(Invoke([this]{
                 has_focus_ = false;

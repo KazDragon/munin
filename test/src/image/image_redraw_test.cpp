@@ -6,15 +6,14 @@
 class an_image_to_be_redrawn : public testing::Test
 {
 protected :
-    an_image_to_be_redrawn() = default;
+    an_image_to_be_redrawn()
+      : an_image_to_be_redrawn("")
+    {
+    }
 
     template <class T>
     explicit an_image_to_be_redrawn(T &&t)
       : image_(std::forward<T>(t))
-    {
-    }
-
-    void SetUp() override
     {
         image_.set_size({6, 4});
 

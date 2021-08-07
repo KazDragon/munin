@@ -18,7 +18,7 @@ using framed_component_mouse_data = std::tuple<
 class framed_components : public testing::TestWithParam<framed_component_mouse_data>
 {   
 protected :
-    void SetUp() override
+    framed_components()
     {
         // Fake out the position and size functions for the frame and inner
         // components.

@@ -196,7 +196,7 @@ class unjustified_text_areas
   : public testing::TestWithParam<text_area_layout_data>
 {
 protected:
-    void SetUp() override
+    unjustified_text_areas()
     {
         auto const &param = GetParam();
         auto const &size = std::get<0>(param);

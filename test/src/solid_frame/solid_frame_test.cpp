@@ -106,7 +106,7 @@ TEST_F(a_solid_frame, can_be_displayed_with_a_custom_lowlight)
 class a_solid_frame_with_an_associated_unfocussed_component : public a_solid_frame_with_no_unicode_support
 {
 protected :
-    void SetUp() override
+    a_solid_frame_with_an_associated_unfocussed_component()
     {
         frame_.highlight_on_focus(comp_);
         ON_CALL(*comp_, do_has_focus())
@@ -119,7 +119,7 @@ protected :
 class a_solid_frame_with_an_associated_focussed_component : public a_solid_frame_with_no_unicode_support
 {
 protected :
-    void SetUp() override
+    a_solid_frame_with_an_associated_focussed_component()
     {
         frame_.highlight_on_focus(comp_);
         ON_CALL(*comp_, do_has_focus())

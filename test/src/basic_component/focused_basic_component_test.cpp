@@ -5,7 +5,7 @@
 class a_focused_basic_component : public testing::Test
 {
 protected :
-    void SetUp() override
+    a_focused_basic_component()
     {
         component_.set_focus();
         
