@@ -66,7 +66,7 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
 
     edit_.insert_text(initial_content);
     edit_.set_cursor_position(initial_pos);
-    assert(edit_.get_cursor_position() == initial_pos);
+    assert(edit_.get_caret_position() == initial_pos.x_);
     
     edit_.event(terminalpp::virtual_key{keypress});
     

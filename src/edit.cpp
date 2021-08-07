@@ -18,7 +18,6 @@ struct edit::impl
     terminalpp::string content;
     terminalpp::coordinate_type caret_position = 0;
     terminalpp::point cursor_position{0, 0};
-    bool updating_cursor_position = false;
 
     // ======================================================================
     // CONSTRUCTOR
@@ -45,15 +44,13 @@ struct edit::impl
     // ======================================================================
     void update_cursor_position()
     {
-        updating_cursor_position = true;
-        self_.set_cursor_position({
+        cursor_position = {
             boost::algorithm::clamp(
                 caret_position,
                 0,
                 std::max(0, self_.get_size().width_ - 1)),
-            0
-        });
-        updating_cursor_position = false;
+            0};
+        self_.on_cursor_position_changed();
     }
 
     // ======================================================================
@@ -331,14 +328,9 @@ terminalpp::point edit::do_get_cursor_position() const
 // ==========================================================================
 void edit::do_set_cursor_position(terminalpp::point const& position)
 {
-    pimpl_->cursor_position = position;
-
-    if (!pimpl_->updating_cursor_position)
-    {
-        pimpl_->caret_position = position.x_;
-    }
-
-    on_cursor_position_changed();
+    // For an edit, setting the cursor position is identical to setting
+    // the caret to the same location.
+    pimpl_->set_caret_position(position.x_);
 }
 
 // ==========================================================================
