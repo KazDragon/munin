@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['image_175',['image',['../classmunin_1_1image.html',1,'munin']]]
+  ['image_176',['image',['../classmunin_1_1image.html',1,'munin']]]
 ];
