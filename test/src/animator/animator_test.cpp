@@ -15,7 +15,7 @@ protected:
       : now_(std::chrono::steady_clock::now()),
         redraw_requested_(false)
     {
-        ON_CALL(animator_, do_now())
+        ON_CALL(*animator_, do_now())
             .WillByDefault(Return(now_));
 
         component_->on_redraw.connect(
@@ -25,7 +25,7 @@ protected:
             });
     }
 
-    mock_animator animator_;
+    std::shared_ptr<mock_animator> animator_ { make_mock_animator() };
     std::shared_ptr<mock_component> component_ { make_mock_component() };
 
     std::chrono::steady_clock::time_point now_;
@@ -43,9 +43,9 @@ TEST_F(
 {
     auto const expiry_time = now_ + 5s;
 
-    EXPECT_CALL(animator_, reset_timer(expiry_time));
+    EXPECT_CALL(*animator_, reset_timer(expiry_time));
 
-    animator_.redraw_component_at(component_, {{}, {}}, expiry_time);
+    animator_->redraw_component_at(component_, {{}, {}}, expiry_time);
 
     ASSERT_FALSE(redraw_requested_);
 }
@@ -58,7 +58,7 @@ protected:
     an_animator_with_an_animation_that_expires_in_5s()
       : expiry_time_(now_ + 5s)
     {
-        animator_.redraw_component_at(component_, {{}, {}}, expiry_time_);
+        animator_->redraw_component_at(component_, {{}, {}}, expiry_time_);
     }
 
     std::chrono::steady_clock::time_point expiry_time_;
@@ -68,30 +68,30 @@ protected:
 
 TEST_F(an_animator_with_an_animation_that_expires_in_5s, does_not_request_a_redraw_when_redrawing_components_before_5s_has_expired)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 4900ms));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_FALSE(redraw_requested_);
 }
 
 TEST_F(an_animator_with_an_animation_that_expires_in_5s, requests_a_redraw_when_redrawing_components_when_5s_has_expired)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 5s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw_requested_);
 }
 
 TEST_F(an_animator_with_an_animation_that_expires_in_5s, requests_a_redraw_when_redrawing_components_after_5s_has_expired)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 6s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw_requested_);
 }
@@ -108,7 +108,7 @@ protected:
         redraw0_requested_(false),
         redraw1_requested_(false)
     {
-        ON_CALL(animator_, do_now())
+        ON_CALL(*animator_, do_now())
             .WillByDefault(Return(now_));
 
         component0_->on_redraw.connect(
@@ -125,11 +125,11 @@ protected:
             });
 
 
-        animator_.redraw_component_at(component0_, {{}, {}}, expiry_time0_);
-        animator_.redraw_component_at(component1_, {{}, {}}, expiry_time1_);
+        animator_->redraw_component_at(component0_, {{}, {}}, expiry_time0_);
+        animator_->redraw_component_at(component1_, {{}, {}}, expiry_time1_);
     }
 
-    mock_animator animator_;
+    std::shared_ptr<mock_animator> animator_ { make_mock_animator() };
     std::shared_ptr<mock_component> component0_ { make_mock_component() };
     std::shared_ptr<mock_component> component1_ { make_mock_component() };
 
@@ -145,10 +145,10 @@ protected:
 
 TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, does_not_request_redraws_when_redrawing_components_before_5s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 4900ms));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_FALSE(redraw0_requested_);
     ASSERT_FALSE(redraw1_requested_);
@@ -156,10 +156,10 @@ TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, does_not_request_
 
 TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw_of_component0_when_redrawing_components_when_5s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 5s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw0_requested_);
     ASSERT_FALSE(redraw1_requested_);
@@ -167,10 +167,10 @@ TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw
 
 TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw_of_component0_when_redrawing_components_when_more_than_5s_but_less_than_10s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 9900ms));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw0_requested_);
     ASSERT_FALSE(redraw1_requested_);
@@ -178,10 +178,10 @@ TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw
 
 TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw_of_component0_and_component1_when_redrawing_components_when_10s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 10s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw0_requested_);
     ASSERT_TRUE(redraw1_requested_);
@@ -189,12 +189,12 @@ TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw
 
 TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw_of_component0_and_component1_when_redrawing_components_when_5s_then_10s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 5s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 10s));
 
     ASSERT_TRUE(redraw0_requested_);
@@ -202,7 +202,7 @@ TEST_F(an_animator_with_animations_that_expires_in_5s_and_10s, requests_a_redraw
 
     redraw0_requested_ = false;
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_FALSE(redraw0_requested_);
     ASSERT_TRUE(redraw1_requested_);
@@ -220,7 +220,7 @@ protected:
         redraw0_requested_(false),
         redraw1_requested_(false)
     {
-        ON_CALL(animator_, do_now())
+        ON_CALL(*animator_, do_now())
             .WillByDefault(Return(now_));
 
         component0_->on_redraw.connect(
@@ -237,11 +237,11 @@ protected:
             });
 
 
-        animator_.redraw_component_at(component0_, {{}, {}}, expiry_time0_);
-        animator_.redraw_component_at(component1_, {{}, {}}, expiry_time1_);
+        animator_->redraw_component_at(component0_, {{}, {}}, expiry_time0_);
+        animator_->redraw_component_at(component1_, {{}, {}}, expiry_time1_);
     }
 
-    mock_animator animator_;
+    std::shared_ptr<mock_animator> animator_ { make_mock_animator() };
     std::shared_ptr<mock_component> component0_ { make_mock_component() };
     std::shared_ptr<mock_component> component1_ { make_mock_component() };
 
@@ -257,10 +257,10 @@ protected:
 
 TEST_F(an_animator_with_animations_that_expires_in_5s, requests_a_redraw_of_component0_and_component1_when_redrawing_components_when_5s_has_passed)
 {
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(now_ + 5s));
 
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_TRUE(redraw0_requested_);
     ASSERT_TRUE(redraw1_requested_);
