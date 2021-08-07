@@ -219,6 +219,7 @@ private:
     
             --caret_position;
             update_cursor_position();
+            self_.on_preferred_size_changed();
             
             self_.on_redraw({{
                 { caret_position, 0 },
