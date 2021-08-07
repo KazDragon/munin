@@ -79,7 +79,7 @@ TEST_F(a_new_text_area, announces_new_caret_and_cursor_positions_and_preferred_s
     ASSERT_EQ(terminalpp::point(1, 0), text_area_.get_cursor_position());
 
     ASSERT_TRUE(preferred_size_changed);
-    ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
+    ASSERT_EQ(terminalpp::extent(2, 1), text_area_.get_preferred_size());
 }
 
 TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_inserted)
@@ -236,23 +236,23 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn
     ({
         // Default position (nothing was inserted)
-        text_area_layout_data{{3, 2}, ""_ts, {1, 1}, 0, {0, 0}},
+        text_area_layout_data{{3, 2}, ""_ts,        {3, 1}, 0, {0, 0}},
         
         // Insertions that do not require flow (manual newlines only)
-        text_area_layout_data{{3, 2}, "a"_ts, {1, 1}, 1, {1, 0}},
-        text_area_layout_data{{3, 2}, "ab"_ts, {2, 1}, 2, {2, 0}},
-        text_area_layout_data{{3, 2}, "a\nb"_ts, {1, 2}, 3, {1, 1}},
-        text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
-        text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abc"_ts, {3, 1}, 3, {0, 1}},
+        text_area_layout_data{{3, 2}, "a"_ts,       {3, 1}, 1, {1, 0}},
+        text_area_layout_data{{3, 2}, "ab"_ts,      {3, 1}, 2, {2, 0}},
+        text_area_layout_data{{3, 2}, "a\nb"_ts,    {3, 2}, 3, {1, 1}},
+        text_area_layout_data{{3, 2}, "ab\n"_ts,    {3, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 2}, "ab\nc"_ts,   {3, 2}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abc"_ts,     {3, 1}, 3, {0, 1}},
         
         // Insertions that require flow (had an automatic split)
-        text_area_layout_data{{3, 2}, "abcd"_ts, {4, 1}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abcde"_ts, {5, 1}, 5, {2, 1}},
-        text_area_layout_data{{3, 2}, "abcdefg"_ts, {7, 1}, 7, {1, 2}},
+        text_area_layout_data{{3, 2}, "abcd"_ts,    {3, 1}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abcde"_ts,   {3, 1}, 5, {2, 1}},
+        text_area_layout_data{{3, 2}, "abcdefg"_ts, {3, 1}, 7, {1, 2}},
         
         // Insertions that have an explicit newline on the boundary
-        text_area_layout_data{{3, 2}, "abc\n", {3, 2}, 4, {0, 1}},
+        text_area_layout_data{{3, 2}, "abc\n",      {3, 2}, 4, {0, 1}},
     })
 );
 
@@ -300,7 +300,7 @@ TEST_F(a_new_text_area, does_not_move_the_caret_when_inserting_at_a_specified_in
     ASSERT_EQ(terminalpp::point(0, 0), text_area_.get_cursor_position());
 
     ASSERT_TRUE(preferred_size_changed);
-    ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
+    ASSERT_EQ(terminalpp::extent(2, 1), text_area_.get_preferred_size());
 
     ASSERT_TRUE(redraw_requested);
     
