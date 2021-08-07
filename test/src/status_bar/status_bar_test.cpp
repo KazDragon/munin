@@ -10,8 +10,8 @@ using testing::Return;
 
 TEST(a_status_bar, is_a_component)
 {
-    mock_animator animator;
-    std::shared_ptr<munin::component> comp = munin::make_status_bar(animator);
+    std::shared_ptr<mock_animator> animator { make_mock_animator() };
+    std::shared_ptr<munin::component> comp = munin::make_status_bar(*animator);
 }
 
 namespace {
@@ -19,9 +19,9 @@ namespace {
 class a_new_status_bar : public testing::Test
 {
 protected:
-    mock_animator animator_;
+    std::shared_ptr<mock_animator> animator_ { make_mock_animator() };
     std::shared_ptr<munin::status_bar> status_bar_ { 
-        munin::make_status_bar(animator_)
+        munin::make_status_bar(*animator_)
     };
 };
 
@@ -145,7 +145,7 @@ public:
     {
         using namespace terminalpp::literals;
 
-        ON_CALL(animator_, do_now())
+        ON_CALL(*animator_, do_now())
             .WillByDefault(Return(time_0));
 
         status_bar_->on_redraw.connect(
@@ -181,9 +181,9 @@ protected:
         redraw_regions_.clear();
     }
 
-    mock_animator animator_;
+    std::shared_ptr<mock_animator> animator_ { make_mock_animator() };
     std::shared_ptr<munin::status_bar> status_bar_ { 
-        munin::make_status_bar(animator_)
+        munin::make_status_bar(*animator_)
     };
 
     std::chrono::steady_clock::time_point const time_0;
@@ -201,9 +201,9 @@ TEST_F(an_animated_status_bar, less_than_5_seconds_after_drawing_a_message_still
 {
     using namespace std::literals;
 
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(time_0 + 5s - 1ms));
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     redraw_requested_regions();
 
@@ -234,9 +234,9 @@ TEST_F(an_animated_status_bar, after_5_seconds_marquees_two_characters_off)
 {
     using namespace std::literals;
 
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(time_0 + 5s));
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     redraw_requested_regions();
 
@@ -267,9 +267,9 @@ TEST_F(an_animated_status_bar, after_5015ms_marquees_four_characters_off)
 {
     using namespace std::literals;
 
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(time_0 + 5015ms));
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     redraw_requested_regions();
 
@@ -300,9 +300,9 @@ TEST_F(an_animated_status_bar, after_5030ms_marquees_all_characters_off)
 {
     using namespace std::literals;
 
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(time_0 + 5030s));
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     redraw_requested_regions();
 
@@ -340,15 +340,15 @@ TEST_F(an_animated_status_bar, after_drawing_all_of_its_animation_frames_does_no
     // After updating the animation time to after the last frame, the
     // function is executed and there are no more delayed functions, and
     // there are redraw requests awaiting.
-    ON_CALL(animator_, do_now())
+    ON_CALL(*animator_, do_now())
         .WillByDefault(Return(time_0 + 6s));
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     ASSERT_GT(number_of_requested_regions(), 0);
 
     // After redrawing the requested regions for the final frame, there are
     // no delayed functions or redraw requests.
-    animator_.redraw_components();
+    animator_->redraw_components();
 
     redraw_requested_regions();
     ASSERT_EQ(0, number_of_requested_regions());
