@@ -6,7 +6,6 @@
 [![Linux Build status](https://github.com/KazDragon/munin/workflows/build/badge.svg)](https://github.com/KazDragon/munin/actions?query=event%3Apush) 
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
-[![Download](https://api.bintray.com/packages/kazdragon/conan-public/munin%3Akazdragon/images/download.svg)](https://bintray.com/kazdragon/conan-public/munin%3Akazdragon/_latestVersion)
 
 Munin is an enhancement to the Terminal++ library that provides a set of component-based UI widgets.
 
@@ -68,10 +67,10 @@ Implement the fundamentals of the library, providing the basis for further devel
  ## v0.4 - Text Areas
  Fundamentals for all types of text components:
  1. [X] Viewport - a component that sees a smaller portion of the underlying component
- 2. [ ] Horizontal Scroll Bar
- 3. [ ] Vertical Scroll Bar
- 4. [ ] Scroll Frame - a frame that includes scroll bars
- 5. [ ] Scroll Pane - a component that includes a scroll frame and a viewport
+ 2. [X] Horizontal Scroll Bar
+ 3. [X] Vertical Scroll Bar
+ 4. [X] Scroll Frame - a frame that includes scroll bars
+ 5. [X] Scroll Pane - a component that includes a scroll frame and a viewport
  
  Specific text manipulation components:
  1. [x] Edit - a single-lined horizontally scrolling text box, with a frame.
