@@ -26,9 +26,14 @@ public:
     ~text_area() override;
 
     //* =====================================================================
-    /// \Brief Returns the position of the caret.
+    /// \brief Returns the position of the caret.
     //* =====================================================================
     text_index get_caret_position() const;
+
+    //* =====================================================================
+    /// \brief Sets the position of the caret.
+    //* =====================================================================
+    void set_caret_position(text_index position);
 
     //* =====================================================================
     /// \brief Returns the length of the document.

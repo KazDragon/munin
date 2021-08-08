@@ -183,6 +183,14 @@ text_area::text_index text_area::get_caret_position() const
 }
 
 // ==========================================================================
+// SET_CARET_POSITION
+// ==========================================================================
+void text_area::set_caret_position(text_index position)
+{
+    pimpl_->set_caret_position(position);
+}
+
+// ==========================================================================
 // GET_LENGTH
 // ==========================================================================
 text_area::text_index text_area::get_length() const
