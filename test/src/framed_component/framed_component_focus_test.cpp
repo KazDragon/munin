@@ -3,8 +3,10 @@
 #include <munin/framed_component.hpp>
 #include <gtest/gtest.h>
 
-using testing::Invoke;
+using testing::Assign;
+using testing::DoAll;
 using testing::Return;
+using testing::ReturnPointee;
 using testing::_;
 
 namespace {
@@ -41,14 +43,6 @@ class a_framed_component_with_an_inner_component_that_takes_no_focus
 protected:
     a_framed_component_with_an_inner_component_that_takes_no_focus()
     {
-        ON_CALL(*mock_inner_, do_set_focus())
-            .WillByDefault(Return());
-        ON_CALL(*mock_inner_, do_lose_focus())
-            .WillByDefault(Return());
-        ON_CALL(*mock_inner_, do_focus_next())
-            .WillByDefault(Return());
-        ON_CALL(*mock_inner_, do_focus_previous())
-            .WillByDefault(Return());
         ON_CALL(*mock_inner_, do_has_focus())
             .WillByDefault(Return(false));
     }
@@ -92,25 +86,22 @@ protected:
     a_framed_component_with_an_inner_component_that_can_have_focus_set()
     {
         ON_CALL(*mock_inner_, do_set_focus())
-            .WillByDefault(Invoke([this]{
-                has_focus_ = true;
-                mock_inner_->on_focus_set();
-            }));
+            .WillByDefault(DoAll(
+                Assign(&has_focus_, true),
+                std::ref(mock_inner_->on_focus_set)));
 
         ON_CALL(*mock_inner_, do_focus_next())
-            .WillByDefault(Invoke([this]{
-                has_focus_ = true;
-                mock_inner_->on_focus_set();
-            }));
+            .WillByDefault(DoAll(
+                Assign(&has_focus_, true),
+                std::ref(mock_inner_->on_focus_set)));
 
         ON_CALL(*mock_inner_, do_focus_previous())
-            .WillByDefault(Invoke([this]{
-                has_focus_ = true;
-                mock_inner_->on_focus_set();
-            }));
+            .WillByDefault(DoAll(
+                Assign(&has_focus_, true),
+                std::ref(mock_inner_->on_focus_set)));
 
         ON_CALL(*mock_inner_, do_has_focus())
-            .WillByDefault(Invoke([this]{return has_focus_;}));
+            .WillByDefault(ReturnPointee(&has_focus_));
     }
 
     bool has_focus_{false};
@@ -154,13 +145,12 @@ protected:
     a_framed_component_with_an_inner_component_that_has_focus()
     {
         ON_CALL(*mock_inner_, do_lose_focus())
-            .WillByDefault(Invoke([this]{
-                has_focus_ = false;
-                mock_inner_->on_focus_lost();
-            }));
+            .WillByDefault(DoAll(
+                Assign(&has_focus_, false),
+                std::ref(mock_inner_->on_focus_lost)));
 
         ON_CALL(*mock_inner_, do_has_focus())
-            .WillByDefault(Invoke([this]{return has_focus_;}));
+            .WillByDefault(ReturnPointee(&has_focus_));
     }
 
     bool has_focus_{true};

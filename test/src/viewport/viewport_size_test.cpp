@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <vector>
 
-using testing::Invoke;
 using testing::Return;
 using testing::ValuesIn;
 using testing::_;
@@ -141,7 +140,7 @@ TEST_F(a_viewport, with_an_offset_anchor_when_extended_southeast_reevaluates_anc
     fill_canvas(cvs, 'x');
 
     ON_CALL(*tracked_component_, do_draw(_, _))
-        .WillByDefault(Invoke(
+        .WillByDefault(
             [](munin::render_surface& surface, 
                terminalpp::rectangle const &region)
             {
@@ -155,7 +154,7 @@ TEST_F(a_viewport, with_an_offset_anchor_when_extended_southeast_reevaluates_anc
                         elem = ('a' + column + (row * 4));
                     });
             }
-        ));
+        );
     
     viewport_->set_position({0, 0});
     viewport_->set_size({1, 1});

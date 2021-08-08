@@ -2,9 +2,7 @@
 #include "mock/layout.hpp"
 
 using testing::_;
-using testing::DoAll;
 using testing::InSequence;
-using testing::Invoke;
 using testing::Return;
 
 TEST(a_container_with_no_elements, does_not_lay_the_container_out_when_a_component_is_added)

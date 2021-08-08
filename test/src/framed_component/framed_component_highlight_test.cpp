@@ -4,7 +4,6 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
-using testing::Invoke;
 using testing::Return;
 using testing::_;
 
@@ -58,7 +57,7 @@ protected:
             .WillByDefault(Return(terminalpp::extent{3, 3}));
 
         ON_CALL(*mock_frame_, do_draw(_, _))
-            .WillByDefault(Invoke(
+            .WillByDefault(
                 [this](auto &surface, auto const &region)
                 {
                     auto const &focus_element = terminalpp::element{
@@ -75,8 +74,7 @@ protected:
                         {
                             elem = focus_element;
                         });
-                }
-            ));
+                });
 
         framed_component_->set_size({3, 3});
     }

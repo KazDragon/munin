@@ -5,8 +5,9 @@
 #include <gtest/gtest.h>
 
 using testing::InSequence;
-using testing::Invoke;
 using testing::Return;
+using testing::ReturnPointee;
+using testing::SaveArg;
 using testing::WithArgs;
 using testing::_;
 
@@ -74,26 +75,18 @@ protected :
         reset_canvas(canvas_);
         
         ON_CALL(*content_, do_draw(_, _))
-            .WillByDefault(WithArgs<1>(Invoke(
+            .WillByDefault(WithArgs<1>(
                 [this](auto const &region)
                 {
                     this->increment_elements_within(region);
-                })));
+                }));
                
                // TODO: mock impl of set/get size 
         ON_CALL(*content_, do_set_size(_))
-            .WillByDefault(WithArgs<0>(Invoke(
-                [this](auto const &new_size)
-                {
-                    this->content_size_ = new_size;
-                })));
+            .WillByDefault(SaveArg<0>(&content_size_));
                 
         ON_CALL(*content_, do_get_size())
-            .WillByDefault(Invoke(
-                [this]()
-                {
-                    return this->content_size_;
-                }));
+            .WillByDefault(ReturnPointee(&content_size_));
     }
     
     void reset_canvas(terminalpp::canvas &cvs)
@@ -127,9 +120,9 @@ protected :
     terminalpp::extent content_size_;
 };
 
-/*
 constexpr terminalpp::extent const repainting_a_window::window_size;
 
+/*
 TEST_F(repainting_a_window, for_the_first_time_sets_component_size)
 {
     EXPECT_CALL(*content_, do_set_size(window_size));
@@ -151,17 +144,11 @@ TEST_F(repainting_a_window, with_a_differently_sized_canvas_changes_content_size
     };
     
     {
-        static auto on_set_size = 
-            [this](auto const &new_size)
-            {
-                this->content_size_ = new_size;
-            };
-            
         InSequence s;
         EXPECT_CALL(*content_, do_set_size(window_size))
-            .WillOnce(WithArgs<0>(Invoke(on_set_size)));
+            .WillOnce(SaveArg<0>(&content_size_));
         EXPECT_CALL(*content_, do_set_size(new_size))
-            .WillOnce(WithArgs<0>(Invoke(on_set_size)));
+            .WillOnce(SaveArg<0>(&content_size_));
     }
             
     window_->repaint(canvas_, terminal_);

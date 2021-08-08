@@ -31,8 +31,8 @@ class viewport_mock_test_with_data
 protected:
     viewport_mock_test_with_data()
     {
-        using testing::Invoke;
         using testing::Return;
+        using testing::ReturnPointee;
         using testing::_;
         
         static auto constexpr tracked_component_preferred_size = terminalpp::extent{6, 6};
@@ -47,12 +47,14 @@ protected:
         // Mock the cursor position of the tracked component so that it does what it
         // is told and announces it to the viewport.
         ON_CALL(*tracked_component_, do_set_cursor_position(_))
-            .WillByDefault(Invoke([this](auto const &pos) { 
-                tracked_cursor_position_ = pos;
-                tracked_component_->on_cursor_position_changed();
-            }));
+            .WillByDefault(
+                [this](terminalpp::point const &pos)
+                {
+                    tracked_cursor_position_ = pos;
+                    tracked_component_->on_cursor_position_changed();
+                });
         ON_CALL(*tracked_component_, do_get_cursor_position())
-            .WillByDefault(Invoke([this] { return tracked_cursor_position_; }));
+            .WillByDefault(ReturnPointee(&tracked_cursor_position_));
 
         viewport_->set_size(viewport_size);
     }
