@@ -29,6 +29,13 @@ TEST_F(a_new_text_area, has_length_zero)
     ASSERT_EQ(0, text_area_.get_length());
 }
 
+TEST_F(a_new_text_area, has_preferred_size_of_0x1)
+{
+    // The preferred size always has width of its current size, but it also
+    // wants a line to put the cursor in.
+    ASSERT_EQ(terminalpp::extent(0, 1), text_area_.get_preferred_size());
+}
+
 TEST_F(a_new_text_area, draws_only_spaces)
 {
     text_area_.set_size({2, 2});
@@ -45,16 +52,9 @@ TEST_F(a_new_text_area, draws_only_spaces)
     verify_oob_is_untouched();
 }
 
-TEST_F(a_new_text_area, announces_new_caret_and_cursor_positions_and_preferred_size_when_inserting_text_at_the_caret)
+TEST_F(a_new_text_area, announces_cursor_position_change_when_inserting_text_at_the_caret)
 {
     text_area_.set_size({2, 2});
-
-    bool caret_position_changed = false;
-    text_area_.on_caret_position_changed.connect(
-        [&caret_position_changed]()
-        {
-            caret_position_changed = true;
-        });
 
     bool cursor_position_changed = false;
     text_area_.on_cursor_position_changed.connect(
@@ -63,23 +63,13 @@ TEST_F(a_new_text_area, announces_new_caret_and_cursor_positions_and_preferred_s
             cursor_position_changed = true;
         });
 
-    bool preferred_size_changed = false;
-    text_area_.on_preferred_size_changed.connect(
-        [&preferred_size_changed]()
-        {
-            preferred_size_changed = true;
-        });
-
     text_area_.insert_text("a"_ts);
-
-    ASSERT_TRUE(caret_position_changed);
-    ASSERT_EQ(1, text_area_.get_caret_position());
 
     ASSERT_TRUE(cursor_position_changed);
     ASSERT_EQ(terminalpp::point(1, 0), text_area_.get_cursor_position());
-
-    ASSERT_TRUE(preferred_size_changed);
-    ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
+    ASSERT_EQ(1, text_area_.get_caret_position());
+    ASSERT_EQ(terminalpp::extent(2, 1), text_area_.get_preferred_size());
+    ASSERT_EQ(munin::text_area::text_index{1}, text_area_.get_length());
 }
 
 TEST_F(a_new_text_area, requests_a_redraw_and_draws_inserted_text_when_text_is_inserted)
@@ -236,36 +226,29 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn
     ({
         // Default position (nothing was inserted)
-        text_area_layout_data{{3, 2}, ""_ts, {1, 1}, 0, {0, 0}},
+        text_area_layout_data{{3, 2}, ""_ts,        {3, 1}, 0, {0, 0}},
         
         // Insertions that do not require flow (manual newlines only)
-        text_area_layout_data{{3, 2}, "a"_ts, {1, 1}, 1, {1, 0}},
-        text_area_layout_data{{3, 2}, "ab"_ts, {2, 1}, 2, {2, 0}},
-        text_area_layout_data{{3, 2}, "a\nb"_ts, {1, 2}, 3, {1, 1}},
-        text_area_layout_data{{3, 2}, "ab\n"_ts, {2, 2}, 3, {0, 1}},
-        text_area_layout_data{{3, 2}, "ab\nc"_ts, {2, 2}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abc"_ts, {3, 1}, 3, {0, 1}},
+        text_area_layout_data{{3, 2}, "a"_ts,       {3, 1}, 1, {1, 0}},
+        text_area_layout_data{{3, 2}, "ab"_ts,      {3, 1}, 2, {2, 0}},
+        text_area_layout_data{{3, 2}, "a\nb"_ts,    {3, 2}, 3, {1, 1}},
+        text_area_layout_data{{3, 2}, "ab\n"_ts,    {3, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 2}, "ab\nc"_ts,   {3, 2}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abc"_ts,     {3, 2}, 3, {0, 1}},
         
         // Insertions that require flow (had an automatic split)
-        text_area_layout_data{{3, 2}, "abcd"_ts, {4, 1}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abcde"_ts, {5, 1}, 5, {2, 1}},
-        text_area_layout_data{{3, 2}, "abcdefg"_ts, {7, 1}, 7, {1, 2}},
+        text_area_layout_data{{3, 2}, "abcd"_ts,    {3, 2}, 4, {1, 1}},
+        text_area_layout_data{{3, 2}, "abcde"_ts,   {3, 2}, 5, {2, 1}},
+        text_area_layout_data{{3, 2}, "abcdefg"_ts, {3, 3}, 7, {1, 2}},
         
         // Insertions that have an explicit newline on the boundary
-        text_area_layout_data{{3, 2}, "abc\n", {3, 2}, 4, {0, 1}},
+        text_area_layout_data{{3, 2}, "abc\n",      {3, 2}, 4, {0, 1}},
     })
 );
 
 TEST_F(a_new_text_area, does_not_move_the_caret_when_inserting_at_a_specified_index_but_still_inserts_the_text)
 {
     text_area_.set_size({2, 2});
-
-    bool caret_position_changed = false;
-    text_area_.on_caret_position_changed.connect(
-        [&caret_position_changed]()
-        {
-            caret_position_changed = true;
-        });
 
     bool cursor_position_changed = false;
     text_area_.on_cursor_position_changed.connect(
@@ -293,14 +276,13 @@ TEST_F(a_new_text_area, does_not_move_the_caret_when_inserting_at_a_specified_in
 
     text_area_.insert_text("a"_ts, 0);
 
-    ASSERT_FALSE(caret_position_changed);
-    ASSERT_EQ(0, text_area_.get_caret_position());
+    ASSERT_TRUE(preferred_size_changed);
+    ASSERT_EQ(terminalpp::extent(2, 1), text_area_.get_preferred_size());
 
     ASSERT_FALSE(cursor_position_changed);
     ASSERT_EQ(terminalpp::point(0, 0), text_area_.get_cursor_position());
 
-    ASSERT_TRUE(preferred_size_changed);
-    ASSERT_EQ(terminalpp::extent(1, 1), text_area_.get_preferred_size());
+    ASSERT_EQ(0, text_area_.get_caret_position());
 
     ASSERT_TRUE(redraw_requested);
     

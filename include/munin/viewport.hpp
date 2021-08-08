@@ -12,10 +12,37 @@ class MUNIN_EXPORT viewport : public basic_component
 {
 public:
     //* =====================================================================
+    /// \brief Defines a strategy by which a tracked component is allowed
+    /// to grow.
+    //* =====================================================================
+    struct resize_strategy
+    {
+        //* =================================================================
+        /// \brief Destructor
+        //* =================================================================
+        virtual ~resize_strategy() = default;
+
+        //* =================================================================
+        /// \brief Determine the new size of the tracked component given
+        /// its preferences and the viewport's current size.
+        //* =================================================================
+        virtual terminalpp::extent calculate_tracked_component_size(
+            terminalpp::extent tracked_preferred_size,
+            terminalpp::extent viewport_size) const = 0;
+    };
+
+    //* =====================================================================
     /// \brief Constructor
     //* =====================================================================
     explicit viewport(std::shared_ptr<component> tracked_component);
     
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    viewport(
+        std::shared_ptr<component> tracked_component,
+        std::unique_ptr<resize_strategy> strategy);
+
     //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
@@ -125,10 +152,42 @@ private:
 };
 
 //* =========================================================================
+/// \brief Returns a strategy where a viewport will grow the tracked 
+/// component in any direction it desires.
+//* =========================================================================
+MUNIN_EXPORT
+std::unique_ptr<viewport::resize_strategy> 
+    make_default_viewport_resize_strategy();
+
+//* =========================================================================
+/// \brief Returns a strategy where a viewport will only grow the tracked
+/// component in a vertical direction.
+//* =========================================================================
+MUNIN_EXPORT
+std::unique_ptr<viewport::resize_strategy> 
+    make_vertical_viewport_resize_strategy();
+
+//* =========================================================================
+/// \brief Returns a strategy where a viewport will only grow the tracked
+/// component in a horizontal direction.
+//* =========================================================================
+MUNIN_EXPORT
+std::unique_ptr<viewport::resize_strategy> 
+    make_horizontal_viewport_resize_strategy();
+
+//* =========================================================================
 /// \brief Returns a newly created viewport.
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<viewport> make_viewport(
     std::shared_ptr<component> tracked_component);
+
+//* =========================================================================
+/// \brief Returns a newly created viewport with a given resize strategy.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<viewport> make_viewport(
+    std::shared_ptr<component> tracked_component,
+    std::unique_ptr<viewport::resize_strategy> strategy);
 
 }

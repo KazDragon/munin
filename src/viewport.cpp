@@ -18,8 +18,12 @@ struct viewport::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    impl(viewport& self, std::shared_ptr<component> tracked_component)
+    impl(
+        viewport& self, 
+        std::shared_ptr<component> tracked_component,
+        std::unique_ptr<viewport::resize_strategy> strategy)
       : self_(self),
+        resize_strategy_(std::move(strategy)),
         tracked_component_(std::move(tracked_component))
     {
         tracked_component_->on_preferred_size_changed.connect(
@@ -173,15 +177,10 @@ struct viewport::impl
     // ======================================================================
     void update_tracked_component_size()
     {
-        auto const preferred_size = tracked_component_->get_preferred_size();
-        auto const viewport_size = self_.get_size();
-        
-        auto const tracked_component_size = terminalpp::extent{
-            std::max(preferred_size.width_, viewport_size.width_),
-            std::max(preferred_size.height_, viewport_size.height_)
-        };
-        
-        tracked_component_->set_size(tracked_component_size);
+        tracked_component_->set_size(
+            resize_strategy_->calculate_tracked_component_size(
+                tracked_component_->get_preferred_size(),
+                self_.get_size()));
     }
 
     // ======================================================================
@@ -330,16 +329,31 @@ private:
     }
 
     viewport &self_;
+    std::unique_ptr<viewport::resize_strategy> resize_strategy_;
     std::shared_ptr<component> tracked_component_;
-    terminalpp::rectangle      anchor_bounds_;
-    terminalpp::point          cursor_position_;
+    terminalpp::rectangle anchor_bounds_;
+    terminalpp::point cursor_position_;
 };
 
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
 viewport::viewport(std::shared_ptr<component> tracked_component)
-  : pimpl_(boost::make_unique<impl>(*this, std::move(tracked_component)))
+  : viewport(
+        std::move(tracked_component),
+        make_default_viewport_resize_strategy())
+{
+}
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+viewport::viewport(
+    std::shared_ptr<component> tracked_component,
+    std::unique_ptr<resize_strategy> strategy)
+  : pimpl_(
+        boost::make_unique<impl>(
+            *this, std::move(tracked_component), std::move(strategy)))
 {
 }
 
@@ -456,6 +470,106 @@ std::shared_ptr<viewport> make_viewport(
     std::shared_ptr<component> tracked_component)
 {
     return std::make_shared<viewport>(std::move(tracked_component));
+}
+
+// ==========================================================================
+// MAKE_VIEWPORT
+// ==========================================================================
+std::shared_ptr<viewport> make_viewport(
+    std::shared_ptr<component> tracked_component,
+    std::unique_ptr<viewport::resize_strategy> strategy)
+{
+    return std::make_shared<viewport>(
+        std::move(tracked_component),
+        std::move(strategy));
+}
+
+namespace {
+
+class default_viewport_resize_strategy
+  : public viewport::resize_strategy
+{
+    // ======================================================================
+    // CALCULATE_TRACKED_COMPONENT_SIZE
+    // ======================================================================
+    terminalpp::extent calculate_tracked_component_size(
+        terminalpp::extent tracked_preferred_size,
+        terminalpp::extent viewport_size) const override
+    {
+        return {
+            std::max(tracked_preferred_size.width_, viewport_size.width_),
+            std::max(tracked_preferred_size.height_, viewport_size.height_)
+        };
+    }
+};
+
+// ==========================================================================
+// VERTICAL_VIEWPORT_RESIZE_STRATEGY
+// ==========================================================================
+class vertical_viewport_resize_strategy
+  : public viewport::resize_strategy
+{
+    // ======================================================================
+    // CALCULATE_TRACKED_COMPONENT_SIZE
+    // ======================================================================
+    terminalpp::extent calculate_tracked_component_size(
+        terminalpp::extent tracked_preferred_size,
+        terminalpp::extent viewport_size) const override
+    {
+        return {
+            viewport_size.width_,
+            std::max(tracked_preferred_size.height_, viewport_size.height_)
+        };
+    }
+};
+
+// ==========================================================================
+// HORIZONTAL_VIEWPORT_RESIZE_STRATEGY
+// ==========================================================================
+class horizontal_viewport_resize_strategy
+  : public viewport::resize_strategy
+{
+    // ======================================================================
+    // CALCULATE_TRACKED_COMPONENT_SIZE
+    // ======================================================================
+    terminalpp::extent calculate_tracked_component_size(
+        terminalpp::extent tracked_preferred_size,
+        terminalpp::extent viewport_size) const override
+    {
+        return {
+            std::max(tracked_preferred_size.width_, viewport_size.width_),
+            viewport_size.height_
+        };
+    }
+};
+
+}
+
+// ==========================================================================
+// MAKE_DEFAULT_VIEWPORT_RESIZE_STRATEGY
+// ==========================================================================
+std::unique_ptr<viewport::resize_strategy> 
+    make_default_viewport_resize_strategy()
+{
+    return boost::make_unique<default_viewport_resize_strategy>();
+}
+
+// ==========================================================================
+// MAKE_VERTICAL_VIEWPORT_RESIZE_STRATEGY
+// ==========================================================================
+std::unique_ptr<viewport::resize_strategy> 
+    make_vertical_viewport_resize_strategy()
+{
+    return boost::make_unique<vertical_viewport_resize_strategy>();
+}
+
+// ==========================================================================
+// MAKE_HORIZONTAL_VIEWPORT_RESIZE_STRATEGY
+// ==========================================================================
+std::unique_ptr<viewport::resize_strategy> 
+    make_horizontal_viewport_resize_strategy()
+{
+    return boost::make_unique<horizontal_viewport_resize_strategy>();
 }
 
 }

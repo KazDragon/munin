@@ -52,16 +52,6 @@ public:
         terminalpp::string const &text, 
         text_index position);
 
-    //* =====================================================================
-    /// \fn on_caret_position_changed
-    /// \brief Connect to this signal in order to receive notifications about
-    /// when the component's caret position changes.
-    //* =====================================================================
-    boost::signals2::signal
-    <
-        void ()
-    > on_caret_position_changed;
-
 protected:
     //* =====================================================================
     /// \brief Called by set_size().  Derived classes must override this

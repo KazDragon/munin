@@ -1,8 +1,9 @@
 #include "munin/text_area.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
-#include <boost/range/algorithm/for_each.hpp>
+#include <boost/range/algorithm_ext/insert.hpp>
 
 namespace munin {
 
@@ -20,6 +21,101 @@ struct text_area::impl
     }
 
     // ======================================================================
+    // GET_LENGTH
+    // ======================================================================
+    auto get_length() const
+    {
+        return text_area::text_index(text_.size());
+    }
+
+    // ======================================================================
+    // SET_CARET_POSITION
+    // ======================================================================
+    void set_caret_position(text_area::text_index position)
+    {
+        caret_position_ = boost::algorithm::clamp(
+            position,
+            0,
+            get_length());
+        update_cursor_position();
+    }
+
+    // ======================================================================
+    // UPDATE_CURSOR_POSITION
+    // ======================================================================
+    void update_cursor_position()
+    {
+        auto const text_area_width = self_.get_size().width_;
+        auto last_newline_index = text_area::text_index{0};
+        
+        auto cursor_position = terminalpp::point{};
+
+        for (text_area::text_index index = 0; index < caret_position_; ++index)
+        {
+            // If the character is a newline, then the cursor position only
+            // advances if it is not at the very end of a line.  This is to
+            // prevent it turning into a double newline in that circumstance.
+            if (text_[index] == '\n')
+            {
+                auto line_length = index - last_newline_index;
+                
+                if (line_length != text_area_width)
+                {
+                    cursor_position.x_ = 0;
+                    ++cursor_position.y_;
+                }
+                
+                last_newline_index = index;
+            }
+            else
+            {
+                ++cursor_position.x_;
+            }
+            
+            // Wrap the cursor if necessary.
+            if (cursor_position.x_ >= text_area_width)
+            {
+                cursor_position.x_ = 0;
+                ++cursor_position.y_;
+            }
+        }
+
+        cursor_position_ = cursor_position;
+        self_.on_cursor_position_changed();
+    }
+
+    // ======================================================================
+    // INSERT_TEXT
+    // ======================================================================
+    void insert_text(terminalpp::string const &text)
+    {
+        auto const new_caret_position = text_area::text_index(
+            get_length() + text.size());
+
+        boost::insert(text_, text_.begin() + caret_position_, text);
+        layout_text();
+
+        set_caret_position(new_caret_position);
+
+        self_.on_preferred_size_changed();
+        self_.on_redraw({{{}, self_.get_size()}});
+    }
+
+    // ======================================================================
+    // INSERT_TEXT
+    // ======================================================================
+    void insert_text(
+        terminalpp::string const &text, 
+        text_area::text_index position)
+    {
+        boost::insert(text_, text_.begin() + position, text);
+        layout_text();
+
+        self_.on_preferred_size_changed();
+        self_.on_redraw({{{}, self_.get_size()}});
+    }
+
+    // ======================================================================
     // LAYOUT_TEXT
     // ======================================================================
     void layout_text()
@@ -29,65 +125,32 @@ struct text_area::impl
 
         auto const text_area_width = self_.get_size().width_;
 
+        bool wrapped = false;
         for(auto const &ch : text_)
         {
             if (ch.glyph_.character_ == '\n')
             {
-                laid_out_text_.emplace_back();
+                // If we just wrapped a line, then absorb this newline.
+                if (!wrapped)
+                {
+                    laid_out_text_.emplace_back();
+                }
             }
             else
             {
                 laid_out_text_.back() += ch;
             }
-            
+
             if (laid_out_text_.back().size() == text_area_width)
             {
+                wrapped = true;
                 laid_out_text_.emplace_back();
-            }
-        }
-    }
-
-    // ======================================================================
-    // MOVE_CARET
-    // ======================================================================
-    void move_caret(text_area::text_index to_index)
-    {
-        auto const text_area_width = self_.get_size().width_;
-        auto last_newline_index = text_area::text_index{0};
-        
-        // For now, assume advance.
-        for(; caret_position_ != to_index; ++caret_position_)
-        {
-            // If the character is a newline, then the cursor position only
-            // advances if it is not at the very end of a line.  This is to
-            // prevent it turning into a double newline in that circumstance.
-            if (text_[caret_position_] == '\n')
-            {
-                auto line_length = caret_position_ - last_newline_index;
-                
-                if (line_length != text_area_width)
-                {
-                    cursor_position_.x_ = 0;
-                    ++cursor_position_.y_;
-                }
-                
-                last_newline_index = caret_position_;
             }
             else
             {
-                ++cursor_position_.x_;
-            }
-            
-            // Wrap the cursor if necessary.
-            if (cursor_position_.x_ >= text_area_width)
-            {
-                cursor_position_.x_ = 0;
-                ++cursor_position_.y_;
+                wrapped = false;
             }
         }
-
-        self_.on_caret_position_changed();
-        self_.on_cursor_position_changed();
     }
 
     text_area &self_;
@@ -124,7 +187,7 @@ text_area::text_index text_area::get_caret_position() const
 // ==========================================================================
 text_area::text_index text_area::get_length() const
 {
-    return 0;
+    return pimpl_->get_length();
 }
 
 // ==========================================================================
@@ -132,11 +195,7 @@ text_area::text_index text_area::get_length() const
 // ==========================================================================
 void text_area::insert_text(terminalpp::string const &text)
 {
-    insert_text(text, pimpl_->caret_position_);
-
-    auto const new_caret_position = static_cast<text_area::text_index>(
-        pimpl_->caret_position_ + text.size());
-    pimpl_->move_caret(new_caret_position);
+    pimpl_->insert_text(text);
 }
 
 // ==========================================================================
@@ -146,15 +205,7 @@ void text_area::insert_text(
     terminalpp::string const &text,
     text_area::text_index position)
 {
-    pimpl_->text_.insert(
-        pimpl_->text_.begin() + position, 
-        text.begin(),
-        text.end());
-
-    on_preferred_size_changed();
-    on_redraw({{{}, get_size()}});
-    
-    pimpl_->layout_text();
+    pimpl_->insert_text(text, position);
 }
 
 // ==========================================================================
@@ -162,16 +213,16 @@ void text_area::insert_text(
 // ==========================================================================
 void text_area::do_set_size(terminalpp::extent const &size)
 {
-    basic_component::do_set_size(size);
+    auto const old_preferred_size = get_preferred_size();
 
-    // The current caret/cursor position is based on the previous dimensions,
-    // but that has now all changed, so it needs to be worked out from first
-    // principles.
-    auto const saved_caret_position = pimpl_->caret_position_;
-    pimpl_->caret_position_ = 0;
-    pimpl_->cursor_position_ = {0, 0};
-    pimpl_->move_caret(saved_caret_position);
-    on_cursor_position_changed();
+    basic_component::do_set_size(size);
+    pimpl_->layout_text();
+    pimpl_->update_cursor_position();
+
+    if (get_preferred_size() != old_preferred_size)
+    {
+        on_preferred_size_changed();
+    }
 }
 
 // ==========================================================================
@@ -179,28 +230,11 @@ void text_area::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent text_area::do_get_preferred_size() const
 {
-    terminalpp::coordinate_type preferred_rows = 1;
-    terminalpp::coordinate_type max_column_coordinate = 1;
-    terminalpp::coordinate_type current_x_coordinate = 0;
-    
-    boost::for_each(
-        pimpl_->text_,
-        [&](auto const &elem)
-        {
-            if (elem.glyph_.character_ == '\n')
-            {
-                ++preferred_rows;
-                current_x_coordinate = 0;
-            }
-            else
-            {
-                ++current_x_coordinate;
-                max_column_coordinate = 
-                    std::max(max_column_coordinate, current_x_coordinate);
-            }
-        });
-    
-    return {max_column_coordinate, preferred_rows};
+    return terminalpp::extent{
+        get_size().width_,
+        std::max(
+            terminalpp::coordinate_type(1), 
+            terminalpp::coordinate_type(pimpl_->laid_out_text_.size()))};
 }
 
 // ==========================================================================
