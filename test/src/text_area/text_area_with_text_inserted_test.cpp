@@ -1,6 +1,8 @@
 #include "text_area_test.hpp"
 #include <munin/render_surface.hpp>
 
+using testing::ValuesIn;
+
 class a_text_area_with_text_inserted : public a_text_area
 {
 public:
@@ -150,4 +152,87 @@ TEST_F(a_text_area_with_text_inserted, announces_a_change_in_preferred_size_if_i
 
     auto const expected_preferred_size = terminalpp::extent{1, 3};
     ASSERT_EQ(expected_preferred_size, preferred_size);
+}
+
+namespace {
+
+using move_caret_test_data = std::tuple<
+    munin::text_area::text_index, // caret position to set
+    munin::text_area::text_index, // expected caret position
+    terminalpp::point             // expected cursor position
+>;
+
+class a_text_area_with_many_lines_of_text_inserted
+  : public a_text_area_base,
+    public testing::TestWithParam<move_caret_test_data>
+{
+public:
+    a_text_area_with_many_lines_of_text_inserted()
+    {
+         text_area_.insert_text(
+          // 0         1         2         3
+          // 0123456789012345678901234567890123456789
+             "Lorem ipsum dolor sit amet,\n"           // 0  + 28 = 28
+             "consectetur adipiscing elit.\n"          // 28 + 29 = 57
+             "Proin sed nisl mattis, luctus\n"         // 57 + 30 = 87
+             "velit ullamcorper, molestie mauris.\n"); // 87 + 36 = 123
+
+        // Set the size of the text area so that the width is precisely on
+        // a newline boundary.
+        text_area_.set_size({29, 10}); // Proin sed nisl line.
+    }
+};
+
+TEST_P(a_text_area_with_many_lines_of_text_inserted, moves_the_caret_and_cursor_as_specified)
+{
+    using std::get;
+    
+    auto const &params = GetParam();
+    auto const &caret_position = get<0>(params);
+    auto const &expected_caret_position = get<1>(params);
+    auto const &expected_cursor_position = get<2>(params);
+
+    auto cursor_position = text_area_.get_cursor_position();
+    text_area_.on_cursor_position_changed.connect(
+        [this, &cursor_position]
+        {
+            cursor_position = text_area_.get_cursor_position();
+        });
+
+    text_area_.set_caret_position(caret_position);
+
+    EXPECT_EQ(expected_caret_position, text_area_.get_caret_position());
+    EXPECT_EQ(expected_cursor_position, cursor_position);
+}
+
+static move_caret_test_data const move_caret_test_entries[] =
+{
+    // Move to the beginning of the text
+    { move_caret_test_data{ 0,  0,  {0,  0 } } },
+
+    // Move to the end of the first line and the beginning of the next 
+    // wrapped as determined by the newline.
+    { move_caret_test_data{ 26,  26,  {26, 0 } } }, // t
+    { move_caret_test_data{ 27,  27,  {27, 0 } } }, // ,
+    { move_caret_test_data{ 28,  28,  {0,  1 } } }, // newline
+    { move_caret_test_data{ 29,  29,  {1,  1 } } }, // c
+
+    // Moving on the end of the third line, the caret advances
+    // smoothly as if the newline weren't there - no double
+    // newline.
+    { move_caret_test_data{ 86,  86,  {28, 2 } } }, // s
+    { move_caret_test_data{ 87,  87,  {0,  3 } } }, // v
+    { move_caret_test_data{ 88,  88,  {1,  3 } } }, // e
+
+   // Move off the end of the whole text; caret should stay at end
+    // of the whole piece.
+    { move_caret_test_data{ 140, 123, {0,  5 } } },
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    allows_movement_of_the_caret,
+    a_text_area_with_many_lines_of_text_inserted,
+    ValuesIn(move_caret_test_entries)
+);
+
 }

@@ -1,9 +1,9 @@
 #include "text_area_test.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 
-terminalpp::element const a_text_area::fill = {'X'};
+terminalpp::element const a_text_area_base::fill = {'X'};
 
-void a_text_area::fill_canvas(terminalpp::extent canvas_size)
+void a_text_area_base::fill_canvas(terminalpp::extent canvas_size)
 {
     canvas_ = terminalpp::canvas{canvas_size};
     
@@ -18,7 +18,7 @@ void a_text_area::fill_canvas(terminalpp::extent canvas_size)
         });
 }
 
-void a_text_area::verify_oob_is_untouched()
+void a_text_area_base::verify_oob_is_untouched()
 {
     auto const in_bounds = text_area_.get_size();
     auto const out_of_bounds = canvas_.size();

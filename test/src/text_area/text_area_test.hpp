@@ -2,7 +2,7 @@
 #include <terminalpp/canvas.hpp>
 #include <gtest/gtest.h>
 
-class a_text_area : public testing::Test
+class a_text_area_base
 {
 protected:
     static terminalpp::element const fill;
@@ -12,4 +12,8 @@ protected:
     
     void fill_canvas(terminalpp::extent canvas_size);
     void verify_oob_is_untouched();
+};
+
+class a_text_area : public a_text_area_base, public testing::Test
+{
 };
