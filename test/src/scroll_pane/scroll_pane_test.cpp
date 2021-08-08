@@ -317,3 +317,28 @@ TEST_F(a_new_scroll_pane, lowlights_the_whole_frame_when_the_underlying_componen
     EXPECT_EQ(lowlighted_single_lined_horizontal_beam,             canvas[2][3]);
     EXPECT_EQ(lowlighted_single_lined_rounded_bottom_right_corner, canvas[3][3]);
 }
+
+TEST(a_scroll_pane, with_a_resize_strategy_will_resize_the_tracked_component_accordingly)
+{
+    auto mock_component = make_mock_component();
+
+    auto component_size = terminalpp::extent{};
+    ON_CALL(*mock_component, do_set_size(_))
+        .WillByDefault(SaveArg<0>(&component_size));
+    ON_CALL(*mock_component, do_get_size())
+        .WillByDefault(ReturnPointee(&component_size));
+
+    auto const preferred_size = terminalpp::extent{10, 10};
+    ON_CALL(*mock_component, do_get_preferred_size())
+        .WillByDefault(Return(preferred_size));
+
+    auto scroll_pane = munin::make_scroll_pane(
+        mock_component,
+        munin::make_horizontal_viewport_resize_strategy());
+
+    scroll_pane->set_size({7, 7});
+
+    // The scroll pane reserves two rows for its border.
+    auto const expected_size = terminalpp::extent{10, 5};
+    ASSERT_EQ(expected_size, component_size);
+}
