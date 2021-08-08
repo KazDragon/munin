@@ -5,7 +5,6 @@
 #include <gtest/gtest.h>
 
 using testing::_;
-using testing::Invoke;
 using testing::Return;
 
 TEST(a_status_bar, is_a_component)

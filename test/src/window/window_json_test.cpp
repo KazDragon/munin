@@ -2,17 +2,16 @@
 #include <munin/window.hpp>
 #include <gtest/gtest.h>
 
-using testing::Invoke;
-
 TEST_F(a_window, reports_attributes_as_json)
 {
     EXPECT_CALL(*content_, do_to_json())
-        .WillOnce(Invoke([]() -> nlohmann::json
-        {
-            return {
-                { "type", "mock_content" }
-            };
-        }));
+        .WillOnce(
+            []() -> nlohmann::json
+            {
+                return {
+                    { "type", "mock_content" }
+                };
+            });
 
     nlohmann::json json = window_->to_json();
     ASSERT_EQ("window", json["type"]);

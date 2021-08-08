@@ -1,7 +1,6 @@
 #include "container_test.hpp"
 
 using testing::InSequence;
-using testing::Invoke;
 using testing::Return;
 
 TEST_F(a_container, when_focus_is_set_gives_focus_to_the_first_component)
@@ -13,7 +12,7 @@ TEST_F(a_container, when_focus_is_set_gives_focus_to_the_first_component)
     {
         InSequence s1;
         EXPECT_CALL(*component, do_set_focus())
-            .WillOnce(Invoke(std::ref(component->on_focus_set)));
+            .WillOnce(std::ref(component->on_focus_set));
         EXPECT_CALL(*component, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -40,7 +39,7 @@ TEST_F(a_container, when_focus_is_set_skips_over_unfocusable_components)
             .WillOnce(Return(false));
 
         EXPECT_CALL(*focusable_component, do_set_focus())
-            .WillOnce(Invoke(std::ref(focusable_component->on_focus_set)));
+            .WillOnce(std::ref(focusable_component->on_focus_set));
         EXPECT_CALL(*focusable_component, do_has_focus())
             .WillOnce(Return(true));
     }
@@ -77,7 +76,7 @@ TEST_F(a_container_with_one_component_that_has_focus, loses_focus_from_focused_c
     EXPECT_CALL(*component, do_has_focus())
         .WillOnce(Return(true));
     EXPECT_CALL(*component, do_lose_focus())
-        .WillOnce(Invoke(std::ref(component->on_focus_lost)));
+        .WillOnce(std::ref(component->on_focus_lost));
 
     container.lose_focus();
 

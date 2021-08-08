@@ -9,7 +9,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-using testing::Invoke;
 using testing::Return;
 using testing::ReturnPointee;
 using testing::SaveArg;
@@ -181,15 +180,11 @@ TEST_F(a_viewport, with_a_size_smaller_than_the_tracked_component_allows_the_tra
 
 TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 {
-    std::string const test_event = "test event";
     boost::any received_event;
-    
     EXPECT_CALL(*tracked_component_, do_event(_))
-        .WillOnce(Invoke([&received_event](const boost::any& event)
-        {
-            received_event = event;
-        }));
+        .WillOnce(SaveArg<0>(&received_event));
 
+    std::string const test_event = "test event";
     viewport_->event(test_event);
     
     auto const *result = boost::any_cast<std::string>(&received_event);
@@ -350,7 +345,7 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
     fill_canvas(cvs, 'x');
 
     ON_CALL(*tracked_component_, do_draw(_, _))
-        .WillByDefault(Invoke(
+        .WillByDefault(
             [](munin::render_surface& surface, 
                terminalpp::rectangle const &region)
             {
@@ -370,8 +365,7 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
                     {
                         elem = ('a' + column + (row * 4));
                     });
-            }
-        ));
+            });
     
     viewport_->set_position({0, 0});
     viewport_->set_size({3, 2});
@@ -428,7 +422,7 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
     boost::optional<terminalpp::mouse::event> received_mouse_event;
 
     ON_CALL(*tracked_component_, do_event(_))
-        .WillByDefault(Invoke(
+        .WillByDefault(
             [&received_mouse_event](boost::any const &ev)
             {
                 auto *mouse_event = 
@@ -438,8 +432,7 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
                 {
                     received_mouse_event = *mouse_event;
                 }
-            }
-        ));
+            });
 
     viewport_->event(viewport_mouse_event);
 
