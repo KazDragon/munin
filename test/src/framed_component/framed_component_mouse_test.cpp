@@ -5,8 +5,9 @@
 #include <gtest/gtest.h>
 
 using testing::_;
-using testing::Invoke;
 using testing::Return;
+using testing::ReturnPointee;
+using testing::SaveArg;
 using testing::ValuesIn;
 
 using framed_component_mouse_data = std::tuple<
@@ -23,34 +24,24 @@ protected :
         // Fake out the position and size functions for the frame and inner
         // components.
         ON_CALL(*mock_frame_, do_set_position(_))
-            .WillByDefault(Invoke([this](auto const &position)
-            {
-                mock_frame_position_ = position;
-            }));
+            .WillByDefault(SaveArg<0>(&mock_frame_position_));
         ON_CALL(*mock_frame_, do_get_position())
-            .WillByDefault(Invoke([this]{return mock_frame_position_;}));
+            .WillByDefault(ReturnPointee(&mock_frame_position_));
+
         ON_CALL(*mock_frame_, do_set_size(_))
-            .WillByDefault(Invoke([this](auto const &size)
-            {
-                mock_frame_size_ = size;
-            }));
+            .WillByDefault(SaveArg<0>(&mock_frame_size_));
         ON_CALL(*mock_frame_, do_get_size())
-            .WillByDefault(Invoke([this]{return mock_frame_size_;}));
+            .WillByDefault(ReturnPointee(&mock_frame_size_));
         
         ON_CALL(*mock_inner_, do_set_position(_))
-            .WillByDefault(Invoke([this](auto const &position)
-            {
-                mock_inner_position_ = position;
-            }));
+            .WillByDefault(SaveArg<0>(&mock_inner_position_));
         ON_CALL(*mock_inner_, do_get_position())
-            .WillByDefault(Invoke([this]{return mock_inner_position_;}));
+            .WillByDefault(ReturnPointee(&mock_inner_position_));
+        
         ON_CALL(*mock_inner_, do_set_size(_))
-            .WillByDefault(Invoke([this](auto const &size)
-            {
-                mock_inner_size_ = size;
-            }));
+            .WillByDefault(SaveArg<0>(&mock_inner_size_));
         ON_CALL(*mock_inner_, do_get_size())
-            .WillByDefault(Invoke([this]{return mock_inner_size_;}));
+            .WillByDefault(ReturnPointee(&mock_inner_size_));
     }
 
     std::shared_ptr<mock_frame> mock_frame_{make_mock_frame()};
@@ -87,16 +78,17 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
 
     auto received_mouse_event = terminalpp::mouse::event{};
     EXPECT_CALL(*mock_inner_, do_event(_))
-        .WillOnce(Invoke([&received_mouse_event](auto ev)
-        {
-            auto *mouse_event = 
-                boost::any_cast<terminalpp::mouse::event>(&ev);
-                
-            if (mouse_event)
+        .WillOnce(
+            [&received_mouse_event](auto ev)
             {
-                received_mouse_event = *mouse_event;
-            }
-        }));
+                auto *mouse_event = 
+                    boost::any_cast<terminalpp::mouse::event>(&ev);
+                    
+                if (mouse_event)
+                {
+                    received_mouse_event = *mouse_event;
+                }
+            });
 
     auto const sent_mouse_report = terminalpp::mouse::event{
         terminalpp::mouse::event_type::left_button_down,

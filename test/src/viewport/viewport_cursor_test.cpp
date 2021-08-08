@@ -5,7 +5,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-using testing::Invoke;
 using testing::Return;
 using testing::ValuesIn;
 using testing::_;

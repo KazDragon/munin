@@ -1,8 +1,7 @@
 #include "window_test.hpp"
 #include <gtest/gtest.h>
 
-using testing::Invoke;
-using testing::Return;
+using testing::SaveArg;
 using testing::_;
 
 TEST_F(a_window, passes_events_to_the_content)
@@ -12,7 +11,7 @@ TEST_F(a_window, passes_events_to_the_content)
     boost::any result;
     
     EXPECT_CALL(*content_, do_event(_))
-        .WillOnce(Invoke([&result](boost::any const &event){ result = event; }));
+        .WillOnce(SaveArg<0>(&result));
     
     window_->event(tag{});
 

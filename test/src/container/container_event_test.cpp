@@ -4,7 +4,6 @@
 #include <vector>
 
 using testing::_;
-using testing::Invoke;
 using testing::Return;
 using testing::TestWithParam;
 using testing::ValuesIn;
@@ -25,12 +24,13 @@ TEST_F(a_container_with_one_component_that_has_focus, forwards_events_to_the_sub
         .WillOnce(Return(true));
 
     EXPECT_CALL(*component, do_event(_))
-        .WillOnce(Invoke([](boost::any const &event)
-        {
-            char const *p = boost::any_cast<char>(&event);
-            ASSERT_NE(nullptr, p);
-            ASSERT_EQ('X', *p);
-        }));
+        .WillOnce(
+            [](boost::any const &event)
+            {
+                char const *p = boost::any_cast<char>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ('X', *p);
+            });
     container.event('X');
 }
 
@@ -43,12 +43,13 @@ TEST_F(a_container_with_two_components_where_the_last_has_focus, skips_the_first
         .WillOnce(Return(true));
 
     EXPECT_CALL(*component1, do_event(_))
-        .WillOnce(Invoke([](boost::any const &event)
-        {
-            char const *p = boost::any_cast<char>(&event);
-            ASSERT_NE(nullptr, p);
-            ASSERT_EQ('X', *p);
-        }));
+        .WillOnce(
+            [](boost::any const &event)
+            {
+                char const *p = boost::any_cast<char>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ('X', *p);
+            });
     container.event('X');
 }
 
@@ -66,12 +67,13 @@ TEST_F(a_container_with_one_component, forwards_mouse_events_even_though_the_com
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
     EXPECT_CALL(*component, do_event(_))
-        .WillOnce(Invoke([](boost::any const &event)
-        {
-            auto *p = boost::any_cast<terminalpp::mouse::event>(&event);
-            ASSERT_NE(nullptr, p);
-            ASSERT_EQ(ev, *p);
-        }));
+        .WillOnce(
+            [](boost::any const &event)
+            {
+                auto *p = boost::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(ev, *p);
+            });
 
     container.event(ev);
 }
@@ -100,13 +102,14 @@ TEST_P(containers_forwarding_mouse_events, translate_coordinates_relative_to_com
         .WillOnce(Return(component_size));
 
     EXPECT_CALL(*component, do_event(_))
-        .WillOnce(Invoke([&expected_value](boost::any event)
-        {
-            auto *mouse_event = 
-                boost::any_cast<terminalpp::mouse::event>(&event);
-            ASSERT_NE(nullptr, mouse_event);
-            ASSERT_EQ(expected_value, *mouse_event);
-        }));
+        .WillOnce(
+            [&expected_value](boost::any event)
+            {
+                auto *mouse_event = 
+                    boost::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, mouse_event);
+                ASSERT_EQ(expected_value, *mouse_event);
+            });
     container.event(event);
 }
 
@@ -165,12 +168,13 @@ TEST_F(a_container_with_two_components, skips_components_that_are_not_at_the_mou
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
     EXPECT_CALL(*component1, do_event(_))
-        .WillOnce(Invoke([](boost::any event)
-        {
-            auto *report = boost::any_cast<terminalpp::mouse::event>(&event);
-            ASSERT_NE(nullptr, report);
-            ASSERT_EQ(expected_value, *report);
-        }));
+        .WillOnce(
+            [](boost::any event)
+            {
+                auto *report = boost::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, report);
+                ASSERT_EQ(expected_value, *report);
+            });
 
     container.event(event);
 }
