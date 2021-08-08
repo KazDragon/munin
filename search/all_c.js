@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['offset_5fby_77',['offset_by',['../classmunin_1_1render__surface.html#a234e8132075470151e91b16423eb8078',1,'munin::render_surface']]],
-  ['on_5fanchor_5fbounds_5fchanged_78',['on_anchor_bounds_changed',['../classmunin_1_1viewport.html#adf07798334c07654eda9a1b8b7bf3d4a',1,'munin::viewport']]],
-  ['on_5fcaret_5fposition_5fchanged_79',['on_caret_position_changed',['../classmunin_1_1text__area.html#af1cfa418e0424902e6a305184d27c442',1,'munin::text_area']]],
+  ['offset_5fby_78',['offset_by',['../classmunin_1_1render__surface.html#a234e8132075470151e91b16423eb8078',1,'munin::render_surface']]],
+  ['on_5fanchor_5fbounds_5fchanged_79',['on_anchor_bounds_changed',['../classmunin_1_1viewport.html#adf07798334c07654eda9a1b8b7bf3d4a',1,'munin::viewport']]],
   ['on_5fcursor_5fposition_5fchanged_80',['on_cursor_position_changed',['../classmunin_1_1component.html#ae2a65ddc2f293efdcf992bb617265cdf',1,'munin::component']]],
   ['on_5fcursor_5fstate_5fchanged_81',['on_cursor_state_changed',['../classmunin_1_1component.html#a3864f9e07275e500f1e2aa82e9e2619a',1,'munin::component']]],
   ['on_5ffocus_5flost_82',['on_focus_lost',['../classmunin_1_1component.html#a67a3563c2085e698f2e368e49b6cebf4',1,'munin::component']]],

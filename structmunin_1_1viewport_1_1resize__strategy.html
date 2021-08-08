@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Munin: /home/runner/work/munin/munin Directory Reference</title>
+<title>Munin: munin::viewport::resize_strategy Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -64,20 +64,39 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_a68654a902d96dd1b158a36eb7c93f4f.html">munin</a></li>  </ul>
+<li class="navelem"><b>munin</b></li><li class="navelem"><a class="el" href="classmunin_1_1viewport.html">viewport</a></li><li class="navelem"><a class="el" href="structmunin_1_1viewport_1_1resize__strategy.html">resize_strategy</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="structmunin_1_1viewport_1_1resize__strategy-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">munin Directory Reference</div>  </div>
+<div class="title">munin::viewport::resize_strategy Struct Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Defines a strategy by which a tracked component is allowed to grow.  
+ <a href="structmunin_1_1viewport_1_1resize__strategy.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="viewport_8hpp_source.html">viewport.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="subdirs"></a>
-Directories</h2></td></tr>
-<tr class="memitem:dir_e2916f080e6fa7431696c20311130e14"><td class="memItemLeft" align="right" valign="top">directory &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dir_e2916f080e6fa7431696c20311130e14.html">include</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ab79336a44d44bc9ef4b8618cdde492f6"><td class="memItemLeft" align="right" valign="top"><a id="ab79336a44d44bc9ef4b8618cdde492f6"></a>
+virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmunin_1_1viewport_1_1resize__strategy.html#ab79336a44d44bc9ef4b8618cdde492f6">~resize_strategy</a> ()=default</td></tr>
+<tr class="memdesc:ab79336a44d44bc9ef4b8618cdde492f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
+<tr class="separator:ab79336a44d44bc9ef4b8618cdde492f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff72767c38989907400a490d52492841"><td class="memItemLeft" align="right" valign="top"><a id="aff72767c38989907400a490d52492841"></a>
+virtual terminalpp::extent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmunin_1_1viewport_1_1resize__strategy.html#aff72767c38989907400a490d52492841">calculate_tracked_component_size</a> (terminalpp::extent tracked_preferred_size, terminalpp::extent viewport_size) const =0</td></tr>
+<tr class="memdesc:aff72767c38989907400a490d52492841"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the new size of the tracked component given its preferences and the viewport's current size. <br /></td></tr>
+<tr class="separator:aff72767c38989907400a490d52492841"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Defines a strategy by which a tracked component is allowed to grow. </p>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>/home/runner/work/munin/munin/include/munin/<a class="el" href="viewport_8hpp_source.html">viewport.hpp</a></li>
+</ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

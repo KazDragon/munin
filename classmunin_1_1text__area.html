@@ -72,7 +72,6 @@ $(function() {
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classmunin_1_1text__area-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -205,37 +204,6 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memdesc:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns details about the component in JSON format. <br /></td></tr>
 <tr class="separator:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:af1cfa418e0424902e6a305184d27c442"><td class="memItemLeft" align="right" valign="top"><a id="af1cfa418e0424902e6a305184d27c442"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1text__area.html#af1cfa418e0424902e6a305184d27c442">on_caret_position_changed</a></td></tr>
-<tr class="memdesc:af1cfa418e0424902e6a305184d27c442"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's caret position changes. <br /></td></tr>
-<tr class="separator:af1cfa418e0424902e6a305184d27c442"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_attribs_classmunin_1_1component"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classmunin_1_1component')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classmunin_1_1component.html">munin::component</a></td></tr>
-<tr class="memitem:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top">boost::signals2::signal&lt; void(std::vector&lt; terminalpp::rectangle &gt; const &amp;regions) &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">on_redraw</a></td></tr>
-<tr class="memdesc:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component should be redrawn.  <a href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">More...</a><br /></td></tr>
-<tr class="separator:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a76876811e3bb47aea6ac28d45c41156d"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a76876811e3bb47aea6ac28d45c41156d">on_preferred_size_changed</a></td></tr>
-<tr class="memdesc:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Certain components sizes want to change during their lifetime, such as text controls that grow with the text within them. Connect to this signal in order to receive notifications about this. <br /></td></tr>
-<tr class="separator:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="aa30ffb12918de20519d64b5a9e107df7"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#aa30ffb12918de20519d64b5a9e107df7">on_focus_set</a></td></tr>
-<tr class="memdesc:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component has gained focus. <br /></td></tr>
-<tr class="separator:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a67a3563c2085e698f2e368e49b6cebf4"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a67a3563c2085e698f2e368e49b6cebf4">on_focus_lost</a></td></tr>
-<tr class="memdesc:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component has lost focus. <br /></td></tr>
-<tr class="separator:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a3864f9e07275e500f1e2aa82e9e2619a"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a3864f9e07275e500f1e2aa82e9e2619a">on_cursor_state_changed</a></td></tr>
-<tr class="memdesc:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor state changes. <br /></td></tr>
-<tr class="separator:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="ae2a65ddc2f293efdcf992bb617265cdf"></a>
-boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#ae2a65ddc2f293efdcf992bb617265cdf">on_cursor_position_changed</a></td></tr>
-<tr class="memdesc:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor position changes. <br /></td></tr>
-<tr class="separator:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a21b552412b6329bd5ab1af03f7ac5874"><td class="memItemLeft" align="right" valign="top"><a id="a21b552412b6329bd5ab1af03f7ac5874"></a>
@@ -315,6 +283,33 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#aabb9db037926e10d515a9b732539358f">component</a> ()=default</td></tr>
 <tr class="memdesc:aabb9db037926e10d515a9b732539358f inherit pro_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor. <br /></td></tr>
 <tr class="separator:aabb9db037926e10d515a9b732539358f inherit pro_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_attribs_classmunin_1_1component"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_classmunin_1_1component')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="classmunin_1_1component.html">munin::component</a></td></tr>
+<tr class="memitem:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top">boost::signals2::signal&lt; void(std::vector&lt; terminalpp::rectangle &gt; const &amp;regions) &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">on_redraw</a></td></tr>
+<tr class="memdesc:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component should be redrawn.  <a href="classmunin_1_1component.html#af9e35ca84473ba211cdedb8263ce3ebe">More...</a><br /></td></tr>
+<tr class="separator:af9e35ca84473ba211cdedb8263ce3ebe inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a76876811e3bb47aea6ac28d45c41156d"></a>
+boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a76876811e3bb47aea6ac28d45c41156d">on_preferred_size_changed</a></td></tr>
+<tr class="memdesc:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Certain components sizes want to change during their lifetime, such as text controls that grow with the text within them. Connect to this signal in order to receive notifications about this. <br /></td></tr>
+<tr class="separator:a76876811e3bb47aea6ac28d45c41156d inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="aa30ffb12918de20519d64b5a9e107df7"></a>
+boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#aa30ffb12918de20519d64b5a9e107df7">on_focus_set</a></td></tr>
+<tr class="memdesc:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component has gained focus. <br /></td></tr>
+<tr class="separator:aa30ffb12918de20519d64b5a9e107df7 inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a67a3563c2085e698f2e368e49b6cebf4"></a>
+boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a67a3563c2085e698f2e368e49b6cebf4">on_focus_lost</a></td></tr>
+<tr class="memdesc:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component has lost focus. <br /></td></tr>
+<tr class="separator:a67a3563c2085e698f2e368e49b6cebf4 inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="a3864f9e07275e500f1e2aa82e9e2619a"></a>
+boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a3864f9e07275e500f1e2aa82e9e2619a">on_cursor_state_changed</a></td></tr>
+<tr class="memdesc:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor state changes. <br /></td></tr>
+<tr class="separator:a3864f9e07275e500f1e2aa82e9e2619a inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top"><a id="ae2a65ddc2f293efdcf992bb617265cdf"></a>
+boost::signals2::signal&lt; void() &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#ae2a65ddc2f293efdcf992bb617265cdf">on_cursor_position_changed</a></td></tr>
+<tr class="memdesc:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor position changes. <br /></td></tr>
+<tr class="separator:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A component that represents a text area. </p>
@@ -393,7 +388,7 @@ nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Aug 7 2021 18:15:21 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Aug 8 2021 11:17:38 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
