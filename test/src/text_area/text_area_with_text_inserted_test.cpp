@@ -161,29 +161,34 @@ using move_caret_test_data = std::tuple<
     munin::text_area::text_index, // expected caret position
     terminalpp::point             // expected cursor position
 >;
-
-class a_text_area_with_many_lines_of_text_inserted
-  : public a_text_area_base,
-    public testing::TestWithParam<move_caret_test_data>
+class a_text_area_with_many_lines_of_text_inserted_base
+  : public a_text_area_base
 {
 public:
-    a_text_area_with_many_lines_of_text_inserted()
+    a_text_area_with_many_lines_of_text_inserted_base()
     {
-         text_area_.insert_text(
+        text_area_.insert_text(
           // 0         1         2         3
           // 0123456789012345678901234567890123456789
-             "Lorem ipsum dolor sit amet,\n"           // 0  + 28 = 28
-             "consectetur adipiscing elit.\n"          // 28 + 29 = 57
-             "Proin sed nisl mattis, luctus\n"         // 57 + 30 = 87
-             "velit ullamcorper, molestie mauris.\n"); // 87 + 36 = 123
+            "Lorem ipsum dolor sit amet,\n"          // 0  + 28 = 28
+            "consectetur adipiscing\n"               // 28 + 23 = 51
+            "elit. Proin sed nisl mattis,\n"         // 51 + 29 = 80
+            "luctus velit ullamcorper, molestie\n"   // 80 + 35 = 115
+            "mauris.\n");                            // 115 + 8 = 123
 
         // Set the size of the text area so that the width is precisely on
         // a newline boundary.
-        text_area_.set_size({29, 10}); // Proin sed nisl line.
+        text_area_.set_size({29, 10}); // See "elit.  Proin sed nisl" line.
     }
 };
 
-TEST_P(a_text_area_with_many_lines_of_text_inserted, moves_the_caret_and_cursor_as_specified)
+class setting_the_caret_programatically
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::TestWithParam<move_caret_test_data>
+{
+};
+
+TEST_P(setting_the_caret_programatically, moves_the_caret_and_cursor_as_specified)
 {
     using std::get;
     
@@ -208,30 +213,38 @@ TEST_P(a_text_area_with_many_lines_of_text_inserted, moves_the_caret_and_cursor_
 static move_caret_test_data const move_caret_test_entries[] =
 {
     // Move to the beginning of the text
-    { move_caret_test_data{ 0,  0,  {0,  0 } } },
+    { move_caret_test_data{ 0,  0,    {0,  0} } },
 
     // Move to the end of the first line and the beginning of the next 
     // wrapped as determined by the newline.
-    { move_caret_test_data{ 26,  26,  {26, 0 } } }, // t
-    { move_caret_test_data{ 27,  27,  {27, 0 } } }, // ,
-    { move_caret_test_data{ 28,  28,  {0,  1 } } }, // newline
-    { move_caret_test_data{ 29,  29,  {1,  1 } } }, // c
+    { move_caret_test_data{ 26,  26,  {26, 0} } }, // t
+    { move_caret_test_data{ 27,  27,  {27, 0} } }, // ,
+    { move_caret_test_data{ 28,  28,  {0,  1} } }, // newline
+    { move_caret_test_data{ 29,  29,  {1,  1} } }, // c
 
-    // Moving on the end of the third line, the caret advances
-    // smoothly as if the newline weren't there - no double
-    // newline.
-    { move_caret_test_data{ 86,  86,  {28, 2 } } }, // s
-    { move_caret_test_data{ 87,  87,  {0,  3 } } }, // v
-    { move_caret_test_data{ 88,  88,  {1,  3 } } }, // e
+    // Moving on the end of the third line, the caret has two
+    // positions that match, one for writing before the newline,
+    // another after it.
+    { move_caret_test_data{ 78,  78,  {27, 2} } }, // s
+    { move_caret_test_data{ 79,  79,  {28, 2} } }, // (wrap)
+    { move_caret_test_data{ 80,  80,  {28, 2} } }, // \n
+    { move_caret_test_data{ 81,  81,  {0,  3} } }, // l
 
-   // Move off the end of the whole text; caret should stay at end
+    // The text wraps at the end of the fourth line, which should
+    // happen smoothly.
+    { move_caret_test_data{ 108, 108, {27, 3} } }, // o
+    { move_caret_test_data{ 109, 109, {28, 3} } }, // l
+    { move_caret_test_data{ 110, 110, {0,  4} } }, // e
+    { move_caret_test_data{ 111, 111, {1,  4} } }, // s
+
+    // Move off the end of the whole text; caret should stay at end
     // of the whole piece.
-    { move_caret_test_data{ 140, 123, {0,  5 } } },
+    { move_caret_test_data{ 140, 123, {0,  6} } },
 };
 
 INSTANTIATE_TEST_SUITE_P(
     allows_movement_of_the_caret,
-    a_text_area_with_many_lines_of_text_inserted,
+    setting_the_caret_programatically,
     ValuesIn(move_caret_test_entries)
 );
 
