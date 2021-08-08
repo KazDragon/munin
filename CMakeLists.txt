@@ -313,6 +313,7 @@ target_sources(munin_tester
         test/src/vertical_strip_layout/vertical_strip_layout_test.cpp
         test/src/viewport/viewport_test.hpp
         test/src/viewport/viewport_test.cpp
+        test/src/viewport/viewport_growth_strategy_test.cpp
         test/src/viewport/viewport_cursor_test.cpp
         test/src/viewport/viewport_redraw_test.cpp
         test/src/viewport/viewport_size_test.cpp

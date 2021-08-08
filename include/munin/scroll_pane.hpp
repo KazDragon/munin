@@ -1,5 +1,6 @@
 #pragma once
 #include "munin/framed_component.hpp"
+#include "munin/viewport.hpp"
 #include <memory>
 
 namespace munin {
@@ -16,6 +17,13 @@ public:
     /// \brief Constructor
     //* =====================================================================
     explicit scroll_pane(std::shared_ptr<component> const &inner_component);
+
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    scroll_pane(
+        std::shared_ptr<component> const &inner_component,
+        std::unique_ptr<viewport::growth_strategy> viewport_growth_strategy);
 
     //* =====================================================================
     /// \brief Destructor
@@ -44,7 +52,20 @@ private:
     std::unique_ptr<impl> pimpl_;
 };
 
+//* =========================================================================
+/// \brief Makes a new scroll pane around a given component.
+//* =========================================================================
 MUNIN_EXPORT
-std::shared_ptr<scroll_pane> make_scroll_pane(std::shared_ptr<component> const &inner_component);
+std::shared_ptr<scroll_pane> make_scroll_pane(
+    std::shared_ptr<component> const &inner_component);
+
+//* =========================================================================
+/// \brief Makes a new scroll around a given component with the specified
+/// growth strategy.
+//* =========================================================================
+MUNIN_EXPORT
+std::shared_ptr<scroll_pane> make_scroll_pane(
+    std::shared_ptr<component> const &inner_component,
+    std::unique_ptr<viewport::growth_strategy> strategy);
 
 }
