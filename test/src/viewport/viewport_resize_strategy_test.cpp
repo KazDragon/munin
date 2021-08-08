@@ -5,21 +5,21 @@ using testing::Return;
 
 namespace {
 
-class a_viewport_with_a_vertical_growth_strategy
+class a_viewport_with_a_vertical_resize_strategy
   : public a_viewport
 {
 public:
-    a_viewport_with_a_vertical_growth_strategy()
+    a_viewport_with_a_vertical_resize_strategy()
     {
         viewport_ = munin::make_viewport(
             tracked_component_,
-            munin::make_vertical_viewport_growth_strategy());
+            munin::make_vertical_viewport_resize_strategy());
     }
 };
 
 }
 
-TEST_F(a_viewport_with_a_vertical_growth_strategy, is_granted_vertical_but_not_horizontal_size_when_the_viewport_is_resized)
+TEST_F(a_viewport_with_a_vertical_resize_strategy, is_granted_vertical_but_not_horizontal_size_when_the_viewport_is_resized)
 {
     auto const tracked_preferred_size = terminalpp::extent{10, 10};
 
@@ -34,21 +34,21 @@ TEST_F(a_viewport_with_a_vertical_growth_strategy, is_granted_vertical_but_not_h
 
 namespace {
 
-class a_viewport_with_a_horizontal_growth_strategy
+class a_viewport_with_a_horizontal_resize_strategy
   : public a_viewport
 {
 public:
-    a_viewport_with_a_horizontal_growth_strategy()
+    a_viewport_with_a_horizontal_resize_strategy()
     {
         viewport_ = munin::make_viewport(
             tracked_component_,
-            munin::make_horizontal_viewport_growth_strategy());
+            munin::make_horizontal_viewport_resize_strategy());
     }
 };
 
 }
 
-TEST_F(a_viewport_with_a_horizontal_growth_strategy, is_granted_horizontal_but_not_vertical_size_when_the_viewport_is_resized)
+TEST_F(a_viewport_with_a_horizontal_resize_strategy, is_granted_horizontal_but_not_vertical_size_when_the_viewport_is_resized)
 {
     auto const tracked_preferred_size = terminalpp::extent{10, 10};
 
@@ -60,4 +60,3 @@ TEST_F(a_viewport_with_a_horizontal_growth_strategy, is_granted_horizontal_but_n
     auto const expected_tracked_size = terminalpp::extent{10, 5};
     ASSERT_EQ(expected_tracked_size, tracked_component_->get_size());
 }
-

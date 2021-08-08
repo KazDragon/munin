@@ -23,7 +23,7 @@ public:
     //* =====================================================================
     scroll_pane(
         std::shared_ptr<component> const &inner_component,
-        std::unique_ptr<viewport::growth_strategy> viewport_growth_strategy);
+        std::unique_ptr<viewport::resize_strategy> viewport_resize_strategy);
 
     //* =====================================================================
     /// \brief Destructor
@@ -61,11 +61,11 @@ std::shared_ptr<scroll_pane> make_scroll_pane(
 
 //* =========================================================================
 /// \brief Makes a new scroll around a given component with the specified
-/// growth strategy.
+/// resize strategy.
 //* =========================================================================
 MUNIN_EXPORT
 std::shared_ptr<scroll_pane> make_scroll_pane(
     std::shared_ptr<component> const &inner_component,
-    std::unique_ptr<viewport::growth_strategy> strategy);
+    std::unique_ptr<viewport::resize_strategy> strategy);
 
 }

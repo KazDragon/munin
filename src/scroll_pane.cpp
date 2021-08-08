@@ -42,10 +42,10 @@ scroll_pane::scroll_pane(std::shared_ptr<component> const &inner_component)
 // ==========================================================================
 scroll_pane::scroll_pane(
     std::shared_ptr<component> const &inner_component,
-    std::unique_ptr<viewport::growth_strategy> viewport_growth_strategy)
+    std::unique_ptr<viewport::resize_strategy> viewport_resize_strategy)
   : scroll_pane(
       make_scroll_frame(),
-      make_viewport(inner_component, std::move(viewport_growth_strategy)),
+      make_viewport(inner_component, std::move(viewport_resize_strategy)),
       inner_component)
 {
 }
@@ -105,7 +105,7 @@ std::shared_ptr<scroll_pane> make_scroll_pane(
 // ==========================================================================
 std::shared_ptr<scroll_pane> make_scroll_pane(
     std::shared_ptr<component> const &inner_component,
-    std::unique_ptr<viewport::growth_strategy> strategy)
+    std::unique_ptr<viewport::resize_strategy> strategy)
 {
     return std::make_shared<scroll_pane>(
         inner_component, std::move(strategy));

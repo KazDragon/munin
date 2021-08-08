@@ -21,9 +21,9 @@ struct viewport::impl
     impl(
         viewport& self, 
         std::shared_ptr<component> tracked_component,
-        std::unique_ptr<viewport::growth_strategy> strategy)
+        std::unique_ptr<viewport::resize_strategy> strategy)
       : self_(self),
-        growth_strategy_(std::move(strategy)),
+        resize_strategy_(std::move(strategy)),
         tracked_component_(std::move(tracked_component))
     {
         tracked_component_->on_preferred_size_changed.connect(
@@ -178,21 +178,9 @@ struct viewport::impl
     void update_tracked_component_size()
     {
         tracked_component_->set_size(
-            growth_strategy_->calculate_tracked_component_size(
+            resize_strategy_->calculate_tracked_component_size(
                 tracked_component_->get_preferred_size(),
                 self_.get_size()));
-
-        /*
-        auto const preferred_size = tracked_component_->get_preferred_size();
-        auto const viewport_size = self_.get_size();
-        
-        auto const tracked_component_size = terminalpp::extent{
-            std::max(preferred_size.width_, viewport_size.width_),
-            std::max(preferred_size.height_, viewport_size.height_)
-        };
-        
-        tracked_component_->set_size(tracked_component_size);
-        */
     }
 
     // ======================================================================
@@ -341,7 +329,7 @@ private:
     }
 
     viewport &self_;
-    std::unique_ptr<viewport::growth_strategy> growth_strategy_;
+    std::unique_ptr<viewport::resize_strategy> resize_strategy_;
     std::shared_ptr<component> tracked_component_;
     terminalpp::rectangle anchor_bounds_;
     terminalpp::point cursor_position_;
@@ -353,7 +341,7 @@ private:
 viewport::viewport(std::shared_ptr<component> tracked_component)
   : viewport(
         std::move(tracked_component),
-        make_default_viewport_growth_strategy())
+        make_default_viewport_resize_strategy())
 {
 }
 
@@ -362,7 +350,7 @@ viewport::viewport(std::shared_ptr<component> tracked_component)
 // ==========================================================================
 viewport::viewport(
     std::shared_ptr<component> tracked_component,
-    std::unique_ptr<growth_strategy> strategy)
+    std::unique_ptr<resize_strategy> strategy)
   : pimpl_(
         boost::make_unique<impl>(
             *this, std::move(tracked_component), std::move(strategy)))
@@ -489,7 +477,7 @@ std::shared_ptr<viewport> make_viewport(
 // ==========================================================================
 std::shared_ptr<viewport> make_viewport(
     std::shared_ptr<component> tracked_component,
-    std::unique_ptr<viewport::growth_strategy> strategy)
+    std::unique_ptr<viewport::resize_strategy> strategy)
 {
     return std::make_shared<viewport>(
         std::move(tracked_component),
@@ -498,8 +486,8 @@ std::shared_ptr<viewport> make_viewport(
 
 namespace {
 
-class default_viewport_growth_strategy
-  : public viewport::growth_strategy
+class default_viewport_resize_strategy
+  : public viewport::resize_strategy
 {
     // ======================================================================
     // CALCULATE_TRACKED_COMPONENT_SIZE
@@ -516,10 +504,10 @@ class default_viewport_growth_strategy
 };
 
 // ==========================================================================
-// VERTICAL_VIEWPORT_GROWTH_STRATEGY
+// VERTICAL_VIEWPORT_RESIZE_STRATEGY
 // ==========================================================================
-class vertical_viewport_growth_strategy
-  : public viewport::growth_strategy
+class vertical_viewport_resize_strategy
+  : public viewport::resize_strategy
 {
     // ======================================================================
     // CALCULATE_TRACKED_COMPONENT_SIZE
@@ -536,10 +524,10 @@ class vertical_viewport_growth_strategy
 };
 
 // ==========================================================================
-// HORIZONTAL_VIEWPORT_GROWTH_STRATEGY
+// HORIZONTAL_VIEWPORT_RESIZE_STRATEGY
 // ==========================================================================
-class horizontal_viewport_growth_strategy
-  : public viewport::growth_strategy
+class horizontal_viewport_resize_strategy
+  : public viewport::resize_strategy
 {
     // ======================================================================
     // CALCULATE_TRACKED_COMPONENT_SIZE
@@ -558,30 +546,30 @@ class horizontal_viewport_growth_strategy
 }
 
 // ==========================================================================
-// MAKE_DEFAULT_VIEWPORT_GROWTH_STRATEGY
+// MAKE_DEFAULT_VIEWPORT_RESIZE_STRATEGY
 // ==========================================================================
-std::unique_ptr<viewport::growth_strategy> 
-    make_default_viewport_growth_strategy()
+std::unique_ptr<viewport::resize_strategy> 
+    make_default_viewport_resize_strategy()
 {
-    return boost::make_unique<default_viewport_growth_strategy>();
+    return boost::make_unique<default_viewport_resize_strategy>();
 }
 
 // ==========================================================================
-// MAKE_VERTICAL_VIEWPORT_GROWTH_STRATEGY
+// MAKE_VERTICAL_VIEWPORT_RESIZE_STRATEGY
 // ==========================================================================
-std::unique_ptr<viewport::growth_strategy> 
-    make_vertical_viewport_growth_strategy()
+std::unique_ptr<viewport::resize_strategy> 
+    make_vertical_viewport_resize_strategy()
 {
-    return boost::make_unique<vertical_viewport_growth_strategy>();
+    return boost::make_unique<vertical_viewport_resize_strategy>();
 }
 
 // ==========================================================================
-// MAKE_HORIZONTAL_VIEWPORT_GROWTH_STRATEGY
+// MAKE_HORIZONTAL_VIEWPORT_RESIZE_STRATEGY
 // ==========================================================================
-std::unique_ptr<viewport::growth_strategy> 
-    make_horizontal_viewport_growth_strategy()
+std::unique_ptr<viewport::resize_strategy> 
+    make_horizontal_viewport_resize_strategy()
 {
-    return boost::make_unique<horizontal_viewport_growth_strategy>();
+    return boost::make_unique<horizontal_viewport_resize_strategy>();
 }
 
 }
