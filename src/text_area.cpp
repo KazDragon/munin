@@ -1,6 +1,7 @@
 #include "munin/text_area.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -331,6 +332,20 @@ void text_area::do_draw(
                  ? pimpl_->laid_out_text_[row][column]
                  : ' ';
         });
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void text_area::do_event(boost::any const &ev)
+{
+    auto const *mouse_event = 
+        boost::any_cast<terminalpp::mouse::event>(&ev);
+
+    if (mouse_event != nullptr)
+    {
+        set_cursor_position(mouse_event->position_);
+    }
 }
 
 // ==========================================================================

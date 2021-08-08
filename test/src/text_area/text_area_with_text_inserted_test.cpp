@@ -1,5 +1,5 @@
 #include "text_area_test.hpp"
-#include <terminalpp/virtual_key.hpp>
+#include <terminalpp/mouse.hpp>
 #include <munin/render_surface.hpp>
 
 using testing::ValuesIn;
@@ -314,3 +314,29 @@ INSTANTIATE_TEST_SUITE_P(
     setting_the_cursor_programatically,
     ValuesIn(move_cursor_test_entries)
 );
+
+namespace {
+
+class a_text_area_with_many_lines_of_text_inserted
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::Test
+{
+};
+
+}
+
+TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_where_the_mouse_clicks)
+{
+    terminalpp::mouse::event event {
+        terminalpp::mouse::event_type::left_button_down,
+        {13, 1}
+    };
+
+    text_area_.event(event);
+
+    auto const expected_cursor_position = terminalpp::point{13, 1};
+    auto const expected_caret_position = munin::text_area::text_index{41};
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+}
