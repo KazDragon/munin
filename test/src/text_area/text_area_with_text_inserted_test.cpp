@@ -1,4 +1,5 @@
 #include "text_area_test.hpp"
+#include <terminalpp/mouse.hpp>
 #include <munin/render_surface.hpp>
 
 using testing::ValuesIn;
@@ -162,28 +163,36 @@ using move_caret_test_data = std::tuple<
     terminalpp::point             // expected cursor position
 >;
 
-class a_text_area_with_many_lines_of_text_inserted
-  : public a_text_area_base,
-    public testing::TestWithParam<move_caret_test_data>
+class a_text_area_with_many_lines_of_text_inserted_base
+  : public a_text_area_base
 {
 public:
-    a_text_area_with_many_lines_of_text_inserted()
+    a_text_area_with_many_lines_of_text_inserted_base()
     {
-         text_area_.insert_text(
+        text_area_.insert_text(
           // 0         1         2         3
           // 0123456789012345678901234567890123456789
-             "Lorem ipsum dolor sit amet,\n"           // 0  + 28 = 28
-             "consectetur adipiscing elit.\n"          // 28 + 29 = 57
-             "Proin sed nisl mattis, luctus\n"         // 57 + 30 = 87
-             "velit ullamcorper, molestie mauris.\n"); // 87 + 36 = 123
+            "Lorem ipsum dolor sit amet,\n"          // 0  + 28 = 28
+            "consectetur adipiscing\n"               // 28 + 23 = 51
+            "elit. Proin sed nisl mattis,\n"         // 51 + 29 = 80
+            "luctus velit ullamcorper, molestie\n"   // 80 + 35 = 115
+            "mauris.\n");                            // 115 + 8 = 123
 
         // Set the size of the text area so that the width is precisely on
         // a newline boundary.
-        text_area_.set_size({29, 10}); // Proin sed nisl line.
+        text_area_.set_size({29, 10}); // See "elit.  Proin sed nisl" line.
     }
 };
 
-TEST_P(a_text_area_with_many_lines_of_text_inserted, moves_the_caret_and_cursor_as_specified)
+class setting_the_caret_programatically
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::TestWithParam<move_caret_test_data>
+{
+};
+
+}
+
+TEST_P(setting_the_caret_programatically, moves_the_caret_and_cursor_as_specified)
 {
     using std::get;
     
@@ -208,31 +217,126 @@ TEST_P(a_text_area_with_many_lines_of_text_inserted, moves_the_caret_and_cursor_
 static move_caret_test_data const move_caret_test_entries[] =
 {
     // Move to the beginning of the text
-    { move_caret_test_data{ 0,  0,  {0,  0 } } },
+    move_caret_test_data{ 0,  0,    {0,  0} },
 
     // Move to the end of the first line and the beginning of the next 
     // wrapped as determined by the newline.
-    { move_caret_test_data{ 26,  26,  {26, 0 } } }, // t
-    { move_caret_test_data{ 27,  27,  {27, 0 } } }, // ,
-    { move_caret_test_data{ 28,  28,  {0,  1 } } }, // newline
-    { move_caret_test_data{ 29,  29,  {1,  1 } } }, // c
+    move_caret_test_data{ 26,  26,  {26, 0} }, // t
+    move_caret_test_data{ 27,  27,  {27, 0} }, // ,
+    move_caret_test_data{ 28,  28,  {0,  1} }, // newline
+    move_caret_test_data{ 29,  29,  {1,  1} }, // c
 
-    // Moving on the end of the third line, the caret advances
-    // smoothly as if the newline weren't there - no double
-    // newline.
-    { move_caret_test_data{ 86,  86,  {28, 2 } } }, // s
-    { move_caret_test_data{ 87,  87,  {0,  3 } } }, // v
-    { move_caret_test_data{ 88,  88,  {1,  3 } } }, // e
+    // Moving on the end of the third line, the caret has two
+    // positions that match, one for writing before the newline,
+    // another after it.
+    move_caret_test_data{ 78,  78,  {27, 2} }, // s
+    move_caret_test_data{ 79,  79,  {28, 2} }, // (wrap)
+    move_caret_test_data{ 80,  80,  {28, 2} }, // \n
+    move_caret_test_data{ 81,  81,  {0,  3} }, // l
 
-   // Move off the end of the whole text; caret should stay at end
+    // The text wraps at the end of the fourth line, which should
+    // happen smoothly.
+    move_caret_test_data{ 108, 108, {27, 3} }, // o
+    move_caret_test_data{ 109, 109, {28, 3} }, // l
+    move_caret_test_data{ 110, 110, {0,  4} }, // e
+    move_caret_test_data{ 111, 111, {1,  4} }, // s
+
+    // Move off the end of the whole text; caret should stay at end
     // of the whole piece.
-    { move_caret_test_data{ 140, 123, {0,  5 } } },
+    move_caret_test_data{ 140, 123, {0,  6} },
 };
 
 INSTANTIATE_TEST_SUITE_P(
     allows_movement_of_the_caret,
-    a_text_area_with_many_lines_of_text_inserted,
+    setting_the_caret_programatically,
     ValuesIn(move_caret_test_entries)
 );
 
+namespace {
+
+using move_cursor_test_data = std::tuple<
+    terminalpp::point,           // cursor set position
+    terminalpp::point,           // expected cursor position
+    munin::text_area::text_index // expected caret position
+>;
+
+class setting_the_cursor_programatically
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::TestWithParam<move_cursor_test_data>
+{
+};
+
+}
+
+TEST_P(setting_the_cursor_programatically, moves_the_caret_and_cursor_as_specified)
+{
+    using std::get;
+
+    auto const &params = GetParam();
+    auto const &cursor_position = get<0>(params);
+    auto const &expected_cursor_position = get<1>(params);
+    auto const &expected_caret_position = get<2>(params);
+
+    text_area_.set_cursor_position(cursor_position);
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+}
+
+static move_cursor_test_data const move_cursor_test_entries[] =
+{
+    // Move the cursor to the home point.
+    move_cursor_test_data{ {0,  0}, {0,  0}, 0   },
+
+    // Move the cursor to arbitrary positions on the first row
+    move_cursor_test_data{ {2,  0}, {2,  0}, 2   },
+    move_cursor_test_data{ {4,  0}, {4,  0}, 4   },
+    move_cursor_test_data{ {12, 0}, {12, 0}, 12  },
+    move_cursor_test_data{ {20, 0}, {20, 0}, 20  },
+    move_cursor_test_data{ {27, 0}, {27, 0}, 27  },
+
+    // Move the cursor to arbitrary positions on the second row
+    move_cursor_test_data{ {0,  1}, {0,  1}, 28  },
+    move_cursor_test_data{ {11, 1}, {11, 1}, 39  },
+    move_cursor_test_data{ {13, 1}, {13, 1}, 41  },
+    move_cursor_test_data{ {22, 1}, {22, 1}, 50  },
+
+    // Moving the cursor off the end of text clips to the end of the line
+    move_cursor_test_data{ {26, 1}, {22, 1}, 50  },
+    move_cursor_test_data{ {14, 4}, {4,  4}, 114 },
+
+    // Move the cursor of the bottom of the text clips to the end of the text
+    move_cursor_test_data{ {3,  9}, {0,  6}, 123 },
+};
+
+INSTANTIATE_TEST_SUITE_P(
+    allows_movement_of_the_cursor,
+    setting_the_cursor_programatically,
+    ValuesIn(move_cursor_test_entries)
+);
+
+namespace {
+
+class a_text_area_with_many_lines_of_text_inserted
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::Test
+{
+};
+
+}
+
+TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_where_the_mouse_clicks)
+{
+    terminalpp::mouse::event event {
+        terminalpp::mouse::event_type::left_button_down,
+        {13, 1}
+    };
+
+    text_area_.event(event);
+
+    auto const expected_cursor_position = terminalpp::point{13, 1};
+    auto const expected_caret_position = munin::text_area::text_index{41};
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
 }

@@ -80,6 +80,13 @@ protected:
     terminalpp::point do_get_cursor_position() const override;
 
     //* =====================================================================
+    /// \brief Called by set_cursor_position().  Derived classes must
+    /// override this function in order to set the cursor position in
+    /// a custom manner.
+    //* =====================================================================
+    void do_set_cursor_position(terminalpp::point const &position) override;
+
+    //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
     /// this function in order to return the cursor state in a custom manner.
     //* =====================================================================
@@ -97,6 +104,12 @@ protected:
     void do_draw(
         render_surface &surface,
         terminalpp::rectangle const &region) const override;
+
+    //* =====================================================================
+    /// \brief Called by event().  Derived classes must override this
+    /// function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(boost::any const &event) override;
 
 private:
     struct impl;

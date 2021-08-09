@@ -1,6 +1,7 @@
 #include "munin/text_area.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+#include <terminalpp/mouse.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -38,6 +39,49 @@ struct text_area::impl
             0,
             get_length());
         update_cursor_position();
+    }
+
+    // ======================================================================
+    // SET_CURSOR_POSITION
+    // ======================================================================
+    void set_cursor_position(terminalpp::point const &position)
+    {
+        // We set the cursor by looking up the relative caret position in
+        // the text area and setting that.  This is because setting the caret
+        // position also sets the cursor position and we don't want to get
+        // in and endless loop of the two.
+        auto width = self_.get_size().width_;
+        auto current_position = terminalpp::point{};
+        auto caret_position = text_area::text_index{0};
+
+        for (; caret_position < text_.size(); ++caret_position)
+        {
+            if (current_position == position)
+            {
+                break;
+            }
+
+            if (text_[caret_position] == '\n' || current_position.x_ == width)
+            {
+                // If we would advance to the next row, but this is the 
+                // desired row, then clip to the end here.
+                if (current_position.y_ == position.y_)
+                {
+                    break;
+                }
+                else
+                {
+                    current_position.x_ = 0;
+                    ++current_position.y_;
+                }
+            }
+            else
+            {
+                ++current_position.x_;
+            }
+        }
+
+        set_caret_position(caret_position);
     }
 
     // ======================================================================
@@ -254,6 +298,14 @@ terminalpp::point text_area::do_get_cursor_position() const
 }
 
 // ==========================================================================
+// DO_GET_CURSOR_POSITION
+// ==========================================================================
+void text_area::do_set_cursor_position(terminalpp::point const &position)
+{
+    pimpl_->set_cursor_position(position);
+}
+
+// ==========================================================================
 // DO_GET_CURSOR_STATE
 // ==========================================================================
 bool text_area::do_get_cursor_state() const
@@ -280,6 +332,20 @@ void text_area::do_draw(
                  ? pimpl_->laid_out_text_[row][column]
                  : ' ';
         });
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void text_area::do_event(boost::any const &ev)
+{
+    auto const *mouse_event = 
+        boost::any_cast<terminalpp::mouse::event>(&ev);
+
+    if (mouse_event != nullptr)
+    {
+        set_cursor_position(mouse_event->position_);
+    }
 }
 
 // ==========================================================================
