@@ -383,6 +383,12 @@ TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
 
 namespace {
 
+static auto const keypress_cursor_left = terminalpp::virtual_key {
+    terminalpp::vk::cursor_left,
+    terminalpp::vk_modifier::none,
+    1
+};
+
 static auto const keypress_cursor_right = terminalpp::virtual_key {
     terminalpp::vk::cursor_right,
     terminalpp::vk_modifier::none,
@@ -391,6 +397,12 @@ static auto const keypress_cursor_right = terminalpp::virtual_key {
 
 static movement_key_test_data const move_key_test_entries[] =
 {
+    // Move the cursor left from various points
+    movement_key_test_data{ {0,  0}, keypress_cursor_left,  {0,  0} },
+    movement_key_test_data{ {1,  0}, keypress_cursor_left,  {0,  0} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_left,  {26, 0} },
+    movement_key_test_data{ {0,  1}, keypress_cursor_left,  {27, 0} },
+
     // Move the cursor right from various points
     movement_key_test_data{ {0,  0}, keypress_cursor_right, {1, 0} },
 

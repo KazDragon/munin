@@ -213,6 +213,10 @@ struct text_area::impl
     {
         switch (ev.key)
         {
+            case terminalpp::vk::cursor_left:
+                set_caret_position(caret_position_ - 1);
+                break;
+                
             case terminalpp::vk::cursor_right:
                 set_caret_position(caret_position_ + 1);
                 break;
