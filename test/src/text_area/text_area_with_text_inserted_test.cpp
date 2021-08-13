@@ -342,65 +342,69 @@ TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_where_t
     ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
 }
 
-TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_right_when_at_the_0_column)
+namespace {
+
+using movement_key_test_data = std::tuple<
+    terminalpp::point,       // initial cursor position
+    terminalpp::virtual_key, // keypress
+    terminalpp::point        // eventual cursor location
+>;
+
+class pushing_a_movement_key
+  : public a_text_area_with_many_lines_of_text_inserted_base,
+    public testing::TestWithParam<movement_key_test_data>
 {
-    text_area_.set_cursor_position({0, 1});
-    assert(text_area_.get_cursor_position() == terminalpp::point(0, 1));
-    assert(text_area_.get_caret_position() == 28);
+};
 
-    auto keypress_right = terminalpp::virtual_key {
-        terminalpp::vk::cursor_right,
-        terminalpp::vk_modifier::none,
-        1
-    };
-
-    text_area_.event(keypress_right);
-
-    auto const expected_cursor_position = terminalpp::point{1, 1};
-    auto const expected_caret_position = 29;
-
-    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
-    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
 }
 
-TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_right_when_in_the_middle_of_the_wor)
+TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
 {
-    text_area_.set_cursor_position({5, 1});
-    assert(text_area_.get_cursor_position() == terminalpp::point(5, 1));
-    assert(text_area_.get_caret_position() == 33);
+    using std::get;
 
-    auto keypress_right = terminalpp::virtual_key {
-        terminalpp::vk::cursor_right,
-        terminalpp::vk_modifier::none,
-        1
-    };
+    auto const &param = GetParam();
+    auto const &initial_cursor_position = get<0>(param);
+    auto const &keypress = get<1>(param);
+    auto const &expected_cursor_position = get<2>(param);
 
-    text_area_.event(keypress_right);
+    text_area_.set_cursor_position(initial_cursor_position);
+    
+    auto reported_cursor_position = terminalpp::point{};
+    text_area_.on_cursor_position_changed.connect(
+        [this, &reported_cursor_position]
+        {
+            reported_cursor_position = text_area_.get_cursor_position();
+        });
 
-    auto const expected_cursor_position = terminalpp::point{6, 1};
-    auto const expected_caret_position = 34;
+    text_area_.event(keypress);
 
-    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
-    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+    ASSERT_EQ(expected_cursor_position, reported_cursor_position);
 }
 
-TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_the_next_row_when_at_the_end_of_the_row)
+namespace {
+
+static auto const keypress_cursor_right = terminalpp::virtual_key {
+    terminalpp::vk::cursor_right,
+    terminalpp::vk_modifier::none,
+    1
+};
+
+static movement_key_test_data const move_key_test_entries[] =
 {
-    text_area_.set_cursor_position({27, 0});
-    assert(text_area_.get_cursor_position() == terminalpp::point(27, 0));
-    assert(text_area_.get_caret_position() == 27);
+    // Move the cursor right from various points
+    movement_key_test_data{ {0,  0}, keypress_cursor_right, {1, 0} },
 
-    auto keypress_right = terminalpp::virtual_key {
-        terminalpp::vk::cursor_right,
-        terminalpp::vk_modifier::none,
-        1
-    };
+    movement_key_test_data{ {0,  1}, keypress_cursor_right, {1, 1} },
+    movement_key_test_data{ {5,  1}, keypress_cursor_right, {6, 1} },
+    movement_key_test_data{ {23, 1}, keypress_cursor_right, {0, 2} },
 
-    text_area_.event(keypress_right);
+    movement_key_test_data{ {0,  6}, keypress_cursor_right, {0, 6} },
+};
 
-    auto const expected_cursor_position = terminalpp::point{0, 1};
-    auto const expected_caret_position = 28;
-
-    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
-    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    moves_the_cursor_appropriately,
+    pushing_a_movement_key,
+    ValuesIn(move_key_test_entries)
+);
