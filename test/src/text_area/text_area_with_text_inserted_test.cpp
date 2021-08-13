@@ -1,5 +1,6 @@
 #include "text_area_test.hpp"
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <munin/render_surface.hpp>
 
 using testing::ValuesIn;
@@ -336,6 +337,69 @@ TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_where_t
 
     auto const expected_cursor_position = terminalpp::point{13, 1};
     auto const expected_caret_position = munin::text_area::text_index{41};
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+}
+
+TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_right_when_at_the_0_column)
+{
+    text_area_.set_cursor_position({0, 1});
+    assert(text_area_.get_cursor_position() == terminalpp::point(0, 1));
+    assert(text_area_.get_caret_position() == 28);
+
+    auto keypress_right = terminalpp::virtual_key {
+        terminalpp::vk::cursor_right,
+        terminalpp::vk_modifier::none,
+        1
+    };
+
+    text_area_.event(keypress_right);
+
+    auto const expected_cursor_position = terminalpp::point{1, 1};
+    auto const expected_caret_position = 29;
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+}
+
+TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_right_when_in_the_middle_of_the_wor)
+{
+    text_area_.set_cursor_position({5, 1});
+    assert(text_area_.get_cursor_position() == terminalpp::point(5, 1));
+    assert(text_area_.get_caret_position() == 33);
+
+    auto keypress_right = terminalpp::virtual_key {
+        terminalpp::vk::cursor_right,
+        terminalpp::vk_modifier::none,
+        1
+    };
+
+    text_area_.event(keypress_right);
+
+    auto const expected_cursor_position = terminalpp::point{6, 1};
+    auto const expected_caret_position = 34;
+
+    ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
+    ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());
+}
+
+TEST_F(a_text_area_with_many_lines_of_text_inserted, moves_the_cursor_to_the_next_row_when_at_the_end_of_the_row)
+{
+    text_area_.set_cursor_position({27, 0});
+    assert(text_area_.get_cursor_position() == terminalpp::point(27, 0));
+    assert(text_area_.get_caret_position() == 27);
+
+    auto keypress_right = terminalpp::virtual_key {
+        terminalpp::vk::cursor_right,
+        terminalpp::vk_modifier::none,
+        1
+    };
+
+    text_area_.event(keypress_right);
+
+    auto const expected_cursor_position = terminalpp::point{0, 1};
+    auto const expected_caret_position = 28;
 
     ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
     ASSERT_EQ(expected_caret_position, text_area_.get_caret_position());

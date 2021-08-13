@@ -2,6 +2,7 @@
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -197,6 +198,27 @@ struct text_area::impl
         }
     }
 
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(terminalpp::mouse::event const &ev)
+    {
+        set_cursor_position(ev.position_);
+    }
+
+    // ======================================================================
+    // HANDLE_KEYPRESS_EVENT
+    // ======================================================================
+    void handle_keypress_event(terminalpp::virtual_key const &ev)
+    {
+        switch (ev.key)
+        {
+            case terminalpp::vk::cursor_right:
+                set_caret_position(caret_position_ + 1);
+                break;
+        }
+    }
+
     text_area &self_;
     terminalpp::string text_;
     std::vector<terminalpp::string> laid_out_text_;
@@ -344,7 +366,17 @@ void text_area::do_event(boost::any const &ev)
 
     if (mouse_event != nullptr)
     {
-        set_cursor_position(mouse_event->position_);
+        pimpl_->handle_mouse_event(*mouse_event);
+        return;
+    }
+
+    auto const *keypress_event =
+        boost::any_cast<terminalpp::virtual_key>(&ev);
+
+    if (keypress_event != nullptr)
+    {
+        pimpl_->handle_keypress_event(*keypress_event);
+        return;
     }
 }
 
