@@ -422,34 +422,83 @@ static auto const keypress_cursor_down_2 = keypress_cursor_down_n<2>;
 static movement_key_test_data const move_key_test_entries[] =
 {
     // Move the cursor left from various points
-    movement_key_test_data{ {0,  0}, keypress_cursor_left,  {0,  0} },
-    movement_key_test_data{ {1,  0}, keypress_cursor_left,  {0,  0} },
-    movement_key_test_data{ {27, 0}, keypress_cursor_left,  {26, 0} },
-    movement_key_test_data{ {0,  1}, keypress_cursor_left,  {27, 0} },
+    movement_key_test_data{ {0,  0}, keypress_cursor_left,    {0,  0} },
+    movement_key_test_data{ {1,  0}, keypress_cursor_left,    {0,  0} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_left,    {26, 0} },
+    movement_key_test_data{ {0,  1}, keypress_cursor_left,    {27, 0} },
 
     // Move the cursor right from various points
-    movement_key_test_data{ {0,  0}, keypress_cursor_right, {1, 0} },
+    movement_key_test_data{ {0,  0}, keypress_cursor_right,   {1, 0} },
 
-    movement_key_test_data{ {0,  1}, keypress_cursor_right, {1, 1} },
-    movement_key_test_data{ {5,  1}, keypress_cursor_right, {6, 1} },
-    movement_key_test_data{ {23, 1}, keypress_cursor_right, {0, 2} },
+    movement_key_test_data{ {0,  1}, keypress_cursor_right,   {1, 1} },
+    movement_key_test_data{ {5,  1}, keypress_cursor_right,   {6, 1} },
+    movement_key_test_data{ {23, 1}, keypress_cursor_right,   {0, 2} },
 
-    movement_key_test_data{ {0,  6}, keypress_cursor_right, {0, 6} },
+    movement_key_test_data{ {0,  6}, keypress_cursor_right,   {0, 6} },
 
     // Move the cursor up from various points
-    movement_key_test_data{ {0,  0}, keypress_cursor_up,    {0,  0} },
-    movement_key_test_data{ {13, 0}, keypress_cursor_up,    {13, 0} },
-    movement_key_test_data{ {27, 0}, keypress_cursor_up,    {27, 0} },
+    movement_key_test_data{ {0,  0}, keypress_cursor_up,      {0,  0} },
+    movement_key_test_data{ {13, 0}, keypress_cursor_up,      {13, 0} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_up,      {27, 0} },
     
-    movement_key_test_data{ {0,  1}, keypress_cursor_up,    {0,  0} },
-    movement_key_test_data{ {28, 2}, keypress_cursor_up,    {22, 1} },
+    movement_key_test_data{ {0,  1}, keypress_cursor_up,      {0,  0} },
+    movement_key_test_data{ {28, 2}, keypress_cursor_up,      {22, 1} },
 
-    movement_key_test_data{ {0,  0}, keypress_cursor_down,  {0,  1} },
-    movement_key_test_data{ {15, 0}, keypress_cursor_down,  {15, 1} },
+    movement_key_test_data{ {0,  0}, keypress_cursor_down,    {0,  1} },
+    movement_key_test_data{ {15, 0}, keypress_cursor_down,    {15, 1} },
 
-    movement_key_test_data{ {27, 0}, keypress_cursor_down,  {22, 1} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_down,    {22, 1} },
 
-    movement_key_test_data{ {0,  6}, keypress_cursor_down,  {0,  6} },
+    movement_key_test_data{ {0,  6}, keypress_cursor_down,    {0,  6} },
+
+    // Multi-key tests
+
+    // Move the cursor left multiple times:
+    movement_key_test_data{ {0,  0}, keypress_cursor_left_2,  {0,  0} },
+    movement_key_test_data{ {1,  0}, keypress_cursor_left_2,  {0,  0} },
+    movement_key_test_data{ {2,  0}, keypress_cursor_left_2,  {0,  0} },
+
+    movement_key_test_data{ {27, 0}, keypress_cursor_left_2,  {25, 0} },
+    movement_key_test_data{ {0,  1}, keypress_cursor_left_2,  {26, 0} },
+    movement_key_test_data{ {1,  1}, keypress_cursor_left_2,  {27, 0} },
+    movement_key_test_data{ {2,  1}, keypress_cursor_left_2,  {0,  1} },
+
+    // Move the cursor right multiple times
+    movement_key_test_data{ {0,  0}, keypress_cursor_right_2, {2,  0} },
+
+    movement_key_test_data{ {25, 0}, keypress_cursor_right_2, {27, 0} },
+    movement_key_test_data{ {26, 0}, keypress_cursor_right_2, {0,  1} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_right_2, {1,  1} },
+
+    // Move the cursor up multiple times
+    movement_key_test_data{ {0,  0}, keypress_cursor_up_2,    {0,  0} },
+    movement_key_test_data{ {15, 0}, keypress_cursor_up_2,    {15, 0} },
+    movement_key_test_data{ {22, 0}, keypress_cursor_up_2,    {22, 0} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_up_2,    {27, 0} },
+
+    movement_key_test_data{ {0,  1}, keypress_cursor_up_2,    {0,  0} },
+    movement_key_test_data{ {15, 1}, keypress_cursor_up_2,    {15, 0} },
+    movement_key_test_data{ {22, 1}, keypress_cursor_up_2,    {22, 0} },
+
+    movement_key_test_data{ {0,  2}, keypress_cursor_up_2,    {0,  0} },
+    movement_key_test_data{ {15, 2}, keypress_cursor_up_2,    {15, 0} },
+    movement_key_test_data{ {22, 2}, keypress_cursor_up_2,    {22, 0} },
+    movement_key_test_data{ {27, 2}, keypress_cursor_up_2,    {27, 0} },
+
+    movement_key_test_data{ {0,  3}, keypress_cursor_up_2,    {0,  1} },
+    movement_key_test_data{ {15, 3}, keypress_cursor_up_2,    {15, 1} },
+    movement_key_test_data{ {22, 3}, keypress_cursor_up_2,    {22, 1} },
+    movement_key_test_data{ {27, 3}, keypress_cursor_up_2,    {22, 1} },
+
+    // Move the cursor down multiple times
+    movement_key_test_data{ {0,  0}, keypress_cursor_down_2,  {0,  2} },
+    movement_key_test_data{ {15, 0}, keypress_cursor_down_2,  {15, 2} },
+    movement_key_test_data{ {22, 0}, keypress_cursor_down_2,  {22, 2} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_down_2,  {27, 2} },
+
+    movement_key_test_data{ {0,  1}, keypress_cursor_down_2,  {0,  3} },
+    movement_key_test_data{ {15, 1}, keypress_cursor_down_2,  {15, 3} },
+    movement_key_test_data{ {22, 1}, keypress_cursor_down_2,  {22, 3} },
 };
 
 }
