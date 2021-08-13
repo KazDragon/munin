@@ -220,6 +220,18 @@ struct text_area::impl
             case terminalpp::vk::cursor_right:
                 set_caret_position(caret_position_ + 1);
                 break;
+
+            case terminalpp::vk::cursor_up:
+                set_cursor_position({
+                    cursor_position_.x_,
+                    std::max(cursor_position_.y_ - 1, 0)});
+                break;
+
+            case terminalpp::vk::cursor_down:
+                set_cursor_position({
+                    cursor_position_.x_,
+                    std::max(cursor_position_.y_ + 1, 0)});
+                break;
         }
     }
 

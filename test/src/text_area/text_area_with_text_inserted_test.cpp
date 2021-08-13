@@ -369,7 +369,7 @@ TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
 
     text_area_.set_cursor_position(initial_cursor_position);
     
-    auto reported_cursor_position = terminalpp::point{};
+    auto reported_cursor_position = text_area_.get_cursor_position();
     text_area_.on_cursor_position_changed.connect(
         [this, &reported_cursor_position]
         {
@@ -395,6 +395,18 @@ static auto const keypress_cursor_right = terminalpp::virtual_key {
     1
 };
 
+static auto const keypress_cursor_up = terminalpp::virtual_key {
+    terminalpp::vk::cursor_up,
+    terminalpp::vk_modifier::none,
+    1
+};
+
+static auto const keypress_cursor_down = terminalpp::virtual_key {
+    terminalpp::vk::cursor_down,
+    terminalpp::vk_modifier::none,
+    1
+};
+
 static movement_key_test_data const move_key_test_entries[] =
 {
     // Move the cursor left from various points
@@ -411,6 +423,21 @@ static movement_key_test_data const move_key_test_entries[] =
     movement_key_test_data{ {23, 1}, keypress_cursor_right, {0, 2} },
 
     movement_key_test_data{ {0,  6}, keypress_cursor_right, {0, 6} },
+
+    // Move the cursor up from various points
+    movement_key_test_data{ {0,  0}, keypress_cursor_up,    {0,  0} },
+    movement_key_test_data{ {13, 0}, keypress_cursor_up,    {13, 0} },
+    movement_key_test_data{ {27, 0}, keypress_cursor_up,    {27, 0} },
+    
+    movement_key_test_data{ {0,  1}, keypress_cursor_up,    {0,  0} },
+    movement_key_test_data{ {28, 2}, keypress_cursor_up,    {22, 1} },
+
+    movement_key_test_data{ {0,  0}, keypress_cursor_down,  {0,  1} },
+    movement_key_test_data{ {15, 0}, keypress_cursor_down,  {15, 1} },
+
+    movement_key_test_data{ {27, 0}, keypress_cursor_down,  {22, 1} },
+
+    movement_key_test_data{ {0,  6}, keypress_cursor_down,  {0,  6} },
 };
 
 }
