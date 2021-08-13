@@ -383,29 +383,41 @@ TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
 
 namespace {
 
-static auto const keypress_cursor_left = terminalpp::virtual_key {
+template <int N>
+static auto const keypress_cursor_left_n = terminalpp::virtual_key {
     terminalpp::vk::cursor_left,
     terminalpp::vk_modifier::none,
-    1
+    N
 };
+static auto const keypress_cursor_left   = keypress_cursor_left_n<1>;
+static auto const keypress_cursor_left_2 = keypress_cursor_left_n<2>;
 
-static auto const keypress_cursor_right = terminalpp::virtual_key {
+template <int N>
+static auto const keypress_cursor_right_n = terminalpp::virtual_key {
     terminalpp::vk::cursor_right,
     terminalpp::vk_modifier::none,
-    1
+    N
 };
+static auto const keypress_cursor_right   = keypress_cursor_right_n<1>;
+static auto const keypress_cursor_right_2 = keypress_cursor_right_n<2>;
 
-static auto const keypress_cursor_up = terminalpp::virtual_key {
+template <int N>
+static auto const keypress_cursor_up_n = terminalpp::virtual_key {
     terminalpp::vk::cursor_up,
     terminalpp::vk_modifier::none,
-    1
+    N
 };
+static auto const keypress_cursor_up   = keypress_cursor_up_n<1>;
+static auto const keypress_cursor_up_2 = keypress_cursor_up_n<2>;
 
-static auto const keypress_cursor_down = terminalpp::virtual_key {
+template <int N>
+static auto const keypress_cursor_down_n = terminalpp::virtual_key {
     terminalpp::vk::cursor_down,
     terminalpp::vk_modifier::none,
-    1
+    N
 };
+static auto const keypress_cursor_down   = keypress_cursor_down_n<1>;
+static auto const keypress_cursor_down_2 = keypress_cursor_down_n<2>;
 
 static movement_key_test_data const move_key_test_entries[] =
 {
