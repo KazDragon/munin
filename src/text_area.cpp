@@ -236,6 +236,39 @@ private:
     }   
 
     // ======================================================================
+    // ADVANCE_CURSOR
+    // ======================================================================
+    auto advance_cursor(
+        terminalpp::point cursor, 
+        text_area::text_index const caret, 
+        terminalpp::coordinate_type const width,
+        bool &wrap)
+    {
+        auto const wrapped = std::exchange(wrap, false);
+
+        if (text_[caret] == '\n')
+        {
+            if (!wrapped)
+            {
+                cursor.x_ = 0;
+                ++cursor.y_;
+            }
+        }
+        else if ((cursor.x_ + 1) == width)
+        {
+            cursor.x_ = 0;
+            ++cursor.y_;
+            wrap = true;
+        }
+        else
+        {
+            ++cursor.x_;
+        }
+
+        return cursor;
+    }
+
+    // ======================================================================
     // UPDATE_CURSOR_POSITION
     // ======================================================================
     void update_cursor_position()
@@ -251,26 +284,11 @@ private:
             // If the character is a newline, then the cursor position only
             // advances if it is not at the very end of a line.  This is to
             // prevent it turning into a douindex != (caret_position - 1) &&ble newline in that circumstance.
-            bool const wrapped = std::exchange(wrap, false);
-
-            if (text_[index] == '\n')
-            {
-                if (!wrapped)
-                {
-                    cursor_position.x_ = 0;
-                    ++cursor_position.y_;
-                }
-            }
-            else if ((cursor_position.x_ + 1) == text_area_width)
-            {
-                cursor_position.x_ = 0;
-                ++cursor_position.y_;
-                wrap = true;
-            }
-            else
-            {
-                ++cursor_position.x_;
-            }
+            cursor_position = advance_cursor(
+                cursor_position,
+                index,
+                text_area_width,
+                wrap);
         }
 
         cursor_position_ = cursor_position;
