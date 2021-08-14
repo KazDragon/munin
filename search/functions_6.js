@@ -10,6 +10,6 @@ var searchData=
   ['get_5fpreferred_5fsize_247',['get_preferred_size',['../classmunin_1_1component.html#a805b7b399ed5d53c81784f98d69de9e5',1,'munin::component::get_preferred_size()'],['../classmunin_1_1layout.html#a2e12bc88c3428f3a56af15e01ff7f3bd',1,'munin::layout::get_preferred_size()']]],
   ['get_5fselected_5fitem_5findex_248',['get_selected_item_index',['../classmunin_1_1list.html#a230451cef085d51cb8a53744ee2f9f0d',1,'munin::list']]],
   ['get_5fsize_249',['get_size',['../classmunin_1_1component.html#a43796fb65b89a0168f12dfdf5d439e2c',1,'munin::component']]],
-  ['get_5ftext_250',['get_text',['../classmunin_1_1edit.html#ae71e294d106abcf23097ca9496f982d4',1,'munin::edit']]],
+  ['get_5ftext_250',['get_text',['../classmunin_1_1edit.html#ae71e294d106abcf23097ca9496f982d4',1,'munin::edit::get_text()'],['../classmunin_1_1text__area.html#a5d523f70d800c6a07e211994a8eb33de',1,'munin::text_area::get_text()']]],
   ['grid_5flayout_251',['grid_layout',['../classmunin_1_1grid__layout.html#a011625ee95e9d1b3305bc897281d273d',1,'munin::grid_layout']]]
 ];
