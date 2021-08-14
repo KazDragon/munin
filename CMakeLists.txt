@@ -315,6 +315,7 @@ target_sources(munin_tester
         test/src/viewport/viewport_test.cpp
         test/src/viewport/viewport_resize_strategy_test.cpp
         test/src/viewport/viewport_cursor_test.cpp
+        test/src/viewport/viewport_keypress_test.cpp
         test/src/viewport/viewport_redraw_test.cpp
         test/src/viewport/viewport_size_test.cpp
         test/src/window/window_json_test.cpp

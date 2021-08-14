@@ -1,6 +1,7 @@
 #include "munin/viewport.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -157,6 +158,9 @@ struct viewport::impl
         auto const *mouse_event = 
             boost::any_cast<terminalpp::mouse::event>(&ev);
 
+        auto const *keypress_event =
+            boost::any_cast<terminalpp::virtual_key>(&ev);
+
         if (mouse_event != nullptr)
         {
             auto const translated_event = terminalpp::mouse::event {
@@ -165,6 +169,32 @@ struct viewport::impl
             };
 
             return tracked_component_->event(translated_event);
+        }
+        else if (keypress_event != nullptr)
+        {
+            if (keypress_event->key == terminalpp::vk::pgup)
+            {
+                auto const viewport_height = self_.get_size().height_;
+                auto const cursor_position =
+                    tracked_component_->get_cursor_position();
+                
+                tracked_component_->set_cursor_position({
+                    cursor_position.x_,
+                    cursor_position.y_ - viewport_height
+                });
+            }
+            else if (keypress_event->key == terminalpp::vk::pgdn)
+            {
+                auto const viewport_height = self_.get_size().height_;
+                auto const cursor_position = 
+                    tracked_component_->get_cursor_position();
+
+                tracked_component_->set_cursor_position({
+                    cursor_position.x_,
+                    cursor_position.y_ + viewport_height
+                });
+            }
+            
         }
         else
         {
