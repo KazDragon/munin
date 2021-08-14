@@ -481,6 +481,12 @@ static auto const keypress_cursor_down_n = terminalpp::virtual_key {
 static auto const keypress_cursor_down   = keypress_cursor_down_n<1>;
 static auto const keypress_cursor_down_2 = keypress_cursor_down_n<2>;
 
+static auto const keypress_home = terminalpp::virtual_key {
+    terminalpp::vk::home,
+    terminalpp::vk_modifier::none,
+    1
+};
+
 static movement_key_test_data const move_key_test_entries[] =
 {
     // Move the cursor left from various points
@@ -561,6 +567,15 @@ static movement_key_test_data const move_key_test_entries[] =
     movement_key_test_data{ {0,  1}, keypress_cursor_down_2,  {0,  3} },
     movement_key_test_data{ {15, 1}, keypress_cursor_down_2,  {15, 3} },
     movement_key_test_data{ {22, 1}, keypress_cursor_down_2,  {22, 3} },
+
+    // Move the cursor home
+    movement_key_test_data{ {0,  0}, keypress_home,           {0,  0} },
+    movement_key_test_data{ {10, 0}, keypress_home,           {0,  0} },
+    movement_key_test_data{ {27, 0}, keypress_home,           {0,  0} },
+
+    movement_key_test_data{ {0,  1}, keypress_home,           {0,  1} },
+    movement_key_test_data{ {10, 1}, keypress_home,           {0,  1} },
+    movement_key_test_data{ {22, 1}, keypress_home,           {0,  1} },
 };
 
 }

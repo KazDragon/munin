@@ -354,6 +354,10 @@ private:
                     cursor_position_.x_,
                     std::max(cursor_position_.y_ + ev.repeat_count, 0)});
                 break;
+
+            case terminalpp::vk::home:
+                set_cursor_position({0, cursor_position_.y_});
+                break;
         }
     }
 
