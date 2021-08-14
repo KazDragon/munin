@@ -277,18 +277,15 @@ private:
         auto last_newline_index = text_area::text_index{0};
         
         auto cursor_position = terminalpp::point{};
-        bool wrap = false;
+        bool wrapped = false;
 
         for (text_area::text_index index = 0; index < caret_position_; ++index)
         {
-            // If the character is a newline, then the cursor position only
-            // advances if it is not at the very end of a line.  This is to
-            // prevent it turning into a douindex != (caret_position - 1) &&ble newline in that circumstance.
             cursor_position = advance_cursor(
                 cursor_position,
                 index,
                 text_area_width,
-                wrap);
+                wrapped);
         }
 
         cursor_position_ = cursor_position;
@@ -302,38 +299,27 @@ private:
     {
         auto const &text_area_width = self_.get_size().width_;
         auto current_position = terminalpp::point{};
-        auto wrap = false;
+        auto wrapped = false;
         caret_position_ = 0;
 
         while (current_position != cursor_position_)
         {
-            bool const wrapped = std::exchange(wrap, false);
-
-            if (text_[caret_position_] == '\n')
-            {
-                if (!wrapped)
-                {
-                    current_position.x_ = 0;
-                    ++current_position.y_;
-                }
-            }
-            else if ((current_position.x_ + 1) == text_area_width)
-            {
-                current_position.x_ = 0;
-                ++current_position.y_;
-                wrap = true;
-            }
-            else
-            {
-                ++current_position.x_;
-            }
-            
-            ++caret_position_;
+            current_position = advance_cursor(
+                current_position,
+                caret_position_++,
+                text_area_width,
+                wrapped);
         }
 
-        if (wrap
-         && caret_position_ < text_.size()
-         && text_[caret_position_] == '\n')
+        auto const &wrapped_newline_is_under_cursor =
+            [&]()
+            {
+                return wrapped 
+                    && caret_position_ < text_.size()
+                    && text_[caret_position_] == '\n';
+            };
+
+        if (wrapped_newline_is_under_cursor())
         {
             ++caret_position_;
         }
