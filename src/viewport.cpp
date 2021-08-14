@@ -194,7 +194,10 @@ struct viewport::impl
                     cursor_position.y_ + viewport_height
                 });
             }
-            
+            else
+            {
+                tracked_component_->event(ev);
+            }
         }
         else
         {

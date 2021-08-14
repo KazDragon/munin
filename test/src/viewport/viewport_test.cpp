@@ -6,6 +6,7 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -181,8 +182,8 @@ TEST_F(a_viewport, with_a_size_smaller_than_the_tracked_component_allows_the_tra
 TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 {
     boost::any received_event;
-    EXPECT_CALL(*tracked_component_, do_event(_))
-        .WillOnce(SaveArg<0>(&received_event));
+    ON_CALL(*tracked_component_, do_event(_))
+        .WillByDefault(SaveArg<0>(&received_event));
 
     std::string const test_event = "test event";
     viewport_->event(test_event);
@@ -190,6 +191,26 @@ TEST_F(a_viewport, forwards_events_to_the_tracked_component)
     auto const *result = boost::any_cast<std::string>(&received_event);
     ASSERT_TRUE(result != nullptr);
     ASSERT_EQ(test_event, *result);
+}
+
+TEST_F(a_viewport, forwards_keypress_events_to_the_tracked_component)
+{
+    boost::any received_event;
+    ON_CALL(*tracked_component_, do_event(_))
+        .WillByDefault(SaveArg<0>(&received_event));
+        
+    auto const keypress_event = terminalpp::virtual_key {
+        terminalpp::vk::lowercase_a,
+        terminalpp::vk_modifier::none,
+        1
+    };
+
+    viewport_->event(keypress_event);
+    
+    auto const *result = 
+        boost::any_cast<terminalpp::virtual_key>(&received_event);
+    ASSERT_TRUE(result != nullptr);
+    ASSERT_EQ(keypress_event, *result);
 }
 
 TEST_F(a_viewport, forwards_repaint_events_from_the_tracked_component)
