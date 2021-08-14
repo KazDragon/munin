@@ -358,6 +358,10 @@ private:
             case terminalpp::vk::home:
                 set_cursor_position({0, cursor_position_.y_});
                 break;
+
+            case terminalpp::vk::end:
+                set_cursor_position({width_, cursor_position_.y_});
+                break;
         }
     }
 
