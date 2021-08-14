@@ -94,34 +94,32 @@ struct text_area::impl
         auto last_newline_index = text_area::text_index{0};
         
         auto cursor_position = terminalpp::point{};
+        bool wrap = false;
 
         for (text_area::text_index index = 0; index < caret_position_; ++index)
         {
             // If the character is a newline, then the cursor position only
             // advances if it is not at the very end of a line.  This is to
-            // prevent it turning into a double newline in that circumstance.
+            // prevent it turning into a douindex != (caret_position - 1) &&ble newline in that circumstance.
+            bool const wrapped = std::exchange(wrap, false);
+
             if (text_[index] == '\n')
             {
-                auto line_length = index - last_newline_index;
-                
-                if (line_length != text_area_width)
+                if (!wrapped)
                 {
                     cursor_position.x_ = 0;
                     ++cursor_position.y_;
                 }
-                
-                last_newline_index = index;
+            }
+            else if ((cursor_position.x_ + 1) == text_area_width)
+            {
+                cursor_position.x_ = 0;
+                ++cursor_position.y_;
+                wrap = true;
             }
             else
             {
                 ++cursor_position.x_;
-            }
-            
-            // Wrap the cursor if necessary.
-            if (cursor_position.x_ >= text_area_width)
-            {
-                cursor_position.x_ = 0;
-                ++cursor_position.y_;
             }
         }
 
@@ -158,6 +156,14 @@ struct text_area::impl
 
         self_.on_preferred_size_changed();
         self_.on_redraw({{{}, self_.get_size()}});
+    }
+
+    // ======================================================================
+    // GET_TEXT
+    // ======================================================================
+    auto get_text() const
+    {
+        return text_;
     }
 
     // ======================================================================
@@ -296,6 +302,14 @@ void text_area::insert_text(
     text_area::text_index position)
 {
     pimpl_->insert_text(text, position);
+}
+
+// ==========================================================================
+// GET_TEXT
+// ==========================================================================
+terminalpp::string text_area::get_text() const
+{
+    return pimpl_->get_text();
 }
 
 // ==========================================================================

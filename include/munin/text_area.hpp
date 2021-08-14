@@ -57,6 +57,11 @@ public:
         terminalpp::string const &text, 
         text_index position);
 
+    //* =====================================================================
+    /// \brief Returns the contents of the text area.
+    //* =====================================================================
+    terminalpp::string get_text() const;
+
 protected:
     //* =====================================================================
     /// \brief Called by set_size().  Derived classes must override this
