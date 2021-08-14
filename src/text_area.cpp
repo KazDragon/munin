@@ -221,12 +221,12 @@ private:
         position.y_ =
             boost::algorithm::clamp(
                 position.y_, 
-                0, 
-                laid_out_text_.size() - 1);
+                terminalpp::coordinate_type{0},
+                terminalpp::coordinate_type(laid_out_text_.size() - 1));
         position.x_ =
             boost::algorithm::clamp(
                 position.x_, 
-                0, 
+                terminalpp::coordinate_type{0}, 
                 std::min(
                     terminalpp::coordinate_type(self_.get_size().width_ - 1),
                     terminalpp::coordinate_type(
@@ -240,13 +240,13 @@ private:
     // ======================================================================
     auto advance_cursor(
         terminalpp::point cursor, 
-        text_area::text_index const caret, 
+        terminalpp::element const element_under_caret, 
         terminalpp::coordinate_type const width,
         bool &wrap)
     {
         auto const wrapped = std::exchange(wrap, false);
 
-        if (text_[caret] == '\n')
+        if (element_under_caret == '\n')
         {
             if (!wrapped)
             {
@@ -274,8 +274,6 @@ private:
     void update_cursor_position()
     {
         auto const text_area_width = self_.get_size().width_;
-        auto last_newline_index = text_area::text_index{0};
-        
         auto cursor_position = terminalpp::point{};
         bool wrapped = false;
 
@@ -283,7 +281,7 @@ private:
         {
             cursor_position = advance_cursor(
                 cursor_position,
-                index,
+                text_[index],
                 text_area_width,
                 wrapped);
         }
@@ -302,15 +300,6 @@ private:
         auto wrapped = false;
         caret_position_ = 0;
 
-        while (current_position != cursor_position_)
-        {
-            current_position = advance_cursor(
-                current_position,
-                caret_position_++,
-                text_area_width,
-                wrapped);
-        }
-
         auto const &wrapped_newline_is_under_cursor =
             [&]()
             {
@@ -318,6 +307,17 @@ private:
                     && caret_position_ < text_.size()
                     && text_[caret_position_] == '\n';
             };
+
+        while (current_position != cursor_position_)
+        {
+            current_position = advance_cursor(
+                current_position,
+                text_[caret_position_],
+                text_area_width,
+                wrapped);
+
+            ++caret_position_;
+        }
 
         if (wrapped_newline_is_under_cursor())
         {
