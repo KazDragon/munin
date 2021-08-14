@@ -359,12 +359,16 @@ private:
                 set_cursor_position({
                     0, 
                     ev.modifiers == terminalpp::vk_modifier::ctrl
-                                  ? 0
-                                  : cursor_position_.y_});
+                  ? 0
+                  : cursor_position_.y_});
                 break;
 
             case terminalpp::vk::end:
-                set_cursor_position({width_, cursor_position_.y_});
+                set_cursor_position({
+                    width_, 
+                    ev.modifiers == terminalpp::vk_modifier::ctrl
+                  ? terminalpp::coordinate_type(laid_out_text_.size() - 1)
+                  : cursor_position_.y_});
                 break;
         }
     }

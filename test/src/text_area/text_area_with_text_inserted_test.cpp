@@ -499,6 +499,12 @@ static auto const keypress_end = terminalpp::virtual_key {
     1
 };
 
+static auto const keypress_ctrl_end = terminalpp::virtual_key {
+    terminalpp::vk::end,
+    terminalpp::vk_modifier::ctrl,
+    1
+};
+
 static movement_key_test_data const move_key_test_entries[] =
 {
     // Move the cursor left from various points
@@ -598,7 +604,6 @@ static movement_key_test_data const move_key_test_entries[] =
     movement_key_test_data{ {10, 1}, keypress_ctrl_home,      {0,  0} },
     movement_key_test_data{ {22, 1}, keypress_ctrl_home,      {0,  0} },
 
-
     // Move the cursor to the end
     movement_key_test_data{ {0,  0}, keypress_end,            {27, 0} },
     movement_key_test_data{ {10, 0}, keypress_end,            {27, 0} },
@@ -607,6 +612,15 @@ static movement_key_test_data const move_key_test_entries[] =
     movement_key_test_data{ {0,  1}, keypress_end,            {22, 1} },
     movement_key_test_data{ {10, 1}, keypress_end,            {22, 1} },
     movement_key_test_data{ {22, 1}, keypress_end,            {22, 1} },
+
+    // Move the cursor to document end
+    movement_key_test_data{ {0,  0}, keypress_ctrl_end,       {0,  6} },
+    movement_key_test_data{ {10, 0}, keypress_ctrl_end,       {0,  6} },
+    movement_key_test_data{ {27, 0}, keypress_ctrl_end,       {0,  6} },
+
+    movement_key_test_data{ {0,  1}, keypress_ctrl_end,       {0,  6} },
+    movement_key_test_data{ {10, 1}, keypress_ctrl_end,       {0,  6} },
+    movement_key_test_data{ {22, 1}, keypress_ctrl_end,       {0,  6} },
 };
 
 }
