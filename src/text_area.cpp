@@ -28,7 +28,7 @@ struct text_area::impl
     auto get_preferred_size()
     {
         return terminalpp::extent{
-            self_.get_size().width_,
+            width_,
             std::max(
                 terminalpp::coordinate_type(1), 
                 terminalpp::coordinate_type(laid_out_text_.size()))};
@@ -166,8 +166,9 @@ struct text_area::impl
     // ======================================================================
     // RESIZE
     // ======================================================================
-    void resize()
+    void resize(terminalpp::extent size)
     {
+        width_ = size.width_;
         layout_text();
         update_cursor_position();
     }
@@ -180,8 +181,6 @@ private:
     {
         laid_out_text_.clear();
         laid_out_text_.emplace_back();
-
-        auto const text_area_width = self_.get_size().width_;
 
         bool wrapped = false;
         for(auto const &ch : text_)
@@ -199,7 +198,7 @@ private:
                 laid_out_text_.back() += ch;
             }
 
-            if (laid_out_text_.back().size() == text_area_width)
+            if (laid_out_text_.back().size() == width_)
             {
                 wrapped = true;
                 laid_out_text_.emplace_back();
@@ -228,7 +227,7 @@ private:
                 position.x_, 
                 terminalpp::coordinate_type{0}, 
                 std::min(
-                    terminalpp::coordinate_type(self_.get_size().width_ - 1),
+                    terminalpp::coordinate_type(width_ - 1),
                     terminalpp::coordinate_type(
                         laid_out_text_[position.y_].size())));
 
@@ -273,7 +272,6 @@ private:
     // ======================================================================
     void update_cursor_position()
     {
-        auto const text_area_width = self_.get_size().width_;
         auto cursor_position = terminalpp::point{};
         bool wrapped = false;
 
@@ -282,7 +280,7 @@ private:
             cursor_position = advance_cursor(
                 cursor_position,
                 text_[index],
-                text_area_width,
+                width_,
                 wrapped);
         }
 
@@ -295,7 +293,6 @@ private:
     // ======================================================================
     void update_caret_position()
     {
-        auto const &text_area_width = self_.get_size().width_;
         auto current_position = terminalpp::point{};
         auto wrapped = false;
         caret_position_ = 0;
@@ -313,7 +310,7 @@ private:
             current_position = advance_cursor(
                 current_position,
                 text_[caret_position_],
-                text_area_width,
+                width_,
                 wrapped);
 
             ++caret_position_;
@@ -364,6 +361,7 @@ private:
 
     text_area &self_;
     terminalpp::string text_;
+    terminalpp::coordinate_type width_{0};
     std::vector<terminalpp::string> laid_out_text_;
 
     text_area::text_index caret_position_{0};
@@ -441,7 +439,7 @@ void text_area::do_set_size(terminalpp::extent const &size)
     auto const old_preferred_size = get_preferred_size();
 
     basic_component::do_set_size(size);
-    pimpl_->resize();
+    pimpl_->resize(size);
 
     if (get_preferred_size() != old_preferred_size)
     {
