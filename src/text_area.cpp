@@ -75,22 +75,7 @@ struct text_area::impl
     // ======================================================================
     void set_cursor_position(terminalpp::point const &position)
     {
-        // Fit the requested cursor position with the bounds of the laid
-        // out text.
-        cursor_position_.y_ =
-            boost::algorithm::clamp(
-                position.y_, 
-                0, 
-                laid_out_text_.size() - 1);
-        cursor_position_.x_ =
-            boost::algorithm::clamp(
-                position.x_, 
-                0, 
-                std::min(
-                    terminalpp::coordinate_type(self_.get_size().width_ - 1),
-                    terminalpp::coordinate_type(
-                        laid_out_text_[cursor_position_.y_].size())));
-        
+        cursor_position_ = clamp_cursor_position(position);
         update_caret_position();
         self_.on_cursor_position_changed();
     }
@@ -225,6 +210,30 @@ private:
             }
         }
     }
+
+    // ======================================================================
+    // CLAMP_CURSOR_POSITION
+    // ======================================================================
+    terminalpp::point clamp_cursor_position(terminalpp::point position)
+    {
+        // Fit the requested cursor position with the bounds of the laid
+        // out text.
+        position.y_ =
+            boost::algorithm::clamp(
+                position.y_, 
+                0, 
+                laid_out_text_.size() - 1);
+        position.x_ =
+            boost::algorithm::clamp(
+                position.x_, 
+                0, 
+                std::min(
+                    terminalpp::coordinate_type(self_.get_size().width_ - 1),
+                    terminalpp::coordinate_type(
+                        laid_out_text_[position.y_].size())));
+
+        return position;
+    }   
 
     // ======================================================================
     // UPDATE_CURSOR_POSITION
