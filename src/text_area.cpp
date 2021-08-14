@@ -2,6 +2,7 @@
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 #include <boost/algorithm/clamp.hpp>
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
@@ -20,6 +21,18 @@ struct text_area::impl
       : self_(self)
     {
     }
+    
+    // ======================================================================
+    // GET_PREFERRED_SIZE
+    // ======================================================================
+    auto get_preferred_size()
+    {
+        return terminalpp::extent{
+            width_,
+            std::max(
+                terminalpp::coordinate_type(1), 
+                terminalpp::coordinate_type(laid_out_text_.size()))};
+    }
 
     // ======================================================================
     // GET_LENGTH
@@ -27,6 +40,14 @@ struct text_area::impl
     auto get_length() const
     {
         return text_area::text_index(text_.size());
+    }
+
+    // ======================================================================
+    // GET_CARET_POSITION
+    // ======================================================================
+    auto get_caret_position() const
+    {
+        return caret_position_;
     }
 
     // ======================================================================
@@ -42,91 +63,23 @@ struct text_area::impl
     }
 
     // ======================================================================
+    // GET_CURSOR_POSITION
+    // ======================================================================
+    auto get_cursor_position() const
+    {
+        return cursor_position_;
+    }
+
+    // ======================================================================
     // SET_CURSOR_POSITION
     // ======================================================================
     void set_cursor_position(terminalpp::point const &position)
     {
-        // We set the cursor by looking up the relative caret position in
-        // the text area and setting that.  This is because setting the caret
-        // position also sets the cursor position and we don't want to get
-        // in and endless loop of the two.
-        auto width = self_.get_size().width_;
-        auto current_position = terminalpp::point{};
-        auto caret_position = text_area::text_index{0};
-
-        for (; caret_position < text_.size(); ++caret_position)
-        {
-            if (current_position == position)
-            {
-                break;
-            }
-
-            if (text_[caret_position] == '\n' || current_position.x_ == width)
-            {
-                // If we would advance to the next row, but this is the 
-                // desired row, then clip to the end here.
-                if (current_position.y_ == position.y_)
-                {
-                    break;
-                }
-                else
-                {
-                    current_position.x_ = 0;
-                    ++current_position.y_;
-                }
-            }
-            else
-            {
-                ++current_position.x_;
-            }
-        }
-
-        set_caret_position(caret_position);
-    }
-
-    // ======================================================================
-    // UPDATE_CURSOR_POSITION
-    // ======================================================================
-    void update_cursor_position()
-    {
-        auto const text_area_width = self_.get_size().width_;
-        auto last_newline_index = text_area::text_index{0};
-        
-        auto cursor_position = terminalpp::point{};
-
-        for (text_area::text_index index = 0; index < caret_position_; ++index)
-        {
-            // If the character is a newline, then the cursor position only
-            // advances if it is not at the very end of a line.  This is to
-            // prevent it turning into a double newline in that circumstance.
-            if (text_[index] == '\n')
-            {
-                auto line_length = index - last_newline_index;
-                
-                if (line_length != text_area_width)
-                {
-                    cursor_position.x_ = 0;
-                    ++cursor_position.y_;
-                }
-                
-                last_newline_index = index;
-            }
-            else
-            {
-                ++cursor_position.x_;
-            }
-            
-            // Wrap the cursor if necessary.
-            if (cursor_position.x_ >= text_area_width)
-            {
-                cursor_position.x_ = 0;
-                ++cursor_position.y_;
-            }
-        }
-
-        cursor_position_ = cursor_position;
+        cursor_position_ = clamp_cursor_position(position);
+        update_caret_position();
         self_.on_cursor_position_changed();
     }
+
 
     // ======================================================================
     // INSERT_TEXT
@@ -160,6 +113,68 @@ struct text_area::impl
     }
 
     // ======================================================================
+    // GET_TEXT
+    // ======================================================================
+    auto get_text() const
+    {
+        return text_;
+    }
+
+    // ======================================================================
+    // DRAW
+    // ======================================================================
+    void draw(render_surface &surface, terminalpp::rectangle const &region)
+    {
+        terminalpp::for_each_in_region(
+            surface, 
+            region, 
+            [this](terminalpp::element &elem,
+                terminalpp::coordinate_type column,
+                terminalpp::coordinate_type row)
+            {
+                elem = (laid_out_text_.size() > row
+                     && laid_out_text_[row].size() > column)
+                      ? laid_out_text_[row][column]
+                      : ' ';
+            });
+    }
+
+    // ======================================================================
+    // EVENT
+    // ======================================================================
+    void event(boost::any const &ev)
+    {
+        auto const *mouse_event = 
+            boost::any_cast<terminalpp::mouse::event>(&ev);
+
+        if (mouse_event != nullptr)
+        {
+            handle_mouse_event(*mouse_event);
+            return;
+        }
+
+        auto const *keypress_event =
+            boost::any_cast<terminalpp::virtual_key>(&ev);
+
+        if (keypress_event != nullptr)
+        {
+            handle_keypress_event(*keypress_event);
+            return;
+        }
+    }
+
+    // ======================================================================
+    // RESIZE
+    // ======================================================================
+    void resize(terminalpp::extent size)
+    {
+        width_ = size.width_;
+        layout_text();
+        update_cursor_position();
+    }
+
+private:
+    // ======================================================================
     // LAYOUT_TEXT
     // ======================================================================
     void layout_text()
@@ -167,11 +182,12 @@ struct text_area::impl
         laid_out_text_.clear();
         laid_out_text_.emplace_back();
 
-        auto const text_area_width = self_.get_size().width_;
+        bool wrap = false;
 
-        bool wrapped = false;
         for(auto const &ch : text_)
         {
+            bool const wrapped = std::exchange(wrap, false);
+
             if (ch.glyph_.character_ == '\n')
             {
                 // If we just wrapped a line, then absorb this newline.
@@ -185,20 +201,165 @@ struct text_area::impl
                 laid_out_text_.back() += ch;
             }
 
-            if (laid_out_text_.back().size() == text_area_width)
+            if (laid_out_text_.back().size() == width_)
             {
-                wrapped = true;
+                wrap = true;
                 laid_out_text_.emplace_back();
             }
-            else
+        }
+    }
+
+    // ======================================================================
+    // CLAMP_CURSOR_POSITION
+    // ======================================================================
+    terminalpp::point clamp_cursor_position(terminalpp::point position)
+    {
+        // Fit the requested cursor position with the bounds of the laid
+        // out text.
+        position.y_ =
+            boost::algorithm::clamp(
+                position.y_, 
+                terminalpp::coordinate_type{0},
+                terminalpp::coordinate_type(laid_out_text_.size() - 1));
+        position.x_ =
+            boost::algorithm::clamp(
+                position.x_, 
+                terminalpp::coordinate_type{0}, 
+                std::min(
+                    terminalpp::coordinate_type(width_ - 1),
+                    terminalpp::coordinate_type(
+                        laid_out_text_[position.y_].size())));
+
+        return position;
+    }   
+
+    // ======================================================================
+    // ADVANCE_CURSOR
+    // ======================================================================
+    auto advance_cursor(
+        terminalpp::point cursor, 
+        terminalpp::element const element_under_caret, 
+        terminalpp::coordinate_type const width,
+        bool &wrap)
+    {
+        auto const wrapped = std::exchange(wrap, false);
+
+        if (element_under_caret == '\n')
+        {
+            if (!wrapped)
             {
-                wrapped = false;
+                cursor.x_ = 0;
+                ++cursor.y_;
             }
+        }
+        else if ((cursor.x_ + 1) == width)
+        {
+            cursor.x_ = 0;
+            ++cursor.y_;
+            wrap = true;
+        }
+        else
+        {
+            ++cursor.x_;
+        }
+
+        return cursor;
+    }
+
+    // ======================================================================
+    // UPDATE_CURSOR_POSITION
+    // ======================================================================
+    void update_cursor_position()
+    {
+        cursor_position_ = {0, 0};
+        bool wrapped = false;
+
+        for (text_area::text_index index = 0; index < caret_position_; ++index)
+        {
+            cursor_position_ = advance_cursor(
+                cursor_position_,
+                text_[index],
+                width_,
+                wrapped);
+        }
+
+        self_.on_cursor_position_changed();
+    }
+
+    // ======================================================================
+    // UPDATE_CARET_POSITION
+    // ======================================================================
+    void update_caret_position()
+    {
+        auto current_position = terminalpp::point{};
+        auto wrapped = false;
+        caret_position_ = 0;
+
+        auto const &wrapped_newline_is_under_cursor =
+            [&]()
+            {
+                return wrapped 
+                    && caret_position_ < text_.size()
+                    && text_[caret_position_] == '\n';
+            };
+
+        while (current_position != cursor_position_)
+        {
+            current_position = advance_cursor(
+                current_position,
+                text_[caret_position_],
+                width_,
+                wrapped);
+
+            ++caret_position_;
+        }
+
+        if (wrapped_newline_is_under_cursor())
+        {
+            ++caret_position_;
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(terminalpp::mouse::event const &ev)
+    {
+        set_cursor_position(ev.position_);
+    }
+
+    // ======================================================================
+    // HANDLE_KEYPRESS_EVENT
+    // ======================================================================
+    void handle_keypress_event(terminalpp::virtual_key const &ev)
+    {
+        switch (ev.key)
+        {
+            case terminalpp::vk::cursor_left:
+                set_caret_position(caret_position_ - ev.repeat_count);
+                break;
+                
+            case terminalpp::vk::cursor_right:
+                set_caret_position(caret_position_ + ev.repeat_count);
+                break;
+
+            case terminalpp::vk::cursor_up:
+                set_cursor_position({
+                    cursor_position_.x_,
+                    std::max(cursor_position_.y_ - ev.repeat_count, 0)});
+                break;
+
+            case terminalpp::vk::cursor_down:
+                set_cursor_position({
+                    cursor_position_.x_,
+                    std::max(cursor_position_.y_ + ev.repeat_count, 0)});
+                break;
         }
     }
 
     text_area &self_;
     terminalpp::string text_;
+    terminalpp::coordinate_type width_{0};
     std::vector<terminalpp::string> laid_out_text_;
 
     text_area::text_index caret_position_{0};
@@ -223,7 +384,7 @@ text_area::~text_area() = default;
 // ==========================================================================
 text_area::text_index text_area::get_caret_position() const
 {
-    return pimpl_->caret_position_;
+    return pimpl_->get_caret_position();
 }
 
 // ==========================================================================
@@ -261,6 +422,14 @@ void text_area::insert_text(
 }
 
 // ==========================================================================
+// GET_TEXT
+// ==========================================================================
+terminalpp::string text_area::get_text() const
+{
+    return pimpl_->get_text();
+}
+
+// ==========================================================================
 // DO_SET_SIZE
 // ==========================================================================
 void text_area::do_set_size(terminalpp::extent const &size)
@@ -268,8 +437,7 @@ void text_area::do_set_size(terminalpp::extent const &size)
     auto const old_preferred_size = get_preferred_size();
 
     basic_component::do_set_size(size);
-    pimpl_->layout_text();
-    pimpl_->update_cursor_position();
+    pimpl_->resize(size);
 
     if (get_preferred_size() != old_preferred_size)
     {
@@ -282,11 +450,7 @@ void text_area::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent text_area::do_get_preferred_size() const
 {
-    return terminalpp::extent{
-        get_size().width_,
-        std::max(
-            terminalpp::coordinate_type(1), 
-            terminalpp::coordinate_type(pimpl_->laid_out_text_.size()))};
+    return pimpl_->get_preferred_size();
 }
 
 // ==========================================================================
@@ -294,7 +458,7 @@ terminalpp::extent text_area::do_get_preferred_size() const
 // ==========================================================================
 terminalpp::point text_area::do_get_cursor_position() const
 {
-    return pimpl_->cursor_position_;
+    return pimpl_->get_cursor_position();
 }
 
 // ==========================================================================
@@ -320,18 +484,7 @@ void text_area::do_draw(
     render_surface &surface,
     terminalpp::rectangle const &region) const
 {
-    terminalpp::for_each_in_region(
-        surface, 
-        region, 
-        [this](terminalpp::element &elem,
-               terminalpp::coordinate_type column,
-               terminalpp::coordinate_type row)
-        {
-            elem = (pimpl_->laid_out_text_.size() > row
-                && pimpl_->laid_out_text_[row].size() > column)
-                 ? pimpl_->laid_out_text_[row][column]
-                 : ' ';
-        });
+    pimpl_->draw(surface, region);
 }
 
 // ==========================================================================
@@ -339,13 +492,7 @@ void text_area::do_draw(
 // ==========================================================================
 void text_area::do_event(boost::any const &ev)
 {
-    auto const *mouse_event = 
-        boost::any_cast<terminalpp::mouse::event>(&ev);
-
-    if (mouse_event != nullptr)
-    {
-        set_cursor_position(mouse_event->position_);
-    }
+    pimpl_->event(ev);
 }
 
 // ==========================================================================

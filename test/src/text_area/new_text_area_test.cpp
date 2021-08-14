@@ -226,23 +226,24 @@ INSTANTIATE_TEST_SUITE_P(
     ValuesIn
     ({
         // Default position (nothing was inserted)
-        text_area_layout_data{{3, 2}, ""_ts,        {3, 1}, 0, {0, 0}},
+        text_area_layout_data{{3, 4}, ""_ts,        {3, 1}, 0, {0, 0}},
         
         // Insertions that do not require flow (manual newlines only)
-        text_area_layout_data{{3, 2}, "a"_ts,       {3, 1}, 1, {1, 0}},
-        text_area_layout_data{{3, 2}, "ab"_ts,      {3, 1}, 2, {2, 0}},
-        text_area_layout_data{{3, 2}, "a\nb"_ts,    {3, 2}, 3, {1, 1}},
-        text_area_layout_data{{3, 2}, "ab\n"_ts,    {3, 2}, 3, {0, 1}},
-        text_area_layout_data{{3, 2}, "ab\nc"_ts,   {3, 2}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abc"_ts,     {3, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 4}, "a"_ts,       {3, 1}, 1, {1, 0}},
+        text_area_layout_data{{3, 4}, "ab"_ts,      {3, 1}, 2, {2, 0}},
+        text_area_layout_data{{3, 4}, "a\nb"_ts,    {3, 2}, 3, {1, 1}},
+        text_area_layout_data{{3, 4}, "ab\n"_ts,    {3, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 4}, "ab\nc"_ts,   {3, 2}, 4, {1, 1}},
         
         // Insertions that require flow (had an automatic split)
-        text_area_layout_data{{3, 2}, "abcd"_ts,    {3, 2}, 4, {1, 1}},
-        text_area_layout_data{{3, 2}, "abcde"_ts,   {3, 2}, 5, {2, 1}},
-        text_area_layout_data{{3, 2}, "abcdefg"_ts, {3, 3}, 7, {1, 2}},
+        text_area_layout_data{{3, 4}, "abc"_ts,     {3, 2}, 3, {0, 1}},
+        text_area_layout_data{{3, 4}, "abcd"_ts,    {3, 2}, 4, {1, 1}},
+        text_area_layout_data{{3, 4}, "abcde"_ts,   {3, 2}, 5, {2, 1}},
+        text_area_layout_data{{3, 4}, "abcdef"_ts,  {3, 3}, 6, {0, 2}},
+        text_area_layout_data{{3, 4}, "abcdefg"_ts, {3, 3}, 7, {1, 2}},
         
         // Insertions that have an explicit newline on the boundary
-        text_area_layout_data{{3, 2}, "abc\n",      {3, 2}, 4, {0, 1}},
+        text_area_layout_data{{3, 4}, "abc\n",      {3, 2}, 4, {0, 1}},
     })
 );
 
