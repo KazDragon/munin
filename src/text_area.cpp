@@ -182,9 +182,12 @@ private:
         laid_out_text_.clear();
         laid_out_text_.emplace_back();
 
-        bool wrapped = false;
+        bool wrap = false;
+
         for(auto const &ch : text_)
         {
+            bool const wrapped = std::exchange(wrap, false);
+
             if (ch.glyph_.character_ == '\n')
             {
                 // If we just wrapped a line, then absorb this newline.
@@ -200,12 +203,8 @@ private:
 
             if (laid_out_text_.back().size() == width_)
             {
-                wrapped = true;
+                wrap = true;
                 laid_out_text_.emplace_back();
-            }
-            else
-            {
-                wrapped = false;
             }
         }
     }
@@ -272,19 +271,18 @@ private:
     // ======================================================================
     void update_cursor_position()
     {
-        auto cursor_position = terminalpp::point{};
+        cursor_position_ = {0, 0};
         bool wrapped = false;
 
         for (text_area::text_index index = 0; index < caret_position_; ++index)
         {
-            cursor_position = advance_cursor(
-                cursor_position,
+            cursor_position_ = advance_cursor(
+                cursor_position_,
                 text_[index],
                 width_,
                 wrapped);
         }
 
-        cursor_position_ = cursor_position;
         self_.on_cursor_position_changed();
     }
 
