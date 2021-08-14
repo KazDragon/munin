@@ -356,7 +356,11 @@ private:
                 break;
 
             case terminalpp::vk::home:
-                set_cursor_position({0, cursor_position_.y_});
+                set_cursor_position({
+                    0, 
+                    ev.modifiers == terminalpp::vk_modifier::ctrl
+                                  ? 0
+                                  : cursor_position_.y_});
                 break;
 
             case terminalpp::vk::end:
