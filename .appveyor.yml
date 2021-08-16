@@ -71,4 +71,4 @@ build_script:
 test_script:
   - cd %configuration%
   - dir
-  - ctest .. -C %configuration%
+  - ctest . -C %configuration%
