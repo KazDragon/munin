@@ -17,4 +17,22 @@ struct render_surface_capabilities
     virtual bool supports_unicode() const = 0;
 };
 
+// ==========================================================================
+// DEFAULT RENDER SURFACE CAPABILITIES
+// ==========================================================================
+class default_render_surface_capabilities
+  : public render_surface_capabilities
+{
+public :
+    // ======================================================================
+    // SUPPORTS_UNICODE
+    // ======================================================================
+    bool supports_unicode() const override
+    {
+        return true;
+    }
+};
+
+extern default_render_surface_capabilities default_capabilities;
+
 }

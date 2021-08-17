@@ -320,6 +320,7 @@ target_sources(munin_tester
         test/src/viewport/viewport_size_test.cpp
         test/src/window/window_json_test.cpp
         test/src/window/window_test.cpp
+        test/src/window/window_render_capabilities_test.cpp
         test/src/window/window_repaint_test.cpp
 ) 
 

@@ -9,7 +9,18 @@ namespace munin {
 // CONSTRUCTOR
 // ==========================================================================
 window::window(std::shared_ptr<component> content)
-  : content_(std::move(content))
+  : window(std::move(content), default_capabilities)
+{
+}
+
+// ==========================================================================
+// CONSTRUCTOR
+// ==========================================================================
+window::window(
+    std::shared_ptr<component> content,
+    render_surface_capabilities const &capabilities)
+  : content_(std::move(content)),
+    capabilities_(capabilities)
 {
     auto const &request_repaint = 
         [this](auto const &regions)
