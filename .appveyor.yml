@@ -69,6 +69,4 @@ build_script:
   - cmake --build . --config %configuration%
 
 test_script:
-  - cd %configuration%
-  - dir
-  - ctest .. -C %configuration%
+  - ctest . -C %configuration%
