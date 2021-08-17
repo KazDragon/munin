@@ -371,6 +371,19 @@ private:
                   : cursor_position_.y_});
                 break;
 
+            case terminalpp::vk::bs:
+                text_.erase(
+                    text_.begin() + caret_position_,
+                    text_.begin() + caret_position_ + 1);
+                set_caret_position(get_caret_position() - 1);
+
+                layout_text();
+                self_.on_redraw({{
+                    {0, cursor_position_.y_},
+                    {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+                }});
+                break;
+
             default:
                 text_.insert(
                     text_.begin() + caret_position_,
