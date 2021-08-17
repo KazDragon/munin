@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['horizontal_5fscrollbar_176',['horizontal_scrollbar',['../classmunin_1_1horizontal__scrollbar.html',1,'munin']]],
-  ['horizontal_5fstrip_5flayout_177',['horizontal_strip_layout',['../classmunin_1_1horizontal__strip__layout.html',1,'munin']]]
+  ['grid_5flayout_177',['grid_layout',['../classmunin_1_1grid__layout.html',1,'munin']]]
 ];
