@@ -372,7 +372,10 @@ private:
                 break;
 
             default:
-                text_.insert(text_.end(), terminalpp::byte(ev.key));
+                text_.insert(
+                    text_.begin() + caret_position_,
+                    terminalpp::byte(ev.key));
+                ++caret_position_;
                 break;
         }
     }
