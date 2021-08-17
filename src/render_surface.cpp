@@ -1,27 +1,8 @@
 #include "munin/render_surface.hpp"
 
 namespace munin {
-namespace {
 
-// ==========================================================================
-// DEFAULT RENDER SURFACE CAPABILITIES
-// ==========================================================================
-class default_render_surface_capabilities
-  : public render_surface_capabilities
-{
-public :
-    // ======================================================================
-    // SUPPORTS_UNICODE
-    // ======================================================================
-    bool supports_unicode() const override
-    {
-        return true;
-    }
-};
-
-static default_render_surface_capabilities default_capabilities;
-
-}
+default_render_surface_capabilities default_capabilities;
 
 // ==========================================================================
 // COLUMN_PROXY::CONSTRUCTOR

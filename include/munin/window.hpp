@@ -29,6 +29,16 @@ public :
     explicit window(std::shared_ptr<component> content);
     
     //* =====================================================================
+    /// \brief Constructor
+    /// \param content A component that this window displays.  May not be
+    ///        null.
+    /// \param capabilities the capabilities of the render surface.
+    //* =====================================================================
+    window(
+        std::shared_ptr<component> content,
+        render_surface_capabilities const &capabilities);
+
+    //* =====================================================================
     /// \brief Destructor
     //* =====================================================================
     ~window();
@@ -64,7 +74,7 @@ public :
             repaint_regions.swap(repaint_regions_);
         }
 
-        render_surface surface(cvs);
+        render_surface surface(cvs, capabilities_);
         for (auto const &region : repaint_regions)
         {
             content_->draw(surface, region);
@@ -93,6 +103,7 @@ private :
     std::shared_ptr<component> content_;
     std::vector<terminalpp::rectangle> repaint_regions_;
     terminalpp::screen screen_;
+    render_surface_capabilities const &capabilities_;
 };
 
 }
