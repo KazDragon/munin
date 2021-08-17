@@ -375,7 +375,13 @@ private:
                 text_.insert(
                     text_.begin() + caret_position_,
                     terminalpp::byte(ev.key));
-                ++caret_position_;
+                set_caret_position(get_caret_position() + 1);
+
+                layout_text();
+                self_.on_redraw({{
+                    {0, cursor_position_.y_},
+                    {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+                }});
                 break;
         }
     }
