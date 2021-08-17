@@ -370,6 +370,10 @@ private:
                   ? terminalpp::coordinate_type(laid_out_text_.size() - 1)
                   : cursor_position_.y_});
                 break;
+
+            default:
+                text_.insert(text_.end(), terminalpp::byte(ev.key));
+                break;
         }
     }
 
