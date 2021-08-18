@@ -371,6 +371,8 @@ private:
                   : cursor_position_.y_});
                 break;
 
+            case terminalpp::vk::del:
+                // Fall-through
             case terminalpp::vk::bs:
                 text_.erase(
                     text_.begin() + caret_position_,
