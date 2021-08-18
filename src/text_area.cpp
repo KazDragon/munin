@@ -329,6 +329,101 @@ private:
     }
 
     // ======================================================================
+    // HANDLE_CURSOR_LEFT
+    // ======================================================================
+    void handle_cursor_left(int repeat_count)
+    {
+        set_caret_position(caret_position_ - repeat_count);
+    }
+
+    // ======================================================================
+    // HANDLE_CURSOR_RIGHT
+    // ======================================================================
+    void handle_cursor_right(int repeat_count)
+    {
+        set_caret_position(caret_position_ + repeat_count);
+    }
+
+    // ======================================================================
+    // HANDLE_CURSOR_UP
+    // ======================================================================
+    void handle_cursor_up(int repeat_count)
+    {
+        set_cursor_position({
+            cursor_position_.x_,
+            std::max(cursor_position_.y_ - repeat_count, 0)});
+    }
+
+    // ======================================================================
+    // HANDLE_CURSOR_DOWN
+    // ======================================================================
+    void handle_cursor_down(int repeat_count)
+    {
+        set_cursor_position({
+            cursor_position_.x_,
+            std::max(cursor_position_.y_ + repeat_count, 0)});
+    }
+
+    // ======================================================================
+    // HANDLE_HOME
+    // ======================================================================
+    void handle_home(terminalpp::vk_modifier modifiers)
+    {
+        set_cursor_position({
+            0, 
+            modifiers == terminalpp::vk_modifier::ctrl
+          ? 0
+          : cursor_position_.y_});
+    }
+
+    // ======================================================================
+    // HANDLE_END
+    // ======================================================================
+    void handle_end(terminalpp::vk_modifier modifiers)
+    {
+        set_cursor_position({
+            width_, 
+            modifiers == terminalpp::vk_modifier::ctrl
+          ? terminalpp::coordinate_type(laid_out_text_.size() - 1)
+          : cursor_position_.y_});
+    }
+
+    // ======================================================================
+    // HANDLE_BACKSPACE
+    // ======================================================================
+    void handle_backspace()
+    {
+        if (caret_position_ != 0)
+        {
+            text_.erase(
+                text_.begin() + caret_position_,
+                text_.begin() + caret_position_ + 1);
+            set_caret_position(caret_position_ - 1);
+
+            layout_text();
+            self_.on_redraw({{
+                {0, cursor_position_.y_},
+                {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+            }});
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_TEXT
+    // ======================================================================
+    void handle_text(terminalpp::byte by)
+    {
+        text_.insert(text_.begin() + caret_position_, by);
+        set_caret_position(get_caret_position() + 1);
+
+        layout_text();
+        self_.on_redraw({{
+            {0, cursor_position_.y_},
+            {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+        }});
+    }
+
+    // ======================================================================
     // HANDLE_KEYPRESS_EVENT
     // ======================================================================
     void handle_keypress_event(terminalpp::virtual_key const &ev)
@@ -336,70 +431,37 @@ private:
         switch (ev.key)
         {
             case terminalpp::vk::cursor_left:
-                set_caret_position(caret_position_ - ev.repeat_count);
+                handle_cursor_left(ev.repeat_count);
                 break;
                 
             case terminalpp::vk::cursor_right:
-                set_caret_position(caret_position_ + ev.repeat_count);
+                handle_cursor_right(ev.repeat_count);
                 break;
 
             case terminalpp::vk::cursor_up:
-                set_cursor_position({
-                    cursor_position_.x_,
-                    std::max(cursor_position_.y_ - ev.repeat_count, 0)});
+                handle_cursor_up(ev.repeat_count);
                 break;
 
             case terminalpp::vk::cursor_down:
-                set_cursor_position({
-                    cursor_position_.x_,
-                    std::max(cursor_position_.y_ + ev.repeat_count, 0)});
+                handle_cursor_down(ev.repeat_count);
                 break;
 
             case terminalpp::vk::home:
-                set_cursor_position({
-                    0, 
-                    ev.modifiers == terminalpp::vk_modifier::ctrl
-                  ? 0
-                  : cursor_position_.y_});
+                handle_home(ev.modifiers);
                 break;
 
             case terminalpp::vk::end:
-                set_cursor_position({
-                    width_, 
-                    ev.modifiers == terminalpp::vk_modifier::ctrl
-                  ? terminalpp::coordinate_type(laid_out_text_.size() - 1)
-                  : cursor_position_.y_});
+                handle_end(ev.modifiers);
                 break;
 
             case terminalpp::vk::del:
                 // Fall-through
             case terminalpp::vk::bs:
-                if (get_caret_position() != 0)
-                {
-                    text_.erase(
-                        text_.begin() + caret_position_,
-                        text_.begin() + caret_position_ + 1);
-                    set_caret_position(get_caret_position() - 1);
-
-                    layout_text();
-                    self_.on_redraw({{
-                        {0, cursor_position_.y_},
-                        {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
-                    }});
-                }
+                handle_backspace();
                 break;
 
             default:
-                text_.insert(
-                    text_.begin() + caret_position_,
-                    terminalpp::byte(ev.key));
-                set_caret_position(get_caret_position() + 1);
-
-                layout_text();
-                self_.on_redraw({{
-                    {0, cursor_position_.y_},
-                    {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
-                }});
+                handle_text(terminalpp::byte(ev.key));
                 break;
         }
     }
