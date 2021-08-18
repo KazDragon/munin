@@ -374,16 +374,19 @@ private:
             case terminalpp::vk::del:
                 // Fall-through
             case terminalpp::vk::bs:
-                text_.erase(
-                    text_.begin() + caret_position_,
-                    text_.begin() + caret_position_ + 1);
-                set_caret_position(get_caret_position() - 1);
+                if (get_caret_position() != 0)
+                {
+                    text_.erase(
+                        text_.begin() + caret_position_,
+                        text_.begin() + caret_position_ + 1);
+                    set_caret_position(get_caret_position() - 1);
 
-                layout_text();
-                self_.on_redraw({{
-                    {0, cursor_position_.y_},
-                    {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
-                }});
+                    layout_text();
+                    self_.on_redraw({{
+                        {0, cursor_position_.y_},
+                        {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+                    }});
+                }
                 break;
 
             default:

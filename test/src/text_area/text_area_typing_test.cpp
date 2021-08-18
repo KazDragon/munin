@@ -111,12 +111,15 @@ TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
 
 static keypress_test_data const keypress_data[] = 
 {
-    { ""_ts,     {0, 0}, keypress_a,   "a"_ts,   {1, 0} },
-    { "a"_ts,    {1, 0}, keypress_b,   "aB"_ts,  {2, 0} },
-    { "aB"_ts,   {0, 0}, keypress_c,   "CaB"_ts, {1, 0} },
+    { ""_ts,     {0, 0}, keypress_a,   "a"_ts,    {1, 0} },
+    { "a"_ts,    {1, 0}, keypress_b,   "aB"_ts,   {2, 0} },
+    { "aB"_ts,   {0, 0}, keypress_c,   "CaB"_ts,  {1, 0} },
 
-    { "test"_ts, {4, 0}, keypress_bs,  "tes"_ts, {3, 0} },
-    { "test"_ts, {4, 0}, keypress_del, "tes"_ts, {3, 0} },
+    { "test"_ts, {4, 0}, keypress_bs,  "tes"_ts,  {3, 0} },
+    { "test"_ts, {4, 0}, keypress_del, "tes"_ts,  {3, 0} },
+
+    { "test"_ts, {0, 0}, keypress_bs,  "test"_ts, {0, 0} },
+    { "test"_ts, {0, 0}, keypress_del, "test"_ts, {0, 0} },
 };
 
 INSTANTIATE_TEST_SUITE_P(
