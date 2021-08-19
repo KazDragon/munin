@@ -490,7 +490,7 @@ private:
     // ======================================================================
     void handle_keypress_event(terminalpp::virtual_key const &ev)
     {
-        if (is_control_key(ev.key))
+        if (terminalpp::is_control_key(ev.key))
         {
             handle_control_key(ev);
         }
