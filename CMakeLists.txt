@@ -75,7 +75,7 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 2.0.2 CONFIG REQUIRED)
+    find_package(terminalpp 2.0.3 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})
@@ -304,6 +304,7 @@ target_sources(munin_tester
         test/src/text_area/new_text_area_test.cpp
         test/src/text_area/text_area_test.cpp
         test/src/text_area/text_area_with_text_inserted_test.cpp
+        test/src/text_area/text_area_typing_test.cpp
         test/src/text_area/text_area_test.hpp
         test/src/titled_frame/titled_frame_json_test.cpp
         test/src/titled_frame/titled_frame_test.cpp
