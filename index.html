@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Munin: Munin</title>
+<title>Munin: Main Page</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -65,106 +65,22 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">Munin </div>  </div>
+<div class="title">Munin Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a href="https://kazdragon.github.io/munin/"><object type="image/svg+xml" data="https://img.shields.io/badge/code-documented-brightgreen.svg?style=flat" style="pointer-events: none;">Documentation</object></a> <a href="https://en.wikipedia.org/wiki/MIT_License"><object type="image/svg+xml" data="https://img.shields.io/github/license/KazDragon/munin.svg" style="pointer-events: none;">License</object></a> <a href="https://ci.appveyor.com/project/KazDragon/munin/branch/master"><img src="https://ci.appveyor.com/api/projects/status/p7wcwnd4xapnetkl/branch/master?svg=true" alt="MSVC Build status" class="inline"/></a> <a href="https://github.com/KazDragon/munin/actions?query=event%3Apush"><object type="image/svg+xml" data="https://github.com/KazDragon/munin/workflows/build/badge.svg" style="pointer-events: none;">Linux Build status</object></a> <a href="https://coveralls.io/github/KazDragon/munin?branch=master"><object type="image/svg+xml" data="https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master" style="pointer-events: none;">Coverage Status</object></a> <a href="https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3" alt="Codacy Badge" class="inline"/></a></p>
-<p>Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
-Requirements</h1>
-<p>Munin requires a C++14 compiler and the following libraries:</p><ul>
-<li>Boost (At least version 1.69.0)</li>
-<li>nlohmann_json (At least version 3.3.0)</li>
-<li><a href="https://github.com/KazDragon/terminalpp">Terminal++</a> (At least version 2.0.3)</li>
-<li>(for Terminal++) libfmt (At least version 5.3) and gsl-lite</li>
-<li>(for testing only) Google Test and Google Mock</li>
-</ul>
-<h1><a class="anchor" id="autotoc_md14"></a>
-Installation - CMake</h1>
-<p>Munin can be installed from source using CMake. This requires Boost, Terminal++ and any other dependencies to have been installed beforehand, using their own instructions, or for the call to <code>cmake --configure</code> to be adjusted appropriately (e.g. <code>-DBOOST_ROOT=...</code> or <code>-DGtest_DIR=...</code>). If you do not wish to install into a system directory, and thus avoid the use of sudo, you can also pass <code>-DCMAKE_INSTALL_PREFIX=...</code> into the <code>cmake --configure</code> call. </p><pre class="fragment">git clone https://github.com/KazDragon/munin.git &amp;&amp; cd munin
-mkdir build &amp;&amp; cd build
-cmake --configure -DCMAKE_BUILD_TYPE=Release ..
-cmake --build .
-sudo cmake --install .
-</pre><h1><a class="anchor" id="autotoc_md15"></a>
-Installation - Conan</h1>
-<p>You can also use <a href="https://conan.io/">the Conan Package Manager</a> to install Munin and its dependencies.</p>
-<p>See <a href="https://github.com/KazDragon/textray">the TextRay project</a> for a project that describes this kind of setup.</p>
-<h1><a class="anchor" id="autotoc_md16"></a>
-Features / Roadmap / Progress</h1>
-<h2><a class="anchor" id="autotoc_md17"></a>
-v0.1 - Fundamentals</h2>
-<p>Implement the fundamentals of the library, providing the basis for further development of the library.</p><ol type="1">
-<li>[x] Component - the base class of all UI components</li>
-<li>[x] Container/Layout - a component that can contain and arrange other components</li>
-<li>[x] A sampling of common layouts<ul>
-<li>[x] Null Layout - a layout that doesn't.</li>
-<li>[x] Vertical Strip Layout - a layout that arranges components in vertical strips</li>
-<li>[x] Horizontal Strip Layout - a layout that arranges components in horizontal strips</li>
-<li>[x] Grid Layout - a layout that arranges components in equally-sized cells.</li>
-<li>[x] Aligned Layout - a layout that arranges components with horizontal and vertical alignment (e.g. top-left, right-center)</li>
-<li>[x] Compass Layout - a layout that arranges components according to compass points (e.g. North, South, Centre)</li>
-</ul>
-</li>
-<li>[x] A sampling of common components<ul>
-<li>[x] Filled Box - a component that simply paints a single repeated character</li>
-<li>[x] Brush - a component that paints a repeated character pattern.</li>
-<li>[x] Image - a component that paints a static "image" once.</li>
-</ul>
-</li>
-<li>[x] Window - a top-level object that contains and draws components onto a canvas.</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md18"></a>
-v0.2 - Frames</h2>
-<p>Implement the ability to frame components</p><ol type="1">
-<li>[x] Composite Component - a component that is made of many other components, but presents the interface of being just one component.</li>
-<li>[x] Solid Frame - a frame made of solid characters.</li>
-<li>[x] Named Frame - a frame that displays text in addition to the solid characters.</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md19"></a>
-v0.3 - Buttons</h2>
-<p>Implement clickable buttons</p><ol type="1">
-<li>[x] Button - a normal click button</li>
-<li>[x] Toggle Button - a button that can be toggled on [x] and off [ ].</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md20"></a>
-v0.4 - Text Areas</h2>
-<p>Fundamentals for all types of text components:</p><ol type="1">
-<li>[X] Viewport - a component that sees a smaller portion of the underlying component</li>
-<li>[X] Horizontal Scroll Bar</li>
-<li>[X] Vertical Scroll Bar</li>
-<li>[X] Scroll Frame - a frame that includes scroll bars</li>
-<li>[X] Scroll Pane - a component that includes a scroll frame and a viewport</li>
-</ol>
-<p>Specific text manipulation components:</p><ol type="1">
-<li>[x] Edit - a single-lined horizontally scrolling text box, with a frame.</li>
-<li>[x] Text Area - a multiple-lined vertically scrolling text box, with a frame.</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md21"></a>
-v0.5 - Lists</h2>
-<ol type="1">
-<li>[x] List - A vertical list of elements that can be individually selected.</li>
-</ol>
-<h1><a class="anchor" id="autotoc_md22"></a>
-Status</h1>
-<p>Munin is automatically tested with MSVC 2019 and GCC 7.5. For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the <a href="https://github.com/KazDragon/munin/issues">issues page</a>. Feel free to discuss using Github Discussions!</p>
-<h1><a class="anchor" id="autotoc_md23"></a>
-The Basics</h1>
-<p>The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter). Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library. Examples can be found nearby this repository. For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Textray (a raycasting 3D room renderer) projects are both built using Server++, Telnet++, Terminal++, and Munin.</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
-Component</h1>
-<p>The core abstraction within Munin is the component. Everything that is drawable in one way or another derives from this abstraction so that they can provide knowledge about where they are (position), how large they are (size), how large they would like to be (preferred size), what to do if a user interacts with it (event) and how to represent themselves on a canvas (draw).</p>
-<h1><a class="anchor" id="autotoc_md25"></a>
-Container / Layout</h1>
-<p>Another key abstraction within Munin is the container. A container, when combined with a layout, declares how to arrange a set of components. Some layouts, for example the grid layout, simply place components in known positions according to the order in which they are added to the container. Other layouts, such as the compass and aligned layouts, require the developer to supply hints about where to place each component. The end effect is that the container automatically adjusts the size and position of its components according to how large the container itself is.</p>
-<h1><a class="anchor" id="autotoc_md26"></a>
-Window</h1>
-<p>At the top of the stack is the window. This is where the underlying application integrates with Munin. A window is not a component, but is instead constructed with a component that represents the user interface to be displayed. From here, events can be sent to the window's components. Ideally, these will be directly from Terminal++, and the default set of components are built with this in mind. But the interface is flexible enough to allow custom messages to be propagated to custom components. Additionally, you can register to receive a callback whenever something in the interface changes that requires repainting, and you can of course command to the window to repaint itself. This returns a string of text that you can send to a terminal to effect the repaint on the client. </p>
+<div class="textblock"><p>A program that shows how to tie together Console++ and Munin into a working application.</p>
+<p><img src="img/hello_console.png" alt="Screenshot of hello_console" class="inline"/></p>
+<p>To build: you will need to have installed Console++, Terminal++ and Munin as dependencies.</p>
+<p>You can then build with:</p>
+<div class="fragment"><div class="line">cmake .</div>
+<div class="line">make -j</div>
+</div><!-- fragment --><pre class="fragment">./hello_console
+</pre><p>will display a console with a message and a button that you can click with either the mouse, or by using space or enter on the keyboard. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Aug 19 2021 14:15:15 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Aug 19 2021 19:31:37 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
