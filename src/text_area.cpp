@@ -22,6 +22,7 @@ struct text_area::impl
     explicit impl(text_area &self)
       : self_(self)
     {
+        laid_out_text_.emplace_back();
     }
     
     // ======================================================================
@@ -228,7 +229,7 @@ private:
                 position.x_, 
                 terminalpp::coordinate_type{0}, 
                 std::min(
-                    terminalpp::coordinate_type(width_ - 1),
+                    terminalpp::coordinate_type(std::max(width_ - 1, 0)),
                     terminalpp::coordinate_type(
                         laid_out_text_[position.y_].size())));
 
