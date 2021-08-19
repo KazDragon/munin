@@ -7,6 +7,8 @@
 #include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 
+using namespace terminalpp::literals;
+
 namespace munin {
 
 // ==========================================================================
@@ -395,26 +397,28 @@ private:
     {
         if (caret_position_ != 0)
         {
+            auto const size = self_.get_size();
+
             text_.erase(
-                text_.begin() + caret_position_,
-                text_.begin() + caret_position_ + 1);
+                text_.begin() + caret_position_ - 1,
+                text_.begin() + caret_position_);
             set_caret_position(caret_position_ - 1);
 
             layout_text();
             self_.on_redraw({{
                 {0, cursor_position_.y_},
-                {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+                {size.width_, size.height_ - cursor_position_.y_}
             }});
         }
     }
 
     // ======================================================================
-    // HANDLE_TEXT
+    // HANDLE_ENTER
     // ======================================================================
-    void handle_text(terminalpp::byte by)
+    void handle_enter()
     {
-        text_.insert(text_.begin() + caret_position_, by);
-        set_caret_position(get_caret_position() + 1);
+        insert_text("\n"_ts, caret_position_);
+        set_caret_position(caret_position_ + 1);
 
         layout_text();
         self_.on_redraw({{
@@ -424,9 +428,9 @@ private:
     }
 
     // ======================================================================
-    // HANDLE_KEYPRESS_EVENT
+    // HANDLE_CONTROL_KEY
     // ======================================================================
-    void handle_keypress_event(terminalpp::virtual_key const &ev)
+    void handle_control_key(terminalpp::virtual_key const &ev)
     {
         switch (ev.key)
         {
@@ -460,9 +464,39 @@ private:
                 handle_backspace();
                 break;
 
-            default:
-                handle_text(terminalpp::byte(ev.key));
+            case terminalpp::vk::enter:
+                handle_enter();
                 break;
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_TEXT
+    // ======================================================================
+    void handle_text(terminalpp::byte by)
+    {
+        text_.insert(text_.begin() + caret_position_, by);
+        set_caret_position(caret_position_ + 1);
+
+        layout_text();
+        self_.on_redraw({{
+            {0, cursor_position_.y_},
+            {width_, terminalpp::coordinate_type(laid_out_text_.size() - cursor_position_.y_)}
+        }});
+    }
+
+    // ======================================================================
+    // HANDLE_KEYPRESS_EVENT
+    // ======================================================================
+    void handle_keypress_event(terminalpp::virtual_key const &ev)
+    {
+        if (is_control_key(ev.key))
+        {
+            handle_control_key(ev);
+        }
+        else
+        {
+            handle_text(terminalpp::byte(ev.key));
         }
     }
 
