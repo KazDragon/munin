@@ -7,15 +7,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
 
-Munin is an enhancement to the Terminal++ library that provides a set of component-based UI widgets.
+Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.
 
 # Requirements
 
 Munin requires a C++14 compiler and the following libraries:
   * Boost (At least version 1.69.0)
   * nlohmann_json (At least version 3.3.0)
-  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 2.0.0)
-  * (for Terminal++) libfmt (At least version 5.3) and gsl-lite (Exactly version 1.34.0)
+  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 2.0.3)
+  * (for Terminal++) libfmt (At least version 5.3) and gsl-lite
   * (for testing only) Google Test and Google Mock
 
 # Installation - CMake 
@@ -74,16 +74,14 @@ Implement the fundamentals of the library, providing the basis for further devel
  
  Specific text manipulation components:
  1. [x] Edit - a single-lined horizontally scrolling text box, with a frame.
- 2. [ ] Text Area - a multiple-lined vertically scrolling text box, with a frame.
+ 2. [x] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
  ## v0.5 - Lists
  1. [x] List - A vertical list of elements that can be individually selected.
 
 # Status
 
-Munin is automatically tested with Clang and G++ 5.2.
-
-For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the [Waffle board](https://waffle.io/KazDragon/munin)
+Munin is automatically tested with MSVC 2019 and GCC 7.5.  For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the [issues page](https://github.com/KazDragon/munin/issues).  Feel free to discuss using Github Discussions!
 
 # The Basics
 
