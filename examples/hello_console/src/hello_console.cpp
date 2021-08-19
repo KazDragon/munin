@@ -15,7 +15,7 @@ using namespace terminalpp::literals;
 class terminal_reader
 {
 public:
-    terminal_reader(munin::window &window)
+    explicit terminal_reader(munin::window &window)
       : dispatcher_(window)
     {
     }
@@ -31,7 +31,7 @@ public:
 private:
     struct event_dispatcher : public boost::static_visitor<>
     {
-        event_dispatcher(munin::window &window)
+        explicit event_dispatcher(munin::window &window)
         : window_(window)
         {
         }
