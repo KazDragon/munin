@@ -328,7 +328,8 @@ private:
     // ======================================================================
     void handle_mouse_event(terminalpp::mouse::event const &ev)
     {
-        set_cursor_position(ev.position_);
+        self_.set_focus();
+        self_.set_cursor_position(ev.position_);
     }
 
     // ======================================================================
