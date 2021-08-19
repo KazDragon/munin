@@ -1,6 +1,6 @@
 A program that shows how to tie together Console++ and Munin into a working application.
 
-[![Screenshot of hello_console](img/hello_console.png)]
+![Screenshot of hello_console](img/hello_console.png)
 
 To build: you will need to have installed Console++, Terminal++ and Munin as dependencies.
 
