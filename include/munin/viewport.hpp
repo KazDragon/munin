@@ -5,8 +5,8 @@
 namespace munin {
 
 //* =========================================================================
-/// A component that tracks a subset of another component and shows only a
-/// section of it.
+/// \brief A component that tracks a subset of another, larger component and
+/// shows only a section of it.
 //* =========================================================================
 class MUNIN_EXPORT viewport : public basic_component
 {
