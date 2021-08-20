@@ -7,7 +7,40 @@
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
 
-Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.
+Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.  Windows are composed using layouts that automatically size and position their subcomponents according to the rules you specify:
+
+```
+view(
+    make_compass_layout(),
+    view(
+        // Lay out the chess board and move lists next to each other
+        make_grid_layout({2, 1}), // two components horizontally
+        view(
+            make_compass_layout(),
+            chess_board,
+            compass_layout::heading::centre,
+            make_fill("\\[6\\U2502"_ete), // cyan vertical bar
+            compass_layout::heading::east),
+        view(
+            make_grid_layout({1, 2}), // two components vertically
+            make_scroll_pane(white_moves_history),
+            make_scroll_pane(black_moves_history)))),
+    compass_layout::heading::centre,
+    // Lay out a view for a button below the chess board and move lists
+    view(
+        make_compass_layout(),
+        make_fill("\\[6\\U2500"_ete), // cyan horizontal bar
+        compass_layout::heading::north,
+        make_fill(' '),
+        compass_layout::heading::centre,
+        ok_button,
+        compass_layout::heading::east),
+    compass_layout::heading::south);
+```
+
+![Example layout of chess board](examples/chess/img/chess.png)
+
+See [The Chess Example](examples/chess) for an example of how to tie this into a console application.
 
 # Requirements
 
@@ -34,10 +67,9 @@ You can also use [the Conan Package Manager](https://conan.io/) to install Munin
 
 See [the TextRay project](https://github.com/KazDragon/textray) for a project that describes this kind of setup.
 
-# Features / Roadmap / Progress
+# Components:
 
-## v0.1 - Fundamentals
-Implement the fundamentals of the library, providing the basis for further development of the library.
+## Fundamentals
 1. [x] Component - the base class of all UI components
 2. [x] Container/Layout - a component that can contain and arrange other components
 3. [x] A sampling of common layouts 
@@ -53,18 +85,18 @@ Implement the fundamentals of the library, providing the basis for further devel
  * [x] Image - a component that paints a static "image" once.
 5. [x] Window - a top-level object that contains and draws components onto a canvas.
 
- ## v0.2 - Frames
+ ## Frames
  Implement the ability to frame components
  1. [x] Composite Component - a component that is made of many other components, but presents the interface of being just one component.
  2. [x] Solid Frame - a frame made of solid characters.
  3. [x] Named Frame - a frame that displays text in addition to the solid characters.
  
- ## v0.3 - Buttons
+ ## Buttons
  Implement clickable buttons
  1. [x] Button - a normal click button
  2. [x] Toggle Button - a button that can be toggled on [x] and off [ ].
  
- ## v0.4 - Text Areas
+ ## Text Areas
  Fundamentals for all types of text components:
  1. [X] Viewport - a component that sees a smaller portion of the underlying component
  2. [X] Horizontal Scroll Bar
@@ -76,7 +108,7 @@ Implement the fundamentals of the library, providing the basis for further devel
  1. [x] Edit - a single-lined horizontally scrolling text box, with a frame.
  2. [x] Text Area - a multiple-lined vertically scrolling text box, with a frame.
  
- ## v0.5 - Lists
+ ## Lists
  1. [x] List - A vertical list of elements that can be individually selected.
 
 # Status
