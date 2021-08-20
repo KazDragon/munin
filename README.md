@@ -38,7 +38,7 @@ view(
     compass_layout::heading::south);
 ```
 
-![Example layout of chess board](examples/chess/img/chess.png)
+![Example layout of chess board](https://github.com/KazDragon/munin/blob/master/examples/chess/img/chess.png)
 
 See [The Chess Example](examples/chess) for an example of how to tie this into a console application.
 

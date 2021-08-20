@@ -17,9 +17,10 @@ struct render_surface_capabilities
     virtual bool supports_unicode() const = 0;
 };
 
-// ==========================================================================
-// DEFAULT RENDER SURFACE CAPABILITIES
-// ==========================================================================
+//* =========================================================================
+/// \brief A class that supports the default set of render surface 
+/// capabilities 
+//* =========================================================================
 class default_render_surface_capabilities
   : public render_surface_capabilities
 {
