@@ -1,11 +1,5 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(MUNIN VERSION 0.5)
-
-cmake_policy(VERSION 3.2)
-
-if (POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW)
-endif()
+cmake_policy(VERSION 3.13)
 
 option(MUNIN_COVERAGE  "Build with code coverage options")
 option(MUNIN_SANITIZE "Build using sanitizers" "")
@@ -16,6 +10,14 @@ message("Building Munin with config: ${CMAKE_BUILD_TYPE}")
 message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
 message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
 message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
+
+include(function-git_version)
+git_version(MUNIN)
+message(STATUS "Munin Version: ${MUNIN_VERSION}")
+project(MUNIN VERSION ${MUNIN_VERSION})
 
 # For producing automatically-generated documentation, we use Doxygen.
 find_package(Doxygen)
@@ -47,9 +49,6 @@ if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
     conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 endif()
-
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (MUNIN_USE_CONAN)
     set(MUNIN_PUBLIC_LIBRARIES
@@ -118,6 +117,9 @@ endif()
 add_library(munin)
 add_library(KazDragon::munin ALIAS munin)
 
+# The required C++ Standard for Telnet++ is C++14.
+target_compile_features(munin PUBLIC cxx_std_14)
+
 target_sources(munin
     PRIVATE
         include/munin/animator.hpp
@@ -149,6 +151,7 @@ target_sources(munin
         include/munin/vertical_strip_layout.hpp
         include/munin/window.hpp
         include/munin/vertical_scrollbar.hpp
+        include/munin/version.hpp
         include/munin/view.hpp
         include/munin/viewport.hpp
     
@@ -358,8 +361,12 @@ if (MSVC AND NOT MUNIN_USE_CONAN)
     endif()
 endif()
 
-
 endif()
+
+configure_file(
+    ${PROJECT_SOURCE_DIR}/include/munin/version.hpp.in
+    ${PROJECT_SOURCE_DIR}/include/munin/version.hpp
+    @ONLY)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
