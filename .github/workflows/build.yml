@@ -22,6 +22,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Install latest Boost
       shell: bash
@@ -33,20 +35,20 @@ jobs:
       run: .ci/fetch_system_dependencies.sh
       
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{runner.workspace}}/munin/build
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_PREFIX_PATH=$EXTERNAL_ROOT
 
     - name: Build
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       shell: bash
       run: ctest -C $BUILD_TYPE || (cat Testing/Temporary/LastTest.log && false)
 
@@ -58,6 +60,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Extract branch name
       shell: bash
@@ -82,7 +86,7 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{runner.workspace}}/munin/build
 
     - name: Install Terminal++ dependency
       run: |
@@ -94,23 +98,23 @@ jobs:
         cd ..
 
     - name: Install dependencies from Conan
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: |
         conan config set general.request_timeout=120
         conan install $GITHUB_WORKSPACE -s compiler.libcxx=libstdc++11 -s cppstd=14 -s build_type=$BUILD_TYPE --build=missing
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
     - name: Build
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       shell: bash
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Test
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       shell: bash
       run: ctest -C $BUILD_TYPE || (cat Testing/Temporary/LastTest.log && false)
 
@@ -128,6 +132,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Install latest Boost
       shell: bash
@@ -167,31 +173,31 @@ jobs:
       run: .ci/fetch_system_dependencies.sh
       
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{runner.workspace}}/munin/build
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_PREFIX_PATH=$EXTERNAL_ROOT -DMUNIN_COVERAGE=True
 
     - name: Build
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Zero test counters
       shell: bash
-      run: ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/build --directory ${{runner.workspace}}/build --zerocounters -q
+      run: ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build --zerocounters -q
 
     - name: Test
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       shell: bash
       run: ctest -C $BUILD_TYPE || (cat Testing/Temporary/LastTest.log && false)
 
     - name: Calculate coverage
       shell: bash
       run: |
-        ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/build --directory ${{runner.workspace}}/build  --capture --output-file coverage.info;
+        ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build  --capture --output-file coverage.info;
         ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --remove coverage.info '*/test/*' '/usr/*' '*/3party/*' --output-file coverage.info;
         ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --list coverage.info;
 
@@ -209,25 +215,27 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
     - name: Install Doxygen
       shell: bash
       run: sudo apt install doxygen
 
     - name: Create Build Environment
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      run: cmake -E make_directory ${{runner.workspace}}/munin/build
 
     - name: Configure CMake
       shell: bash
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       run: cmake $GITHUB_WORKSPACE -DMUNIN_DOC_ONLY=True
 
     - name: Build
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/munin/build
       shell: bash
       run: cmake --build . --target munin_doc
 
     - uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{runner.workspace}}/build/html
+        publish_dir: ${{runner.workspace}}/munin/build/html
