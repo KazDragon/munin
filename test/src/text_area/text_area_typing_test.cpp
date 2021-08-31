@@ -21,6 +21,40 @@ class a_text_area_receiving_keypresses
   : public a_text_area_base,
     public testing::TestWithParam<keypress_test_data>
 {
+public:
+    a_text_area_receiving_keypresses()
+    {
+        using std::get;
+
+        text_area_.on_redraw.connect(
+            [this](auto const &regions)
+            {
+                for (auto const &region : regions)
+                {
+                    text_area_.draw(surface_, region);
+                }
+            });
+
+        text_area_.on_cursor_position_changed.connect(
+            [this]
+            {
+                cursor_position_ = text_area_.get_cursor_position();
+            });
+
+        auto const &params = GetParam();
+        auto const &inserted_text = get<0>(params);
+        auto const &cursor_position = get<1>(params);
+
+        text_area_.set_size({10, 3});
+        text_area_.insert_text(inserted_text);
+        text_area_.set_cursor_position(cursor_position);
+    }
+
+protected:
+    terminalpp::canvas canvas_{{10, 3}};
+    munin::render_surface surface_{canvas_};
+
+    terminalpp::point cursor_position_;
 };
 
 auto const keypress_a = terminalpp::virtual_key {
@@ -78,40 +112,15 @@ TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
     using std::get;
 
     auto const &params = GetParam();
-    auto const &inserted_text = get<0>(params);
-    auto const &cursor_position = get<1>(params);
     auto const &keypress = get<2>(params);
     auto const &expected_text = get<3>(params);
     auto const &expected_cursor_position = get<4>(params);
 
-    terminalpp::canvas cvs({10, 3});
-    munin::render_surface surface{cvs};
-
-    text_area_.on_redraw.connect(
-        [&surface, this](auto const &regions)
-        {
-            for (auto const &region : regions)
-            {
-                text_area_.draw(surface, region);
-            }
-        });
-
-    text_area_.set_size({10, 3});
-    text_area_.insert_text(inserted_text);
-    text_area_.set_cursor_position(cursor_position);
-
-    auto resultant_cursor_position = cursor_position;
-    text_area_.on_cursor_position_changed.connect(
-        [&resultant_cursor_position, this]
-        {
-            resultant_cursor_position = text_area_.get_cursor_position();
-        });
-        
     text_area_.event(keypress);
     
     auto const &text = text_area_.get_text();
     EXPECT_EQ(expected_text, text);
-    EXPECT_EQ(expected_cursor_position, resultant_cursor_position);
+    EXPECT_EQ(expected_cursor_position, cursor_position_);
 
     std::vector<terminalpp::string> content;
     content.push_back({});
@@ -129,8 +138,8 @@ TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
     }
 
     terminalpp::for_each_in_region(
-        cvs,
-        {{}, cvs.size()},
+        canvas_,
+        {{}, canvas_.size()},
         [&](terminalpp::element const &elem,
             terminalpp::coordinate_type col,
             terminalpp::coordinate_type row)
