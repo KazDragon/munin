@@ -107,35 +107,52 @@ auto const keypress_enter = terminalpp::virtual_key {
 
 }
 
-TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
+TEST_P(a_text_area_receiving_keypresses, leaves_the_cursor_in_the_correct_place)
+{
+    using std::get;
+
+    auto const &params = GetParam();
+    auto const &keypress = get<2>(params);
+    auto const &expected_cursor_position = get<4>(params);
+
+    text_area_.event(keypress);
+    
+    EXPECT_EQ(expected_cursor_position, cursor_position_);
+}
+
+TEST_P(a_text_area_receiving_keypresses, redraws_the_text_area_appropriately)
 {
     using std::get;
 
     auto const &params = GetParam();
     auto const &keypress = get<2>(params);
     auto const &expected_text = get<3>(params);
-    auto const &expected_cursor_position = get<4>(params);
 
     text_area_.event(keypress);
     
     auto const &text = text_area_.get_text();
     EXPECT_EQ(expected_text, text);
-    EXPECT_EQ(expected_cursor_position, cursor_position_);
 
-    std::vector<terminalpp::string> content;
-    content.push_back({});
-
-    for (auto const &elem : text)
-    {
-        if (elem == '\n')
+    auto const &expected_content =
+        [&text]
         {
+            std::vector<terminalpp::string> content;
             content.push_back({});
-        }
-        else
-        {
-            content.back() += elem;
-        }
-    }
+
+            for (auto const &elem : text)
+            {
+                if (elem == '\n')
+                {
+                    content.push_back({});
+                }
+                else
+                {
+                    content.back() += elem;
+                }
+            }
+
+            return content;
+        }();
 
     terminalpp::for_each_in_region(
         canvas_,
@@ -144,8 +161,8 @@ TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
             terminalpp::coordinate_type col,
             terminalpp::coordinate_type row)
         {
-            if (row + 1 > content.size()
-             || col + 1 > content[row].size())
+            if (row + 1 > expected_content.size()
+             || col + 1 > expected_content[row].size())
             {
                 EXPECT_EQ(' ', elem)
                     << "at [" << col << "][" << row << "]";
@@ -153,7 +170,7 @@ TEST_P(a_text_area_receiving_keypresses, responds_in_the_specified_manner)
             }
             else
             {
-                EXPECT_EQ(content[row][col], elem)
+                EXPECT_EQ(expected_content[row][col], elem)
                     << "at [" << col << "][" << row << "]";
             }
         });
