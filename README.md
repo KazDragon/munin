@@ -9,7 +9,7 @@
 
 Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.  Windows are composed using layouts that automatically size and position their subcomponents according to the rules you specify:
 
-```
+```c++
 view(
     make_compass_layout(),
     view(
