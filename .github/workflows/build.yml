@@ -90,11 +90,11 @@ jobs:
 
     - name: Install Terminal++ dependency
       run: |
-        wget https://github.com/KazDragon/terminalpp/archive/v2.0.3.tar.gz
-        tar -xzf v2.0.3.tar.gz
-        cd terminalpp-2.0.3
+        wget https://github.com/KazDragon/terminalpp/archive/v2.2.1.tar.gz
+        tar -xzf v2.2.1.tar.gz
+        cd terminalpp-2.2.1
         conan config set general.request_timeout=120
-        conan create . terminalpp/2.0.3@_/_ -s compiler.libcxx=libstdc++11 -s cppstd=14 -s build_type=$BUILD_TYPE --build=missing
+        conan create . terminalpp/2.2.1@_/_ -s compiler.libcxx=libstdc++11 -s cppstd=14 -s build_type=$BUILD_TYPE --build=missing
         cd ..
 
     - name: Install dependencies from Conan
