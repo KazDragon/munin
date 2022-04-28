@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Munin
-   &#160;<span id="projectnumber">0.5.9</span>
+   &#160;<span id="projectnumber">0.5.10</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -114,64 +114,36 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="comment">//* =====================================================================</span></div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">template</span> &lt;<span class="keyword">typename</span> WriteContinuation&gt;</div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classmunin_1_1window.html#a061c95910b38ad8e349227b94997f3f6">   57</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classmunin_1_1window.html#a061c95910b38ad8e349227b94997f3f6">repaint</a>(</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        terminalpp::canvas &amp;cvs,</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        terminalpp::terminal &amp;term,</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        WriteContinuation &amp;&amp;wc)</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">auto</span> <span class="keyword">const</span> canvas_size = cvs.size();</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        std::vector&lt;terminalpp::rectangle&gt; repaint_regions;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">if</span> (cvs.size() != content_-&gt;get_size())</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            content_-&gt;set_size(cvs.size());</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            repaint_regions.clear();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            repaint_regions.push_back({{}, canvas_size});</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            repaint_regions.swap(repaint_regions_);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <a class="code" href="classmunin_1_1render__surface.html">render_surface</a> surface(cvs, capabilities_);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span> &amp;region : repaint_regions)</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        {</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            content_-&gt;draw(surface, region);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">void</span> repaint(</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        terminalpp::canvas &amp;cvs,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        terminalpp::terminal &amp;term);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    nlohmann::json to_json() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    boost::signals2::signal</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    &lt;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        void ()</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">   74</a></span>&#160;    &gt; <a class="code" href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">on_repaint_request</a>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;private :</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    std::shared_ptr&lt;component&gt; content_;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    std::vector&lt;terminalpp::rectangle&gt; repaint_regions_;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    terminalpp::screen screen_;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="structmunin_1_1render__surface__capabilities.html">render_surface_capabilities</a> <span class="keyword">const</span> &amp;capabilities_;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;};</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        screen_.draw(term, cvs, std::forward&lt;WriteContinuation&gt;(wc));</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    nlohmann::json to_json() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    boost::signals2::signal</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    &lt;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        void ()</div>
-<div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">  100</a></span>&#160;    &gt; <a class="code" href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">on_repaint_request</a>;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;private :</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    std::shared_ptr&lt;component&gt; content_;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    std::vector&lt;terminalpp::rectangle&gt; repaint_regions_;</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    terminalpp::screen screen_;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <a class="code" href="structmunin_1_1render__surface__capabilities.html">render_surface_capabilities</a> <span class="keyword">const</span> &amp;capabilities_;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;};</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassmunin_1_1window_html"><div class="ttname"><a href="classmunin_1_1window.html">munin::window</a></div><div class="ttdoc">An object that represents a top-level window.</div><div class="ttdef"><b>Definition:</b> window.hpp:21</div></div>
 <div class="ttc" id="astructmunin_1_1render__surface__capabilities_html"><div class="ttname"><a href="structmunin_1_1render__surface__capabilities.html">munin::render_surface_capabilities</a></div><div class="ttdoc">A class that describes the capabilities of a render surface.</div><div class="ttdef"><b>Definition:</b> render_surface_capabilities.hpp:8</div></div>
-<div class="ttc" id="aclassmunin_1_1window_html_a2039b2e25d23c83a3f17d84d1bb438a7"><div class="ttname"><a href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">munin::window::on_repaint_request</a></div><div class="ttdeci">boost::signals2::signal&lt; void() &gt; on_repaint_request</div><div class="ttdoc">Connect to this signal in order to receive notifications that the content of the window has been chan...</div><div class="ttdef"><b>Definition:</b> window.hpp:100</div></div>
-<div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition:</b> render_surface.hpp:13</div></div>
-<div class="ttc" id="aclassmunin_1_1window_html_a061c95910b38ad8e349227b94997f3f6"><div class="ttname"><a href="classmunin_1_1window.html#a061c95910b38ad8e349227b94997f3f6">munin::window::repaint</a></div><div class="ttdeci">void repaint(terminalpp::canvas &amp;cvs, terminalpp::terminal &amp;term, WriteContinuation &amp;&amp;wc)</div><div class="ttdoc">Returns a string that represents the change in state of the window since the last repaint.</div><div class="ttdef"><b>Definition:</b> window.hpp:57</div></div>
+<div class="ttc" id="aclassmunin_1_1window_html_a2039b2e25d23c83a3f17d84d1bb438a7"><div class="ttname"><a href="classmunin_1_1window.html#a2039b2e25d23c83a3f17d84d1bb438a7">munin::window::on_repaint_request</a></div><div class="ttdeci">boost::signals2::signal&lt; void() &gt; on_repaint_request</div><div class="ttdoc">Connect to this signal in order to receive notifications that the content of the window has been chan...</div><div class="ttdef"><b>Definition:</b> window.hpp:74</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Nov 23 2021 09:16:09 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Apr 28 2022 11:24:12 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
