@@ -50,38 +50,12 @@ public :
     void event(boost::any const &ev);
 
     //* =====================================================================
-    /// \brief Returns a string that represents the change in state of the
-    /// window since the last repaint.
+    /// \brief Writes a string to the terminal that represents the changes
+    /// on the canvas since it was last painted.
     //* =====================================================================
-    template <typename WriteContinuation>
     void repaint(
         terminalpp::canvas &cvs,
-        terminalpp::terminal &term,
-        WriteContinuation &&wc)
-    {
-        auto const canvas_size = cvs.size();
-        
-        std::vector<terminalpp::rectangle> repaint_regions;
-        
-        if (cvs.size() != content_->get_size())
-        {
-            content_->set_size(cvs.size());
-            repaint_regions.clear();
-            repaint_regions.push_back({{}, canvas_size});
-        }
-        else
-        {
-            repaint_regions.swap(repaint_regions_);
-        }
-
-        render_surface surface(cvs, capabilities_);
-        for (auto const &region : repaint_regions)
-        {
-            content_->draw(surface, region);
-        }
-
-        screen_.draw(term, cvs, std::forward<WriteContinuation>(wc));
-    }
+        terminalpp::terminal &term);
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the

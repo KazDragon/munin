@@ -57,6 +57,37 @@ void window::event(boost::any const &ev)
 }
 
 // ==========================================================================
+// REPAINT
+// ==========================================================================
+void window::repaint(
+    terminalpp::canvas &cvs,
+    terminalpp::terminal &term)
+{
+    auto const canvas_size = cvs.size();
+    
+    std::vector<terminalpp::rectangle> repaint_regions;
+    
+    if (cvs.size() != content_->get_size())
+    {
+        content_->set_size(cvs.size());
+        repaint_regions.clear();
+        repaint_regions.push_back({{}, canvas_size});
+    }
+    else
+    {
+        repaint_regions.swap(repaint_regions_);
+    }
+
+    render_surface surface(cvs, capabilities_);
+    for (auto const &region : repaint_regions)
+    {
+        content_->draw(surface, region);
+    }
+
+    screen_.draw(term, cvs);
+}
+
+// ==========================================================================
 // TO_JSON
 // ==========================================================================
 nlohmann::json window::to_json() const

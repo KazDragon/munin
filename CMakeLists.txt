@@ -14,8 +14,11 @@ message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
-include(function-git_version)
-git_version(MUNIN)
+if (NOT MUNIN_VERSION)
+    include(function-git_version)
+    git_version(MUNIN)
+endif()
+
 message(STATUS "Munin Version: ${MUNIN_VERSION}")
 project(MUNIN VERSION ${MUNIN_VERSION})
 
@@ -74,7 +77,7 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 2.0.3 CONFIG REQUIRED)
+    find_package(terminalpp 2.2.0 CONFIG REQUIRED)
 
     # If we are building with tests, then we require the GTest library
     if (${MUNIN_WITH_TESTS})

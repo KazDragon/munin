@@ -45,9 +45,9 @@ TEST_F(a_window_that_does_not_support_unicode, passes_those_capabilities_to_comp
             }));
 
     terminalpp::canvas cvs({3, 3});
-    terminalpp::terminal terminal;
+    terminalpp::terminal terminal{[](terminalpp::tokens){}, [](terminalpp::bytes){}};
 
-    window_->repaint(cvs, terminal, [](terminalpp::bytes){});
+    window_->repaint(cvs, terminal);
     
     ASSERT_TRUE(supports_unicode.is_initialized());
     ASSERT_FALSE(*supports_unicode);
