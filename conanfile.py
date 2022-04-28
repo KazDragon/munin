@@ -11,8 +11,8 @@ class MuninConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
     default_options = {"shared": False, "coverage": False, "sanitize": "off"}
-    exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE"
-    requires = ("terminalpp/[>=2.2.0]",
+    exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE", "*.cmake"
+    requires = ("terminalpp/[>=2.2.1]",
                 "nlohmann_json/[>=3.3.0]",
                 "boost/[>=1.69]")
     build_requires = ("gtest/[>=1.8.1]")
@@ -32,6 +32,7 @@ class MuninConan(ConanFile):
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
         cmake.definitions["MUNIN_COVERAGE"] = self.options.coverage
         cmake.definitions["MUNIN_SANITIZE"] = self.options.sanitize
+        cmake.definitions["MUNIN_VERSION"] = self.version
         cmake.configure()
         cmake.build()
 

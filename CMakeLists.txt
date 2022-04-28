@@ -14,8 +14,11 @@ message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
-include(function-git_version)
-git_version(MUNIN)
+if (NOT MUNIN_VERSION)
+    include(function-git_version)
+    git_version(MUNIN)
+endif()
+
 message(STATUS "Munin Version: ${MUNIN_VERSION}")
 project(MUNIN VERSION ${MUNIN_VERSION})
 
