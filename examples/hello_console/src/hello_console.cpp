@@ -12,52 +12,29 @@
 
 using namespace terminalpp::literals;
 
-class terminal_reader
+struct window_event_dispatcher : public boost::static_visitor<>
 {
-public:
-    explicit terminal_reader(munin::window &window)
-      : dispatcher_(window)
+    explicit window_event_dispatcher(munin::window &window)
+      : window_(window)
     {
     }
 
-    void operator()(terminalpp::tokens const &tokens)
+    template <class Event>
+    void operator()(Event const &event)
     {
-        for (auto const &token : tokens)
-        {
-            boost::apply_visitor(dispatcher_, token);
-        }
+        window_.event(event);
     }
 
-private:
-    struct event_dispatcher : public boost::static_visitor<>
-    {
-        explicit event_dispatcher(munin::window &window)
-        : window_(window)
-        {
-        }
-
-        template <class Event>
-        void operator()(Event const &event)
-        {
-            window_.event(event);
-        }
-
-        munin::window &window_;
-    };
-
-    event_dispatcher dispatcher_;
+    munin::window &window_;
 };
 
-void schedule_read(
-    consolepp::console &console, 
-    terminalpp::terminal &terminal,
-    terminal_reader &reader)
+void schedule_read(consolepp::console &console, terminalpp::terminal &terminal)
 {
     console.async_read(
         [&](consolepp::bytes data)
         {
-            terminal.read(reader) >> data;
-            schedule_read(console, terminal, reader);
+            terminal >> data;
+            schedule_read(console, terminal);
         });
 }
 
@@ -88,25 +65,27 @@ auto make_behaviour()
 int main()
 {
     auto button = munin::make_button(" OK ");
-
     munin::window window{make_content(button)};
     
     boost::asio::io_context io_context;
     consolepp::console console{io_context};
     terminalpp::canvas canvas{{console.size().width, console.size().height}};
-    terminalpp::terminal terminal{make_behaviour()};
+    window_event_dispatcher event_dispatcher{window};
 
-    auto const &console_write =
-        [&console](terminalpp::bytes data)
-        {
+    terminalpp::terminal terminal{
+        [&](terminalpp::tokens tokens) {
+            for (const auto& token : tokens)
+            {
+                boost::apply_visitor(event_dispatcher, token);
+            }
+        },
+        [&](terminalpp::bytes data) {
             console.write(data);
-        };
+        },
+        make_behaviour()
+    };
 
-    auto const &repaint_window = 
-        [&]()
-        {
-            window.repaint(canvas, terminal, console_write);
-        };
+    auto const &repaint_window = [&]() { window.repaint(canvas, terminal); };
 
     window.on_repaint_request.connect(repaint_window);
     console.on_size_changed.connect(
@@ -117,8 +96,9 @@ int main()
             repaint_window();
         });
 
-    terminal.write(console_write) 
+    terminal
         << terminalpp::enable_mouse()
+        << terminalpp::hide_cursor()
         << terminalpp::use_alternate_screen_buffer()
         << terminalpp::set_window_title("hello_console");
 
@@ -129,11 +109,11 @@ int main()
     });
     button->set_focus();
 
-    terminal_reader reader(window);
-    schedule_read(console, terminal, reader);
+    schedule_read(console, terminal);
 
     io_context.run();
-    terminal.write(console_write) 
+    terminal
         << terminalpp::use_normal_screen_buffer()
+        << terminalpp::show_cursor()
         << terminalpp::disable_mouse();
 }
