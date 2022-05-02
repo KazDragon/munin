@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Munin: terminal_reader Class Reference</title>
+<title>Munin: window_event_dispatcher Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Munin
-   &#160;<span id="projectnumber">0.5.10</span>
+   &#160;<span id="projectnumber">0.5.12</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -65,37 +65,51 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="classterminal__reader-members.html">List of all members</a>  </div>
+<a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="structwindow__event__dispatcher-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">terminal_reader Class Reference</div>  </div>
+<div class="title">window_event_dispatcher Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="dynheader">
+Inheritance diagram for window_event_dispatcher:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="structwindow__event__dispatcher.png" alt=""/>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afe7b0e9ae5523cfa7380ba07eec4deba"><td class="memItemLeft" align="right" valign="top"><a id="afe7b0e9ae5523cfa7380ba07eec4deba"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>terminal_reader</b> (<a class="el" href="classmunin_1_1window.html">munin::window</a> &amp;window)</td></tr>
-<tr class="separator:afe7b0e9ae5523cfa7380ba07eec4deba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad299ff884e25686385a666fff9184a7b"><td class="memItemLeft" align="right" valign="top"><a id="ad299ff884e25686385a666fff9184a7b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (terminalpp::tokens const &amp;tokens)</td></tr>
-<tr class="separator:ad299ff884e25686385a666fff9184a7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe7b0e9ae5523cfa7380ba07eec4deba"><td class="memItemLeft" align="right" valign="top"><a id="afe7b0e9ae5523cfa7380ba07eec4deba"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>terminal_reader</b> (<a class="el" href="classmunin_1_1window.html">munin::window</a> &amp;window)</td></tr>
-<tr class="separator:afe7b0e9ae5523cfa7380ba07eec4deba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad299ff884e25686385a666fff9184a7b"><td class="memItemLeft" align="right" valign="top"><a id="ad299ff884e25686385a666fff9184a7b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (terminalpp::tokens const &amp;tokens)</td></tr>
-<tr class="separator:ad299ff884e25686385a666fff9184a7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69836bf9c08195bbbd41bea51ec6c1d5"><td class="memItemLeft" align="right" valign="top"><a id="a69836bf9c08195bbbd41bea51ec6c1d5"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>window_event_dispatcher</b> (<a class="el" href="classmunin_1_1window.html">munin::window</a> &amp;window)</td></tr>
+<tr class="separator:a69836bf9c08195bbbd41bea51ec6c1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad24614a4958beddb8772e2255733a3ab"><td class="memTemplParams" colspan="2"><a id="ad24614a4958beddb8772e2255733a3ab"></a>
+template&lt;class Event &gt; </td></tr>
+<tr class="memitem:ad24614a4958beddb8772e2255733a3ab"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (Event const &amp;event)</td></tr>
+<tr class="separator:ad24614a4958beddb8772e2255733a3ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69836bf9c08195bbbd41bea51ec6c1d5"><td class="memItemLeft" align="right" valign="top"><a id="a69836bf9c08195bbbd41bea51ec6c1d5"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>window_event_dispatcher</b> (<a class="el" href="classmunin_1_1window.html">munin::window</a> &amp;window)</td></tr>
+<tr class="separator:a69836bf9c08195bbbd41bea51ec6c1d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad24614a4958beddb8772e2255733a3ab"><td class="memTemplParams" colspan="2"><a id="ad24614a4958beddb8772e2255733a3ab"></a>
+template&lt;class Event &gt; </td></tr>
+<tr class="memitem:ad24614a4958beddb8772e2255733a3ab"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator()</b> (Event const &amp;event)</td></tr>
+<tr class="separator:ad24614a4958beddb8772e2255733a3ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:adbb97fb3aceaf5cfdc60366485efb0da"><td class="memItemLeft" align="right" valign="top"><a id="adbb97fb3aceaf5cfdc60366485efb0da"></a>
+<a class="el" href="classmunin_1_1window.html">munin::window</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>window_</b></td></tr>
+<tr class="separator:adbb97fb3aceaf5cfdc60366485efb0da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>/home/runner/work/munin/munin/examples/chess/src/chess.cpp</li>
 <li>/home/runner/work/munin/munin/examples/hello_console/src/hello_console.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Apr 28 2022 11:24:12 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon May 2 2022 12:53:31 for Munin by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.17
 </small></address>
