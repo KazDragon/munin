@@ -12,7 +12,7 @@ class MuninConan(ConanFile):
     options = {"shared": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
     default_options = {"shared": False, "coverage": False, "sanitize": "off"}
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE", "*.cmake"
-    requires = ("terminalpp/[>=2.2.1]",
+    requires = ("terminalpp/[>=2.3.0]",
                 "nlohmann_json/[>=3.3.0]",
                 "boost/[>=1.69]")
     build_requires = ("gtest/[>=1.8.1]")
