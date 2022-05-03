@@ -15,15 +15,22 @@
 
 using namespace terminalpp::literals;
 
+namespace {
+
 struct window_event_dispatcher : public boost::static_visitor<>
 {
+    window_event_dispatcher(munin::window &window)
+      : window_{window}
+    {
+    }
+
     template <class Event>
     void operator()(Event const &event)
     {
-        window_->event(event);
+        window_.event(event);
     }
 
-    munin::window *window_{nullptr};
+    munin::window &window_;
 };
 
 void schedule_read(consolepp::console &console, terminalpp::terminal &terminal)
@@ -107,60 +114,73 @@ auto make_behaviour()
     return behaviour;
 }
 
-int main()
+class chess
 {
-    boost::asio::io_context io_context;
-    consolepp::console console{io_context};
+public:
+    void run()
+    {
+        terminalpp::canvas canvas{{
+            console_.size().width, console_.size().height}};
 
-    window_event_dispatcher event_dispatcher;
-    terminalpp::terminal terminal{
-        [&](terminalpp::tokens tokens) {
-            for (const auto& token : tokens)
+        auto const &repaint_window = [&]() { window_.repaint(canvas); };
+        window_.on_repaint_request.connect(repaint_window);
+
+        console_.on_size_changed.connect(
+            [&]
             {
-                boost::apply_visitor(event_dispatcher, token);
+                auto const new_size = console_.size();
+                canvas.resize({new_size.width, new_size.height});
+                repaint_window();
+            });
+
+        terminal_
+            << terminalpp::enable_mouse()
+            << terminalpp::hide_cursor()
+            << terminalpp::use_alternate_screen_buffer()
+            << terminalpp::set_window_title("hello_console");
+
+        auto work_guard = boost::asio::make_work_guard(io_context_);
+        button_->on_click.connect([&]{ 
+            io_context_.stop();
+            work_guard.reset(); 
+        });
+        button_->set_focus();
+
+        schedule_read(console_, terminal_);
+
+        io_context_.run();
+        terminal_
+            << terminalpp::use_normal_screen_buffer()
+            << terminalpp::show_cursor()
+            << terminalpp::disable_mouse();
+    }
+
+private:
+    boost::asio::io_context io_context_;
+    consolepp::console console_{io_context_};
+
+    terminalpp::terminal terminal_{
+        [this](terminalpp::tokens tokens) {
+            for (const auto &token : tokens)
+            {
+                boost::apply_visitor(event_dispatcher_, token);
             }
         },
-        [&](terminalpp::bytes data) {
-            console.write(data);
+        [this](terminalpp::bytes data) {
+            console_.write(data);
         },
         make_behaviour()
     };
 
-    auto button = munin::make_button(" OK ");
-    munin::window window{terminal, make_content(button)};
-    event_dispatcher.window_ = &window;
-    
-    terminalpp::canvas canvas{{console.size().width, console.size().height}};
+    std::shared_ptr<munin::button> button_{munin::make_button(" OK ")};
+    munin::window window_{terminal_, make_content(button_)};
+    window_event_dispatcher event_dispatcher_{window_};
+};
 
-    auto const &repaint_window = [&]() { window.repaint(canvas); };
+}
 
-    window.on_repaint_request.connect(repaint_window);
-    console.on_size_changed.connect(
-        [&]
-        {
-            auto const new_size = console.size();
-            canvas.resize({new_size.width, new_size.height});
-            repaint_window();
-        });
-
-    terminal
-        << terminalpp::enable_mouse()
-        << terminalpp::hide_cursor()
-        << terminalpp::use_alternate_screen_buffer()
-        << terminalpp::set_window_title("Chess++");
-
-    auto work_guard = boost::asio::make_work_guard(io_context);
-    button->on_click.connect([&]{ 
-        io_context.stop();
-        work_guard.reset(); 
-    });
-    button->set_focus();
-
-    schedule_read(console, terminal);
-
-    io_context.run();
-    terminal
-        << terminalpp::use_normal_screen_buffer()
-        << terminalpp::show_cursor()
-        << terminalpp::disable_mouse();
+int main()
+{
+    chess app;
+    app.run();
 }
