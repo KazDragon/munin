@@ -17,18 +17,13 @@ using namespace terminalpp::literals;
 
 struct window_event_dispatcher : public boost::static_visitor<>
 {
-    explicit window_event_dispatcher(munin::window &window)
-    : window_(window)
-    {
-    }
-
     template <class Event>
     void operator()(Event const &event)
     {
-        window_.event(event);
+        window_->event(event);
     }
 
-    munin::window &window_;
+    munin::window *window_{nullptr};
 };
 
 void schedule_read(consolepp::console &console, terminalpp::terminal &terminal)
@@ -114,14 +109,10 @@ auto make_behaviour()
 
 int main()
 {
-    auto button = munin::make_button(" OK ");
-    munin::window window{make_content(button)};
-    
     boost::asio::io_context io_context;
     consolepp::console console{io_context};
-    terminalpp::canvas canvas{{console.size().width, console.size().height}};
-    window_event_dispatcher event_dispatcher{window};
 
+    window_event_dispatcher event_dispatcher;
     terminalpp::terminal terminal{
         [&](terminalpp::tokens tokens) {
             for (const auto& token : tokens)
@@ -135,7 +126,13 @@ int main()
         make_behaviour()
     };
 
-    auto const &repaint_window = [&]() { window.repaint(canvas, terminal); };
+    auto button = munin::make_button(" OK ");
+    munin::window window{terminal, make_content(button)};
+    event_dispatcher.window_ = &window;
+    
+    terminalpp::canvas canvas{{console.size().width, console.size().height}};
+
+    auto const &repaint_window = [&]() { window.repaint(canvas); };
 
     window.on_repaint_request.connect(repaint_window);
     console.on_size_changed.connect(
