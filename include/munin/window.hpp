@@ -23,18 +23,23 @@ class MUNIN_EXPORT window
 public :
     //* =====================================================================
     /// \brief Constructor
+    /// \param terminal A terminal on which this window paints canvases.
     /// \param content A component that this window displays.  May not be
     ///        null.
     //* =====================================================================
-    explicit window(std::shared_ptr<component> content);
+    window(
+        terminalpp::terminal &terminal, 
+        std::shared_ptr<component> content);
     
     //* =====================================================================
     /// \brief Constructor
+    /// \param terminal A terminal on which this window paints canvases.
     /// \param content A component that this window displays.  May not be
     ///        null.
     /// \param capabilities the capabilities of the render surface.
     //* =====================================================================
     window(
+        terminalpp::terminal &terminal,
         std::shared_ptr<component> content,
         render_surface_capabilities const &capabilities);
 
@@ -53,9 +58,7 @@ public :
     /// \brief Writes a string to the terminal that represents the changes
     /// on the canvas since it was last painted.
     //* =====================================================================
-    void repaint(
-        terminalpp::canvas &cvs,
-        terminalpp::terminal &term);
+    void repaint(terminalpp::canvas &cvs);
 
     //* =====================================================================
     /// \brief Returns a JSON representation of the current state of the

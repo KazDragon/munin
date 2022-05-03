@@ -8,8 +8,10 @@ namespace munin {
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-window::window(std::shared_ptr<component> content)
-  : window(std::move(content), default_capabilities)
+window::window(
+    terminalpp::terminal &terminal,
+    std::shared_ptr<component> content)
+  : window(terminal, std::move(content), default_capabilities)
 {
 }
 
@@ -17,9 +19,11 @@ window::window(std::shared_ptr<component> content)
 // CONSTRUCTOR
 // ==========================================================================
 window::window(
+    terminalpp::terminal& terminal,
     std::shared_ptr<component> content,
     render_surface_capabilities const &capabilities)
   : content_(std::move(content)),
+    screen_{terminal},
     capabilities_(capabilities)
 {
     auto const &request_repaint = 
@@ -59,9 +63,7 @@ void window::event(boost::any const &ev)
 // ==========================================================================
 // REPAINT
 // ==========================================================================
-void window::repaint(
-    terminalpp::canvas &cvs,
-    terminalpp::terminal &term)
+void window::repaint(terminalpp::canvas &cvs)
 {
     auto const canvas_size = cvs.size();
     
@@ -84,7 +86,7 @@ void window::repaint(
         content_->draw(surface, region);
     }
 
-    screen_.draw(term, cvs);
+    screen_.draw(cvs);
 }
 
 // ==========================================================================

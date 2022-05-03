@@ -21,6 +21,7 @@ public:
             .WillByDefault(Return(false));
 
         window_ = boost::make_unique<munin::window>(
+            terminal_,
             content_,
             capabilities_);
     }
@@ -29,6 +30,7 @@ protected:
     mock_render_surface_capabilities capabilities_;
     std::shared_ptr<mock_component> content_ { make_mock_component() };
 
+    terminalpp::terminal terminal_{[](terminalpp::tokens){}, [](terminalpp::bytes){}};
     std::unique_ptr<munin::window> window_;
 };
 
@@ -45,9 +47,7 @@ TEST_F(a_window_that_does_not_support_unicode, passes_those_capabilities_to_comp
             }));
 
     terminalpp::canvas cvs({3, 3});
-    terminalpp::terminal terminal{[](terminalpp::tokens){}, [](terminalpp::bytes){}};
-
-    window_->repaint(cvs, terminal);
+    window_->repaint(cvs);
     
     ASSERT_TRUE(supports_unicode.is_initialized());
     ASSERT_FALSE(*supports_unicode);
