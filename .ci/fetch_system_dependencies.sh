@@ -37,10 +37,10 @@ fi
 
 # Install Terminal++ dependency
 if [ ! -f "$EXTERNAL_ROOT/include/terminalpp/version/hpp" ]; then
-    wget https://github.com/KazDragon/terminalpp/archive/v2.2.1.tar.gz;
-    tar -xzf v2.2.1.tar.gz;
-    cd terminalpp-2.2.1;
-    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION="2.2.1" .;
+    wget https://github.com/KazDragon/terminalpp/archive/v2.3.0.tar.gz;
+    tar -xzf v2.3.0.tar.gz;
+    cd terminalpp-2.3.0;
+    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION="2.3.0" .;
     make -j2 && make install;
     cd ..;
 fi
