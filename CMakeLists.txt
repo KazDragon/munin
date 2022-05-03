@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 cmake_policy(VERSION 3.13)
 
+option(MUNIN_WITH_CONSOLEPP "Build using Console++" False)
 option(MUNIN_COVERAGE  "Build with code coverage options")
 option(MUNIN_SANITIZE "Build using sanitizers" "")
 option(MUNIN_WITH_TESTS "Build with tests" True)
 option(MUNIN_DOC_ONLY "Build only documentation" False)
 
+message("Building Munin with Console++: ${MUNIN_WITH_CONSOLEPP}")
 message("Building Munin with config: ${CMAKE_BUILD_TYPE}")
 message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
 message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
@@ -62,6 +64,13 @@ if (MUNIN_USE_CONAN)
 
     set(MUNIN_PRIVATE_LIBRARIES
     )
+    
+    if (MUNIN_WITH_CONSOLEPP)
+        set(MUNIN_PRIVATE_LIBRARIES
+            ${MUNIN_PRIVATE_LIBRARIES}
+            CONAN_PKG::consolepp
+        )
+    endif()
 
     set(MUNIN_TESTER_LIBRARIES
         KazDragon::munin
@@ -75,12 +84,18 @@ else()
     find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
     # And of course, Munin is built atop the Terminal++ library, which
-    # also requires fmt.
+    # also requires fmt and gsl-lite.
     find_package(fmt 5.3 CONFIG REQUIRED)
     find_package(terminalpp 2.3.0 CONFIG REQUIRED)
+    find_package(gsl-lite 0.38.0 REQUIRED)
+
+    # If we are building with Console++, then require that library
+    if (MUNIN_WITH_CONSOLEPP)
+        find_package(consolepp 0.0.2 CONFIG REQUIRED)
+    endif()
 
     # If we are building with tests, then we require the GTest library
-    if (${MUNIN_WITH_TESTS})
+    if (MUNIN_WITH_TESTS)
         find_package(GTest CONFIG REQUIRED)
     endif()
 
@@ -92,6 +107,13 @@ else()
 
     set(MUNIN_PRIVATE_LIBRARIES
     )
+
+    if (MUNIN_WITH_CONSOLEPP)
+        set(MUNIN_PRIVATE_LIBRARIES
+            ${MUNIN_PRIVATE_LIBRARIES}
+            KazDragon::consolepp
+        )
+    endif()
 
     set(MUNIN_TESTER_LIBRARIES
         KazDragon::munin
@@ -200,6 +222,14 @@ target_sources(munin
         src/detail/algorithm.cpp
         src/detail/json_adaptors.cpp
 )
+
+if (MUNIN_WITH_CONSOLEPP)
+    target_sources(munin
+        PRIVATE
+            include/munin/console_application.hpp
+            src/console_application.cpp
+    )
+endif()
 
 target_link_libraries(munin
     PUBLIC
