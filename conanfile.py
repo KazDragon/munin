@@ -9,14 +9,18 @@ class MuninConan(ConanFile):
     description = "A text-based gui component library build on Terminal++"
     topics = ("ansi-escape-codes", "text-ui")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
-    default_options = {"shared": False, "coverage": False, "sanitize": "off"}
+    options = {"shared": [True, False], "withConsolepp": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
+    default_options = {"shared": False, "withConsolepp": False, "coverage": False, "sanitize": "off"}
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE", "*.cmake"
     requires = ("terminalpp/[>=2.3.0]",
                 "nlohmann_json/[>=3.3.0]",
                 "boost/[>=1.69]")
     build_requires = ("gtest/[>=1.8.1]")
     generators = "cmake"
+
+    def requirements(self):
+        if (self.options.withConsolepp):
+            self.requires("consolepp/[>=0.0.2]")
 
     def imports(self):
         # If Munin is built as shared, then running the tests will
@@ -30,6 +34,7 @@ class MuninConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["BUILD_SHARED_LIBS"] = self.options.shared
+        cmake.definitions["MUNIN_WITH_CONSOLEPP"] = self.options.withConsolepp
         cmake.definitions["MUNIN_COVERAGE"] = self.options.coverage
         cmake.definitions["MUNIN_SANITIZE"] = self.options.sanitize
         cmake.definitions["MUNIN_VERSION"] = self.version
