@@ -44,6 +44,11 @@ public:
     terminalpp::string get_text() const;
 
     //* =====================================================================
+    /// \brief Sets the content of the edit.
+    //* =====================================================================
+    void set_text(terminalpp::string const &content);
+
+    //* =====================================================================
     /// \brief Inserts the given text at the current cursor position, moving
     /// the cursor with the text.
     //* =====================================================================

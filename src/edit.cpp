@@ -62,6 +62,27 @@ struct edit::impl
     }
 
     // ======================================================================
+    // SET_TEXT
+    // ======================================================================
+    void set_text(terminalpp::string const &text)
+    {
+        auto const old_caret_position = caret_position;
+
+        content = text;
+
+        self_.on_preferred_size_changed();
+
+        auto const changed_text_length = std::max(
+            old_caret_position,
+            static_cast<text_index>(content.size())
+        );
+
+        self_.on_redraw({
+            {{old_caret_position, 0}, {changed_text_length, 1}}
+        });
+    }
+
+    // ======================================================================
     // INSERT_TEXT
     // ======================================================================
     void insert_text(terminalpp::string const &text)
@@ -293,6 +314,14 @@ void edit::insert_text(terminalpp::string const &text)
 {
     pimpl_->insert_text(text);
     on_cursor_position_changed();
+}
+
+// ==========================================================================
+// SET_TEXT
+// ==========================================================================
+void edit::set_text(terminalpp::string const &text)
+{
+    pimpl_->set_text(text);
 }
 
 // ==========================================================================
