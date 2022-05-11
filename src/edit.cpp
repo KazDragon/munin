@@ -191,11 +191,7 @@ struct edit::impl
     {
         if (mouse.action_ == terminalpp::mouse::event_type::left_button_down)
         {
-            auto const new_cursor_x = std::min(
-                get_length(),
-                mouse.position_.x_);
-            
-            set_caret_position(edit::text_index(new_cursor_x));
+            set_caret_position(edit::text_index(mouse.position_.x_));
             self_.set_focus();
         }
     }
