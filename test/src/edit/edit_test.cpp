@@ -437,3 +437,12 @@ TEST_F(an_edit_with_content, can_have_its_caret_set_to_the_end)
 
     ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
 }
+
+TEST_F(an_edit_with_content, leaves_the_caret_in_the_same_place_when_text_is_set_longer)
+{
+    edit_->set_caret_position(edit_->get_length() - 1);
+    auto const expected_caret_position = munin::edit::text_index{3};
+
+    edit_->set_text("tests"_ts);
+    ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
+}
