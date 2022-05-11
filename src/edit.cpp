@@ -70,6 +70,13 @@ struct edit::impl
 
         content = text;
 
+        auto const new_caret_position = std::min(
+            old_caret_position,
+            static_cast<text_index>(content.size())
+        );
+
+        set_caret_position(new_caret_position);
+        
         self_.on_preferred_size_changed();
 
         auto const changed_text_length = std::max(

@@ -446,3 +446,12 @@ TEST_F(an_edit_with_content, leaves_the_caret_in_the_same_place_when_text_is_set
     edit_->set_text("tests"_ts);
     ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
 }
+
+TEST_F(an_edit_with_content, moves_the_caret_left_when_text_is_set_shorter)
+{
+    edit_->set_caret_position(edit_->get_length());
+    edit_->set_text("t"_ts);
+
+    auto const expected_caret_position = munin::edit::text_index{1};
+    ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
+}
