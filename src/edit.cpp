@@ -79,13 +79,8 @@ struct edit::impl
         
         self_.on_preferred_size_changed();
 
-        auto const changed_text_length = std::max(
-            old_caret_position,
-            static_cast<text_index>(content.size())
-        );
-
         self_.on_redraw({
-            {{old_caret_position, 0}, {changed_text_length, 1}}
+            {{0, 0}, self_.get_size()}
         });
     }
 

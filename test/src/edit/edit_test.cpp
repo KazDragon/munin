@@ -211,7 +211,6 @@ TEST_F(a_new_edit, draws_set_text_cursor_at_start)
     ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
     ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
-
 }
 
 namespace {
@@ -440,18 +439,129 @@ TEST_F(an_edit_with_content, can_have_its_caret_set_to_the_end)
 
 TEST_F(an_edit_with_content, leaves_the_caret_in_the_same_place_when_text_is_set_longer)
 {
-    edit_->set_caret_position(edit_->get_length() - 1);
-    auto const expected_caret_position = munin::edit::text_index{3};
+    terminalpp::canvas cvs{{8, 3}};
+    fill_canvas(cvs, 'x');
+    
+    edit_->set_position({1, 1});
 
+    munin::render_surface surface{cvs};
+    surface.offset_by({1, 1});
+    edit_->draw(surface, {{0, 0}, {6, 1}});
+
+    edit_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                edit_->draw(surface, region);
+            }
+        });
+
+    auto preferred_size = terminalpp::extent{};
+    edit_->on_preferred_size_changed.connect(
+        [&]
+        {
+            preferred_size = edit_->get_preferred_size();
+        });
+
+    edit_->set_caret_position(edit_->get_length() - 1);
     edit_->set_text("tests"_ts);
+
+    // Cursor stays where it was.
+    auto const expected_caret_position = munin::edit::text_index{3};
     ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
+    ASSERT_TRUE(edit_->get_cursor_state());
+
+    // Prefer enough space for "tests_" (including cursor).
+    auto const expected_preferred_size = terminalpp::extent{6, 1};
+    ASSERT_EQ(expected_preferred_size, preferred_size);
+
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[4][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[5][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[6][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'t'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{'e'}, cvs[2][1]);
+    ASSERT_EQ(terminalpp::element{'s'}, cvs[3][1]);
+    ASSERT_EQ(terminalpp::element{'t'}, cvs[4][1]);
+    ASSERT_EQ(terminalpp::element{'s'}, cvs[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[6][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[6][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][2]);
 }
 
 TEST_F(an_edit_with_content, moves_the_caret_left_when_text_is_set_shorter)
 {
+    terminalpp::canvas cvs{{8, 3}};
+    fill_canvas(cvs, 'x');
+    
+    edit_->set_position({1, 1});
+
+    munin::render_surface surface{cvs};
+    surface.offset_by({1, 1});
+    edit_->draw(surface, {{0, 0}, {6, 1}});
+
+    edit_->on_redraw.connect(
+        [&](auto const &regions)
+        {
+            for (auto const &region : regions)
+            {
+                edit_->draw(surface, region);
+            }
+        });
+
+    auto preferred_size = terminalpp::extent{};
+    edit_->on_preferred_size_changed.connect(
+        [&]
+        {
+            preferred_size = edit_->get_preferred_size();
+        });
+
     edit_->set_caret_position(edit_->get_length());
     edit_->set_text("t"_ts);
 
+    // Cursor goes back to after the t.
     auto const expected_caret_position = munin::edit::text_index{1};
     ASSERT_EQ(expected_caret_position, edit_->get_caret_position());
+    ASSERT_TRUE(edit_->get_cursor_state());
+
+    // Prefer enough space for "t_" (including cursor).
+    auto const expected_preferred_size = terminalpp::extent{2, 1};
+    ASSERT_EQ(expected_preferred_size, preferred_size);
+
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[4][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[5][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[6][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][0]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
+    ASSERT_EQ(terminalpp::element{'t'}, cvs[1][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[2][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[3][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[4][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[5][1]);
+    ASSERT_EQ(terminalpp::element{' '}, cvs[6][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][1]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[6][2]);
+    ASSERT_EQ(terminalpp::element{'x'}, cvs[7][2]);
+
 }
