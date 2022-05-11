@@ -62,6 +62,29 @@ struct edit::impl
     }
 
     // ======================================================================
+    // SET_TEXT
+    // ======================================================================
+    void set_text(terminalpp::string const &text)
+    {
+        auto const old_caret_position = caret_position;
+
+        content = text;
+
+        auto const new_caret_position = std::min(
+            old_caret_position,
+            static_cast<text_index>(content.size())
+        );
+
+        set_caret_position(new_caret_position);
+        
+        self_.on_preferred_size_changed();
+
+        self_.on_redraw({
+            {{0, 0}, self_.get_size()}
+        });
+    }
+
+    // ======================================================================
     // INSERT_TEXT
     // ======================================================================
     void insert_text(terminalpp::string const &text)
@@ -163,11 +186,7 @@ struct edit::impl
     {
         if (mouse.action_ == terminalpp::mouse::event_type::left_button_down)
         {
-            auto const new_cursor_x = std::min(
-                get_length(),
-                mouse.position_.x_);
-            
-            set_caret_position(edit::text_index(new_cursor_x));
+            set_caret_position(edit::text_index(mouse.position_.x_));
             self_.set_focus();
         }
     }
@@ -293,6 +312,14 @@ void edit::insert_text(terminalpp::string const &text)
 {
     pimpl_->insert_text(text);
     on_cursor_position_changed();
+}
+
+// ==========================================================================
+// SET_TEXT
+// ==========================================================================
+void edit::set_text(terminalpp::string const &text)
+{
+    pimpl_->set_text(text);
 }
 
 // ==========================================================================

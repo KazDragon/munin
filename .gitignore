@@ -35,6 +35,7 @@ export.hpp
 Munin.*
 build
 
+/.venv
 /.vs
 /.vscode
 /CMakeSettings.json
