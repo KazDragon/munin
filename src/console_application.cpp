@@ -47,7 +47,7 @@ struct console_application::impl
             [this](terminalpp::tokens tokens) {
                 for (auto const &token : tokens)
                 {
-                    boost::apply_visitor(dispatcher_, token);
+                    std::visit(dispatcher_, token);
                 }
             },
             [this](terminalpp::bytes data) {
