@@ -107,9 +107,8 @@ framed_component::framed_component(
 // ==========================================================================
 void framed_component::do_event(boost::any const &ev)
 {
-    auto *mouse_event = boost::any_cast<terminalpp::mouse::event>(&ev);
-    
-    if (mouse_event)
+    if (auto *mouse_event = boost::any_cast<terminalpp::mouse::event>(&ev);
+        mouse_event)
     {
         auto inner_mouse_event = *mouse_event;
        

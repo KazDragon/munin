@@ -84,9 +84,8 @@ struct list::impl
     // ======================================================================
     void handle_mouse_report(terminalpp::mouse::event const &ev)
     {
-        auto const clicked_row = ev.position_.y_;
-
-        if (clicked_row < items_.size())
+        if (auto const clicked_row = ev.position_.y_;
+            clicked_row < items_.size())
         {
             self_.select_item(clicked_row);
         }
@@ -103,9 +102,8 @@ struct list::impl
     {
         if (!items_.empty())
         {
-            auto const current_item = self_.get_selected_item_index();
-
-            if (current_item)
+            if (auto const current_item = self_.get_selected_item_index();
+                current_item.has_value())
             {
                 self_.select_item(
                     *current_item == 0
@@ -126,9 +124,8 @@ struct list::impl
     {
         if (!items_.empty())
         {
-            auto const current_item = self_.get_selected_item_index();
-
-            if (current_item)
+            if (auto const current_item = self_.get_selected_item_index();
+                current_item.has_value())
             {
                 self_.select_item(
                     *current_item == items_.size() - 1
@@ -164,18 +161,15 @@ struct list::impl
     // ======================================================================
     void event(boost::any const &ev)
     {
-        auto const *mouse_report = 
+        if (auto const *mouse_report = 
             boost::any_cast<terminalpp::mouse::event>(&ev);
-
-        if (mouse_report != nullptr)
+            mouse_report != nullptr)
         {
             handle_mouse_report(*mouse_report);
         }
-
-        auto const *keypress =
+        else if (auto const *keypress =
             boost::any_cast<terminalpp::virtual_key>(&ev);
-
-        if (keypress != nullptr)
+            keypress != nullptr)
         {
             handle_keypress(*keypress);
         }

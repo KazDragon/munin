@@ -65,28 +65,23 @@ void toggle_button::set_toggle_state(bool checked)
 // ==========================================================================
 void toggle_button::do_event(boost::any const &ev)
 {
-    auto const* mouse_event = 
-        boost::any_cast<terminalpp::mouse::event>(&ev);
-        
-    if (mouse_event != nullptr)
+    if (auto const* mouse_event = 
+            boost::any_cast<terminalpp::mouse::event>(&ev);
+        mouse_event != nullptr)
     {
         if (mouse_event->action_ == terminalpp::mouse::event_type::left_button_down)
         {
             set_toggle_state(!pimpl_->toggle_state_);
         }
     }
-    else
+    else if (auto const* vk =
+                boost::any_cast<terminalpp::virtual_key>(&ev);
+             vk != nullptr)
     {
-        auto const* vk =
-            boost::any_cast<terminalpp::virtual_key>(&ev);
-            
-        if (vk != nullptr)
+        if (vk->key == terminalpp::vk::enter
+         || vk->key == terminalpp::vk::space)
         {
-            if (vk->key == terminalpp::vk::enter
-             || vk->key == terminalpp::vk::space)
-            {
-                set_toggle_state(!pimpl_->toggle_state_);
-            }
+            set_toggle_state(!pimpl_->toggle_state_);
         }
     }
 }

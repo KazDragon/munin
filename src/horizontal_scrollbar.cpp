@@ -26,9 +26,8 @@ struct horizontal_scrollbar::impl
     // ======================================================================
     void redraw_according_to_associated_focus()
     {
-        auto associated_component = associated_component_.lock();
-
-        if (associated_component)
+        if (auto associated_component = associated_component_.lock();
+            associated_component)
         {
             associated_component_has_focus = 
                 associated_component->has_focus();
@@ -235,10 +234,9 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 void horizontal_scrollbar::do_event(boost::any const &event)
 {
-    terminalpp::mouse::event const *mouse_event = 
-        boost::any_cast<terminalpp::mouse::event>(&event);
-
-    if (mouse_event != nullptr)
+    if (auto const *mouse_event = 
+            boost::any_cast<terminalpp::mouse::event>(&event);
+        mouse_event)
     {
         pimpl_->handle_mouse_event(*mouse_event);
     }

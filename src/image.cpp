@@ -74,11 +74,9 @@ static void add_redraw_region(
     terminalpp::extent const &component_size,
     terminalpp::extent const &content_size)
 {
-    auto const content_bounds {
-        get_content_bounds(component_size, content_size)
-    };
-
-    if (!has_zero_dimension(content_bounds))
+    if (auto const content_bounds =
+            get_content_bounds(component_size, content_size);
+        !has_zero_dimension(content_bounds))
     {
         redraw_regions.push_back(content_bounds);
     }

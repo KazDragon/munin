@@ -165,10 +165,9 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 // ==========================================================================
 void basic_component::do_event(boost::any const &event)
 {
-    auto const *mouse =
-        boost::any_cast<terminalpp::mouse::event>(&event);
-
-    if (mouse
+    if (auto const *mouse =
+            boost::any_cast<terminalpp::mouse::event>(&event);
+        mouse
      && mouse->action_ != terminalpp::mouse::event_type::button_up)
     {
         if (!has_focus())

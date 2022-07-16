@@ -155,13 +155,9 @@ struct viewport::impl
     // ======================================================================
     auto event(boost::any const& ev)
     {
-        auto const *mouse_event = 
-            boost::any_cast<terminalpp::mouse::event>(&ev);
-
-        auto const *keypress_event =
-            boost::any_cast<terminalpp::virtual_key>(&ev);
-
-        if (mouse_event != nullptr)
+        if (auto const *mouse_event = 
+                boost::any_cast<terminalpp::mouse::event>(&ev);
+            mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event {
                 mouse_event->action_,
@@ -170,7 +166,9 @@ struct viewport::impl
 
             return tracked_component_->event(translated_event);
         }
-        else if (keypress_event != nullptr)
+        else if (auto const *keypress_event =
+                    boost::any_cast<terminalpp::virtual_key>(&ev);
+                 keypress_event)
         {
             if (keypress_event->key == terminalpp::vk::pgup)
             {

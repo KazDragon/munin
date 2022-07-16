@@ -103,9 +103,8 @@ void animator::redraw_components()
 
     for (auto const &request : expired_requests)
     {
-        auto const &comp = request.comp.lock();
-
-        if (comp)
+        if (auto const &comp = request.comp.lock();
+            comp)
         {
             comp->on_redraw({request.bounds});
         }
