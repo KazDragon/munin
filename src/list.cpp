@@ -229,7 +229,7 @@ void list::set_items(std::vector<terminalpp::string> const &items)
       ? std::nullopt
       : *pimpl_->selected_item_index_ < pimpl_->items_.size()
       ? pimpl_->selected_item_index_
-      : std::optional<int>(pimpl_->items_.size() - 1);
+      : std::optional(int(pimpl_->items_.size() - 1));
       
     on_item_changed();
     on_cursor_position_changed();
