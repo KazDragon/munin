@@ -112,7 +112,7 @@ struct list::impl
             }
             else
             {
-                self_.select_item(std::optional<int>(items_.size() - 1));
+                self_.select_item(std::optional(int(items_.size() - 1)));
             }
         }
     }
