@@ -108,11 +108,11 @@ struct list::impl
                 self_.select_item(
                     *current_item == 0
                     ? std::nullopt
-                    : std::optional<int>{*current_item - 1});
+                    : std::optional<int>(*current_item - 1));
             }
             else
             {
-                self_.select_item(std::optional<int>{items_.size() - 1});
+                self_.select_item(std::optional<int>(items_.size() - 1));
             }
         }
     }
@@ -130,7 +130,7 @@ struct list::impl
                 self_.select_item(
                     *current_item == items_.size() - 1
                     ? std::nullopt
-                    : std::optional<int>{*current_item + 1});
+                    : std::optional<int>(*current_item + 1));
             }
             else
             {
@@ -208,8 +208,8 @@ void list::select_item(std::optional<int> const &index)
 {
     // If the index is initialized, then it must refer to an actual
     // item in the list, otherwise it is a programming error.
-    assert(!index.is_initialized() || index >=0);
-    assert(!index.is_initialized() || index < static_cast<int>(pimpl_->items_.size()));
+    assert(!index.has_value() || index >= 0);
+    assert(!index.has_value() || index < static_cast<int>(pimpl_->items_.size()));
 
     pimpl_->selected_item_index_ = index;
     on_item_changed();
@@ -229,7 +229,7 @@ void list::set_items(std::vector<terminalpp::string> const &items)
       ? std::nullopt
       : *pimpl_->selected_item_index_ < pimpl_->items_.size()
       ? pimpl_->selected_item_index_
-      : std::optional<int>{pimpl_->items_.size() - 1};
+      : std::optional<int>(pimpl_->items_.size() - 1);
       
     on_item_changed();
     on_cursor_position_changed();
