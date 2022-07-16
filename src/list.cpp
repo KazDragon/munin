@@ -4,7 +4,6 @@
 #include <terminalpp/virtual_key.hpp>
 #include <munin/render_surface.hpp>
 #include <boost/make_unique.hpp>
-#include <boost/optional.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/max_element.hpp>
 
@@ -93,7 +92,7 @@ struct list::impl
         }
         else
         {
-            self_.select_item(boost::none);
+            self_.select_item(std::nullopt);
         }
     }
 
@@ -110,12 +109,12 @@ struct list::impl
             {
                 self_.select_item(
                     *current_item == 0
-                    ? boost::none
-                    : boost::optional<int>(*current_item - 1));
+                    ? std::nullopt
+                    : std::optional<int>{*current_item - 1});
             }
             else
             {
-                self_.select_item(boost::optional<int>(items_.size() - 1));
+                self_.select_item(std::optional<int>{items_.size() - 1});
             }
         }
     }
@@ -133,8 +132,8 @@ struct list::impl
             {
                 self_.select_item(
                     *current_item == items_.size() - 1
-                    ? boost::none
-                    : boost::optional<int>(*current_item + 1));
+                    ? std::nullopt
+                    : std::optional<int>{*current_item + 1});
             }
             else
             {
@@ -184,7 +183,7 @@ struct list::impl
 
     list &self_;
     std::vector<terminalpp::string> items_;
-    boost::optional<int> selected_item_index_;
+    std::optional<int> selected_item_index_;
 };
 
 // ==========================================================================
@@ -203,7 +202,7 @@ list::~list() = default;
 // ==========================================================================
 // GET_SELECTED_ITEM_INDEX
 // ==========================================================================
-boost::optional<int> list::get_selected_item_index() const
+std::optional<int> list::get_selected_item_index() const
 {
     return pimpl_->selected_item_index_;
 }
@@ -211,7 +210,7 @@ boost::optional<int> list::get_selected_item_index() const
 // ==========================================================================
 // SELECT_ITEM
 // ==========================================================================
-void list::select_item(boost::optional<int> const &index)
+void list::select_item(std::optional<int> const &index)
 {
     // If the index is initialized, then it must refer to an actual
     // item in the list, otherwise it is a programming error.
@@ -231,12 +230,12 @@ void list::set_items(std::vector<terminalpp::string> const &items)
 {
     pimpl_->items_ = items;
     pimpl_->selected_item_index_ = 
-        !pimpl_->selected_item_index_.is_initialized()
+        !pimpl_->selected_item_index_.has_value()
      || pimpl_->items_.empty()
-      ? boost::none
+      ? std::nullopt
       : *pimpl_->selected_item_index_ < pimpl_->items_.size()
       ? pimpl_->selected_item_index_
-      : boost::optional<int>(pimpl_->items_.size() - 1);
+      : std::optional<int>{pimpl_->items_.size() - 1};
       
     on_item_changed();
     on_cursor_position_changed();

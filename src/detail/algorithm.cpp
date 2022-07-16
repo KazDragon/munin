@@ -7,7 +7,7 @@ namespace munin { namespace detail {
 // ==========================================================================
 // INTERSECTION
 // ==========================================================================
-boost::optional<terminalpp::rectangle> intersection(
+std::optional<terminalpp::rectangle> intersection(
     terminalpp::rectangle const &lhs, terminalpp::rectangle const &rhs)
 {
     // Check to see if the rectangles overlap.
@@ -32,7 +32,7 @@ boost::optional<terminalpp::rectangle> intersection(
     if (!overlaps)
     {
         // There is no overlapping rectangle.
-        return {};
+        return std::nullopt;
     }
 
     // The overlapping rectangle has an origin that starts at the same x-

@@ -44,7 +44,7 @@ struct horizontal_scrollbar::impl
     {
         if (viewport_basis_width == 0)
         {
-            slider_position = boost::none;
+            slider_position = std::nullopt;
         }
         else
         {
@@ -96,7 +96,7 @@ struct horizontal_scrollbar::impl
     {
         if (mouse_event.action_ == terminalpp::mouse::event_type::left_button_down)
         {
-            if (slider_position.is_initialized())
+            if (slider_position.has_value())
             {
                 if (mouse_event.position_.x_ < *slider_position)
                 {
@@ -119,7 +119,7 @@ struct horizontal_scrollbar::impl
 
     terminalpp::coordinate_type viewport_x_position  = 0;
     terminalpp::coordinate_type viewport_basis_width = 0;
-    boost::optional<terminalpp::coordinate_type> slider_position;
+    std::optional<terminalpp::coordinate_type> slider_position;
 
 };
 

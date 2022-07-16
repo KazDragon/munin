@@ -3,7 +3,6 @@
 #include "munin/export.hpp"
 #include "munin/component.hpp"
 #include "munin/layout.hpp"
-#include <boost/optional.hpp>
 #include <vector>
 
 namespace munin {

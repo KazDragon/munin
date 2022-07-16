@@ -29,7 +29,7 @@ struct status_bar::impl
 
     animator &animator_;
     terminalpp::string message_;
-    boost::optional<std::chrono::steady_clock::time_point> marquee_start_time_;
+    std::optional<std::chrono::steady_clock::time_point> marquee_start_time_;
 };
 
 // ==========================================================================
@@ -54,7 +54,7 @@ void status_bar::set_message(terminalpp::string const &message)
 
     // Reset the marquee start time as an indication that it should start on
     // on the next draw cycle.
-    pimpl_->marquee_start_time_ = boost::none;
+    pimpl_->marquee_start_time_ = std::nullopt;
 
     on_preferred_size_changed();
     on_redraw({{{}, get_size()}});

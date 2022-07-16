@@ -55,7 +55,7 @@ TEST_F(a_new_list, has_a_zero_preferred_size)
 TEST_F(a_new_list, has_no_selected_item)
 {
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_new_list, draws_empty_space)
@@ -137,21 +137,21 @@ TEST_F(a_new_list, can_be_clicked)
             { 1, 1 }
         });
 
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_new_list, ignores_the_up_key)
 {
     list_->event(
         terminalpp::virtual_key{terminalpp::vk::cursor_up});
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_new_list, ignores_the_down_key)
 {
     list_->event(
         terminalpp::virtual_key{terminalpp::vk::cursor_down});
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_new_list, has_a_zero_cursor_position)
@@ -182,7 +182,7 @@ protected:
 TEST_F(a_list_with_an_item, has_no_selected_item)
 {
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_list_with_an_item, has_a_preferred_size_of_that_item)
@@ -224,7 +224,7 @@ TEST_F(a_list_with_an_item, reports_a_selected_item_as_selected)
     list_->select_item(0);
     auto const selected_item_index = list_->get_selected_item_index();
 
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -272,7 +272,7 @@ TEST_F(a_list_with_an_item, selects_the_item_when_it_is_clicked)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -294,7 +294,7 @@ TEST_F(a_list_with_an_item, deselects_the_item_when_empty_space_is_clicked)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_list_with_an_item, selects_the_item_when_the_up_key_is_pressed)
@@ -312,7 +312,7 @@ TEST_F(a_list_with_an_item, selects_the_item_when_the_up_key_is_pressed)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -331,7 +331,7 @@ TEST_F(a_list_with_an_item, selects_the_item_when_the_down_key_is_pressed)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -393,7 +393,7 @@ TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_up_key_is_presse
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_down_key_is_pressed)
@@ -411,7 +411,7 @@ TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_down_key_is_pres
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 namespace {
@@ -469,13 +469,13 @@ TEST_F(a_list_with_two_items, reports_a_selected_item_as_selected)
     list_->select_item(0);
     auto selected_item_index = list_->get_selected_item_index();
 
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 
     list_->select_item(1);
     selected_item_index = list_->get_selected_item_index();
 
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(1, *selected_item_index);
 }
 
@@ -514,7 +514,7 @@ TEST_F(a_list_with_two_items, selects_the_first_item_when_it_is_clicked)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -536,7 +536,7 @@ TEST_F(a_list_with_two_items, selects_the_second_item_when_it_is_clicked)
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(1, *selected_item_index);
 }
 
@@ -555,7 +555,7 @@ TEST_F(a_list_with_two_items, selects_the_second_item_when_the_up_key_is_pressed
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(1, *selected_item_index);
 }
 
@@ -574,7 +574,7 @@ TEST_F(a_list_with_two_items, selects_the_first_item_when_the_down_key_is_presse
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -587,7 +587,7 @@ TEST_F(a_list_with_an_item, selects_no_item_when_empty_space_is_clicked)
         });
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 namespace {
@@ -644,7 +644,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
             boost::insert(redraw_regions, redraw_regions.end(), regions);
         });
 
-    list_->select_item(boost::none);
+    list_->select_item(std::nullopt);
 
     for (auto const &region : redraw_regions)
     {
@@ -692,7 +692,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, selects_the_second_item_whe
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(1, *selected_item_index);
 }
 
@@ -711,7 +711,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, deselects_the_first_item_wh
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_list_with_two_items_and_the_first_selected, has_a_cursor_position_on_the_home_row)
@@ -777,7 +777,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, deselects_the_second_item_
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_FALSE(selected_item_index.is_initialized());
+    ASSERT_FALSE(selected_item_index.has_value());
 }
 
 TEST_F(a_list_with_two_items_and_the_second_selected, selects_the_first_item_when_the_up_key_is_pressed)
@@ -795,7 +795,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, selects_the_first_item_whe
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -898,7 +898,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
             boost::insert(redraw_regions, redraw_regions.end(), regions);
         });
 
-    list_->select_item(boost::none);
+    list_->select_item(std::nullopt);
 
     for (auto const &region : redraw_regions)
     {
@@ -943,7 +943,7 @@ TEST_F(a_list_with_a_selected_item, when_items_are_set_to_empty_list_deselects_i
     list_->set_items({});
 
     ASSERT_TRUE(item_changed);
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_list_with_two_items_and_the_first_selected, when_items_are_set_to_empty_list_deselects_item)
@@ -958,7 +958,7 @@ TEST_F(a_list_with_two_items_and_the_first_selected, when_items_are_set_to_empty
     list_->set_items({});
 
     ASSERT_TRUE(item_changed);
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_empty_list_deselects_item)
@@ -973,7 +973,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_empt
     list_->set_items({});
 
     ASSERT_TRUE(item_changed);
-    ASSERT_FALSE(list_->get_selected_item_index().is_initialized());
+    ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_list_with_a_selected_item, when_items_are_set_to_a_one_element_list_the_first_item_remains_selected)
@@ -981,7 +981,7 @@ TEST_F(a_list_with_a_selected_item, when_items_are_set_to_a_one_element_list_the
     list_->set_items({"new item"_ts});
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 
@@ -999,7 +999,7 @@ TEST_F(a_list_with_two_items_and_the_second_selected, when_items_are_set_to_a_on
     ASSERT_TRUE(item_changed);
 
     auto const selected_item_index = list_->get_selected_item_index();
-    ASSERT_TRUE(selected_item_index.is_initialized());
+    ASSERT_TRUE(selected_item_index.has_value());
     ASSERT_EQ(0, *selected_item_index);
 }
 

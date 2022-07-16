@@ -1,5 +1,4 @@
 #include "viewport_test.hpp"
-#include <boost/optional/optional_io.hpp>
 #include <tuple>
 #include <vector>
 
@@ -11,7 +10,7 @@ using cursor_movement_redraw_test_data = std::tuple<
     std::vector<terminalpp::point>,           // initial cursor movements
     terminalpp::point,                        // cursor movement whose redraw 
                                               // we want to track
-    boost::optional<terminalpp::rectangle>    // expected redraw region
+    std::optional<terminalpp::rectangle>    // expected redraw region
 >;
 
 class viewport_cursor_movement_redraw_test
@@ -38,7 +37,7 @@ TEST_P(viewport_cursor_movement_redraw_test, cursor_movements)
 
     // Subscribe to the viewport's redraw event so that we can catch whether
     // a redraw occurred.
-    boost::optional<terminalpp::rectangle> redraw_region;
+    std::optional<terminalpp::rectangle> redraw_region;
     viewport_->on_redraw.connect(
         [&](std::vector<terminalpp::rectangle> const &regions)
         {

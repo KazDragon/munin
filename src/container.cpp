@@ -7,7 +7,6 @@
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 #include <boost/make_unique.hpp>
-#include <boost/optional.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/adaptor/reversed.hpp>
@@ -521,7 +520,7 @@ private:
                 });
             };
 
-            comp->draw(surface, draw_region.get());
+            comp->draw(surface, draw_region.value());
         }
     }
 

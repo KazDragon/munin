@@ -64,7 +64,7 @@ TEST_F(a_new_status_bar, has_a_preferred_size_of_the_message_when_a_message_is_s
     using namespace terminalpp::literals;
     static auto const message = "Test!"_ts;
 
-    boost::optional<terminalpp::extent> preferred_size;
+    std::optional<terminalpp::extent> preferred_size;
     status_bar_->on_preferred_size_changed.connect(
         [&preferred_size, this]()
         {
@@ -79,7 +79,7 @@ TEST_F(a_new_status_bar, has_a_preferred_size_of_the_message_when_a_message_is_s
             1
     };
 
-    ASSERT_TRUE(preferred_size.is_initialized());
+    ASSERT_TRUE(preferred_size.has_value());
     ASSERT_EQ(expected_size, *preferred_size);
 }
 
