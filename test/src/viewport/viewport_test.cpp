@@ -440,7 +440,7 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
         { 3, 3 }
     };
 
-    boost::optional<terminalpp::mouse::event> received_mouse_event;
+    std::optional<terminalpp::mouse::event> received_mouse_event;
 
     ON_CALL(*tracked_component_, do_event(_))
         .WillByDefault(
@@ -457,7 +457,7 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
 
     viewport_->event(viewport_mouse_event);
 
-    ASSERT_TRUE(received_mouse_event.is_initialized());
+    ASSERT_TRUE(received_mouse_event.has_value());
     ASSERT_EQ(expected_mouse_event, *received_mouse_event);
 }
 

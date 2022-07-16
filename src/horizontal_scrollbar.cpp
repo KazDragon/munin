@@ -26,9 +26,8 @@ struct horizontal_scrollbar::impl
     // ======================================================================
     void redraw_according_to_associated_focus()
     {
-        auto associated_component = associated_component_.lock();
-
-        if (associated_component)
+        if (auto associated_component = associated_component_.lock();
+            associated_component)
         {
             associated_component_has_focus = 
                 associated_component->has_focus();
@@ -44,7 +43,7 @@ struct horizontal_scrollbar::impl
     {
         if (viewport_basis_width == 0)
         {
-            slider_position = boost::none;
+            slider_position = std::nullopt;
         }
         else
         {
@@ -96,7 +95,7 @@ struct horizontal_scrollbar::impl
     {
         if (mouse_event.action_ == terminalpp::mouse::event_type::left_button_down)
         {
-            if (slider_position.is_initialized())
+            if (slider_position.has_value())
             {
                 if (mouse_event.position_.x_ < *slider_position)
                 {
@@ -119,7 +118,7 @@ struct horizontal_scrollbar::impl
 
     terminalpp::coordinate_type viewport_x_position  = 0;
     terminalpp::coordinate_type viewport_basis_width = 0;
-    boost::optional<terminalpp::coordinate_type> slider_position;
+    std::optional<terminalpp::coordinate_type> slider_position;
 
 };
 
@@ -235,10 +234,9 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 void horizontal_scrollbar::do_event(boost::any const &event)
 {
-    terminalpp::mouse::event const *mouse_event = 
-        boost::any_cast<terminalpp::mouse::event>(&event);
-
-    if (mouse_event != nullptr)
+    if (auto const *mouse_event = 
+            boost::any_cast<terminalpp::mouse::event>(&event);
+        mouse_event)
     {
         pimpl_->handle_mouse_event(*mouse_event);
     }

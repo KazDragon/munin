@@ -86,12 +86,12 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt and gsl-lite.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 2.3.0 CONFIG REQUIRED)
+    find_package(terminalpp 2.4.0 CONFIG REQUIRED)
     find_package(gsl-lite 0.38.0 REQUIRED)
 
     # If we are building with Console++, then require that library
     if (MUNIN_WITH_CONSOLEPP)
-        find_package(consolepp 0.0.2 CONFIG REQUIRED)
+        find_package(consolepp 0.1.0 CONFIG REQUIRED)
     endif()
 
     # If we are building with tests, then we require the GTest library
@@ -141,9 +141,6 @@ endif()
 
 add_library(munin)
 add_library(KazDragon::munin ALIAS munin)
-
-# The required C++ Standard for Telnet++ is C++14.
-target_compile_features(munin PUBLIC cxx_std_14)
 
 target_sources(munin
     PRIVATE
@@ -258,6 +255,12 @@ target_compile_options(munin
         $<$<CXX_COMPILER_ID:MSVC>:/wd4251>
         # No warnings are generated on MSVC
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
+)
+
+# The required C++ Standard for Telnet++ is C++17.
+target_compile_features(munin
+    PUBLIC 
+        cxx_std_17
 )
 
 generate_export_header(munin

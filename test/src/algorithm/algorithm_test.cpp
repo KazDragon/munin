@@ -9,7 +9,7 @@ TEST(munin_algorithm, test_rectangle_intersection_same)
     terminalpp::rectangle rhs = lhs;
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(terminalpp::coordinate_type(1), intersection->origin_.x_);
     ASSERT_EQ(terminalpp::coordinate_type(2), intersection->origin_.y_);
@@ -25,7 +25,7 @@ TEST(munin_algorithm, test_rectangle_intersection_no_overlap)
     terminalpp::rectangle rhs = {{1, 1}, {1, 1}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_FALSE(intersection.is_initialized());
+    ASSERT_FALSE(intersection.has_value());
 }
 
 TEST(munin_algorithm, test_rectangle_intersection_overlap_top_left)
@@ -44,7 +44,7 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_top_left)
     terminalpp::rectangle rhs = {{0, 0}, {7, 4}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{4, 1}, {3, 3}}));
 }
@@ -64,7 +64,7 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_left)
     terminalpp::rectangle rhs = {{0, 2}, {7, 3}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{4, 2}, {3, 2}}));
 }
@@ -87,7 +87,7 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_bottom_right)
     terminalpp::rectangle rhs = {{3, 2}, {7, 5}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 2}, {4, 3}}));
 }
@@ -110,7 +110,7 @@ TEST(munin_algorithm, test_rectangle_intersection_overlap_top_right)
     terminalpp::rectangle rhs = {{4, 1}, {6, 5}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{4, 3}, {4, 3}}));
 }
@@ -133,14 +133,14 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_top)
     terminalpp::rectangle rhs = {{1, 1}, {8, 5}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 3}, {4, 3}}));
 
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::detail::intersection(rhs, lhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 3}, {4, 3}}));
 }
@@ -164,14 +164,14 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_left)
     terminalpp::rectangle rhs = {{1, 1}, {6, 7}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 3}, {4, 3}}));
 
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::detail::intersection(rhs, lhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 3}, {4, 3}}));
 }
@@ -193,14 +193,14 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_bottom)
     terminalpp::rectangle rhs = {{2, 1}, {5, 4}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{2, 3}, {5, 2}}));
 
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::detail::intersection(rhs, lhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{2, 3}, {5, 2}}));
 }
@@ -223,14 +223,14 @@ TEST(munin_algorithm, test_rectangle_intersection_enclose_right)
     terminalpp::rectangle rhs = {{2, 2}, {6, 3}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{5, 2}, {3, 3}}));
 
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::detail::intersection(rhs, lhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{5, 2}, {3, 3}}));
 }
@@ -252,14 +252,14 @@ TEST(munin_algorithm, test_rectangle_intersection_contain)
     terminalpp::rectangle rhs = {{1, 1}, {8, 5}};
 
     auto intersection = munin::detail::intersection(lhs, rhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 2}, {4, 3}}));
 
     // Ensure that this works for the opposite case too, where the first
     // rectangle encloses the second.
     intersection = munin::detail::intersection(rhs, lhs);
-    ASSERT_TRUE(intersection.is_initialized());
+    ASSERT_TRUE(intersection.has_value());
 
     ASSERT_EQ(*intersection, terminalpp::rectangle({{3, 2}, {4, 3}}));
 }

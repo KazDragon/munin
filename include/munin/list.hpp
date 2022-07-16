@@ -1,5 +1,6 @@
 #include "munin/basic_component.hpp"
 #include <terminalpp/string.hpp>
+#include <optional>
 #include <vector>
 
 namespace munin {
@@ -23,13 +24,13 @@ public:
     //* =====================================================================
     /// \brief Gets the index of the selected item, if such an item exists.
     //* =====================================================================
-    boost::optional<int> get_selected_item_index() const;
+    std::optional<int> get_selected_item_index() const;
 
     //* =====================================================================
     /// \brief Selects an item in the list.  If the passed index is not
     /// initialized, then de-selects any selected item.
     //* =====================================================================
-    void select_item(boost::optional<int> const &index);
+    void select_item(std::optional<int> const &index);
 
     //* =====================================================================
     /// \brief Sets the items in the list.

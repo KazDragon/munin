@@ -2,7 +2,7 @@
 
 #include "munin/export.hpp"
 #include <terminalpp/rectangle.hpp>
-#include <boost/optional.hpp>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -17,7 +17,7 @@ namespace munin { namespace detail {
 /// \brief Returns the intersection of two rectangles.
 //* =========================================================================
 MUNIN_EXPORT 
-boost::optional<terminalpp::rectangle> intersection(
+std::optional<terminalpp::rectangle> intersection(
     terminalpp::rectangle const &lhs
   , terminalpp::rectangle const &rhs);
 

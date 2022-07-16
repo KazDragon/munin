@@ -399,17 +399,14 @@ void edit::do_draw(
 // ==========================================================================
 void edit::do_event(boost::any const &ev)
 {
-    auto *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
-    
-    if (vk != nullptr)
+    if (auto *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
+        vk != nullptr)
     {
         pimpl_->key_event(*vk);
         return;
     }
-    
-    auto *mouse = boost::any_cast<terminalpp::mouse::event>(&ev);
-    
-    if (mouse != nullptr)
+    else if (auto *mouse = boost::any_cast<terminalpp::mouse::event>(&ev);
+             mouse != nullptr)
     {
         pimpl_->mouse_event(*mouse);
         return;

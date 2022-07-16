@@ -2,8 +2,8 @@
 #include "mock/render_surface_capabilities.hpp"
 #include <munin/window.hpp>
 #include <boost/make_unique.hpp>
-#include <boost/optional.hpp>
 #include <gtest/gtest.h>
+#include <optional>
 
 using testing::Return;
 using testing::WithArg;
@@ -38,7 +38,7 @@ protected:
 
 TEST_F(a_window_that_does_not_support_unicode, passes_those_capabilities_to_components)
 {
-    boost::optional<bool> supports_unicode = boost::none;
+    std::optional<bool> supports_unicode = std::nullopt;
     ON_CALL(*content_, do_draw(_, _))
         .WillByDefault(WithArg<0>(
             [&supports_unicode](munin::render_surface &surface)
@@ -49,6 +49,6 @@ TEST_F(a_window_that_does_not_support_unicode, passes_those_capabilities_to_comp
     terminalpp::canvas cvs({3, 3});
     window_->repaint(cvs);
     
-    ASSERT_TRUE(supports_unicode.is_initialized());
+    ASSERT_TRUE(supports_unicode.has_value());
     ASSERT_FALSE(*supports_unicode);
 }

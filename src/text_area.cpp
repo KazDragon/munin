@@ -147,19 +147,17 @@ struct text_area::impl
     // ======================================================================
     void event(boost::any const &ev)
     {
-        auto const *mouse_event = 
-            boost::any_cast<terminalpp::mouse::event>(&ev);
-
-        if (mouse_event != nullptr)
+        if (auto const *mouse_event = 
+                boost::any_cast<terminalpp::mouse::event>(&ev);
+            mouse_event != nullptr)
         {
             handle_mouse_event(*mouse_event);
             return;
         }
 
-        auto const *keypress_event =
-            boost::any_cast<terminalpp::virtual_key>(&ev);
-
-        if (keypress_event != nullptr)
+        if (auto const *keypress_event =
+                boost::any_cast<terminalpp::virtual_key>(&ev);
+            keypress_event != nullptr)
         {
             handle_keypress_event(*keypress_event);
             return;

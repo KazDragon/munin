@@ -12,7 +12,7 @@ class MuninConan(ConanFile):
     options = {"shared": [True, False], "withConsolepp": [True, False], "coverage": [True, False], "sanitize" : ["off", "address"]}
     default_options = {"shared": False, "withConsolepp": False, "coverage": False, "sanitize": "off"}
     exports = "*.hpp", "*.in", "*.cpp", "CMakeLists.txt", "*.md", "LICENSE", "*.cmake"
-    requires = ("terminalpp/[>=2.3.0]",
+    requires = ("terminalpp/[>=2.4.0]",
                 "nlohmann_json/[>=3.3.0]",
                 "boost/[>=1.69]")
     build_requires = ("gtest/[>=1.8.1]")
@@ -20,7 +20,7 @@ class MuninConan(ConanFile):
 
     def requirements(self):
         if (self.options.withConsolepp):
-            self.requires("consolepp/[>=0.0.2]")
+            self.requires("consolepp/[>=0.1.0]")
 
     def imports(self):
         # If Munin is built as shared, then running the tests will

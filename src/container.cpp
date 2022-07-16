@@ -7,7 +7,6 @@
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 #include <boost/make_unique.hpp>
-#include <boost/optional.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm/for_each.hpp>
 #include <boost/range/adaptor/reversed.hpp>
@@ -262,10 +261,9 @@ struct container::impl
             in_focus_operation_ = false;
         };
 
-        auto focussed_component = 
-            find_first_focussed_component(components_);
-
-        if (focussed_component != components_.end())
+        if (auto focussed_component = 
+                find_first_focussed_component(components_);
+            focussed_component != components_.end())
         {
             (*focussed_component)->lose_focus();
             has_focus_ = false;
@@ -371,10 +369,9 @@ struct container::impl
         // * Mouse events are passed on to the subcomponent at the location
         //   of the event, and the co-ordinates of the event are passed on
         //   relative to the subcomponent's location.
-        auto const *mouse_event = 
-            boost::any_cast<terminalpp::mouse::event>(&ev);
-
-        if (mouse_event == nullptr)
+        if (auto const *mouse_event = 
+                boost::any_cast<terminalpp::mouse::event>(&ev);
+            mouse_event == nullptr)
         {
             handle_common_event(ev);
         }
@@ -495,9 +492,8 @@ private:
             comp->get_size()
         };
 
-        auto draw_region = detail::intersection(component_region, region);
-
-        if (draw_region)
+        if (auto draw_region = detail::intersection(component_region, region);
+            draw_region)
         {
             // The draw region is currently relative to this container's
             // origin.  It should be relative to the child's origin.
@@ -521,7 +517,7 @@ private:
                 });
             };
 
-            comp->draw(surface, draw_region.get());
+            comp->draw(surface, draw_region.value());
         }
     }
 
@@ -567,10 +563,9 @@ private:
                     return comp != orig && comp->has_focus();
                 };
 
-            auto comp = 
-                boost::find_if(components_, another_component_has_focus);
-
-            if (comp != components_.end())
+            if (auto comp = 
+                    boost::find_if(components_, another_component_has_focus);
+                comp != components_.end())
             {
                 in_focus_operation_ = true;
 
@@ -610,9 +605,8 @@ private:
     void subcomponent_cursor_state_change_handler(
         std::weak_ptr<component> weak_subcomponent)
     {
-        auto subcomponent = weak_subcomponent.lock();
-
-        if (subcomponent && subcomponent->has_focus())
+        if (auto subcomponent = weak_subcomponent.lock();
+            subcomponent && subcomponent->has_focus())
         {
             self_.on_cursor_state_changed();
         }
@@ -624,9 +618,8 @@ private:
     void subcomponent_cursor_position_change_handler(
         std::weak_ptr<component> weak_subcomponent)
     {
-        auto subcomponent = weak_subcomponent.lock();
-
-        if (subcomponent && subcomponent->has_focus())
+        if (auto subcomponent = weak_subcomponent.lock();
+            subcomponent && subcomponent->has_focus())
         {
             self_.on_cursor_position_changed();
         }
@@ -637,9 +630,8 @@ private:
     // ======================================================================
     void handle_common_event(boost::any const &event)
     {
-        auto comp = find_first_focussed_component(components_);
-
-        if (comp != components_.end())
+        if (auto comp = find_first_focussed_component(components_);
+            comp != components_.end())
         {
             (*comp)->event(event);
         }
@@ -650,11 +642,10 @@ private:
     // ======================================================================
     void handle_mouse_event(terminalpp::mouse::event const &ev)
     {
-        auto const &comp = find_component_at_point(
-            components_,
-            ev.position_);
-
-        if (comp != components_.end())
+        if (auto const &comp = find_component_at_point(
+                components_,
+                ev.position_);
+            comp != components_.end())
         {
             auto const &position = (*comp)->get_position();
 
