@@ -394,6 +394,7 @@ struct container::impl
             { "has_focus",       has_focus() },
             { "cursor_state",    get_cursor_state() },
             { "cursor_position", detail::to_json(get_cursor_position()) },
+            { "layout",          layout_->to_json() }
         };
 
         auto &subcomponents = json["subcomponents"];

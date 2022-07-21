@@ -11,6 +11,7 @@ TEST(a_framed_component, reports_attributes_as_json)
         
     auto json = framed_component->to_json();
     ASSERT_EQ("framed_component", json["type"]);
-    ASSERT_EQ("solid_frame", json["frame"]["type"]);
-    ASSERT_EQ("image", json["component"]["type"]);
+    ASSERT_EQ("solid_frame",      json["frame"]["type"]);
+    ASSERT_EQ("image",            json["component"]["type"]);
+    ASSERT_EQ("framed_layout",    json["layout"]["type"]);
 }

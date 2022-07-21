@@ -9,17 +9,18 @@ TEST_F(a_new_container, reports_attributes_as_json)
     munin::component &comp = container;
 
     nlohmann::json json = comp.to_json();
-    ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0,           json["position"]["x"]);
-    ASSERT_EQ(0,           json["position"]["y"]);
-    ASSERT_EQ(0,           json["size"]["height"]);
-    ASSERT_EQ(0,           json["size"]["width"]);
-    ASSERT_EQ(0,           json["preferred_size"]["width"]);
-    ASSERT_EQ(0,           json["preferred_size"]["height"]);
-    ASSERT_EQ(false,       json["has_focus"]);
-    ASSERT_EQ(false,       json["cursor_state"]);
-    ASSERT_EQ(0,           json["cursor_position"]["x"]);
-    ASSERT_EQ(0,           json["cursor_position"]["y"]);
+    ASSERT_EQ("container",   json["type"]);
+    ASSERT_EQ(0,             json["position"]["x"]);
+    ASSERT_EQ(0,             json["position"]["y"]);
+    ASSERT_EQ(0,             json["size"]["height"]);
+    ASSERT_EQ(0,             json["size"]["width"]);
+    ASSERT_EQ(0,             json["preferred_size"]["width"]);
+    ASSERT_EQ(0,             json["preferred_size"]["height"]);
+    ASSERT_EQ(false,         json["has_focus"]);
+    ASSERT_EQ(false,         json["cursor_state"]);
+    ASSERT_EQ(0,             json["cursor_position"]["x"]);
+    ASSERT_EQ(0,             json["cursor_position"]["y"]);
+    ASSERT_EQ("null_layout", json["layout"]["type"]);
 }
 
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
@@ -31,6 +32,12 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
         .WillRepeatedly(Return(layout_size));
     ON_CALL(*lyt, do_layout(_, _, _))
         .WillByDefault(Return());
+    ON_CALL(*lyt, do_to_json())
+        .WillByDefault([] {
+            return nlohmann::json{
+                { "type", "mock_layout"}
+            };
+        });
 
     container.set_layout(std::move(lyt));
 
@@ -43,17 +50,18 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
         .WillRepeatedly(Return(component_json));
 
     nlohmann::json json = comp.to_json();
-    ASSERT_EQ("container",        json["type"]);
-    ASSERT_EQ(0,                  json["position"]["x"]);
-    ASSERT_EQ(0,                  json["position"]["y"]);
-    ASSERT_EQ(0,                  json["size"]["height"]);
-    ASSERT_EQ(0,                  json["size"]["width"]);
+    ASSERT_EQ("container",         json["type"]);
+    ASSERT_EQ(0,                   json["position"]["x"]);
+    ASSERT_EQ(0,                   json["position"]["y"]);
+    ASSERT_EQ(0,                   json["size"]["height"]);
+    ASSERT_EQ(0,                   json["size"]["width"]);
     ASSERT_EQ(layout_size.width_,  json["preferred_size"]["width"]);
     ASSERT_EQ(layout_size.height_, json["preferred_size"]["height"]);
-    ASSERT_EQ(false,              json["has_focus"]);
-    ASSERT_EQ(false,              json["cursor_state"]);
-    ASSERT_EQ(0,                  json["cursor_position"]["x"]);
-    ASSERT_EQ(0,                  json["cursor_position"]["y"]);
+    ASSERT_EQ(false,               json["has_focus"]);
+    ASSERT_EQ(false,               json["cursor_state"]);
+    ASSERT_EQ(0,                   json["cursor_position"]["x"]);
+    ASSERT_EQ(0,                   json["cursor_position"]["y"]);
+    ASSERT_EQ("mock_layout",       json["layout"]["type"]);
 
     nlohmann::json subcomponents = json["subcomponents"];
     ASSERT_EQ(1, subcomponents.size());
@@ -120,15 +128,16 @@ TEST_F(a_container_with_one_component_that_has_focus, reports_attributes_as_json
         .WillRepeatedly(Return(true));
 
     nlohmann::json json = container.to_json();
-    ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0,           json["position"]["x"]);
-    ASSERT_EQ(0,           json["position"]["y"]);
-    ASSERT_EQ(0,           json["size"]["height"]);
-    ASSERT_EQ(0,           json["size"]["width"]);
-    ASSERT_EQ(0,           json["preferred_size"]["width"]);
-    ASSERT_EQ(0,           json["preferred_size"]["height"]);
-    ASSERT_EQ(true,        json["has_focus"]);
-    ASSERT_EQ(true,        json["cursor_state"]);
-    ASSERT_EQ(4,           json["cursor_position"]["x"]);
-    ASSERT_EQ(6,           json["cursor_position"]["y"]);
+    ASSERT_EQ("container",   json["type"]);
+    ASSERT_EQ(0,             json["position"]["x"]);
+    ASSERT_EQ(0,             json["position"]["y"]);
+    ASSERT_EQ(0,             json["size"]["height"]);
+    ASSERT_EQ(0,             json["size"]["width"]);
+    ASSERT_EQ(0,             json["preferred_size"]["width"]);
+    ASSERT_EQ(0,             json["preferred_size"]["height"]);
+    ASSERT_EQ(true,          json["has_focus"]);
+    ASSERT_EQ(true,          json["cursor_state"]);
+    ASSERT_EQ(4,             json["cursor_position"]["x"]);
+    ASSERT_EQ(6,             json["cursor_position"]["y"]);
+    ASSERT_EQ("null_layout", json["layout"]["type"]);
 }

@@ -302,6 +302,7 @@ target_sources(munin_tester
         test/src/button/button_test.cpp
         test/src/button/button_json_test.cpp
         test/src/compass_layout/compass_layout_test.cpp
+        test/src/composite_component/composite_component_test.cpp
         test/src/container/container_test.cpp
         test/src/container/container_cursor_test.cpp
         test/src/container/container_draw_test.cpp

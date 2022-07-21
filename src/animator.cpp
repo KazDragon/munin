@@ -21,6 +21,15 @@ public:
     };
 
     // ======================================================================
+    // LOWER_BOUND
+    // ======================================================================
+    auto lower_bound(std::chrono::steady_clock::time_point time)
+    {
+        return boost::range::lower_bound(
+            animation_requests, time, compare_execution_time);
+    }
+
+    // ======================================================================
     // COMPARE_EXECUTION_TIME
     // ======================================================================
     static bool compare_execution_time(
@@ -68,10 +77,7 @@ void animator::redraw_component_at(
     // Insert the request into the collection, maintaining an ordering by
     // execution time.
     pimpl_->animation_requests.insert(
-        boost::range::lower_bound(
-            pimpl_->animation_requests,
-            execution_time,
-            impl::compare_execution_time),
+        pimpl_->lower_bound(execution_time),
         impl::animation_request{
             comp,
             bounds,
@@ -96,10 +102,7 @@ void animator::redraw_components()
     // requests is unchanged by this action.
     auto const expired_requests = boost::make_iterator_range(
         pimpl_->animation_requests.begin(),
-        boost::range::lower_bound(
-            pimpl_->animation_requests,
-            current_time,
-            impl::compare_execution_time));
+        pimpl_->lower_bound(current_time));
 
     for (auto const &request : expired_requests)
     {

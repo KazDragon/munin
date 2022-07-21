@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 using testing::Return;
+using testing::_;
 
 TEST(a_new_framed_component, is_constructed_from_a_frame_and_a_component)
 {
@@ -193,4 +194,30 @@ TEST(a_framed_component, draws_the_inner_component_inside_the_frame)
     ASSERT_EQ(default_attribute, cvs[1][3].attribute_);
     ASSERT_EQ(default_attribute, cvs[2][3].attribute_);
     ASSERT_EQ(default_attribute, cvs[3][3].attribute_);
+}
+
+TEST(a_framed_component, forwards_events_to_the_inner_component)
+{
+    std::shared_ptr<mock_frame> mock_frame = make_mock_frame();
+    std::shared_ptr<mock_component> mock_comp  = make_mock_component();
+    
+    auto framed_component = munin::make_framed_component(
+        mock_frame,
+        mock_comp);
+
+    static std::string const value = "test";
+    std::string received_value;
+
+    EXPECT_CALL(*mock_comp, do_event(_))
+        .WillOnce([&received_value](boost::any const &ev) {
+            received_value = boost::any_cast<std::string>(ev);
+        });
+
+    framed_component->set_focus();
+    ON_CALL(*mock_comp, do_has_focus)
+        .WillByDefault(Return(true));
+
+    framed_component->event(value);
+    ASSERT_EQ(value, received_value);
+
 }
