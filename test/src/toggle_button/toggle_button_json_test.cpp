@@ -14,6 +14,4 @@ TEST(a_toggle_button, reports_attributes_as_json)
 
     ASSERT_EQ("toggle_button", json["type"]);
     ASSERT_EQ(true, json["state"]);
-
-    std::cout << json;
 }

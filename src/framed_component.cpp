@@ -75,7 +75,9 @@ protected :
     //* =====================================================================
     nlohmann::json do_to_json() const override
     {
-        return {};
+        return {
+            {"type", "framed_layout"}
+        };
     }
 };
 
