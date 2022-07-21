@@ -87,10 +87,7 @@ bool composite_component::do_has_focus() const
 // ==========================================================================
 void composite_component::do_set_focus()
 {
-    if (can_receive_focus())
-    {
-        content_.set_focus();
-    }
+    content_.set_focus();
 }
 
 // ==========================================================================
@@ -98,10 +95,7 @@ void composite_component::do_set_focus()
 // ==========================================================================
 void composite_component::do_lose_focus()
 {
-    if (can_receive_focus())
-    {
-        content_.lose_focus();
-    }
+    content_.lose_focus();
 }
 
 // ==========================================================================
@@ -109,10 +103,7 @@ void composite_component::do_lose_focus()
 // ==========================================================================
 void composite_component::do_focus_next()
 {
-    if (can_receive_focus())
-    {
-        content_.focus_next();
-    }
+    content_.focus_next();
 }
 
 // ==========================================================================
@@ -120,10 +111,7 @@ void composite_component::do_focus_next()
 // ==========================================================================
 void composite_component::do_focus_previous()
 {
-    if (can_receive_focus())
-    {
-        content_.focus_previous();
-    }
+    content_.focus_previous();
 }
 
 // ==========================================================================
