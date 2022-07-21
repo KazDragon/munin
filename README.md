@@ -5,7 +5,7 @@
 [![MSVC Build status](https://ci.appveyor.com/api/projects/status/p7wcwnd4xapnetkl/branch/master?svg=true)](https://ci.appveyor.com/project/KazDragon/munin/branch/master)
 [![Linux Build status](https://github.com/KazDragon/munin/workflows/build/badge.svg)](https://github.com/KazDragon/munin/actions?query=event%3Apush) 
 [![Coverage Status](https://coveralls.io/repos/github/KazDragon/munin/badge.svg?branch=master)](https://coveralls.io/github/KazDragon/munin?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/app/KazDragon/munin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cbf22a847dc040b1a9dee8be3eda00d3)](https://www.codacy.com/gh/KazDragon/munin/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KazDragon/munin&amp;utm_campaign=Badge_Grade)
 
 Munin is an enhancement to the Terminal++ library and provides a set of textual, component-based UI widgets.  Windows are composed using layouts that automatically size and position their subcomponents according to the rules you specify:
 
