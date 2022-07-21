@@ -75,8 +75,7 @@ static void layout_south_component(
     comp.set_position({
         headings.west,
         (std::max)(
-            (headings.north + remaining_height) - preferred_size.height_,
-            0)
+            (headings.north + remaining_height) - preferred_size.height_, 0)
     });
     comp.set_size({remaining_width, height});
 
@@ -114,8 +113,7 @@ static void layout_east_component(
 
     comp.set_position({
         (std::max)(
-            (headings.west + remaining_width) - preferred_size.width_,
-            0),
+            (headings.west + remaining_width) - preferred_size.width_, 0),
         headings.north});
     comp.set_size({width, remaining_height});
 
