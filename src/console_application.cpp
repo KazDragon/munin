@@ -2,34 +2,26 @@
 #include <munin/window.hpp>
 #include <terminalpp/terminal.hpp>
 #include <consolepp/console.hpp>
-#include <boost/make_unique.hpp>
 #include <utility>
 
 namespace munin { namespace {
 
-struct window_event_dispatcher : public boost::static_visitor<>
+void schedule_read(terminalpp::terminal &terminal, window &wnd)
 {
-    window_event_dispatcher(munin::window &window)
-      : window_{window}
-    {
-    }
-
-    template <class Event>
-    void operator()(Event const &event)
-    {
-        window_.event(event);
-    }
-
-    munin::window &window_;
-};
-
-void schedule_read(consolepp::console &console, terminalpp::terminal &terminal)
-{
-    console.async_read(
-        [&](consolepp::bytes data)
+    terminal.async_read(
+        [&](terminalpp::tokens tokens)
         {
-            terminal >> data;
-            schedule_read(console, terminal);
+            for(auto const &token : tokens)
+            {
+                std::visit(
+                    [&wnd](auto const &event)
+                    {
+                        wnd.event(event);
+                    },
+                    token);
+            }
+
+            schedule_read(terminal, wnd);
         });
 }
 
@@ -43,21 +35,9 @@ struct console_application::impl
     impl(terminalpp::behaviour const &behaviour,
         boost::asio::io_context &io_context,
         std::shared_ptr<component> content)
-      : terminal_{
-            [this](terminalpp::tokens tokens) {
-                for (auto const &token : tokens)
-                {
-                    std::visit(dispatcher_, token);
-                }
-            },
-            [this](terminalpp::bytes data) {
-                console_.write(data);
-            },
-            behaviour
-        },
-        console_{io_context},
+      : console_{io_context},
+        terminal_{console_, behaviour},
         window_{terminal_, std::move(content)},
-        dispatcher_{window_},
         canvas_{{console_.size().width, console_.size().height}}
     {
         window_.on_repaint_request.connect([this]{ 
@@ -69,13 +49,12 @@ struct console_application::impl
             window_.repaint(canvas_);
         });
 
-        schedule_read(console_, terminal_);
+        schedule_read(terminal_, window_);
     }
 
-    terminalpp::terminal terminal_;
     consolepp::console console_;
+    terminalpp::terminal terminal_;
     window window_;
-    window_event_dispatcher dispatcher_;
     terminalpp::canvas canvas_;
 };
 
