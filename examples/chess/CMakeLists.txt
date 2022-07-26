@@ -14,9 +14,9 @@ if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
         CONAN_PKG::boost
     )
 else()
-    find_package(terminalpp REQUIRED)
-    find_package(munin REQUIRED)
-    find_package(consolepp REQUIRED)
+    find_package(terminalpp 3.0.0 REQUIRED)
+    find_package(munin 0.7.1 REQUIRED)
+    find_package(consolepp 0.1.1 REQUIRED)
     find_package(Boost REQUIRED)
     find_package(fmt REQUIRED)
     find_package(nlohmann_json REQUIRED)
@@ -32,8 +32,8 @@ else()
     )
 endif()
 
-# The required C++ Standard for Server++ is C++14.
-set(CMAKE_CXX_STANDARD 14)
+# The required C++ Standard for Server++ is C++17.
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set (CHESS_PUBLIC_SOURCE_FILES

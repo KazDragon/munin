@@ -86,12 +86,12 @@ else()
     # And of course, Munin is built atop the Terminal++ library, which
     # also requires fmt and gsl-lite.
     find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 2.4.0 CONFIG REQUIRED)
+    find_package(terminalpp 3.0.0 CONFIG REQUIRED)
     find_package(gsl-lite 0.38.0 REQUIRED)
 
     # If we are building with Console++, then require that library
     if (MUNIN_WITH_CONSOLEPP)
-        find_package(consolepp 0.1.0 CONFIG REQUIRED)
+        find_package(consolepp 0.1.1 CONFIG REQUIRED)
     endif()
 
     # If we are building with tests, then we require the GTest library
@@ -279,6 +279,7 @@ target_sources(munin_tester
         test/src/window/window_test.hpp
         test/include/fill_canvas.hpp
         test/include/redraw.hpp
+        test/include/fake/channel.hpp
         test/include/mock/animator.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp

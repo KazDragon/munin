@@ -72,13 +72,7 @@ class repainting_a_window :
 {
 protected :
     repainting_a_window()
-      : terminal_{
-            [](terminalpp::tokens) { FAIL(); },
-            [this](terminalpp::bytes data) { 
-                repaint_output_.append(data.cbegin(), data.cend()); 
-            }
-        },
-        canvas_(window_size)
+      : canvas_(window_size)
     {
         reset_canvas(canvas_);
         
@@ -123,17 +117,8 @@ protected :
     
     static constexpr terminalpp::extent const window_size {20, 40};
     
-    terminalpp::terminal terminal_;
     terminalpp::canvas canvas_;
     terminalpp::extent content_size_;
-
-    std::function<void (terminalpp::bytes)> do_repaint_ =
-        [this](terminalpp::bytes data)
-        {
-            repaint_output_.append(data.cbegin(), data.cend());
-        };
-
-    terminalpp::byte_storage repaint_output_;
 };
 
 constexpr terminalpp::extent const repainting_a_window::window_size;
@@ -247,10 +232,10 @@ TEST_F(repainting_a_window, with_no_changes_returns_empty_paint_data)
     window_->repaint(canvas_);
 
     content_->on_redraw({{{}, {}}});
+    channel_.written_.clear();
 
-    repaint_output_.clear();
     window_->repaint(canvas_);
 
     auto const expected_repaint_output = ""_tb;
-    ASSERT_EQ(expected_repaint_output, repaint_output_);
+    ASSERT_EQ(expected_repaint_output, channel_.written_);
 }

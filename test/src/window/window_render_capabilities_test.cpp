@@ -1,3 +1,4 @@
+#include "fake/channel.hpp"
 #include "mock/component.hpp"
 #include "mock/render_surface_capabilities.hpp"
 #include <munin/window.hpp>
@@ -30,7 +31,8 @@ protected:
     mock_render_surface_capabilities capabilities_;
     std::shared_ptr<mock_component> content_ { make_mock_component() };
 
-    terminalpp::terminal terminal_{[](terminalpp::tokens){}, [](terminalpp::bytes){}};
+    fake_channel channel_;
+    terminalpp::terminal terminal_{channel_};
     std::unique_ptr<munin::window> window_;
 };
 
