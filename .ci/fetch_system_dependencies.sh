@@ -5,6 +5,8 @@ export EXTERNAL_BUILD_ROOT=$HOME/external_build
 
 mkdir "$EXTERNAL_BUILD_ROOT" || true
 
+# Note: Boost and libfmt are install from apt in build.yml.
+
 # Install nlohmann_json dependency
 if [ ! -f "$EXTERNAL_ROOT/include/nlohmann/json.hpp" ]; then
     cd "$EXTERNAL_BUILD_ROOT";
@@ -12,16 +14,6 @@ if [ ! -f "$EXTERNAL_ROOT/include/nlohmann/json.hpp" ]; then
     tar -xzf v3.3.0.tar.gz;
     cd json-3.3.0;
     cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DJSON_BuildTests=Off .;
-    make -j2 && make install;
-fi
-
-# Install fmt dependency
-if [ ! -f "$EXTERNAL_ROOT/include/fmt/format.hpp" ]; then
-    cd "$EXTERNAL_BUILD_ROOT";
-    wget https://github.com/fmtlib/fmt/archive/7.1.2.tar.gz;
-    tar -xzf 7.1.2.tar.gz;
-    cd fmt-7.1.2;
-    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DFMT_TEST=Off .;
     make -j2 && make install;
 fi
 
@@ -36,7 +28,7 @@ if [ ! -f "$EXTERNAL_ROOT/include/gsl/gsl-lite.hpp" ]; then
 fi
 
 # Install Terminal++ dependency
-if [ ! -f "$EXTERNAL_ROOT/include/terminalpp/version/hpp" ]; then
+if [ ! -f "$EXTERNAL_ROOT/include/terminalpp-3.0.0/terminalpp/version.hpp" ]; then
     wget https://github.com/KazDragon/terminalpp/archive/v3.0.0.tar.gz;
     tar -xzf v3.0.0.tar.gz;
     cd terminalpp-3.0.0;
@@ -54,3 +46,5 @@ if [ ! -f "$EXTERNAL_ROOT/include/gtest/gtest.h" ]; then
     cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" .;
     make -j2 && make install;
 fi
+
+echo Finished installing dependencies.
