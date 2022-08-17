@@ -1,3 +1,4 @@
+#include "similar_canvas.hpp"
 #include <munin/list.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
@@ -8,24 +9,6 @@
 #include <gtest/gtest.h>
 
 using namespace terminalpp::literals;
-
-void assert_similar_canvas_block(
-    std::vector<terminalpp::string> const &expected,
-    terminalpp::canvas const &cvs,
-    terminalpp::rectangle const bounds)
-{
-    terminalpp::for_each_in_region(
-        cvs,
-        bounds,
-        [&expected](terminalpp::element const &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row)
-        {
-            ASSERT_EQ(expected[row][column], elem)
-                << "row = " << row << ", column = " << column;
-        });
-}
-
 
 TEST(a_list, is_a_component)
 {
