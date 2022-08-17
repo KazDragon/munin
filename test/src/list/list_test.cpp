@@ -63,12 +63,11 @@ TEST_F(a_new_list, draws_empty_space)
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "      "_ts,
           "      "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_new_list, requests_a_redraw_when_setting_the_list_items)
@@ -188,12 +187,11 @@ TEST_F(a_list_with_an_item, draws_that_item)
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "test  "_ts,
           "      "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_an_item, reports_a_selected_item_as_selected)
@@ -329,12 +327,11 @@ TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "\\p-test  "_ets,
           "      "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_a_selected_item, deselects_the_item_when_the_up_key_is_pressed)
@@ -403,12 +400,11 @@ TEST_F(a_list_with_two_items, draws_those_items)
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "l0    "_ts,
           "line1 "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items, reports_a_selected_item_as_selected)
@@ -554,12 +550,11 @@ TEST_F(a_list_with_two_items_and_the_first_selected, draws_the_first_item_in_neg
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "\\p-l0    "_ets,
           "line1 "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_item_is_deselected)
@@ -580,12 +575,11 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
         list_->draw(surface_, region);
     }
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "l0    "_ts,
           "line1 "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items_and_the_first_selected, selects_the_second_item_when_the_down_key_is_pressed)
@@ -647,12 +641,11 @@ TEST_F(a_list_with_two_items_and_the_second_selected, draws_the_second_item_in_n
 {
     list_->draw(surface_, {{}, list_size});
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "l0    "_ts,
           "\\p-line1 "_ets,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items_and_the_second_selected, deselects_the_second_item_when_the_down_key_is_pressed)
@@ -710,12 +703,11 @@ TEST_F(a_list_with_two_items_and_the_first_selected, redraws_the_items_when_the_
         list_->draw(surface_, region);
     }
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "l0    "_ts,
           "\\p-line1 "_ets,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the_first_is_selected)
@@ -736,12 +728,11 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
         list_->draw(surface_, region);
     }
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "\\p-l0    "_ets,
           "line1 "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the_item_is_deselected)
@@ -762,12 +753,11 @@ TEST_F(a_list_with_two_items_and_the_second_selected, redraws_the_items_when_the
         list_->draw(surface_, region);
     }
 
-    assert_similar_canvas_block(
+    assert_similar_canvas(
         { "l0    "_ts,
           "line1 "_ts,
           "      "_ts },
-        canvas_,
-        {{0, 0}, {6, 3}});
+        canvas_);
 }
 
 TEST_F(a_list_with_a_selected_item, when_items_are_set_to_empty_list_deselects_item)

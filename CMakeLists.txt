@@ -285,6 +285,7 @@ target_sources(munin_tester
         test/include/mock/layout.hpp
         test/src/fill_canvas.cpp
         test/src/redraw.cpp
+        test/src/similar_canvas.cpp
         test/src/mock/animator.cpp
         test/src/mock/component.cpp
         test/src/mock/frame.cpp
