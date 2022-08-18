@@ -1,3 +1,4 @@
+#include "similar_canvas.hpp"
 #include <munin/button.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/mouse.hpp>
@@ -6,6 +7,7 @@
 #include <gtest/gtest.h>
 
 using testing::ValuesIn;
+using namespace terminalpp::literals;
 
 TEST(a_new_button, can_be_constructed_from_a_string)
 {
@@ -18,9 +20,12 @@ TEST(a_new_button, can_be_constructed_from_a_string)
     munin::render_surface surface(canvas);
     
     button->draw(surface, {{}, size});
-    
-    ASSERT_EQ('O', canvas[2][1]);
-    ASSERT_EQ('K', canvas[3][1]);
+
+    assert_similar_canvas(
+        { "\\U256D\\U2500\\U2500\\U2500\\U2500\\U256E"_ets,
+          "\\U2502 OK \\U2502"_ets,
+          "\\U2570\\U2500\\U2500\\U2500\\U2500\\U256F"_ets, },
+        canvas);
 }
 
 TEST(a_new_button, can_be_constructed_from_a_terminal_string)
@@ -36,8 +41,11 @@ TEST(a_new_button, can_be_constructed_from_a_terminal_string)
     
     button->draw(surface, {{}, size});
     
-    ASSERT_EQ('A', canvas[2][1]);
-    ASSERT_EQ('E', canvas[5][1]);
+    assert_similar_canvas(
+        { "\\U256D\\U2500\\U2500\\U2500\\U2500\\U2500\\U2500\\U256E"_ets,
+          "\\U2502CANCEL\\U2502"_ets,
+          "\\U2570\\U2500\\U2500\\U2500\\U2500\\U2500\\U2500\\U256F"_ets, },
+        canvas);
 }
 
 TEST(a_new_button, can_receive_focus)
