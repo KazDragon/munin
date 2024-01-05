@@ -28,10 +28,10 @@ if [ ! -f "$EXTERNAL_ROOT/include/gsl/gsl-lite.hpp" ]; then
 fi
 
 # Install Terminal++ dependency
-if [ ! -f "$EXTERNAL_ROOT/include/terminalpp-3.0.2/terminalpp/version.hpp" ]; then
-    wget https://github.com/KazDragon/terminalpp/archive/v3.0.2.tar.gz;
-    tar -xzf v3.0.2.tar.gz;
-    cd terminalpp-3.0.2;
+if [ ! -f "$EXTERNAL_ROOT/include/terminalpp-3.1.0/terminalpp/version.hpp" ]; then
+    wget https://github.com/KazDragon/terminalpp/archive/v3.1.0.tar.gz;
+    tar -xzf v3.1.0.tar.gz;
+    cd terminalpp-3.1.0;
     cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DCMAKE_PREFIX_PATH="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION="3.0.2" .;
     make -j2 && make install;
     cd ..;
