@@ -48,77 +48,31 @@ if (MUNIN_DOC_ONLY)
     return()
 endif()
 
-if (EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    message("Using Conan due to conanbuildinfo.cmake")
-    set(MUNIN_USE_CONAN ON)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
+# Munin requires at least Boost 1.69
+find_package(Boost 1.69.0 REQUIRED)
+
+# Munin requires the nlohmann_json package
+find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
+
+# And of course, Munin is built atop the Terminal++ library, which
+# also requires fmt and gsl-lite.
+find_package(fmt 5.3 CONFIG REQUIRED)
+find_package(terminalpp 3.0.0 CONFIG REQUIRED)
+find_package(gsl-lite 0.38.0 REQUIRED)
+
+# If we are building with Console++, then require that library
+if (MUNIN_WITH_CONSOLEPP)
+    find_package(consolepp 0.1.1 CONFIG REQUIRED)
+    
+    set(MUNIN_PRIVATE_LIBRARIES
+        ${MUNIN_PRIVATE_LIBRARIES}
+        KazDragon::consolepp
+    )
 endif()
 
-if (MUNIN_USE_CONAN)
-    set(MUNIN_PUBLIC_LIBRARIES
-        CONAN_PKG::terminalpp
-        CONAN_PKG::nlohmann_json
-        CONAN_PKG::boost
-    )
-
-    set(MUNIN_PRIVATE_LIBRARIES
-    )
-    
-    if (MUNIN_WITH_CONSOLEPP)
-        set(MUNIN_PRIVATE_LIBRARIES
-            ${MUNIN_PRIVATE_LIBRARIES}
-            CONAN_PKG::consolepp
-        )
-    endif()
-
-    set(MUNIN_TESTER_LIBRARIES
-        KazDragon::munin
-        CONAN_PKG::gtest
-    )
-else()
-    # Munin requires at least Boost 1.69
-    find_package(Boost 1.69.0 REQUIRED)
-
-    # Munin requires the nlohmann_json package
-    find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
-
-    # And of course, Munin is built atop the Terminal++ library, which
-    # also requires fmt and gsl-lite.
-    find_package(fmt 5.3 CONFIG REQUIRED)
-    find_package(terminalpp 3.0.0 CONFIG REQUIRED)
-    find_package(gsl-lite 0.38.0 REQUIRED)
-
-    # If we are building with Console++, then require that library
-    if (MUNIN_WITH_CONSOLEPP)
-        find_package(consolepp 0.1.1 CONFIG REQUIRED)
-    endif()
-
-    # If we are building with tests, then we require the GTest library
-    if (MUNIN_WITH_TESTS)
-        find_package(GTest CONFIG REQUIRED)
-    endif()
-
-    set(MUNIN_PUBLIC_LIBRARIES
-        KazDragon::terminalpp
-        nlohmann_json::nlohmann_json
-        Boost::boost
-    )
-
-    set(MUNIN_PRIVATE_LIBRARIES
-    )
-
-    if (MUNIN_WITH_CONSOLEPP)
-        set(MUNIN_PRIVATE_LIBRARIES
-            ${MUNIN_PRIVATE_LIBRARIES}
-            KazDragon::consolepp
-        )
-    endif()
-
-    set(MUNIN_TESTER_LIBRARIES
-        KazDragon::munin
-        GTest::gmock_main
-    )
+# If we are building with tests, then we require the GTest library
+if (MUNIN_WITH_TESTS)
+    find_package(GTest CONFIG REQUIRED)
 endif()
 
 # When building shared objects, etc., we only want to export certain symbols.
@@ -230,7 +184,9 @@ endif()
 
 target_link_libraries(munin
     PUBLIC
-        ${MUNIN_PUBLIC_LIBRARIES}
+        KazDragon::terminalpp
+        nlohmann_json::nlohmann_json
+        Boost::boost
     PRIVATE
         ${MUNIN_PRIVATE_LIBRARIES}
 )
@@ -372,7 +328,9 @@ target_include_directories(munin_tester
 )
 
 target_link_libraries(munin_tester
-    ${MUNIN_TESTER_LIBRARIES}
+    PRIVATE
+        KazDragon::munin
+        GTest::gmock_main
 )
 
 target_compile_options(munin_tester
@@ -385,9 +343,9 @@ target_compile_options(munin_tester
 
 add_test(munin_test munin_tester)
 
-# For an MSVC, non-Conan build where terminalpp is a shared library, ensure that
+# For an MSVC build where terminalpp is a shared library, ensure that
 # the DLL gets copied into the executable directory so that the tests can run.
-if (MSVC AND NOT MUNIN_USE_CONAN)
+if (MSVC)
     get_target_property(terminalpp_type KazDragon::terminalpp TYPE)
 
     if (terminalpp_type STREQUAL "SHARED_LIBRARY")

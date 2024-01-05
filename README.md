@@ -62,12 +62,6 @@ Munin can be installed from source using CMake.  This requires Boost, Terminal++
     cmake --build .
     sudo cmake --install .
 
-# Installation - Conan
-
-You can also use [the Conan Package Manager](https://conan.io/) to install Munin and its dependencies.
-
-See [the TextRay project](https://github.com/KazDragon/textray) for a project that describes this kind of setup.
-
 # Components:
 
 ## Fundamentals
