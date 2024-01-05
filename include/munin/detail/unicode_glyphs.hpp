@@ -2,10 +2,11 @@
 
 #include <terminalpp/glyph.hpp>
 
-namespace munin { namespace detail { inline namespace unicode {
+namespace munin::detail {
+inline namespace unicode {
 
 // Some uncommon glyphs that are very useful.
-
+// clang-format off
 static constexpr terminalpp::glyph const single_lined_top_left_corner(u8"\U0000250C");
 static constexpr terminalpp::glyph const single_lined_top_right_corner(u8"\U00002510");
 static constexpr terminalpp::glyph const single_lined_bottom_left_corner(u8"\U00002514");
@@ -63,5 +64,6 @@ static constexpr terminalpp::glyph const left_guillemet(u8"\U000000AB");
 static constexpr terminalpp::glyph const right_guillemet(u8"\U000000BB");
 static constexpr terminalpp::glyph const light_cross(u8"\U00002573");
 static constexpr terminalpp::glyph const down_pointing_triangle(u8"\U000025BE");
-
-}}}
+// clang-format on
+}  // namespace unicode
+}  // namespace munin::detail

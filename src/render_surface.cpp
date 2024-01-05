@@ -8,10 +8,8 @@ default_render_surface_capabilities default_capabilities;
 // COLUMN_PROXY::CONSTRUCTOR
 // ==========================================================================
 render_surface::column_proxy::column_proxy(
-    render_surface &surface, 
-    terminalpp::coordinate_type column)
-  : surface_(surface),
-    column_(column)
+    render_surface &surface, terminalpp::coordinate_type column)
+  : surface_(surface), column_(column)
 {
 }
 
@@ -21,7 +19,7 @@ render_surface::column_proxy::column_proxy(
 terminalpp::element &render_surface::column_proxy::operator[](
     terminalpp::coordinate_type row)
 {
-    return surface_.get_element(column_, row);
+  return surface_.get_element(column_, row);
 }
 
 // ==========================================================================
@@ -36,10 +34,8 @@ render_surface::render_surface(terminalpp::canvas &cvs)
 // CONSTRUCTOR
 // ==========================================================================
 render_surface::render_surface(
-    terminalpp::canvas &cvs,
-    render_surface_capabilities const &capabilities)
-  : canvas_(cvs),
-    capabilities_(capabilities)
+    terminalpp::canvas &cvs, render_surface_capabilities const &capabilities)
+  : canvas_(cvs), capabilities_(capabilities)
 {
 }
 
@@ -48,16 +44,15 @@ render_surface::render_surface(
 // ==========================================================================
 bool render_surface::supports_unicode() const
 {
-    return capabilities_.supports_unicode();
+  return capabilities_.supports_unicode();
 }
 
 // ==========================================================================
 // OFFSET_BY
 // ==========================================================================
-void render_surface::offset_by(
-    terminalpp::extent offset)
+void render_surface::offset_by(terminalpp::extent offset)
 {
-    offset_ += offset;
+  offset_ += offset;
 }
 
 // ==========================================================================
@@ -65,7 +60,7 @@ void render_surface::offset_by(
 // ==========================================================================
 terminalpp::extent render_surface::size() const
 {
-    return canvas_.size() - offset_;
+  return canvas_.size() - offset_;
 }
 
 // ==========================================================================
@@ -74,17 +69,16 @@ terminalpp::extent render_surface::size() const
 render_surface::column_proxy render_surface::operator[](
     terminalpp::coordinate_type column)
 {
-    return column_proxy(*this, column);
+  return {*this, column};
 }
 
 // ==========================================================================
 // GET_ELEMENT
 // ==========================================================================
 terminalpp::element &render_surface::get_element(
-    terminalpp::coordinate_type column, 
-    terminalpp::coordinate_type row)
+    terminalpp::coordinate_type column, terminalpp::coordinate_type row)
 {
-    return canvas_[column + offset_.width_][row + offset_.height_];
+  return canvas_[column + offset_.width_][row + offset_.height_];
 }
 
-}
+}  // namespace munin

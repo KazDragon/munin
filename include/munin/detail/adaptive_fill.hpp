@@ -1,6 +1,6 @@
 #include "munin/filled_box.hpp"
 
-namespace munin { namespace detail {
+namespace munin::detail {
 
 // ==========================================================================
 // MAKE_TOP_LEFT_CORNER_FILL
@@ -38,4 +38,4 @@ std::shared_ptr<munin::filled_box> make_bottom_left_corner_fill(
 std::shared_ptr<munin::filled_box> make_bottom_right_corner_fill(
     terminalpp::attribute const &attr);
 
-}}
+}  // namespace munin::detail

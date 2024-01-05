@@ -2,21 +2,21 @@
 #include "munin/detail/unicode_glyphs.hpp"
 #include "munin/render_surface.hpp"
 
-namespace munin { namespace detail {
+namespace munin::detail {
 namespace {
 
-constexpr terminalpp::glyph const default_corner_glyph          = '+';
+constexpr terminalpp::glyph const default_corner_glyph = '+';
 constexpr terminalpp::glyph const default_horizontal_beam_glyph = '-';
-constexpr terminalpp::glyph const default_vertical_beam_glyph   = '|';
+constexpr terminalpp::glyph const default_vertical_beam_glyph = '|';
 
 // ==========================================================================
 // SELECT_TOP_LEFT_CORNER_GLYPH
 // ==========================================================================
 auto select_top_left_corner_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_rounded_top_left_corner
-         : default_corner_glyph;
+  return surface.supports_unicode()
+             ? detail::single_lined_rounded_top_left_corner
+             : default_corner_glyph;
 }
 
 // ==========================================================================
@@ -24,9 +24,9 @@ auto select_top_left_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_top_right_corner_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_rounded_top_right_corner
-         : default_corner_glyph;
+  return surface.supports_unicode()
+             ? detail::single_lined_rounded_top_right_corner
+             : default_corner_glyph;
 }
 
 // ==========================================================================
@@ -34,9 +34,9 @@ auto select_top_right_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_bottom_left_corner_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_rounded_bottom_left_corner
-         : default_corner_glyph;
+  return surface.supports_unicode()
+             ? detail::single_lined_rounded_bottom_left_corner
+             : default_corner_glyph;
 }
 
 // ==========================================================================
@@ -44,9 +44,9 @@ auto select_bottom_left_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_bottom_right_corner_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_rounded_bottom_right_corner
-         : default_corner_glyph;
+  return surface.supports_unicode()
+             ? detail::single_lined_rounded_bottom_right_corner
+             : default_corner_glyph;
 }
 
 // ==========================================================================
@@ -54,9 +54,8 @@ auto select_bottom_right_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_horizontal_beam_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_horizontal_beam
-         : default_horizontal_beam_glyph;
+  return surface.supports_unicode() ? detail::single_lined_horizontal_beam
+                                    : default_horizontal_beam_glyph;
 }
 
 // ==========================================================================
@@ -64,12 +63,11 @@ auto select_horizontal_beam_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_vertical_beam_glyph(render_surface const &surface)
 {
-    return surface.supports_unicode()
-         ? detail::single_lined_vertical_beam
-         : default_vertical_beam_glyph;
+  return surface.supports_unicode() ? detail::single_lined_vertical_beam
+                                    : default_vertical_beam_glyph;
 }
 
-}
+}  // namespace
 
 // ==========================================================================
 // MAKE_TOP_LEFT_CORNER_FILL
@@ -77,14 +75,10 @@ auto select_vertical_beam_glyph(render_surface const &surface)
 std::shared_ptr<munin::filled_box> make_top_left_corner_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_top_left_corner_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface) {
+        return terminalpp::element{select_top_left_corner_glyph(surface), attr};
+      });
 }
 
 // ==========================================================================
@@ -93,14 +87,10 @@ std::shared_ptr<munin::filled_box> make_top_left_corner_fill(
 std::shared_ptr<munin::filled_box> make_horizontal_beam_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_horizontal_beam_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface) {
+        return terminalpp::element{select_horizontal_beam_glyph(surface), attr};
+      });
 }
 
 // ==========================================================================
@@ -109,14 +99,11 @@ std::shared_ptr<munin::filled_box> make_horizontal_beam_fill(
 std::shared_ptr<munin::filled_box> make_top_right_corner_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_top_right_corner_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface) {
+        return terminalpp::element{
+            select_top_right_corner_glyph(surface), attr};
+      });
 }
 
 // ==========================================================================
@@ -125,14 +112,10 @@ std::shared_ptr<munin::filled_box> make_top_right_corner_fill(
 std::shared_ptr<munin::filled_box> make_vertical_beam_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_vertical_beam_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface) {
+        return terminalpp::element{select_vertical_beam_glyph(surface), attr};
+      });
 }
 
 // ==========================================================================
@@ -141,14 +124,12 @@ std::shared_ptr<munin::filled_box> make_vertical_beam_fill(
 std::shared_ptr<munin::filled_box> make_bottom_left_corner_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_bottom_left_corner_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface)
+      {
+        return terminalpp::element{
+            select_bottom_left_corner_glyph(surface), attr};
+      });
 }
 
 // ==========================================================================
@@ -157,14 +138,12 @@ std::shared_ptr<munin::filled_box> make_bottom_left_corner_fill(
 std::shared_ptr<munin::filled_box> make_bottom_right_corner_fill(
     terminalpp::attribute const &attr)
 {
-    return munin::make_fill(
-        [&attr](render_surface &surface)
-        {
-            return terminalpp::element{
-                select_bottom_right_corner_glyph(surface), 
-                attr
-            };
-        });
+  return munin::make_fill(
+      [&attr](render_surface &surface)
+      {
+        return terminalpp::element{
+            select_bottom_right_corner_glyph(surface), attr};
+      });
 }
-    
-}}
+
+}  // namespace munin::detail

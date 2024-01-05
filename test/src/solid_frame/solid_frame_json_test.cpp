@@ -3,6 +3,6 @@
 
 TEST_F(a_solid_frame, reports_attributes_as_json)
 {
-    nlohmann::json json = frame_.to_json();
-    ASSERT_EQ("solid_frame", json["type"]);
+  nlohmann::json json = frame_.to_json();
+  ASSERT_EQ("solid_frame", json["type"]);
 }

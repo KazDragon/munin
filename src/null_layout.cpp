@@ -7,9 +7,9 @@ namespace munin {
 // ==========================================================================
 terminalpp::extent null_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any>                 const &hints) const
+    std::vector<boost::any> const &hints) const
 {
-    return {};
+  return {};
 }
 
 // ==========================================================================
@@ -17,8 +17,8 @@ terminalpp::extent null_layout::do_get_preferred_size(
 // ==========================================================================
 void null_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any>                 const &hints,
-    terminalpp::extent                             size) const
+    std::vector<boost::any> const &hints,
+    terminalpp::extent size) const
 {
 }
 
@@ -27,9 +27,7 @@ void null_layout::do_layout(
 // ==========================================================================
 nlohmann::json null_layout::do_to_json() const
 {
-    return {
-        { "type", "null_layout" }
-    };
+  return {{"type", "null_layout"}};
 }
 
 // ==========================================================================
@@ -37,8 +35,7 @@ nlohmann::json null_layout::do_to_json() const
 // ==========================================================================
 std::unique_ptr<layout> make_null_layout()
 {
-    return std::unique_ptr<layout>(new null_layout);
+  return std::unique_ptr<layout>(new null_layout);
 }
 
-}
-
+}  // namespace munin

@@ -8,7 +8,7 @@ namespace munin {
 // ==========================================================================
 void component::set_position(terminalpp::point const &position)
 {
-    do_set_position(position);
+  do_set_position(position);
 }
 
 // ==========================================================================
@@ -16,7 +16,7 @@ void component::set_position(terminalpp::point const &position)
 // ==========================================================================
 terminalpp::point component::get_position() const
 {
-    return do_get_position();
+  return do_get_position();
 }
 
 // ==========================================================================
@@ -24,9 +24,9 @@ terminalpp::point component::get_position() const
 // ==========================================================================
 void component::set_size(terminalpp::extent const &size)
 {
-    assert(size.width_ >= 0);
-    assert(size.height_ >= 0);
-    do_set_size(size);
+  assert(size.width_ >= 0);
+  assert(size.height_ >= 0);
+  do_set_size(size);
 }
 
 // ==========================================================================
@@ -34,7 +34,7 @@ void component::set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent component::get_size() const
 {
-    return do_get_size();
+  return do_get_size();
 }
 
 // ==========================================================================
@@ -42,7 +42,7 @@ terminalpp::extent component::get_size() const
 // ==========================================================================
 terminalpp::extent component::get_preferred_size() const
 {
-    return do_get_preferred_size();
+  return do_get_preferred_size();
 }
 
 // ==========================================================================
@@ -50,7 +50,7 @@ terminalpp::extent component::get_preferred_size() const
 // ==========================================================================
 bool component::has_focus() const
 {
-    return do_has_focus();
+  return do_has_focus();
 }
 
 // ==========================================================================
@@ -58,7 +58,7 @@ bool component::has_focus() const
 // ==========================================================================
 void component::set_focus()
 {
-    do_set_focus();
+  do_set_focus();
 }
 
 // ==========================================================================
@@ -66,7 +66,7 @@ void component::set_focus()
 // ==========================================================================
 void component::lose_focus()
 {
-    do_lose_focus();
+  do_lose_focus();
 }
 
 // ==========================================================================
@@ -74,7 +74,7 @@ void component::lose_focus()
 // ==========================================================================
 void component::focus_next()
 {
-    do_focus_next();
+  do_focus_next();
 }
 
 // ==========================================================================
@@ -82,7 +82,7 @@ void component::focus_next()
 // ==========================================================================
 void component::focus_previous()
 {
-    do_focus_previous();
+  do_focus_previous();
 }
 
 // ==========================================================================
@@ -90,7 +90,7 @@ void component::focus_previous()
 // ==========================================================================
 bool component::get_cursor_state() const
 {
-    return do_get_cursor_state();
+  return do_get_cursor_state();
 }
 
 // ==========================================================================
@@ -98,7 +98,7 @@ bool component::get_cursor_state() const
 // ==========================================================================
 terminalpp::point component::get_cursor_position() const
 {
-    return do_get_cursor_position();
+  return do_get_cursor_position();
 }
 
 // ==========================================================================
@@ -106,7 +106,7 @@ terminalpp::point component::get_cursor_position() const
 // ==========================================================================
 void component::set_cursor_position(terminalpp::point const &position)
 {
-    do_set_cursor_position(position);
+  do_set_cursor_position(position);
 }
 
 // ==========================================================================
@@ -115,7 +115,7 @@ void component::set_cursor_position(terminalpp::point const &position)
 void component::draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-    do_draw(surface, region);
+  do_draw(surface, region);
 }
 
 // ==========================================================================
@@ -123,7 +123,7 @@ void component::draw(
 // ==========================================================================
 void component::event(boost::any const &ev)
 {
-    do_event(ev);
+  do_event(ev);
 }
 
 // ==========================================================================
@@ -131,7 +131,7 @@ void component::event(boost::any const &ev)
 // ==========================================================================
 nlohmann::json component::to_json() const
 {
-    return do_to_json();
+  return do_to_json();
 }
 
-}
+}  // namespace munin

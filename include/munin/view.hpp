@@ -1,51 +1,50 @@
 #pragma once
 
-#include <munin/container.hpp>
-#include <munin/layout.hpp>
+#include "munin/container.hpp"
+#include "munin/layout.hpp"
 #include <boost/any.hpp>
 #include <memory>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-namespace munin { namespace detail {
+namespace munin {
+namespace detail {
 
-// Overload where the next argument is convertible to a component.    
+// Overload where the next argument is convertible to a component.
 template <class... Args>
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    std::shared_ptr<component> const &comp, 
-    Args&&... args);
+    std::shared_ptr<component> const &comp,
+    Args &&...args);
 
 // Overload where the next argument is not convertible to a component.
 // In this case, the argument is automatically wrapped in a Boost.Any
 // object and passed as the layout hint.
 template <
-    class Hint, 
+    class Hint,
     class = typename std::enable_if<
-        !std::is_convertible<Hint, std::shared_ptr<component>>::value
-    >::type,
-    class... Args
->
+        !std::is_convertible<Hint, std::shared_ptr<component>>::value>::type,
+    class... Args>
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    Hint&& hint, 
-    Args&&... args);
+    Hint &&hint,
+    Args &&...args);
 
 // Overload where there is no next argument.  This is the terminal case.
 inline void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev)
 {
-    if (prev)
-    {
-        content->add_component(prev);
-    }
+  if (prev)
+  {
+    content->add_component(prev);
+  }
 }
-    
-}
+
+}  // namespace detail
 
 //* =========================================================================
 /// \brief Constructs a container with a given layout and components.
@@ -57,7 +56,7 @@ inline void view_helper(
 ///     auto v = munin::view(
 ///         munin::make_compass_layout(),
 ///         // Note: passing both components and layout hints.
-///         munin::make_image("Name: "), 
+///         munin::make_image("Name: "),
 ///         munin::compass_layout::heading::west,
 ///         munin::make_fill(' '),
 ///         munin::compass_layout::heading::centre);
@@ -72,54 +71,48 @@ inline void view_helper(
 /// \endcode
 //* =========================================================================
 template <class... Args>
-std::shared_ptr<container> view(
-    std::unique_ptr<layout> lyt,
-    Args&&... args)
+std::shared_ptr<container> view(std::unique_ptr<layout> lyt, Args &&...args)
 {
-    auto comp = munin::make_container();
-    comp->set_layout(std::move(lyt));
-    detail::view_helper(
-        comp, std::shared_ptr<component>{}, std::forward<Args>(args)...);
-    
-    return comp;
+  auto comp = munin::make_container();
+  comp->set_layout(std::move(lyt));
+  detail::view_helper(
+      comp, std::shared_ptr<component>{}, std::forward<Args>(args)...);
+
+  return comp;
 }
 
 namespace detail {
-    
-template <class... Args>
-void view_helper(
-    std::shared_ptr<container> const &content, 
-    std::shared_ptr<component> const &prev,
-    std::shared_ptr<component> const &comp, 
-    Args&&... args)
-{
-    if (prev)
-    {
-        content->add_component(prev);
-    }
-    
-    view_helper(content, comp, std::forward<Args>(args)...);
-}
 
-template <
-    class Hint, 
-    class,
-    class... Args
->
+template <class... Args>
 void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev,
-    Hint&& hint, 
-    Args&&... args)
+    std::shared_ptr<component> const &comp,
+    Args &&...args)
 {
-    if (prev)
-    {
-        content->add_component(prev, boost::any(std::forward<Hint>(hint)));
-    }
-    
-    view_helper(content, {}, std::forward<Args>(args)...);
-}
-    
+  if (prev)
+  {
+    content->add_component(prev);
+  }
+
+  view_helper(content, comp, std::forward<Args>(args)...);
 }
 
+template <class Hint, class, class... Args>
+void view_helper(
+    std::shared_ptr<container> const &content,
+    std::shared_ptr<component> const &prev,
+    Hint &&hint,
+    Args &&...args)
+{
+  if (prev)
+  {
+    content->add_component(prev, boost::any(std::forward<Hint>(hint)));
+  }
+
+  view_helper(content, {}, std::forward<Args>(args)...);
 }
+
+}  // namespace detail
+
+}  // namespace munin
