@@ -131,7 +131,7 @@ jobs:
 
       - name: Zero test counters
         shell: bash
-        run: ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build --zerocounters -q
+        run: ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-11 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build --zerocounters -q
 
       - name: Test
         working-directory: ${{runner.workspace}}/munin/build
@@ -141,9 +141,9 @@ jobs:
       - name: Calculate coverage
         shell: bash
         run: |
-          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build  --capture --output-file coverage.info;
-          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --remove coverage.info '*/test/*' '/usr/*' '*/3party/*' --output-file coverage.info;
-          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-9 --list coverage.info;
+          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-11 --base-directory ${{runner.workspace}}/munin/build --directory ${{runner.workspace}}/munin/build  --capture --output-file coverage.info;
+          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-11 --remove coverage.info '*/test/*' '/usr/*' '*/3party/*' --output-file coverage.info;
+          ${{ steps.lcov.outputs.bin }} --gcov-tool=gcov-11 --list coverage.info;
 
       - name: Post coverage to Coveralls
         uses: coverallsapp/github-action@master
