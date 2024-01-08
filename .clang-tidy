@@ -11,6 +11,7 @@ Checks: >
   cppcoreguidelines-special-member-functions,
   -google-readability-todo,
   -misc-no-recursion,
+  -misc-non-private-member-variables-in-classes,
   -misc-unused-parameters,
   -modernize-avoid-c-arrays,
   -modernize-use-trailing-return-type,

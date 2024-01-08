@@ -1,3 +1,5 @@
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
 #include <munin/button.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
@@ -5,39 +7,64 @@
 #include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::ValuesIn;
 
 TEST(a_new_button, can_be_constructed_from_a_string)
 {
-  auto const size = terminalpp::extent{6, 3};
+  static auto const button_size = terminalpp::extent{6, 3};
+  static auto const canvas_size = terminalpp::extent{8, 5};
 
   auto button = munin::make_button(" OK ");
-  button->set_size(size);
+  button->set_size(button_size);
 
-  terminalpp::canvas canvas(size);
+  terminalpp::canvas canvas(canvas_size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface(canvas);
+  surface.offset_by({1, 1});
+  button->draw(surface);
 
-  button->draw(surface, {{}, size});
-
-  ASSERT_EQ('O', canvas[2][1]);
-  ASSERT_EQ('K', canvas[3][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          R"(XXXXXXXX)"_ts,
+          R"(X\U256D\U2500\U2500\U2500\U2500\U256EX)"_ets,
+          R"(X\U2502 OK \U2502X)"_ets,
+          R"(X\U2570\U2500\U2500\U2500\U2500\U256FX)"_ets,
+          R"(XXXXXXXX)"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST(a_new_button, can_be_constructed_from_a_terminal_string)
 {
-  auto const size = terminalpp::extent{8, 3};
+  auto const button_size = terminalpp::extent{8, 3};
+  auto const canvas_size = terminalpp::extent{10, 5};
 
-  using namespace terminalpp::literals;
   auto button = munin::make_button("CANCEL"_ts);
-  button->set_size(size);
+  button->set_size(button_size);
 
-  terminalpp::canvas canvas(size);
+  terminalpp::canvas canvas(canvas_size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface(canvas);
+  surface.offset_by({1, 1});
 
-  button->draw(surface, {{}, size});
+  button->draw(surface);
 
-  ASSERT_EQ('A', canvas[2][1]);
-  ASSERT_EQ('E', canvas[5][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          R"(XXXXXXXXXX)"_ts,
+          R"(X\U256D\U2500\U2500\U2500\U2500\U2500\U2500\U256EX)"_ets,
+          R"(X\U2502CANCEL\U2502X)"_ets,
+          R"(X\U2570\U2500\U2500\U2500\U2500\U2500\U2500\U256FX)"_ets,
+          R"(XXXXXXXXXX)"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST(a_new_button, can_receive_focus)

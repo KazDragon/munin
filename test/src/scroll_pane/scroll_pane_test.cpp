@@ -1,3 +1,5 @@
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
 #include "mock/component.hpp"
 #include <munin/detail/unicode_glyphs.hpp>
 #include <munin/render_surface.hpp>
@@ -5,11 +7,11 @@
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <gtest/gtest.h>
 
-using testing::_;
+using namespace terminalpp::literals;  // NOLINT
+using testing::_;                      // NOLINT
 using testing::Return;
 using testing::ReturnPointee;
 using testing::SaveArg;
-using namespace terminalpp::literals;
 
 namespace {
 
@@ -65,49 +67,49 @@ class a_new_scroll_pane : public testing::Test
 TEST_F(a_new_scroll_pane, draws_the_component_within_its_frame)
 {
   terminalpp::canvas canvas({4, 4});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scroll_pane->set_size({4, 4});
+
+  munin::render_surface surface{canvas};
   scroll_pane->draw(surface, {{0, 0}, {4, 4}});
 
-  ASSERT_EQ(munin::detail::single_lined_rounded_top_left_corner, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(munin::detail::single_lined_rounded_top_right_corner, canvas[3][0]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas[2][1]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[3][1]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'2'}, canvas[2][2]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[3][2]);
-  ASSERT_EQ(
-      munin::detail::single_lined_rounded_bottom_left_corner, canvas[0][3]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[1][3]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][3]);
-  ASSERT_EQ(
-      munin::detail::single_lined_rounded_bottom_right_corner, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            munin::detail::single_lined_rounded_top_left_corner,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_rounded_top_right_corner,
+          },
+          {
+            munin::detail::single_lined_vertical_beam,
+            '0',
+            '1',
+            munin::detail::single_lined_cross,
+          },
+          {
+            munin::detail::single_lined_vertical_beam,
+            '1',
+            '2',
+            munin::detail::single_lined_vertical_beam,
+          },
+          {
+            munin::detail::single_lined_rounded_bottom_left_corner,
+            munin::detail::single_lined_cross,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_rounded_bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_new_scroll_pane, tracks_the_cursor_in_the_inner_component)
 {
   terminalpp::canvas canvas({4, 4});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scroll_pane->set_size({4, 4});
 
@@ -115,26 +117,39 @@ TEST_F(a_new_scroll_pane, tracks_the_cursor_in_the_inner_component)
       .WillByDefault(Return(terminalpp::point(9, 9)));
   inner_component_->on_cursor_position_changed();
 
+  munin::render_surface surface{canvas};
   scroll_pane->draw(surface, {{0, 0}, {4, 4}});
 
-  ASSERT_EQ(munin::detail::single_lined_rounded_top_left_corner, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(munin::detail::single_lined_rounded_top_right_corner, canvas[3][0]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(terminalpp::element{'6'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'7'}, canvas[2][1]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[3][1]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(terminalpp::element{'7'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'8'}, canvas[2][2]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[3][2]);
-  ASSERT_EQ(
-      munin::detail::single_lined_rounded_bottom_left_corner, canvas[0][3]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][3]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[2][3]);
-  ASSERT_EQ(
-      munin::detail::single_lined_rounded_bottom_right_corner, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            munin::detail::single_lined_rounded_top_left_corner,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_rounded_top_right_corner,
+          },
+          {
+            munin::detail::single_lined_vertical_beam,
+            '6',
+            '7',
+            munin::detail::single_lined_vertical_beam,
+          },
+          {
+            munin::detail::single_lined_vertical_beam,
+            '7',
+            '8',
+            munin::detail::single_lined_cross,
+          },
+          {
+            munin::detail::single_lined_rounded_bottom_left_corner,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_cross,
+            munin::detail::single_lined_rounded_bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -178,14 +193,7 @@ TEST_F(
     highlights_the_whole_frame_when_the_underlying_component_receives_focus)
 {
   terminalpp::canvas canvas({4, 4});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scroll_pane->set_size({4, 4});
   scroll_pane->set_highlight_attribute(highlight_attribute);
@@ -193,24 +201,39 @@ TEST_F(
   ON_CALL(*inner_component_, do_has_focus()).WillByDefault(Return(true));
   inner_component_->on_focus_set();
 
+  munin::render_surface surface{canvas};
   scroll_pane->draw(surface, {{0, 0}, {4, 4}});
 
-  EXPECT_EQ(highlighted_single_lined_rounded_top_left_corner, canvas[0][0]);
-  EXPECT_EQ(highlighted_single_lined_horizontal_beam, canvas[1][0]);
-  EXPECT_EQ(highlighted_single_lined_horizontal_beam, canvas[2][0]);
-  EXPECT_EQ(highlighted_single_lined_rounded_top_right_corner, canvas[3][0]);
-  EXPECT_EQ(highlighted_single_lined_vertical_beam, canvas[0][1]);
-  EXPECT_EQ(terminalpp::element{'0'}, canvas[1][1]);
-  EXPECT_EQ(terminalpp::element{'1'}, canvas[2][1]);
-  EXPECT_EQ(highlighted_single_lined_cross, canvas[3][1]);
-  EXPECT_EQ(highlighted_single_lined_vertical_beam, canvas[0][2]);
-  EXPECT_EQ(terminalpp::element{'1'}, canvas[1][2]);
-  EXPECT_EQ(terminalpp::element{'2'}, canvas[2][2]);
-  EXPECT_EQ(highlighted_single_lined_vertical_beam, canvas[3][2]);
-  EXPECT_EQ(highlighted_single_lined_rounded_bottom_left_corner, canvas[0][3]);
-  EXPECT_EQ(highlighted_single_lined_cross, canvas[1][3]);
-  EXPECT_EQ(highlighted_single_lined_horizontal_beam, canvas[2][3]);
-  EXPECT_EQ(highlighted_single_lined_rounded_bottom_right_corner, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            highlighted_single_lined_rounded_top_left_corner,
+            highlighted_single_lined_horizontal_beam,
+            highlighted_single_lined_horizontal_beam,
+            highlighted_single_lined_rounded_top_right_corner,
+          },
+          {
+            highlighted_single_lined_vertical_beam,
+            '0',
+            '1',
+            highlighted_single_lined_cross,
+          },
+          {
+            highlighted_single_lined_vertical_beam,
+            '1',
+            '2',
+            highlighted_single_lined_vertical_beam,
+          },
+          {
+            highlighted_single_lined_rounded_bottom_left_corner,
+            highlighted_single_lined_cross,
+            highlighted_single_lined_horizontal_beam,
+            highlighted_single_lined_rounded_bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -254,14 +277,7 @@ TEST_F(
     lowlights_the_whole_frame_when_the_underlying_component_loses_focus)
 {
   terminalpp::canvas canvas({4, 4});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scroll_pane->set_size({4, 4});
   scroll_pane->set_highlight_attribute(highlight_attribute);
@@ -273,24 +289,39 @@ TEST_F(
   ON_CALL(*inner_component_, do_has_focus()).WillByDefault(Return(false));
   inner_component_->on_focus_lost();
 
+  munin::render_surface surface{canvas};
   scroll_pane->draw(surface, {{0, 0}, {4, 4}});
 
-  EXPECT_EQ(lowlighted_single_lined_rounded_top_left_corner, canvas[0][0]);
-  EXPECT_EQ(lowlighted_single_lined_horizontal_beam, canvas[1][0]);
-  EXPECT_EQ(lowlighted_single_lined_horizontal_beam, canvas[2][0]);
-  EXPECT_EQ(lowlighted_single_lined_rounded_top_right_corner, canvas[3][0]);
-  EXPECT_EQ(lowlighted_single_lined_vertical_beam, canvas[0][1]);
-  EXPECT_EQ(terminalpp::element{'0'}, canvas[1][1]);
-  EXPECT_EQ(terminalpp::element{'1'}, canvas[2][1]);
-  EXPECT_EQ(lowlighted_single_lined_cross, canvas[3][1]);
-  EXPECT_EQ(lowlighted_single_lined_vertical_beam, canvas[0][2]);
-  EXPECT_EQ(terminalpp::element{'1'}, canvas[1][2]);
-  EXPECT_EQ(terminalpp::element{'2'}, canvas[2][2]);
-  EXPECT_EQ(lowlighted_single_lined_vertical_beam, canvas[3][2]);
-  EXPECT_EQ(lowlighted_single_lined_rounded_bottom_left_corner, canvas[0][3]);
-  EXPECT_EQ(lowlighted_single_lined_cross, canvas[1][3]);
-  EXPECT_EQ(lowlighted_single_lined_horizontal_beam, canvas[2][3]);
-  EXPECT_EQ(lowlighted_single_lined_rounded_bottom_right_corner, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            lowlighted_single_lined_rounded_top_left_corner,
+            lowlighted_single_lined_horizontal_beam,
+            lowlighted_single_lined_horizontal_beam,
+            lowlighted_single_lined_rounded_top_right_corner,
+          },
+          {
+            lowlighted_single_lined_vertical_beam,
+            '0',
+            '1',
+            lowlighted_single_lined_cross,
+          },
+          {
+            lowlighted_single_lined_vertical_beam,
+            '1',
+            '2',
+            lowlighted_single_lined_vertical_beam,
+          },
+          {
+            lowlighted_single_lined_rounded_bottom_left_corner,
+            lowlighted_single_lined_cross,
+            lowlighted_single_lined_horizontal_beam,
+            lowlighted_single_lined_rounded_bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST(

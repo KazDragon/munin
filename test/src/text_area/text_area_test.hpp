@@ -11,7 +11,6 @@ class a_text_area_base
   terminalpp::canvas canvas_{{0, 0}};
 
   void fill_canvas(terminalpp::extent canvas_size);
-  void verify_oob_is_untouched();
 };
 
 class a_text_area : public a_text_area_base, public testing::Test

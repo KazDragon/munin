@@ -1,13 +1,25 @@
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
+#include "redraw.hpp"
 #include <munin/list.hpp>
 #include <munin/render_surface.hpp>
-#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
-#include <boost/range/algorithm_ext/insert.hpp>
 #include <gtest/gtest.h>
 
-using namespace terminalpp::literals;
+using namespace terminalpp::literals;  // NOLINT
+
+namespace {
+
+constexpr auto negative_attr = []
+{
+  terminalpp::attribute attr;
+  attr.polarity_ = terminalpp::graphics::polarity::negative;
+  return attr;
+}();
+
+}
 
 TEST(a_list, is_a_component)
 {
@@ -23,13 +35,7 @@ class a_new_list : public testing::Test
   a_new_list()
   {
     list_->set_size(list_size);
-
-    terminalpp::for_each_in_region(
-        canvas_,
-        {{}, canvas_.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row) { elem = 'X'; });
+    fill_canvas(canvas_, 'X');
   }
 
   static constexpr terminalpp::extent list_size{6, 3};
@@ -38,8 +44,6 @@ class a_new_list : public testing::Test
   terminalpp::canvas canvas_{list_size};
   munin::render_surface surface_{canvas_};
 };
-
-constexpr terminalpp::extent a_new_list::list_size;
 
 }  // namespace
 
@@ -59,37 +63,27 @@ TEST_F(a_new_list, draws_empty_space)
 {
   list_->draw(surface_, {{}, list_size});
 
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "      "_ts,
+          "      "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_new_list, requests_a_redraw_when_setting_the_list_items)
 {
   std::vector<terminalpp::rectangle> requested_regions;
-  list_->on_redraw.connect([&requested_regions](auto const &regions)
-                           { requested_regions = regions; });
+  list_->on_redraw.connect(append_regions_to_container(requested_regions));
 
   std::vector<terminalpp::string> items = {"test"_ts};
   list_->set_items(items);
 
   auto const expected_bounds = terminalpp::rectangle{{}, list_size};
-  ASSERT_EQ(1u, requested_regions.size());
+  ASSERT_EQ(1U, requested_regions.size());
   ASSERT_EQ(expected_bounds, requested_regions[0]);
 }
 
@@ -169,8 +163,8 @@ TEST_F(a_list_with_an_item, has_no_selected_item)
 
 TEST_F(a_list_with_an_item, has_a_preferred_size_of_that_item)
 {
-  auto const expected_preferred_size =
-      terminalpp::extent{terminalpp::coordinate_type(item_text.size()), 1};
+  auto const expected_preferred_size = terminalpp::extent{
+      static_cast<terminalpp::coordinate_type>(item_text.size()), 1};
 
   ASSERT_EQ(expected_preferred_size, list_->get_preferred_size());
 }
@@ -179,24 +173,15 @@ TEST_F(a_list_with_an_item, draws_that_item)
 {
   list_->draw(surface_, {{}, list_size});
 
-  ASSERT_EQ(terminalpp::element{'t'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'s'}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{'t'}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "test  "_ts,
+          "      "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_list_with_an_item, reports_a_selected_item_as_selected)
@@ -303,31 +288,15 @@ TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
 {
   list_->draw(surface_, {{}, list_size});
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element('t', negative_attr), canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element('e', negative_attr), canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element('s', negative_attr), canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element('t', negative_attr), canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { "test  ", negative_attr },
+          "      "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -379,8 +348,8 @@ TEST_F(
     a_list_with_two_items,
     has_a_preferred_size_of_the_largest_item_and_the_number_of_items)
 {
-  auto const expected_preferred_size =
-      terminalpp::extent{terminalpp::coordinate_type(item_text1.size()), 2};
+  auto const expected_preferred_size = terminalpp::extent{
+      static_cast<terminalpp::coordinate_type>(item_text1.size()), 2};
 
   ASSERT_EQ(expected_preferred_size, list_->get_preferred_size());
 }
@@ -389,24 +358,15 @@ TEST_F(a_list_with_two_items, draws_those_items)
 {
   list_->draw(surface_, {{}, list_size});
 
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'i'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{'n'}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "l0    "_ts,
+          "line1 "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_list_with_two_items, reports_a_selected_item_as_selected)
@@ -527,31 +487,15 @@ TEST_F(
 {
   list_->draw(surface_, {{}, list_size});
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element('l', negative_attr), canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element('0', negative_attr), canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'i'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{'n'}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { "l0    ", negative_attr },
+          "line1 "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -561,9 +505,7 @@ TEST_F(
   list_->draw(surface_, {{}, list_size});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  list_->on_redraw.connect(
-      [&redraw_regions](auto const &regions)
-      { boost::insert(redraw_regions, redraw_regions.end(), regions); });
+  list_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   list_->select_item(std::nullopt);
 
@@ -572,31 +514,15 @@ TEST_F(
     list_->draw(surface_, region);
   }
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'i'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{'n'}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "l0    "_ts,
+          "line1 "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -657,31 +583,15 @@ TEST_F(
 {
   list_->draw(surface_, {{}, list_size});
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element('l', negative_attr), canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element('i', negative_attr), canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element('n', negative_attr), canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element('e', negative_attr), canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element('1', negative_attr), canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "l0    "_ts,
+          { "line1 ", negative_attr },
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -722,9 +632,7 @@ TEST_F(
   list_->draw(surface_, {{}, list_size});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  list_->on_redraw.connect(
-      [&redraw_regions](auto const &regions)
-      { boost::insert(redraw_regions, redraw_regions.end(), regions); });
+  list_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   list_->select_item(1);
 
@@ -733,31 +641,15 @@ TEST_F(
     list_->draw(surface_, region);
   }
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element('l', negative_attr), canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element('i', negative_attr), canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element('n', negative_attr), canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element('e', negative_attr), canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element('1', negative_attr), canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "l0    "_ts,
+          { "line1 ", negative_attr },
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -767,9 +659,7 @@ TEST_F(
   list_->draw(surface_, {{}, list_size});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  list_->on_redraw.connect(
-      [&redraw_regions](auto const &regions)
-      { boost::insert(redraw_regions, redraw_regions.end(), regions); });
+  list_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   list_->select_item(0);
 
@@ -778,31 +668,15 @@ TEST_F(
     list_->draw(surface_, region);
   }
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element('l', negative_attr), canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element('0', negative_attr), canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element(' ', negative_attr), canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'i'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{'n'}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { "l0    ", negative_attr },
+          "line1 "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -812,9 +686,7 @@ TEST_F(
   list_->draw(surface_, {{}, list_size});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  list_->on_redraw.connect(
-      [&redraw_regions](auto const &regions)
-      { boost::insert(redraw_regions, redraw_regions.end(), regions); });
+  list_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   list_->select_item(std::nullopt);
 
@@ -823,31 +695,15 @@ TEST_F(
     list_->draw(surface_, region);
   }
 
-  auto const negative_attr = []
-  {
-    terminalpp::attribute attr;
-    attr.polarity_ = terminalpp::graphics::polarity::negative;
-    return attr;
-  }();
-
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'0'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][0]);
-  ASSERT_EQ(terminalpp::element{'l'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'i'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{'n'}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[3][1]);
-  ASSERT_EQ(terminalpp::element{'1'}, canvas_[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[4][2]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "l0    "_ts,
+          "line1 "_ts,
+          "      "_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(

@@ -120,6 +120,19 @@ class MUNIN_EXPORT component
   /// \brief Draws the component.
   ///
   /// \param surface the surface on which the component should draw itself.
+  /// \par
+  /// Draws the whole component, as if
+  /// \code
+  /// component.draw(surface, {{}, component.size()});
+  /// \endcode
+  /// had been called.
+  //* =====================================================================
+  void draw(render_surface &surface) const;
+
+  //* =====================================================================
+  /// \brief Draws the component.
+  ///
+  /// \param surface the surface on which the component should draw itself.
   /// \param region the region relative to this component's origin that
   /// should be drawn.
   //* =====================================================================

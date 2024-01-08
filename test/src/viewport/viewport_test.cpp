@@ -1,5 +1,7 @@
 #include "viewport_test.hpp"
+#include "assert_similar.hpp"
 #include "fill_canvas.hpp"
+#include "redraw.hpp"
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
@@ -8,9 +10,9 @@
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 #include <gmock/gmock.h>
-#include <gtest/gtest.h>
 
-using testing::_;
+using namespace terminalpp::literals;  // NOLINT
+using testing::_;                      // NOLINT
 using testing::Return;
 using testing::ReturnPointee;
 using testing::SaveArg;
@@ -51,18 +53,15 @@ TEST_F(a_new_viewport, of_zero_size_draws_nothing)
   surface.offset_by({1, 1});
   viewport_->draw(surface, {{}, viewport_->get_size()});
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxx"_ts,
+          "xxxx"_ts,
+          "xxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 namespace {
@@ -224,12 +223,7 @@ TEST_F(a_viewport, forwards_repaint_events_from_the_tracked_component)
   viewport_->set_size({3, 3});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  viewport_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_regions.insert(
-            redraw_regions.end(), regions.begin(), regions.end());
-      });
+  viewport_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   auto const tracked_redraw_region = terminalpp::rectangle{{}, {3, 3}};
   auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
@@ -251,12 +245,7 @@ TEST_F(a_viewport, clips_repaint_events_that_extend_out_of_the_visible_area)
   viewport_->set_size({3, 3});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  viewport_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_regions.insert(
-            redraw_regions.end(), regions.begin(), regions.end());
-      });
+  viewport_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   auto const tracked_redraw_region = terminalpp::rectangle{{}, {4, 4}};
   auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
@@ -278,12 +267,7 @@ TEST_F(a_viewport, discards_repaint_events_that_are_not_in_the_visible_area)
   viewport_->set_size({3, 3});
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  viewport_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_regions.insert(
-            redraw_regions.end(), regions.begin(), regions.end());
-      });
+  viewport_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   auto const tracked_redraw_region = terminalpp::rectangle{{3, 0}, {1, 3}};
 
@@ -311,12 +295,7 @@ TEST_F(
   tracked_component_->on_cursor_position_changed();
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  viewport_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_regions.insert(
-            redraw_regions.end(), regions.begin(), regions.end());
-      });
+  viewport_->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   auto const tracked_redraw_region = terminalpp::rectangle{{2, 2}, {3, 3}};
   auto const expected_redraw_region = terminalpp::rectangle{{}, {3, 3}};
@@ -397,12 +376,15 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
   munin::render_surface surface{cvs};
   viewport_->draw(surface, {{}, viewport_->get_size()});
 
-  ASSERT_EQ(terminalpp::element{'f'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'g'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'h'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'j'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'k'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'l'}, cvs[2][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "fghx"_ts,
+          "jklx"_ts,
+          "xxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)

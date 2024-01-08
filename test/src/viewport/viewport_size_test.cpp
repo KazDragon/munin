@@ -1,3 +1,4 @@
+#include "assert_similar.hpp"
 #include "fill_canvas.hpp"
 #include "viewport_test.hpp"
 #include <munin/render_surface.hpp>
@@ -7,7 +8,8 @@
 #include <gtest/gtest.h>
 #include <vector>
 
-using testing::_;
+using namespace terminalpp::literals;  // NOLINT
+using testing::_;                      // NOLINT
 using testing::Return;
 using testing::ValuesIn;
 
@@ -163,8 +165,12 @@ TEST_F(
   munin::render_surface surface{cvs};
   viewport_->draw(surface, {{}, viewport_->get_size()});
 
-  ASSERT_EQ(terminalpp::element{'g'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'h'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'k'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'l'}, cvs[1][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "gh"_ts,
+          "kl"_ts,
+          // clang-format on
+      },
+      cvs);
 }

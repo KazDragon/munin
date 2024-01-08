@@ -1,15 +1,23 @@
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
 #include "mock/component.hpp"
+#include "redraw.hpp"
 #include <munin/detail/unicode_glyphs.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/vertical_scrollbar.hpp>
-#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::Return;
 using testing::ValuesIn;
 
 namespace {
+
+auto const single_lined_vertical_beam =
+    terminalpp::string{munin::detail::single_lined_vertical_beam};
+auto const single_lined_cross =
+    terminalpp::string{munin::detail::single_lined_cross};
 
 class a_vertical_scrollbar : public testing::Test
 {
@@ -30,33 +38,21 @@ TEST_F(a_new_vertical_scrollbar, has_a_1x0_preferred_size)
 TEST_F(a_new_vertical_scrollbar, draws_nothing)
 {
   terminalpp::canvas canvas({4, 4});
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
 
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
-
-  scrollbar_->draw(surface, {{0, 0}, {0, 0}});
-
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "XXXX"_ts,
+          "XXXX"_ts,
+          "XXXX"_ts,
+          "XXXX"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_vertical_scrollbar, has_a_preferred_size_relative_to_its_height)
@@ -71,34 +67,23 @@ TEST_F(a_vertical_scrollbar, has_a_preferred_size_relative_to_its_height)
 TEST_F(a_vertical_scrollbar, with_size_but_no_slider_draws_a_frame_border)
 {
   terminalpp::canvas canvas({4, 4});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][3]);
+  munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
+
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          single_lined_vertical_beam + "XXX"_ts,
+          single_lined_vertical_beam + "XXX"_ts,
+          single_lined_vertical_beam + "XXX"_ts,
+          single_lined_vertical_beam + "XXX"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -116,22 +101,10 @@ class vertical_scroll_bar_slider_position
   vertical_scroll_bar_slider_position()
   {
     scrollbar_->set_size(canvas_.size());
-
-    terminalpp::for_each_in_region(
-        canvas_,
-        {{}, canvas_.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row) { elem = 'X'; });
+    fill_canvas(canvas_, 'X');
 
     scrollbar_->on_redraw.connect(
-        [this](std::vector<terminalpp::rectangle> const &regions)
-        {
-          for (auto const &region : regions)
-          {
-            scrollbar_->draw(surface_, region);
-          }
-        });
+        redraw_component_on_surface(*scrollbar_, surface_));
   }
 
   std::shared_ptr<munin::vertical_scrollbar> scrollbar_{
@@ -205,47 +178,46 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_F(a_vertical_scrollbar, draws_the_correct_scroller_position_when_resized)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
   scrollbar_->set_slider_position(75, 100);
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[0][2]);
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][3]);
-  ASSERT_EQ('X', canvas[0][4]);
-  ASSERT_EQ('X', canvas[0][5]);
-  ASSERT_EQ('X', canvas[0][6]);
-  ASSERT_EQ('X', canvas[0][7]);
+  munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
+
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          single_lined_cross,
+          single_lined_vertical_beam,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          // clang-format on
+      },
+      canvas);
 
   scrollbar_->set_size({1, 8});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+  scrollbar_->draw(surface);
 
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][0])
-      << " expected beam on position 0";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][1])
-      << " expected beam on position 1";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][2])
-      << " expected beam on position 2";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][3])
-      << " expected beam on position 3";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][4])
-      << " expected beam on position 4";
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[0][5])
-      << " expected cross on position 5";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][6])
-      << " expected beam on position 6";
-  ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas[0][7])
-      << " expected beam on position 7";
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          single_lined_cross,
+          single_lined_vertical_beam,
+          single_lined_vertical_beam,
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -253,14 +225,14 @@ namespace {
 constexpr auto lowlight_attribute =
     terminalpp::attribute{terminalpp::greyscale_colour{5}};
 
-constexpr auto lowlight_vertical_beam = terminalpp::element{
-    munin::detail::single_lined_vertical_beam, lowlight_attribute};
+auto const lowlight_vertical_beam = terminalpp::string{
+    {munin::detail::single_lined_vertical_beam, lowlight_attribute}};
 
 constexpr auto highlight_attribute =
     terminalpp::attribute{terminalpp::high_colour{4, 5, 1}};
 
-constexpr auto highlight_vertical_beam = terminalpp::element{
-    munin::detail::single_lined_vertical_beam, highlight_attribute};
+auto const highlight_vertical_beam = terminalpp::string{
+    {munin::detail::single_lined_vertical_beam, highlight_attribute}};
 
 class a_vertical_scrollbar_with_an_associated_component
   : public a_vertical_scrollbar
@@ -284,15 +256,27 @@ TEST_F(
     draws_the_lowlight_attribute_by_default)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 8});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][3]);
+  munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
+
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -300,27 +284,32 @@ TEST_F(
     draws_the_highlight_attribute_after_the_associated_component_gains_focus)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 8});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+  munin::render_surface surface{canvas};
 
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
 
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -328,19 +317,13 @@ TEST_F(
     draws_the_lowlight_attribute_after_the_associated_component_loses_focus)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
@@ -348,10 +331,20 @@ TEST_F(
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(false));
   associated_component_->on_focus_lost();
 
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(lowlight_vertical_beam, canvas[0][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          lowlight_vertical_beam,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -359,19 +352,13 @@ TEST_F(
     draws_the_highlight_attribute_when_associated_with_a_focused_component)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   auto associated_component = make_mock_component();
   ON_CALL(*associated_component, do_has_focus()).WillByDefault(Return(true));
@@ -380,10 +367,20 @@ TEST_F(
   scrollbar_->set_highlight_attribute(highlight_attribute);
   scrollbar_->highlight_on_focus(associated_component);
 
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(highlight_vertical_beam, canvas[0][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          highlight_vertical_beam,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -391,32 +388,36 @@ TEST_F(
     draws_the_new_lowlight_attribute_when_it_is_changed)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   constexpr auto new_lowlight_attribute =
       terminalpp::attribute{terminalpp::high_colour(2, 2, 2)};
 
-  constexpr auto new_lowlight_vertical_beam = terminalpp::element{
-      munin::detail::single_lined_vertical_beam, new_lowlight_attribute};
+  auto const new_lowlight_vertical_beam = terminalpp::string{
+      {munin::detail::single_lined_vertical_beam, new_lowlight_attribute}};
 
   scrollbar_->set_lowlight_attribute(new_lowlight_attribute);
 
-  ASSERT_EQ(new_lowlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(new_lowlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(new_lowlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(new_lowlight_vertical_beam, canvas[0][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          new_lowlight_vertical_beam,
+          new_lowlight_vertical_beam,
+          new_lowlight_vertical_beam,
+          new_lowlight_vertical_beam,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -424,35 +425,39 @@ TEST_F(
     draws_the_new_highlight_attribute_when_it_is_changed)
 {
   terminalpp::canvas canvas({1, 8});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({1, 4});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   constexpr auto new_highlight_attribute =
       terminalpp::attribute{terminalpp::high_colour(6, 6, 5)};
 
-  constexpr auto new_highlight_vertical_beam = terminalpp::element{
-      munin::detail::single_lined_vertical_beam, new_highlight_attribute};
+  auto const new_highlight_vertical_beam = terminalpp::string{
+      {munin::detail::single_lined_vertical_beam, new_highlight_attribute}};
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
 
   scrollbar_->set_highlight_attribute(new_highlight_attribute);
 
-  ASSERT_EQ(new_highlight_vertical_beam, canvas[0][0]);
-  ASSERT_EQ(new_highlight_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(new_highlight_vertical_beam, canvas[0][2]);
-  ASSERT_EQ(new_highlight_vertical_beam, canvas[0][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          new_highlight_vertical_beam,
+          new_highlight_vertical_beam,
+          new_highlight_vertical_beam,
+          new_highlight_vertical_beam,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          "X"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_vertical_scrollbar, with_no_slider_emits_no_scroll_events_when_clicked)

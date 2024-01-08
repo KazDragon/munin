@@ -1,13 +1,13 @@
+#include "assert_similar.hpp"
+#include "redraw.hpp"
 #include "text_area_test.hpp"
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/string.hpp>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::ValuesIn;
-
 using a_new_text_area = a_text_area;
-
-using namespace terminalpp::literals;
 
 TEST_F(a_new_text_area, has_zero_cursor_position)
 {
@@ -44,12 +44,15 @@ TEST_F(a_new_text_area, draws_only_spaces)
   munin::render_surface surface{canvas_};
   text_area_.draw(surface, {{}, text_area_.get_size()});
 
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "  X"_ts,
+          "  X"_ts,
+          "XXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -77,19 +80,13 @@ TEST_F(
 {
   text_area_.set_size({2, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
 
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("b"_ts);
 
-  ASSERT_TRUE(redraw_requested);
+  ASSERT_FALSE(redraw_regions.empty());
 
   fill_canvas({3, 3});
   munin::render_surface surface{canvas_};
@@ -99,31 +96,28 @@ TEST_F(
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'b'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "b X"_ts,
+          "  X"_ts,
+          "XXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
 {
   text_area_.set_size({2, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
 
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("cde"_ts);
 
-  ASSERT_TRUE(redraw_requested);
+  ASSERT_FALSE(redraw_regions.empty());
 
   fill_canvas({3, 3});
   munin::render_surface surface{canvas_};
@@ -133,31 +127,28 @@ TEST_F(a_new_text_area, flows_long_text_into_the_next_line)
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'d'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "cdX"_ts,
+          "e X"_ts,
+          "XXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
 {
   text_area_.set_size({2, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
 
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("c\nde"_ts);
 
-  ASSERT_TRUE(redraw_requested);
+  ASSERT_FALSE(redraw_regions.empty());
 
   fill_canvas({3, 3});
   munin::render_surface surface{canvas_};
@@ -167,12 +158,15 @@ TEST_F(a_new_text_area, flows_newlines_when_drawing_text)
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'d'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[1][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "c X"_ts,
+          "deX"_ts,
+          "XXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 using text_area_layout_data = std::tuple<
@@ -260,15 +254,9 @@ TEST_F(
   text_area_.on_preferred_size_changed.connect(
       [&preferred_size_changed]() { preferred_size_changed = true; });
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
 
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("a"_ts, 0);
 
@@ -280,7 +268,7 @@ TEST_F(
 
   ASSERT_EQ(0, text_area_.get_caret_position());
 
-  ASSERT_TRUE(redraw_requested);
+  ASSERT_FALSE(redraw_regions.empty());
 
   fill_canvas({3, 3});
   munin::render_surface surface{canvas_};
@@ -290,10 +278,13 @@ TEST_F(
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "a X"_ts,
+          "  X"_ts,
+          "XXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }

@@ -24,7 +24,7 @@ class container_test_base : public testing::Test
     container.on_redraw.connect([this](auto const &) { ++redraw_count; });
   }
 
-  void ResetCounters()
+  void reset_counters()
   {
     preferred_size_changed_count = 0;
     focus_set_count = 0;
@@ -59,7 +59,7 @@ class a_container_with_one_component : public a_container
   {
     container.add_component(component);
 
-    ResetCounters();
+    reset_counters();
   }
 
   std::shared_ptr<mock_component> component{make_mock_component()};
@@ -83,7 +83,7 @@ class a_container_with_one_component_that_has_focus
     container.set_focus();
 
     assert(container.has_focus());
-    ResetCounters();
+    reset_counters();
   }
 };
 
@@ -119,7 +119,7 @@ class a_container_with_two_components_where_the_first_has_focus
     container.focus_next();
 
     assert(container.has_focus());
-    ResetCounters();
+    reset_counters();
   }
 };
 
@@ -142,7 +142,7 @@ class a_container_with_two_components_where_the_last_has_focus
     container.focus_previous();
 
     assert(container.has_focus());
-    ResetCounters();
+    reset_counters();
   }
 };
 
@@ -176,7 +176,7 @@ class a_container_with_three_components_where_the_first_has_focus
     container.focus_next();
 
     assert(container.has_focus());
-    ResetCounters();
+    reset_counters();
   }
 };
 
@@ -199,7 +199,7 @@ class a_container_with_three_components_where_the_last_has_focus
     container.focus_previous();
 
     assert(container.has_focus());
-    ResetCounters();
+    reset_counters();
   }
 };
 

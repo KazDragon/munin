@@ -1,4 +1,7 @@
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
 #include "mock/component.hpp"
+#include "redraw.hpp"
 #include <munin/detail/unicode_glyphs.hpp>
 #include <munin/horizontal_scrollbar.hpp>
 #include <munin/render_surface.hpp>
@@ -6,6 +9,7 @@
 #include <terminalpp/mouse.hpp>
 #include <gtest/gtest.h>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::Return;
 using testing::ValuesIn;
 
@@ -30,33 +34,20 @@ TEST_F(a_new_horizontal_scrollbar, has_a_0x1_preferred_size)
 TEST_F(a_new_horizontal_scrollbar, draws_nothing)
 {
   terminalpp::canvas canvas({4, 4});
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
-
   scrollbar_->draw(surface, {{0, 0}, {0, 0}});
 
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "XXXX"_ts,
+          "XXXX"_ts,
+          "XXXX"_ts,
+          "XXXX"_ts,  // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_horizontal_scrollbar, has_a_preferred_size_relative_to_its_width)
@@ -71,34 +62,26 @@ TEST_F(a_horizontal_scrollbar, has_a_preferred_size_relative_to_its_width)
 TEST_F(a_horizontal_scrollbar, with_size_but_no_slider_draws_a_frame_border)
 {
   terminalpp::canvas canvas({4, 4});
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas};
 
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
-
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+  scrollbar_->draw(surface);
 
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[3][0]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][1]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][2]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[0][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[1][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[2][3]);
-  ASSERT_EQ(terminalpp::element{'X'}, canvas[3][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { munin::detail::single_lined_horizontal_beam,
+                munin::detail::single_lined_horizontal_beam, 
+                munin::detail::single_lined_horizontal_beam,
+                munin::detail::single_lined_horizontal_beam },
+          "XXXX"_ts,
+          "XXXX"_ts,
+          "XXXX"_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -116,22 +99,10 @@ class horizontal_scroll_bar_slider_position
   horizontal_scroll_bar_slider_position()
   {
     scrollbar_->set_size(canvas_.size());
-
-    terminalpp::for_each_in_region(
-        canvas_,
-        {{}, canvas_.size()},
-        [](terminalpp::element &elem,
-           terminalpp::coordinate_type column,
-           terminalpp::coordinate_type row) { elem = 'X'; });
+    fill_canvas(canvas_, 'X');
 
     scrollbar_->on_redraw.connect(
-        [this](std::vector<terminalpp::rectangle> const &regions)
-        {
-          for (auto const &region : regions)
-          {
-            scrollbar_->draw(surface_, region);
-          }
-        });
+        redraw_component_on_surface(*scrollbar_, surface_));
   }
 
   std::shared_ptr<munin::horizontal_scrollbar> scrollbar_{
@@ -206,47 +177,50 @@ INSTANTIATE_TEST_SUITE_P(
 TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
-
-  terminalpp::for_each_in_region(
-      canvas,
-      {{}, canvas.size()},
-      [](terminalpp::element &elem,
-         terminalpp::coordinate_type column,
-         terminalpp::coordinate_type row) { elem = 'X'; });
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
   scrollbar_->set_slider_position(75, 100);
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[2][0]);
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[3][0]);
-  ASSERT_EQ('X', canvas[4][0]);
-  ASSERT_EQ('X', canvas[5][0]);
-  ASSERT_EQ('X', canvas[6][0]);
-  ASSERT_EQ('X', canvas[7][0]);
+  munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
+
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            munin::detail::single_lined_horizontal_beam, 
+            munin::detail::single_lined_horizontal_beam, 
+            munin::detail::single_lined_cross, 
+            munin::detail::single_lined_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 
   scrollbar_->set_size({8, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+  scrollbar_->draw(surface);
 
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[0][0])
-      << " expected beam on position 0";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[1][0])
-      << " expected beam on position 1";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[2][0])
-      << " expected beam on position 2";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[3][0])
-      << " expected beam on position 3";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[4][0])
-      << " expected beam on position 4";
-  ASSERT_EQ(munin::detail::single_lined_cross, canvas[5][0])
-      << " expected cross on position 5";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[6][0])
-      << " expected beam on position 6";
-  ASSERT_EQ(munin::detail::single_lined_horizontal_beam, canvas[7][0])
-      << " expected beam on position 7";
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            munin::detail::single_lined_horizontal_beam, 
+            munin::detail::single_lined_horizontal_beam, 
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_cross, 
+            munin::detail::single_lined_horizontal_beam,
+            munin::detail::single_lined_horizontal_beam,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 namespace {
@@ -285,15 +259,29 @@ TEST_F(
     draws_the_lowlight_attribute_by_default)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[3][0]);
+  munin::render_surface surface{canvas};
+  scrollbar_->draw(surface);
+
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -301,27 +289,34 @@ TEST_F(
     draws_the_highlight_attribute_after_the_associated_component_gains_focus)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
+
+  munin::render_surface surface{canvas};
 
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
 
-  ASSERT_EQ(highlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[3][0]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -329,19 +324,13 @@ TEST_F(
     draws_the_lowlight_attribute_after_the_associated_component_loses_focus)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
@@ -349,10 +338,22 @@ TEST_F(
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(false));
   associated_component_->on_focus_lost();
 
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(lowlight_horizontal_beam, canvas[3][0]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam, 
+            lowlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -360,19 +361,13 @@ TEST_F(
     draws_the_highlight_attribute_when_associated_with_a_focused_component)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   auto associated_component = make_mock_component();
   ON_CALL(*associated_component, do_has_focus()).WillByDefault(Return(true));
@@ -381,10 +376,22 @@ TEST_F(
   scrollbar_->set_highlight_attribute(highlight_attribute);
   scrollbar_->highlight_on_focus(associated_component);
 
-  ASSERT_EQ(highlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(highlight_horizontal_beam, canvas[3][0]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam, 
+            highlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -392,19 +399,13 @@ TEST_F(
     draws_the_new_lowlight_attribute_when_it_is_changed)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   constexpr auto new_lowlight_attribute =
       terminalpp::attribute{terminalpp::high_colour(2, 2, 2)};
@@ -414,10 +415,22 @@ TEST_F(
 
   scrollbar_->set_lowlight_attribute(new_lowlight_attribute);
 
-  ASSERT_EQ(new_lowlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(new_lowlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(new_lowlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(new_lowlight_horizontal_beam, canvas[3][0]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            new_lowlight_horizontal_beam, 
+            new_lowlight_horizontal_beam, 
+            new_lowlight_horizontal_beam, 
+            new_lowlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
@@ -425,19 +438,13 @@ TEST_F(
     draws_the_new_highlight_attribute_when_it_is_changed)
 {
   terminalpp::canvas canvas({8, 1});
-  munin::render_surface surface{canvas};
+  fill_canvas(canvas, 'X');
 
   scrollbar_->set_size({4, 1});
-  scrollbar_->draw(surface, {{}, scrollbar_->get_size()});
 
+  munin::render_surface surface{canvas};
   scrollbar_->on_redraw.connect(
-      [&, this](std::vector<terminalpp::rectangle> const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          scrollbar_->draw(surface, region);
-        }
-      });
+      redraw_component_on_surface(*scrollbar_, surface));
 
   constexpr auto new_highlight_attribute =
       terminalpp::attribute{terminalpp::high_colour(6, 6, 5)};
@@ -450,10 +457,22 @@ TEST_F(
 
   scrollbar_->set_highlight_attribute(new_highlight_attribute);
 
-  ASSERT_EQ(new_highlight_horizontal_beam, canvas[0][0]);
-  ASSERT_EQ(new_highlight_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(new_highlight_horizontal_beam, canvas[2][0]);
-  ASSERT_EQ(new_highlight_horizontal_beam, canvas[3][0]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          { 
+            new_highlight_horizontal_beam, 
+            new_highlight_horizontal_beam, 
+            new_highlight_horizontal_beam, 
+            new_highlight_horizontal_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(

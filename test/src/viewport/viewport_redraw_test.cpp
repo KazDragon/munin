@@ -41,7 +41,7 @@ TEST_P(viewport_cursor_movement_redraw_test, cursor_movements)
   viewport_->on_redraw.connect(
       [&](std::vector<terminalpp::rectangle> const &regions)
       {
-        ASSERT_EQ(1u, regions.size());
+        ASSERT_EQ(1U, regions.size());
         redraw_region = regions[0];
       });
 

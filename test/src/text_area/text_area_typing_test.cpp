@@ -1,10 +1,11 @@
+#include "redraw.hpp"
 #include "text_area_test.hpp"
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/virtual_key.hpp>
 
-using namespace terminalpp::literals;
+using namespace terminalpp::literals;  // NOLINT
 using testing::ValuesIn;
 
 using keypress_test_data = std::tuple<
@@ -27,13 +28,7 @@ class a_text_area_receiving_keypresses
     using std::get;
 
     text_area_.on_redraw.connect(
-        [this](auto const &regions)
-        {
-          for (auto const &region : regions)
-          {
-            text_area_.draw(surface_, region);
-          }
-        });
+        redraw_component_on_surface(text_area_, surface_));
 
     text_area_.on_cursor_position_changed.connect(
         [this] { cursor_position_ = text_area_.get_cursor_position(); });

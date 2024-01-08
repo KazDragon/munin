@@ -1,35 +1,89 @@
 #include "titled_frame_test.hpp"
+#include "assert_similar.hpp"
+#include "fill_canvas.hpp"
 #include "mock/component.hpp"
 #include "mock/render_surface_capabilities.hpp"
 #include "redraw.hpp"
 #include <munin/render_surface.hpp>
 #include <munin/titled_frame.hpp>
+#include <terminalpp/attribute.hpp>
 #include <terminalpp/string.hpp>
 #include <gtest/gtest.h>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::Return;
 
-using namespace terminalpp::literals;  // NOLINT
-
 namespace {
-terminalpp::glyph const top_left_corner = '+';
-terminalpp::glyph const top_right_corner = '+';
-terminalpp::glyph const bottom_left_corner = '+';
-terminalpp::glyph const bottom_right_corner = '+';
-terminalpp::glyph const horizontal_beam = '-';
-terminalpp::glyph const vertical_beam = '|';
+auto const top_left_corner = R"(+)"_ete.glyph_;
+auto const top_right_corner = R"(+)"_ete.glyph_;
+auto const bottom_left_corner = R"(+)"_ete.glyph_;
+auto const bottom_right_corner = R"(+)"_ete.glyph_;
+auto const horizontal_beam = R"(-)"_ete.glyph_;
+auto const vertical_beam = R"(|)"_ete.glyph_;
 
-terminalpp::glyph const unicode_top_left_corner = u8"\\U256D"_ets[0].glyph_;
-terminalpp::glyph const unicode_top_right_corner = u8"\\U256E"_ets[0].glyph_;
-terminalpp::glyph const unicode_bottom_left_corner = u8"\\U2570"_ets[0].glyph_;
-terminalpp::glyph const unicode_bottom_right_corner = u8"\\U256F"_ets[0].glyph_;
-terminalpp::glyph const unicode_horizontal_beam = u8"\\U2500"_ets[0].glyph_;
-terminalpp::glyph const unicode_vertical_beam = u8"\\U2502"_ets[0].glyph_;
+auto const unicode_top_left_corner = R"(\U256D)"_ete.glyph_;
+auto const unicode_top_right_corner = R"(\U256E)"_ete.glyph_;
+auto const unicode_bottom_left_corner = R"(\U2570)"_ete.glyph_;
+auto const unicode_bottom_right_corner = R"(\U256F)"_ete.glyph_;
+auto const unicode_horizontal_beam = R"(\U2500)"_ete.glyph_;
+auto const unicode_vertical_beam = R"(\U2502)"_ete.glyph_;
 
 auto const highlight_attribute = terminalpp::attribute(
     terminalpp::graphics::colour::cyan,
     terminalpp::colour(),
     terminalpp::graphics::intensity::bold);
+
+void assert_ansi_11x3_title_frame_with_attribute(
+    terminalpp::canvas const &canvas,
+    terminalpp::attribute const &attr = terminalpp::attribute{})
+{
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            { top_left_corner, attr },
+            { horizontal_beam, attr },
+            ' ',
+            't',
+            'i',
+            't',
+            'l',
+            'e',
+            ' ',
+            { horizontal_beam, attr },
+            { top_right_corner, attr },
+          },
+          {
+            { vertical_beam, attr },
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            { vertical_beam, attr },
+          },
+          {
+            { bottom_left_corner, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { horizontal_beam, attr },
+            { bottom_right_corner, attr },
+          },
+          // clang-format on
+      },
+      canvas);
+}
+
 }  // namespace
 
 TEST_F(a_titled_frame, is_a_component)
@@ -39,213 +93,211 @@ TEST_F(a_titled_frame, is_a_component)
 
 TEST_F(a_titled_frame_with_no_unicode_support, draws_a_border_with_title)
 {
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(top_left_corner, canvas[0][0]);
-  ASSERT_EQ(horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(horizontal_beam, canvas[9][0]);
-  ASSERT_EQ(top_right_corner, canvas[10][0]);
-
-  ASSERT_EQ(vertical_beam, canvas[0][1]);
-  ASSERT_EQ(vertical_beam, canvas[10][1]);
-
-  ASSERT_EQ(bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(horizontal_beam, canvas[8][2]);
-  ASSERT_EQ(horizontal_beam, canvas[9][2]);
-  ASSERT_EQ(bottom_right_corner, canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas);
 }
 
 TEST_F(a_titled_frame_with_no_unicode_support, left_justifies_text_when_grown)
 {
-  auto const size = terminalpp::extent{13, 3};
+  constexpr auto size = terminalpp::extent{13, 3};
   frame_.set_size(size);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(top_left_corner, canvas[0][0]);
-  ASSERT_EQ(horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(horizontal_beam, canvas[9][0]);
-  ASSERT_EQ(horizontal_beam, canvas[10][0]);
-  ASSERT_EQ(horizontal_beam, canvas[11][0]);
-  ASSERT_EQ(top_right_corner, canvas[12][0]);
-
-  ASSERT_EQ(vertical_beam, canvas[0][1]);
-  ASSERT_EQ(vertical_beam, canvas[12][1]);
-
-  ASSERT_EQ(bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(horizontal_beam, canvas[8][2]);
-  ASSERT_EQ(horizontal_beam, canvas[9][2]);
-  ASSERT_EQ(horizontal_beam, canvas[10][2]);
-  ASSERT_EQ(horizontal_beam, canvas[11][2]);
-  ASSERT_EQ(bottom_right_corner, canvas[12][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            top_left_corner,
+            horizontal_beam,
+            ' ',
+            't',
+            'i',
+            't',
+            'l',
+            'e',
+            ' ',
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            top_right_corner,
+          },
+          {
+            vertical_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            vertical_beam,
+          },
+          {
+            bottom_left_corner,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_titled_frame_with_no_unicode_support, clips_the_title_when_shrunk)
 {
-  auto const size = terminalpp::extent{9, 3};
+  constexpr auto size = terminalpp::extent{9, 3};
   frame_.set_size(size);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(top_left_corner, canvas[0][0]);
-  ASSERT_EQ(horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('i', canvas[3][0]);
-  ASSERT_EQ('t', canvas[4][0]);
-  ASSERT_EQ('l', canvas[5][0]);
-  ASSERT_EQ(' ', canvas[6][0]);
-  ASSERT_EQ(horizontal_beam, canvas[7][0]);
-  ASSERT_EQ(top_right_corner, canvas[8][0]);
-
-  ASSERT_EQ(vertical_beam, canvas[0][1]);
-  ASSERT_EQ(vertical_beam, canvas[8][1]);
-
-  ASSERT_EQ(bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(bottom_right_corner, canvas[8][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            top_left_corner,
+            horizontal_beam,
+            ' ',
+            'i',
+            't',
+            'l',
+            ' ',
+            horizontal_beam,
+            top_right_corner,
+          },
+          {
+            vertical_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            vertical_beam,
+          },
+          {
+            bottom_left_corner,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            horizontal_beam,
+            bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(
     a_titled_frame_with_unicode_support, draws_a_border_with_box_drawing_glyphs)
 {
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(unicode_top_left_corner, canvas[0][0]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[9][0]);
-  ASSERT_EQ(unicode_top_right_corner, canvas[10][0]);
-
-  ASSERT_EQ(unicode_vertical_beam, canvas[0][1]);
-  ASSERT_EQ(unicode_vertical_beam, canvas[10][1]);
-
-  ASSERT_EQ(unicode_bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[8][2]);
-  ASSERT_EQ(unicode_horizontal_beam, canvas[9][2]);
-  ASSERT_EQ(unicode_bottom_right_corner, canvas[10][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          {
+            unicode_top_left_corner,
+            unicode_horizontal_beam,
+            ' ',
+            't',
+            'i',
+            't',
+            'l',
+            'e',
+            ' ',
+            unicode_horizontal_beam,
+            unicode_top_right_corner,
+          },
+          {
+            unicode_vertical_beam,
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            'X',
+            unicode_vertical_beam,
+          },
+          {
+            unicode_bottom_left_corner,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_horizontal_beam,
+            unicode_bottom_right_corner,
+          },
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST_F(a_titled_frame, can_be_displayed_with_a_custom_lowlight)
 {
-  static auto const lowlight_attribute = terminalpp::attribute(
+  static constexpr auto lowlight_attribute = terminalpp::attribute(
       terminalpp::graphics::colour::green,
       terminalpp::colour(),
       terminalpp::graphics::intensity::bold);
 
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
   frame_.set_lowlight_attribute(lowlight_attribute);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(
-      terminalpp::element(top_left_corner, lowlight_attribute), canvas[0][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[9][0]);
-  ASSERT_EQ(
-      terminalpp::element(top_right_corner, lowlight_attribute), canvas[10][0]);
-
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, lowlight_attribute), canvas[0][1]);
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, lowlight_attribute), canvas[10][1]);
-
-  ASSERT_EQ(
-      terminalpp::element(bottom_left_corner, lowlight_attribute),
-      canvas[0][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[1][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[2][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[3][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[4][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[5][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[6][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[7][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[8][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, lowlight_attribute), canvas[9][2]);
-  ASSERT_EQ(
-      terminalpp::element(bottom_right_corner, lowlight_attribute),
-      canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas, lowlight_attribute);
 }
 
 class a_titled_frame_with_an_associated_unfocussed_component
@@ -279,101 +331,35 @@ TEST_F(
     a_titled_frame_with_an_associated_unfocussed_component,
     draws_a_lowlighted_border)
 {
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(top_left_corner, canvas[0][0]);
-  ASSERT_EQ(horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(horizontal_beam, canvas[9][0]);
-  ASSERT_EQ(top_right_corner, canvas[10][0]);
-
-  ASSERT_EQ(vertical_beam, canvas[0][1]);
-  ASSERT_EQ(vertical_beam, canvas[10][1]);
-
-  ASSERT_EQ(bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(horizontal_beam, canvas[8][2]);
-  ASSERT_EQ(horizontal_beam, canvas[9][2]);
-  ASSERT_EQ(bottom_right_corner, canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas);
 }
 
 TEST_F(
     a_titled_frame_with_an_associated_unfocussed_component,
     when_focussed_draws_a_highlighted_border)
 {
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(
-      terminalpp::element(top_left_corner, highlight_attribute), canvas[0][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[9][0]);
-  ASSERT_EQ(
-      terminalpp::element(top_right_corner, highlight_attribute),
-      canvas[10][0]);
-
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, highlight_attribute), canvas[0][1]);
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, highlight_attribute), canvas[10][1]);
-
-  ASSERT_EQ(
-      terminalpp::element(bottom_left_corner, highlight_attribute),
-      canvas[0][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[1][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[2][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[3][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[4][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[5][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[6][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[7][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[8][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[9][2]);
-  ASSERT_EQ(
-      terminalpp::element(bottom_right_corner, highlight_attribute),
-      canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas, highlight_attribute);
 }
 
 TEST_F(
@@ -382,14 +368,8 @@ TEST_F(
 {
   frame_.set_size({11, 3});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
@@ -401,7 +381,6 @@ TEST_F(
       terminalpp::rectangle{{10, 0}, {1, 3}},
       terminalpp::rectangle{{0, 2}, {11, 1}}};
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
 
@@ -411,14 +390,8 @@ TEST_F(
 {
   frame_.set_size({11, 2});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
@@ -429,7 +402,6 @@ TEST_F(
       terminalpp::rectangle{{0, 1}, {11, 1}},
   };
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 
   for (auto region : redraw_regions)
@@ -447,14 +419,8 @@ TEST_F(
 {
   frame_.set_size({11, 1});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
@@ -464,7 +430,6 @@ TEST_F(
       terminalpp::rectangle{{9, 0}, {2, 1}},
   };
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 
   for (auto region : redraw_regions)
@@ -482,14 +447,8 @@ TEST_F(
 {
   frame_.set_size({9, 3});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
@@ -501,7 +460,6 @@ TEST_F(
       terminalpp::rectangle{{8, 0}, {1, 3}},
       terminalpp::rectangle{{0, 2}, {9, 1}}};
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
 
@@ -511,14 +469,8 @@ TEST_F(
 {
   frame_.set_size({4, 3});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(true));
   comp_->on_focus_set();
@@ -529,7 +481,6 @@ TEST_F(
       terminalpp::rectangle{{3, 0}, {1, 3}},
       terminalpp::rectangle{{0, 2}, {4, 1}}};
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
 
@@ -537,42 +488,19 @@ TEST_F(
     a_titled_frame_with_an_associated_focussed_component,
     when_unfocussed_draws_a_lowlit_border)
 {
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(false));
   comp_->on_focus_lost();
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(top_left_corner, canvas[0][0]);
-  ASSERT_EQ(horizontal_beam, canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(horizontal_beam, canvas[9][0]);
-  ASSERT_EQ(top_right_corner, canvas[10][0]);
-
-  ASSERT_EQ(vertical_beam, canvas[0][1]);
-  ASSERT_EQ(vertical_beam, canvas[10][1]);
-
-  ASSERT_EQ(bottom_left_corner, canvas[0][2]);
-  ASSERT_EQ(horizontal_beam, canvas[1][2]);
-  ASSERT_EQ(horizontal_beam, canvas[2][2]);
-  ASSERT_EQ(horizontal_beam, canvas[3][2]);
-  ASSERT_EQ(horizontal_beam, canvas[4][2]);
-  ASSERT_EQ(horizontal_beam, canvas[5][2]);
-  ASSERT_EQ(horizontal_beam, canvas[6][2]);
-  ASSERT_EQ(horizontal_beam, canvas[7][2]);
-  ASSERT_EQ(horizontal_beam, canvas[8][2]);
-  ASSERT_EQ(horizontal_beam, canvas[9][2]);
-  ASSERT_EQ(bottom_right_corner, canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas);
 }
 
 TEST_F(
@@ -583,7 +511,7 @@ TEST_F(
       terminalpp::graphics::colour::green,
       terminalpp::graphics::colour::magenta};
 
-  auto const size = terminalpp::extent{11, 3};
+  constexpr auto size = terminalpp::extent{11, 3};
   frame_.set_size(size);
   frame_.set_highlight_attribute(highlight_attribute);
 
@@ -591,55 +519,12 @@ TEST_F(
   comp_->on_focus_set();
 
   terminalpp::canvas canvas(size);
+  fill_canvas(canvas, 'X');
+
   munin::render_surface surface{canvas, surface_capabilities_};
-  frame_.draw(surface, {{}, size});
+  frame_.draw(surface);
 
-  ASSERT_EQ(
-      terminalpp::element(top_left_corner, highlight_attribute), canvas[0][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[1][0]);
-  ASSERT_EQ(' ', canvas[2][0]);
-  ASSERT_EQ('t', canvas[3][0]);
-  ASSERT_EQ('i', canvas[4][0]);
-  ASSERT_EQ('t', canvas[5][0]);
-  ASSERT_EQ('l', canvas[6][0]);
-  ASSERT_EQ('e', canvas[7][0]);
-  ASSERT_EQ(' ', canvas[8][0]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[9][0]);
-  ASSERT_EQ(
-      terminalpp::element(top_right_corner, highlight_attribute),
-      canvas[10][0]);
-
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, highlight_attribute), canvas[0][1]);
-  ASSERT_EQ(
-      terminalpp::element(vertical_beam, highlight_attribute), canvas[10][1]);
-
-  ASSERT_EQ(
-      terminalpp::element(bottom_left_corner, highlight_attribute),
-      canvas[0][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[1][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[2][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[3][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[4][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[5][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[6][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[7][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[8][2]);
-  ASSERT_EQ(
-      terminalpp::element(horizontal_beam, highlight_attribute), canvas[9][2]);
-  ASSERT_EQ(
-      terminalpp::element(bottom_right_corner, highlight_attribute),
-      canvas[10][2]);
+  assert_ansi_11x3_title_frame_with_attribute(canvas, highlight_attribute);
 }
 
 TEST_F(
@@ -648,14 +533,8 @@ TEST_F(
 {
   frame_.set_size({11, 3});
 
-  int redraw_count = 0;
   std::vector<terminalpp::rectangle> redraw_regions;
-  frame_.on_redraw.connect(
-      [&redraw_count, &redraw_regions](auto const &regions)
-      {
-        ++redraw_count;
-        redraw_regions = regions;
-      });
+  frame_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   ON_CALL(*comp_, do_has_focus()).WillByDefault(Return(false));
   comp_->on_focus_lost();
@@ -667,6 +546,5 @@ TEST_F(
       terminalpp::rectangle{{10, 0}, {1, 3}},
       terminalpp::rectangle{{0, 2}, {11, 1}}};
 
-  ASSERT_EQ(1, redraw_count);
   assert_equivalent_redraw_regions(expected_redraw_regions, redraw_regions);
 }
