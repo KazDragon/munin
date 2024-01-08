@@ -1,12 +1,13 @@
+#include "fill_canvas.hpp"
 #include "window_test.hpp"
+#include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
 #include <gtest/gtest.h>
 
-using namespace terminalpp::literals;
-
-using testing::_;
+using namespace terminalpp::literals;  // NOLINT
+using testing::_;                      // NOLINT
 using testing::InSequence;
 using testing::Return;
 using testing::ReturnPointee;
@@ -64,7 +65,7 @@ class repainting_a_window : public a_window_test_base, public testing::Test
  protected:
   repainting_a_window() : canvas_(window_size)
   {
-    reset_canvas(canvas_);
+    fill_canvas(canvas_, 0);
 
     ON_CALL(*content_, do_draw(_, _))
         .WillByDefault(
@@ -79,32 +80,14 @@ class repainting_a_window : public a_window_test_base, public testing::Test
         .WillByDefault(ReturnPointee(&content_size_));
   }
 
-  void reset_canvas(terminalpp::canvas &cvs)
-  {
-    auto const canvas_size = cvs.size();
-
-    for (auto row = 0; row < canvas_size.height_; ++row)
-    {
-      for (auto col = 0; col < canvas_size.width_; ++col)
-      {
-        cvs[col][row].glyph_.character_ = 0;
-      }
-    }
-  }
-
   void increment_elements_within(terminalpp::rectangle const &region)
   {
-    for (auto y = region.origin_.y_;
-         y < region.origin_.y_ + region.size_.height_;
-         ++y)
-    {
-      for (auto x = region.origin_.x_;
-           x < region.origin_.x_ + region.size_.width_;
-           ++x)
-      {
-        ++canvas_[x][y].glyph_.character_;
-      }
-    }
+    terminalpp::for_each_in_region(
+        canvas_,
+        region,
+        [](terminalpp::element &elem,
+           terminalpp::coordinate_type column,  // NOLINT
+           terminalpp::coordinate_type row) { ++elem.glyph_.character_; });
   }
 
   static constexpr terminalpp::extent const window_size{20, 40};
@@ -112,8 +95,6 @@ class repainting_a_window : public a_window_test_base, public testing::Test
   terminalpp::canvas canvas_;
   terminalpp::extent content_size_;
 };
-
-constexpr terminalpp::extent const repainting_a_window::window_size;
 
 TEST_F(repainting_a_window, for_the_first_time_sets_component_size)
 {
@@ -157,17 +138,20 @@ TEST_F(repainting_a_window, after_a_change_of_size_repaints_entire_canvas)
   window_->repaint(canvas_);
 
   canvas_ = terminalpp::canvas(new_size);
-  reset_canvas(canvas_);
+  fill_canvas(canvas_, 0);
 
   window_->repaint(canvas_);
 
-  for (auto y = 0; y < window_size.height_; ++y)
-  {
-    for (auto x = 0; x < window_size.width_; ++x)
-    {
-      ASSERT_EQ(1, canvas_[x][y].glyph_.character_);
-    }
-  }
+  terminalpp::for_each_in_region(
+      canvas_,
+      {{}, window_size},
+      [](terminalpp::element &elem,
+         terminalpp::coordinate_type column,  // NOLINT
+         terminalpp::coordinate_type row)
+      {
+        ASSERT_EQ(1, elem.glyph_.character_)
+            << "row = " << row << ", column = " << column;
+      });
 }
 
 TEST_F(
@@ -175,23 +159,32 @@ TEST_F(
     after_a_repaint_with_one_region_repaints_only_that_region)
 {
   window_->repaint(canvas_);
-  reset_canvas(canvas_);
+  fill_canvas(canvas_, 0);
 
   content_->on_redraw({{{}, {window_size.width_, 1}}});
   window_->repaint(canvas_);
 
-  for (auto x = 0; x < window_size.width_; ++x)
-  {
-    ASSERT_EQ(1, canvas_[x][0].glyph_.character_);
-  }
+  terminalpp::for_each_in_region(
+      canvas_,
+      {{}, {window_size.width_, 1}},
+      [](terminalpp::element &elem,
+         terminalpp::coordinate_type column,  // NOLINT
+         terminalpp::coordinate_type row)
+      {
+        ASSERT_EQ(1, elem.glyph_.character_)
+            << "row = " << row << ", column = " << column;
+      });
 
-  for (auto y = 1; y < window_size.height_; ++y)
-  {
-    for (auto x = 0; x < window_size.width_; ++x)
-    {
-      ASSERT_EQ(0, canvas_[x][y].glyph_.character_);
-    }
-  }
+  terminalpp::for_each_in_region(
+      canvas_,
+      {{0, 1}, {window_size.width_, window_size.height_ - 1}},
+      [](terminalpp::element &elem,
+         terminalpp::coordinate_type column,  // NOLINT
+         terminalpp::coordinate_type row)
+      {
+        ASSERT_EQ(0, elem.glyph_.character_)
+            << "row = " << row << ", column = " << column;
+      });
 }
 
 TEST_F(
@@ -199,25 +192,33 @@ TEST_F(
     after_a_repaint_with_two_discrete_regions_repaints_only_those_regions)
 {
   window_->repaint(canvas_);
-  reset_canvas(canvas_);
+  fill_canvas(canvas_, 0);
 
   content_->on_redraw(
       {{{}, {window_size.width_, 1}}, {{0, 1}, {window_size.width_, 1}}});
   window_->repaint(canvas_);
 
-  for (auto x = 0; x < window_size.width_; ++x)
-  {
-    ASSERT_EQ(1, canvas_[x][0].glyph_.character_);
-    ASSERT_EQ(1, canvas_[x][1].glyph_.character_);
-  }
+  terminalpp::for_each_in_region(
+      canvas_,
+      {{}, {window_size.width_, 2}},
+      [](terminalpp::element &elem,
+         terminalpp::coordinate_type column,  // NOLINT
+         terminalpp::coordinate_type row)
+      {
+        ASSERT_EQ(1, elem.glyph_.character_)
+            << "row = " << row << ", column = " << column;
+      });
 
-  for (auto y = 2; y < window_size.height_; ++y)
-  {
-    for (auto x = 0; x < window_size.width_; ++x)
-    {
-      ASSERT_EQ(0, canvas_[x][y].glyph_.character_);
-    }
-  }
+  terminalpp::for_each_in_region(
+      canvas_,
+      {{0, 2}, {window_size.width_, window_size.height_ - 2}},
+      [](terminalpp::element &elem,
+         terminalpp::coordinate_type column,  // NOLINT
+         terminalpp::coordinate_type row)
+      {
+        ASSERT_EQ(0, elem.glyph_.character_)
+            << "row = " << row << ", column = " << column;
+      });
 }
 
 TEST_F(repainting_a_window, with_no_changes_returns_empty_paint_data)

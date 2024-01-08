@@ -1,6 +1,9 @@
+#include "assert_similar.hpp"
 #include <munin/filled_box.hpp>
 #include <munin/render_surface.hpp>
 #include <gtest/gtest.h>
+
+using namespace terminalpp::literals;  // NOLINT
 
 TEST(make_fill, makes_a_new_filled_box)
 {
@@ -31,10 +34,14 @@ TEST(a_filled_box, draws_its_fill)
 
   filled_box.draw(surface, {{}, {1, 1}});
 
-  ASSERT_EQ(terminalpp::element('Y'), canvas[0][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[1][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "Y "_ts,
+          "  "_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST(a_filled_box, draws_only_within_given_region)
@@ -48,18 +55,16 @@ TEST(a_filled_box, draws_only_within_given_region)
 
   filled_box.draw(surface, {{}, {1, 2}});
 
-  ASSERT_EQ(terminalpp::element(' '), canvas[0][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[1][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[2][0]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[0][1]);
-  ASSERT_EQ(terminalpp::element('Y'), canvas[1][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[2][1]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[0][2]);
-  ASSERT_EQ(terminalpp::element('Y'), canvas[1][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[2][2]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[0][3]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[1][3]);
-  ASSERT_EQ(terminalpp::element(' '), canvas[2][3]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "   "_ts,
+          " Y "_ts,
+          " Y "_ts,
+          "   "_ts,
+          // clang-format on
+      },
+      canvas);
 }
 
 TEST(a_filled_box, reports_attributes_as_json)

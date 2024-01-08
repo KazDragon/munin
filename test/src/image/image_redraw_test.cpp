@@ -1,7 +1,10 @@
+#include "redraw.hpp"
 #include <munin/image.hpp>
 #include <terminalpp/canvas.hpp>
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <utility>
+
+using namespace terminalpp::literals;  // NOLINT
 
 class an_image_to_be_redrawn : public testing::Test
 {
@@ -22,12 +25,7 @@ class an_image_to_be_redrawn : public testing::Test
           preferred_size_ = image_.get_preferred_size();
         });
 
-    image_.on_redraw.connect(
-        [this](auto const &regions)
-        {
-          ++redraw_called_;
-          redraw_regions_ = regions;
-        });
+    image_.on_redraw.connect(append_regions_to_container(redraw_regions_));
   }
 
   munin::image image_;
@@ -35,7 +33,6 @@ class an_image_to_be_redrawn : public testing::Test
   int preferred_size_changed_called_ = 0;
   terminalpp::extent preferred_size_;
 
-  int redraw_called_ = 0;
   std::vector<terminalpp::rectangle> redraw_regions_;
 };
 
@@ -44,7 +41,6 @@ TEST_F(an_image_to_be_redrawn, redraws_entire_image_when_setting_fill)
   image_.set_fill('?');
 
   ASSERT_EQ(0, preferred_size_changed_called_);
-  ASSERT_EQ(1, redraw_called_);
   ASSERT_EQ(1u, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({0, 0}, {6, 4}), redraw_regions_[0]);
 }
@@ -59,21 +55,19 @@ TEST_F(
   image_.set_content();
 
   ASSERT_EQ(0, preferred_size_changed_called_);
-  ASSERT_EQ(0, redraw_called_);
+  ASSERT_TRUE(redraw_regions_.empty());
 }
 
 TEST_F(
     an_image_with_empty_content,
     redraws_new_image_area_when_setting_content_to_single_line)
 {
-  using namespace terminalpp::literals;
   image_.set_content("test"_ts);
 
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(4, 1), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(1u, redraw_regions_.size());
+  ASSERT_EQ(1U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
 
@@ -81,7 +75,6 @@ TEST_F(
     an_image_with_empty_content,
     redraws_new_image_area_when_setting_content_to_multi_line)
 {
-  using namespace terminalpp::literals;
   std::vector<terminalpp::string> const content = {"test", "test"};
 
   image_.set_content(content);
@@ -89,8 +82,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(4, 2), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(1u, redraw_regions_.size());
+  ASSERT_EQ(1U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
 }
 
@@ -111,8 +103,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(0, 0), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(1u, redraw_regions_.size());
+  ASSERT_EQ(1U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
 }
 
@@ -125,8 +116,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(6, 1), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(2u, redraw_regions_.size());
+  ASSERT_EQ(2U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
   ASSERT_EQ(terminalpp::rectangle({0, 1}, {6, 1}), redraw_regions_[1]);
 }
@@ -142,8 +132,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(4, 2), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(2u, redraw_regions_.size());
+  ASSERT_EQ(2U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[0]);
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[1]);
 }
@@ -166,8 +155,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(0, 0), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(1u, redraw_regions_.size());
+  ASSERT_EQ(1U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
 }
 
@@ -180,8 +168,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(4, 1), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(2u, redraw_regions_.size());
+  ASSERT_EQ(2U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 1}), redraw_regions_[1]);
 }
@@ -196,8 +183,7 @@ TEST_F(
   ASSERT_EQ(1, preferred_size_changed_called_);
   ASSERT_EQ(terminalpp::extent(6, 2), preferred_size_);
 
-  ASSERT_EQ(1, redraw_called_);
-  ASSERT_EQ(2u, redraw_regions_.size());
+  ASSERT_EQ(2U, redraw_regions_.size());
   ASSERT_EQ(terminalpp::rectangle({1, 1}, {4, 2}), redraw_regions_[0]);
   ASSERT_EQ(terminalpp::rectangle({0, 1}, {6, 2}), redraw_regions_[1]);
 }

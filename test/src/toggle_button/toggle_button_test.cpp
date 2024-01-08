@@ -1,10 +1,13 @@
+#include "gmock/gmock.h"
+#include "redraw.hpp"
 #include <munin/render_surface.hpp>
 #include <munin/toggle_button.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
-#include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
+using testing::ElementsAreArray;
 using testing::ValuesIn;
 
 TEST(a_default_constructed_toggle_button, shows_an_unchecked_state)
@@ -127,17 +130,13 @@ TEST(setting_the_toggle_state_of_a_toggle_button, fires_a_redraw_request)
   button->set_size(size);
 
   std::vector<terminalpp::rectangle> redraw_regions;
-  button->on_redraw.connect(
-      [&redraw_regions](std::vector<terminalpp::rectangle> const &regions)
-      {
-        redraw_regions.insert(
-            redraw_regions.end(), regions.begin(), regions.end());
-      });
+  button->on_redraw.connect(append_regions_to_container(redraw_regions));
 
   button->set_toggle_state(true);
 
-  ASSERT_EQ(size_t{1}, redraw_regions.size());
-  ASSERT_EQ(terminalpp::rectangle({1, 1}, {1, 1}), redraw_regions[0]);
+  ASSERT_THAT(
+      redraw_regions,
+      ElementsAreArray({terminalpp::rectangle{{1, 1}, {1, 1}}}));
 }
 
 namespace {
@@ -152,7 +151,7 @@ using event_emission_data = std::tuple<
 class a_toggle_button : public testing::TestWithParam<event_emission_data>
 {
  public:
-  a_toggle_button() : toggle_button_()
+  a_toggle_button()
   {
     toggle_button_.set_size({3, 3});
   }

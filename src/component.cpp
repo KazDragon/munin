@@ -1,4 +1,5 @@
 #include "munin/component.hpp"
+#include "munin/render_surface.hpp"
 #include <cassert>
 
 namespace munin {
@@ -107,6 +108,14 @@ terminalpp::point component::get_cursor_position() const
 void component::set_cursor_position(terminalpp::point const &position)
 {
   do_set_cursor_position(position);
+}
+
+// ==========================================================================
+// DRAW
+// ==========================================================================
+void component::draw(render_surface &surface) const
+{
+  draw(surface, {{}, get_size()});
 }
 
 // ==========================================================================

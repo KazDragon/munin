@@ -1,4 +1,6 @@
+#include "assert_similar.hpp"
 #include "fill_canvas.hpp"
+#include "redraw.hpp"
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
@@ -6,7 +8,7 @@
 #include <terminalpp/virtual_key.hpp>
 #include <gtest/gtest.h>
 
-using namespace terminalpp::literals;
+using namespace terminalpp::literals;  // NOLINT
 using testing::ValuesIn;
 
 class a_new_edit : public testing::Test
@@ -57,27 +59,24 @@ TEST_F(a_new_edit, draws_blanks)
 
   munin::render_surface surface{cvs};
   surface.offset_by({1, 1});
-  edit_->draw(surface, {{}, edit_->get_size()});
+  edit_->draw(surface);
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxx"_ts,
+          "x  x"_ts,
+          "xxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 TEST_F(a_new_edit, inserting_text_changes_preferred_size_to_size_of_text)
 {
   terminalpp::extent preferred_size;
-  auto const callback = [&] { preferred_size = edit_->get_preferred_size(); };
-  edit_->on_preferred_size_changed.connect(callback);
+  edit_->on_preferred_size_changed.connect(
+      [&] { preferred_size = edit_->get_preferred_size(); });
 
   edit_->insert_text("test");
 
@@ -96,31 +95,21 @@ TEST_F(a_new_edit, inserting_text_redraws_changed_text_area)
 
   munin::render_surface surface{cvs};
   surface.offset_by({1, 1});
-  edit_->draw(surface, {{}, edit_->get_size()});
+  edit_->draw(surface);
 
-  edit_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          edit_->draw(surface, region);
-        }
-      });
+  edit_->on_redraw.connect(redraw_component_on_surface(*edit_, surface));
 
   edit_->insert_text("?!");
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'?'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'!'}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxx"_ts,
+          "x?!x"_ts,
+          "xxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
@@ -139,20 +128,17 @@ TEST_F(a_new_edit, draws_inserted_text_cursor_at_end)
 
   munin::render_surface surface{cvs};
   surface.offset_by({1, 1});
-  edit_->draw(surface, {{}, edit_->get_size()});
+  edit_->draw(surface);
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'z'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'a'}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxx"_ts,
+          "xzax"_ts,
+          "xxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 TEST_F(a_new_edit, draws_set_text_cursor_at_start)
@@ -165,16 +151,9 @@ TEST_F(a_new_edit, draws_set_text_cursor_at_start)
 
   munin::render_surface surface{cvs};
   surface.offset_by({1, 1});
-  edit_->draw(surface, {{0, 0}, {4, 1}});
+  edit_->draw(surface);
 
-  edit_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          edit_->draw(surface, region);
-        }
-      });
+  edit_->on_redraw.connect(redraw_component_on_surface(*edit_, surface));
 
   auto preferred_size = terminalpp::extent{};
   edit_->on_preferred_size_changed.connect(
@@ -191,23 +170,15 @@ TEST_F(a_new_edit, draws_set_text_cursor_at_start)
   auto const expected_preferred_size = terminalpp::extent{4, 1};
   ASSERT_EQ(expected_preferred_size, preferred_size);
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'t'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'s'}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'t'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[4][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxxxx"_ts,
+          "xtst x"_ts,
+          "xxxxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 namespace {
@@ -227,14 +198,7 @@ class receiving_keypresses : public testing::TestWithParam<keypress_data>
     fill_canvas(cvs_, 'x');
     surface_.offset_by({1, 1});
 
-    edit_.on_redraw.connect(
-        [this](auto const &regions)
-        {
-          for (auto const &region : regions)
-          {
-            edit_.draw(surface_, region);
-          }
-        });
+    edit_.on_redraw.connect(redraw_component_on_surface(edit_, surface_));
 
     edit_.set_position({1, 1});
     edit_.set_size({2, 1});
@@ -265,18 +229,20 @@ TEST_P(receiving_keypresses, draws_appropriate_characters_and_moves_the_cursor)
   ASSERT_EQ(cursor_pos, edit_.get_cursor_position());
   ASSERT_EQ(caret_pos, edit_.get_caret_position());
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[0][1]);
-  ASSERT_EQ(expected, cvs_[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs_[2][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[3][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs_[3][2]);
+  auto const expected_block = [&expected]
+  {
+    std::array block = {
+        // clang-format off
+        "xxxx"_ts,
+        "x? x"_ts,
+        "xxxx"_ts,
+        // clang-format on
+    };
+    block[1][1] = expected;
+    return block;
+  }();
+
+  assert_similar_canvas_block(expected_block, cvs_);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -353,7 +319,6 @@ TEST_F(
 }
 
 namespace {
-
 class an_edit_with_content : public a_new_edit
 {
  public:
@@ -434,16 +399,9 @@ TEST_F(
 
   munin::render_surface surface{cvs};
   surface.offset_by({1, 1});
-  edit_->draw(surface, {{0, 0}, {6, 1}});
+  edit_->draw(surface);
 
-  edit_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          edit_->draw(surface, region);
-        }
-      });
+  edit_->on_redraw.connect(redraw_component_on_surface(*edit_, surface));
 
   auto preferred_size = terminalpp::extent{};
   edit_->on_preferred_size_changed.connect(
@@ -461,29 +419,15 @@ TEST_F(
   auto const expected_preferred_size = terminalpp::extent{6, 1};
   ASSERT_EQ(expected_preferred_size, preferred_size);
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[6][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'t'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{'e'}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{'s'}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{'t'}, cvs[4][1]);
-  ASSERT_EQ(terminalpp::element{'s'}, cvs[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[6][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[6][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxxxxxx"_ts,
+          "xtests x"_ts,
+          "xxxxxxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }
 
 TEST_F(an_edit_with_content, moves_the_caret_left_when_text_is_set_shorter)
@@ -497,14 +441,7 @@ TEST_F(an_edit_with_content, moves_the_caret_left_when_text_is_set_shorter)
   surface.offset_by({1, 1});
   edit_->draw(surface, {{0, 0}, {6, 1}});
 
-  edit_->on_redraw.connect(
-      [&](auto const &regions)
-      {
-        for (auto const &region : regions)
-        {
-          edit_->draw(surface, region);
-        }
-      });
+  edit_->on_redraw.connect(redraw_component_on_surface(*edit_, surface));
 
   auto preferred_size = terminalpp::extent{};
   edit_->on_preferred_size_changed.connect(
@@ -522,27 +459,13 @@ TEST_F(an_edit_with_content, moves_the_caret_left_when_text_is_set_shorter)
   auto const expected_preferred_size = terminalpp::extent{2, 1};
   ASSERT_EQ(expected_preferred_size, preferred_size);
 
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[3][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[6][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][0]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][1]);
-  ASSERT_EQ(terminalpp::element{'t'}, cvs[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[2][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[3][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[4][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[5][1]);
-  ASSERT_EQ(terminalpp::element{' '}, cvs[6][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][1]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[0][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[1][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[2][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[4][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[5][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[6][2]);
-  ASSERT_EQ(terminalpp::element{'x'}, cvs[7][2]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "xxxxxxxx"_ts,
+          "xt     x"_ts,
+          "xxxxxxxx"_ts,
+          // clang-format on
+      },
+      cvs);
 }

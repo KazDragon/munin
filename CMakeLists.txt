@@ -239,6 +239,7 @@ target_sources(munin_tester
         test/include/mock/animator.hpp
         test/include/mock/component.hpp
         test/include/mock/layout.hpp
+        test/src/assert_similar.cpp
         test/src/fill_canvas.cpp
         test/src/redraw.cpp
         test/src/mock/animator.cpp

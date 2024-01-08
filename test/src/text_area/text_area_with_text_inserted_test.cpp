@@ -1,8 +1,11 @@
+#include "assert_similar.hpp"
+#include "redraw.hpp"
 #include "text_area_test.hpp"
 #include <munin/render_surface.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+using namespace terminalpp::literals;  // NOLINT
 using testing::ValuesIn;
 
 class a_text_area_with_text_inserted : public a_text_area
@@ -18,15 +21,8 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_at_the_front)
 {
   text_area_.set_size({4, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
-
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("c", 0);
 
@@ -38,26 +34,23 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_at_the_front)
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'c'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'a'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'b'}, canvas_[2][0]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "cab X"_ts,
+          "    X"_ts,
+          "XXXXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_in_the_middle)
 {
   text_area_.set_size({4, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
-
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("c", 1);
 
@@ -69,11 +62,15 @@ TEST_F(a_text_area_with_text_inserted, can_have_text_inserted_in_the_middle)
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'c'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'b'}, canvas_[2][0]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "acb X"_ts,
+          "    X"_ts,
+          "XXXXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(
@@ -82,15 +79,8 @@ TEST_F(
 {
   text_area_.set_size({4, 2});
 
-  bool redraw_requested = false;
   std::vector<terminalpp::rectangle> redraw_regions;
-
-  text_area_.on_redraw.connect(
-      [&](auto const &regions)
-      {
-        redraw_requested = true;
-        redraw_regions = regions;
-      });
+  text_area_.on_redraw.connect(append_regions_to_container(redraw_regions));
 
   text_area_.insert_text("defg", 1);
 
@@ -102,16 +92,15 @@ TEST_F(
     text_area_.draw(surface, region);
   }
 
-  ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'d'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{'e'}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{'f'}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{'g'}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{'b'}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][1]);
-
-  verify_oob_is_untouched();
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "adefX"_ts,
+          "gb  X"_ts,
+          "XXXXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 }
 
 TEST_F(a_text_area_with_text_inserted, lays_out_its_text_when_the_size_changes)
@@ -123,19 +112,18 @@ TEST_F(a_text_area_with_text_inserted, lays_out_its_text_when_the_size_changes)
 
   text_area_.draw(surface, {{0, 0}, {4, 2}});
 
-  ASSERT_EQ(terminalpp::element{'a'}, canvas_[0][0]);
-  ASSERT_EQ(terminalpp::element{'b'}, canvas_[1][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][0]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[0][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[1][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[2][1]);
-  ASSERT_EQ(terminalpp::element{' '}, canvas_[3][1]);
+  assert_similar_canvas_block(
+      {
+          // clang-format off
+          "ab  X"_ts,
+          "    X"_ts,
+          "XXXXX"_ts,
+          // clang-format on
+      },
+      canvas_);
 
-  auto const expected_cursor_position = terminalpp::point{2, 0};
+  static constexpr auto expected_cursor_position = terminalpp::point{2, 0};
   ASSERT_EQ(expected_cursor_position, text_area_.get_cursor_position());
-
-  verify_oob_is_untouched();
 }
 
 TEST_F(
@@ -153,7 +141,7 @@ TEST_F(
 
   text_area_.set_size({1, 1});
 
-  auto const expected_preferred_size = terminalpp::extent{1, 3};
+  static constexpr auto expected_preferred_size = terminalpp::extent{1, 3};
   ASSERT_EQ(expected_preferred_size, preferred_size);
 }
 
@@ -439,42 +427,42 @@ TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
 namespace {
 
 template <int N>
-static auto const keypress_cursor_left_n = terminalpp::virtual_key{
+auto const keypress_cursor_left_n = terminalpp::virtual_key{
     terminalpp::vk::cursor_left, terminalpp::vk_modifier::none, N};
-static auto const keypress_cursor_left = keypress_cursor_left_n<1>;
-static auto const keypress_cursor_left_2 = keypress_cursor_left_n<2>;
+auto const keypress_cursor_left = keypress_cursor_left_n<1>;
+auto const keypress_cursor_left_2 = keypress_cursor_left_n<2>;
 
 template <int N>
-static auto const keypress_cursor_right_n = terminalpp::virtual_key{
+auto const keypress_cursor_right_n = terminalpp::virtual_key{
     terminalpp::vk::cursor_right, terminalpp::vk_modifier::none, N};
-static auto const keypress_cursor_right = keypress_cursor_right_n<1>;
-static auto const keypress_cursor_right_2 = keypress_cursor_right_n<2>;
+auto const keypress_cursor_right = keypress_cursor_right_n<1>;
+auto const keypress_cursor_right_2 = keypress_cursor_right_n<2>;
 
 template <int N>
-static auto const keypress_cursor_up_n = terminalpp::virtual_key{
+auto const keypress_cursor_up_n = terminalpp::virtual_key{
     terminalpp::vk::cursor_up, terminalpp::vk_modifier::none, N};
-static auto const keypress_cursor_up = keypress_cursor_up_n<1>;
-static auto const keypress_cursor_up_2 = keypress_cursor_up_n<2>;
+auto const keypress_cursor_up = keypress_cursor_up_n<1>;
+auto const keypress_cursor_up_2 = keypress_cursor_up_n<2>;
 
 template <int N>
-static auto const keypress_cursor_down_n = terminalpp::virtual_key{
+auto const keypress_cursor_down_n = terminalpp::virtual_key{
     terminalpp::vk::cursor_down, terminalpp::vk_modifier::none, N};
-static auto const keypress_cursor_down = keypress_cursor_down_n<1>;
-static auto const keypress_cursor_down_2 = keypress_cursor_down_n<2>;
+auto const keypress_cursor_down = keypress_cursor_down_n<1>;
+auto const keypress_cursor_down_2 = keypress_cursor_down_n<2>;
 
-static auto const keypress_home = terminalpp::virtual_key{
+auto const keypress_home = terminalpp::virtual_key{
     terminalpp::vk::home, terminalpp::vk_modifier::none, 1};
 
-static auto const keypress_ctrl_home = terminalpp::virtual_key{
+auto const keypress_ctrl_home = terminalpp::virtual_key{
     terminalpp::vk::home, terminalpp::vk_modifier::ctrl, 1};
 
-static auto const keypress_end = terminalpp::virtual_key{
+auto const keypress_end = terminalpp::virtual_key{
     terminalpp::vk::end, terminalpp::vk_modifier::none, 1};
 
-static auto const keypress_ctrl_end = terminalpp::virtual_key{
+auto const keypress_ctrl_end = terminalpp::virtual_key{
     terminalpp::vk::end, terminalpp::vk_modifier::ctrl, 1};
 
-static movement_key_test_data const move_key_test_entries[] = {
+movement_key_test_data const move_key_test_entries[] = {
     // Move the cursor left from various points
     movement_key_test_data{{0, 0}, keypress_cursor_left, {0, 0}},
     movement_key_test_data{{1, 0}, keypress_cursor_left, {0, 0}},

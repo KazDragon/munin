@@ -1,4 +1,5 @@
 #include "fill_canvas.hpp"
+#include "redraw.hpp"
 #include <munin/edit.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
@@ -27,14 +28,7 @@ class keypress_test : public testing::TestWithParam<keypress_data>
     fill_canvas(cvs_, 'x');
     surface_.offset_by({1, 1});
 
-    edit_.on_redraw.connect(
-        [this](auto const &regions)
-        {
-          for (auto const &region : regions)
-          {
-            edit_.draw(surface_, region);
-          }
-        });
+    edit_.on_redraw.connect(redraw_component_on_surface(edit_, surface_));
 
     edit_.set_position({0, 0});
     edit_.set_size({4, 1});
