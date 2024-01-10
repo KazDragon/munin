@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Munin
-   &#160;<span id="projectnumber">0.7.1.7</span>
+   &#160;<span id="projectnumber">0.7.2.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -179,6 +179,9 @@ terminalpp::point&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a1e5dfa6321a6a4596e698835a86de22b">set_cursor_position</a> (terminalpp::point const &amp;position)</td></tr>
 <tr class="memdesc:a1e5dfa6321a6a4596e698835a86de22b inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the cursor's current position within the component. <br /></td></tr>
 <tr class="separator:a1e5dfa6321a6a4596e698835a86de22b inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface) const</td></tr>
+<tr class="memdesc:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <a href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">More...</a><br /></td></tr>
+<tr class="separator:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const</td></tr>
 <tr class="memdesc:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <a href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">More...</a><br /></td></tr>
 <tr class="separator:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,7 +205,7 @@ terminalpp::extent&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <tr class="memdesc:ae793103eb9ce5cd8a57c04e4d1b5e6a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a805b7b399ed5d53c81784f98d69de9e5" title="Retrieves the preferred size of this component.">get_preferred_size()</a>. Derived classes must override this function in order to get the size of the component in a custom manner. <br /></td></tr>
 <tr class="separator:ae793103eb9ce5cd8a57c04e4d1b5e6a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ca4d987cca71602d4d5e1e024a3ca27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1brush.html#a8ca4d987cca71602d4d5e1e024a3ca27">do_draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const override</td></tr>
-<tr class="memdesc:a8ca4d987cca71602d4d5e1e024a3ca27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed canvas. A component must only draw the part of itself specified by the region.  <a href="classmunin_1_1brush.html#a8ca4d987cca71602d4d5e1e024a3ca27">More...</a><br /></td></tr>
+<tr class="memdesc:a8ca4d987cca71602d4d5e1e024a3ca27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed canvas. A component must only draw the part of itself specified by the region.  <a href="classmunin_1_1brush.html#a8ca4d987cca71602d4d5e1e024a3ca27">More...</a><br /></td></tr>
 <tr class="separator:a8ca4d987cca71602d4d5e1e024a3ca27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b0571a6a9b73be87e67eb1cc5221553"><td class="memItemLeft" align="right" valign="top"><a id="a4b0571a6a9b73be87e67eb1cc5221553"></a>
 nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1brush.html#a4b0571a6a9b73be87e67eb1cc5221553">do_to_json</a> () const override</td></tr>
@@ -335,7 +338,7 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 </table>
 </div><div class="memdoc">
 
-<p>Called by <a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed canvas. A component must only draw the part of itself specified by the region. </p>
+<p>Called by <a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed canvas. A component must only draw the part of itself specified by the region. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">surface</td><td>the surface on which the component should draw itself. </td></tr>
@@ -355,7 +358,7 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jan 5 2024 13:09:37 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Wed Jan 10 2024 09:05:31 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
