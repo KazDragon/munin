@@ -72,10 +72,10 @@ TEST_F(a_horizontal_scrollbar, with_size_but_no_slider_draws_a_frame_border)
   assert_similar_canvas_block(
       {
           // clang-format off
-          { munin::detail::single_lined_horizontal_beam,
-                munin::detail::single_lined_horizontal_beam, 
-                munin::detail::single_lined_horizontal_beam,
-                munin::detail::single_lined_horizontal_beam },
+          { munin::detail::border::unicode::horizontal_beam,
+                munin::detail::border::unicode::horizontal_beam, 
+                munin::detail::border::unicode::horizontal_beam,
+                munin::detail::border::unicode::horizontal_beam },
           "XXXX"_ts,
           "XXXX"_ts,
           "XXXX"_ts,
@@ -222,10 +222,10 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
       {
           // clang-format off
           {
-            munin::detail::single_lined_horizontal_beam, 
-            munin::detail::single_lined_horizontal_beam, 
-            munin::detail::single_lined_cross, 
-            munin::detail::single_lined_horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam, 
+            munin::detail::border::unicode::horizontal_beam, 
+            munin::detail::border::unicode::cross, 
+            munin::detail::border::unicode::horizontal_beam,
             'X',
             'X',
             'X',
@@ -242,14 +242,14 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
       {
           // clang-format off
           {
-            munin::detail::single_lined_horizontal_beam, 
-            munin::detail::single_lined_horizontal_beam, 
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_cross, 
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam, 
+            munin::detail::border::unicode::horizontal_beam, 
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::cross, 
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
           },
           // clang-format on
       },
@@ -262,13 +262,13 @@ constexpr auto lowlight_attribute =
     terminalpp::attribute{terminalpp::greyscale_colour{5}};
 
 constexpr auto lowlight_horizontal_beam = terminalpp::element{
-    munin::detail::single_lined_horizontal_beam, lowlight_attribute};
+    munin::detail::border::unicode::horizontal_beam, lowlight_attribute};
 
 constexpr auto highlight_attribute =
     terminalpp::attribute{terminalpp::high_colour{4, 5, 1}};
 
 constexpr auto highlight_horizontal_beam = terminalpp::element{
-    munin::detail::single_lined_horizontal_beam, highlight_attribute};
+    munin::detail::border::unicode::horizontal_beam, highlight_attribute};
 
 class a_horizontal_scrollbar_with_an_associated_component
   : public a_horizontal_scrollbar
@@ -444,7 +444,7 @@ TEST_F(
       terminalpp::attribute{terminalpp::high_colour(2, 2, 2)};
 
   constexpr auto new_lowlight_horizontal_beam = terminalpp::element{
-      munin::detail::single_lined_horizontal_beam, new_lowlight_attribute};
+      munin::detail::border::unicode::horizontal_beam, new_lowlight_attribute};
 
   scrollbar_->set_lowlight_attribute(new_lowlight_attribute);
 
@@ -483,7 +483,7 @@ TEST_F(
       terminalpp::attribute{terminalpp::high_colour(6, 6, 5)};
 
   constexpr auto new_highlight_horizontal_beam = terminalpp::element{
-      munin::detail::single_lined_horizontal_beam, new_highlight_attribute};
+      munin::detail::border::unicode::horizontal_beam, new_highlight_attribute};
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
