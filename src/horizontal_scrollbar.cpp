@@ -1,5 +1,5 @@
 #include "munin/horizontal_scrollbar.hpp"
-#include "munin/detail/unicode_glyphs.hpp"
+#include "munin/detail/border_glyphs.hpp"
 #include "munin/render_surface.hpp"
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
@@ -198,22 +198,29 @@ terminalpp::extent horizontal_scrollbar::do_get_preferred_size() const
 void horizontal_scrollbar::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-  auto const attribute = pimpl_->associated_component_has_focus
-                             ? pimpl_->highlight_attribute
-                             : pimpl_->lowlight_attribute;
+  auto const &attribute = pimpl_->associated_component_has_focus
+                              ? pimpl_->highlight_attribute
+                              : pimpl_->lowlight_attribute;
+
+  bool const supports_unicode = surface.supports_unicode();
 
   terminalpp::for_each_in_region(
       surface,
       region,
-      [this, attribute](
+      [this, &attribute, supports_unicode](
           terminalpp::element &elem,
           terminalpp::coordinate_type column,  // NOLINT
           terminalpp::coordinate_type row)
       {
+        bool const at_slider_position = column == pimpl_->slider_position;
+
         elem = {
-            column == pimpl_->slider_position
-                ? munin::detail::single_lined_cross
-                : munin::detail::single_lined_horizontal_beam,
+            supports_unicode
+                ? at_slider_position
+                      ? munin::detail::border::unicode::cross
+                      : munin::detail::border::unicode::horizontal_beam
+            : at_slider_position ? munin::detail::border::ansi::cross
+                                 : munin::detail::border::ansi::horizontal_beam,
             attribute};
       });
 }
