@@ -15,11 +15,6 @@ using testing::ValuesIn;
 
 namespace {
 
-auto const single_lined_vertical_beam =
-    terminalpp::string{munin::detail::single_lined_vertical_beam};
-auto const single_lined_cross =
-    terminalpp::string{munin::detail::single_lined_cross};
-
 class a_vertical_scrollbar : public testing::Test
 {
  protected:
@@ -78,10 +73,10 @@ TEST_F(a_vertical_scrollbar, with_size_but_no_slider_draws_a_frame_border)
   assert_similar_canvas_block(
       {
           // clang-format off
-          single_lined_vertical_beam + "XXX"_ts,
-          single_lined_vertical_beam + "XXX"_ts,
-          single_lined_vertical_beam + "XXX"_ts,
-          single_lined_vertical_beam + "XXX"_ts,
+          terminalpp::string{ munin::detail::border::unicode::vertical_beam } + "XXX"_ts,
+          terminalpp::string{ munin::detail::border::unicode::vertical_beam } + "XXX"_ts,
+          terminalpp::string{ munin::detail::border::unicode::vertical_beam } + "XXX"_ts,
+          terminalpp::string{ munin::detail::border::unicode::vertical_beam } + "XXX"_ts,
           // clang-format on
       },
       canvas);
@@ -224,10 +219,10 @@ TEST_F(a_vertical_scrollbar, draws_the_correct_scroller_position_when_resized)
   assert_similar_canvas_block(
       {
           // clang-format off
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
-          single_lined_cross,
-          single_lined_vertical_beam,
+          { munin::detail::border::unicode::vertical_beam },
+          { munin::detail::border::unicode::vertical_beam },
+          { munin::detail::border::unicode::cross },
+          { munin::detail::border::unicode::vertical_beam },
           "X"_ts,
           "X"_ts,
           "X"_ts,
@@ -242,14 +237,14 @@ TEST_F(a_vertical_scrollbar, draws_the_correct_scroller_position_when_resized)
   assert_similar_canvas_block(
       {
           // clang-format off
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
-          single_lined_cross,
-          single_lined_vertical_beam,
-          single_lined_vertical_beam,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::cross} ,
+          { munin::detail::border::unicode::vertical_beam} ,
+          { munin::detail::border::unicode::vertical_beam} ,
           // clang-format on
       },
       canvas);
@@ -261,13 +256,13 @@ constexpr auto lowlight_attribute =
     terminalpp::attribute{terminalpp::greyscale_colour{5}};
 
 auto const lowlight_vertical_beam = terminalpp::string{
-    {munin::detail::single_lined_vertical_beam, lowlight_attribute}};
+    {munin::detail::border::unicode::vertical_beam, lowlight_attribute}};
 
 constexpr auto highlight_attribute =
     terminalpp::attribute{terminalpp::high_colour{4, 5, 1}};
 
 auto const highlight_vertical_beam = terminalpp::string{
-    {munin::detail::single_lined_vertical_beam, highlight_attribute}};
+    {munin::detail::border::unicode::vertical_beam, highlight_attribute}};
 
 class a_vertical_scrollbar_with_an_associated_component
   : public a_vertical_scrollbar
@@ -435,7 +430,7 @@ TEST_F(
       terminalpp::attribute{terminalpp::high_colour(2, 2, 2)};
 
   auto const new_lowlight_vertical_beam = terminalpp::string{
-      {munin::detail::single_lined_vertical_beam, new_lowlight_attribute}};
+      {munin::detail::border::unicode::vertical_beam, new_lowlight_attribute}};
 
   scrollbar_->set_lowlight_attribute(new_lowlight_attribute);
 
@@ -472,7 +467,7 @@ TEST_F(
       terminalpp::attribute{terminalpp::high_colour(6, 6, 5)};
 
   auto const new_highlight_vertical_beam = terminalpp::string{
-      {munin::detail::single_lined_vertical_beam, new_highlight_attribute}};
+      {munin::detail::border::unicode::vertical_beam, new_highlight_attribute}};
 
   ON_CALL(*associated_component_, do_has_focus()).WillByDefault(Return(true));
   associated_component_->on_focus_set();
