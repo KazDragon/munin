@@ -1,8 +1,9 @@
 #include "assert_similar.hpp"
 #include "fill_canvas.hpp"
 #include "mock/component.hpp"
+#include "mock/render_surface_capabilities.hpp"
 #include "redraw.hpp"
-#include <munin/detail/unicode_glyphs.hpp>
+#include <munin/detail/border_glyphs.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/vertical_scrollbar.hpp>
 #include <terminalpp/mouse.hpp>
@@ -111,14 +112,18 @@ class vertical_scroll_bar_slider_position
       munin::make_vertical_scrollbar()};
 
   terminalpp::canvas canvas_{{1, 16}};
-  munin::render_surface surface_{canvas_};
+  mock_render_surface_capabilities capabilities_;
+  munin::render_surface surface_{canvas_, capabilities_};
 };
 
 }  // namespace
 
 TEST_P(
-    vertical_scroll_bar_slider_position, draws_slider_at_the_expected_position)
+    vertical_scroll_bar_slider_position,
+    draws_unicode_slider_at_the_expected_position)
 {
+  ON_CALL(capabilities_, supports_unicode()).WillByDefault(Return(true));
+
   using std::get;
 
   auto const &param = GetParam();
@@ -132,12 +137,42 @@ TEST_P(
   {
     if (y == expected_slider_y_position)
     {
-      ASSERT_EQ(munin::detail::single_lined_cross, canvas_[0][y])
+      ASSERT_EQ(munin::detail::border::unicode::cross, canvas_[0][y])
           << "Expected slider cross at position " << y;
     }
     else
     {
-      ASSERT_EQ(munin::detail::single_lined_vertical_beam, canvas_[0][y])
+      ASSERT_EQ(munin::detail::border::unicode::vertical_beam, canvas_[0][y])
+          << "Expected beam at position " << y;
+    }
+  }
+}
+
+TEST_P(
+    vertical_scroll_bar_slider_position,
+    draws_ansi_slider_at_the_expected_position)
+{
+  ON_CALL(capabilities_, supports_unicode()).WillByDefault(Return(false));
+
+  using std::get;
+
+  auto const &param = GetParam();
+  auto const &y_position = get<0>(param);
+  auto const &height = get<1>(param);
+  auto const &expected_slider_y_position = get<2>(param);
+
+  scrollbar_->set_slider_position(y_position, height);
+
+  for (terminalpp::coordinate_type y = 0; y < canvas_.size().height_; ++y)
+  {
+    if (y == expected_slider_y_position)
+    {
+      ASSERT_EQ(munin::detail::border::ansi::cross, canvas_[0][y])
+          << "Expected slider cross at position " << y;
+    }
+    else
+    {
+      ASSERT_EQ(munin::detail::border::ansi::vertical_beam, canvas_[0][y])
           << "Expected beam at position " << y;
     }
   }
