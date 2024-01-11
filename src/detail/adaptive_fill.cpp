@@ -1,22 +1,17 @@
 #include "munin/detail/adaptive_fill.hpp"
-#include "munin/detail/unicode_glyphs.hpp"
+#include "munin/detail/border_glyphs.hpp"
 #include "munin/render_surface.hpp"
 
 namespace munin::detail {
 namespace {
-
-constexpr terminalpp::glyph const default_corner_glyph = '+';
-constexpr terminalpp::glyph const default_horizontal_beam_glyph = '-';
-constexpr terminalpp::glyph const default_vertical_beam_glyph = '|';
 
 // ==========================================================================
 // SELECT_TOP_LEFT_CORNER_GLYPH
 // ==========================================================================
 auto select_top_left_corner_glyph(render_surface const &surface)
 {
-  return surface.supports_unicode()
-             ? detail::single_lined_rounded_top_left_corner
-             : default_corner_glyph;
+  return surface.supports_unicode() ? detail::border::unicode::top_left_corner
+                                    : detail::border::ansi::top_left_corner;
 }
 
 // ==========================================================================
@@ -24,9 +19,8 @@ auto select_top_left_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_top_right_corner_glyph(render_surface const &surface)
 {
-  return surface.supports_unicode()
-             ? detail::single_lined_rounded_top_right_corner
-             : default_corner_glyph;
+  return surface.supports_unicode() ? detail::border::unicode::top_right_corner
+                                    : detail::border::ansi::top_right_corner;
 }
 
 // ==========================================================================
@@ -35,8 +29,8 @@ auto select_top_right_corner_glyph(render_surface const &surface)
 auto select_bottom_left_corner_glyph(render_surface const &surface)
 {
   return surface.supports_unicode()
-             ? detail::single_lined_rounded_bottom_left_corner
-             : default_corner_glyph;
+             ? detail::border::unicode::bottom_left_corner
+             : detail::border::ansi::bottom_left_corner;
 }
 
 // ==========================================================================
@@ -45,8 +39,8 @@ auto select_bottom_left_corner_glyph(render_surface const &surface)
 auto select_bottom_right_corner_glyph(render_surface const &surface)
 {
   return surface.supports_unicode()
-             ? detail::single_lined_rounded_bottom_right_corner
-             : default_corner_glyph;
+             ? detail::border::unicode::bottom_right_corner
+             : detail::border::ansi::bottom_right_corner;
 }
 
 // ==========================================================================
@@ -54,8 +48,8 @@ auto select_bottom_right_corner_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_horizontal_beam_glyph(render_surface const &surface)
 {
-  return surface.supports_unicode() ? detail::single_lined_horizontal_beam
-                                    : default_horizontal_beam_glyph;
+  return surface.supports_unicode() ? detail::border::unicode::horizontal_beam
+                                    : detail::border::ansi::horizontal_beam;
 }
 
 // ==========================================================================
@@ -63,8 +57,8 @@ auto select_horizontal_beam_glyph(render_surface const &surface)
 // ==========================================================================
 auto select_vertical_beam_glyph(render_surface const &surface)
 {
-  return surface.supports_unicode() ? detail::single_lined_vertical_beam
-                                    : default_vertical_beam_glyph;
+  return surface.supports_unicode() ? detail::border::unicode::vertical_beam
+                                    : detail::border::ansi::vertical_beam;
 }
 
 }  // namespace

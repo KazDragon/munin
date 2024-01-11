@@ -1,7 +1,7 @@
 #include "assert_similar.hpp"
 #include "fill_canvas.hpp"
 #include "mock/component.hpp"
-#include <munin/detail/unicode_glyphs.hpp>
+#include <munin/detail/border_glyphs.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/scroll_pane.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
@@ -78,28 +78,28 @@ TEST_F(a_new_scroll_pane, draws_the_component_within_its_frame)
       {
           // clang-format off
           {
-            munin::detail::single_lined_rounded_top_left_corner,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_rounded_top_right_corner,
+            munin::detail::border::unicode::top_left_corner,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::top_right_corner,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             '0',
             '1',
-            munin::detail::single_lined_cross,
+            munin::detail::border::unicode::cross,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             '1',
             '2',
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
           },
           {
-            munin::detail::single_lined_rounded_bottom_left_corner,
-            munin::detail::single_lined_cross,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_rounded_bottom_right_corner,
+            munin::detail::border::unicode::bottom_left_corner,
+            munin::detail::border::unicode::cross,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::bottom_right_corner,
           },
           // clang-format on
       },
@@ -124,28 +124,28 @@ TEST_F(a_new_scroll_pane, tracks_the_cursor_in_the_inner_component)
       {
           // clang-format off
           {
-            munin::detail::single_lined_rounded_top_left_corner,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_rounded_top_right_corner,
+            munin::detail::border::unicode::top_left_corner,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::top_right_corner,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             '6',
             '7',
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             '7',
             '8',
-            munin::detail::single_lined_cross,
+            munin::detail::border::unicode::cross,
           },
           {
-            munin::detail::single_lined_rounded_bottom_left_corner,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_cross,
-            munin::detail::single_lined_rounded_bottom_right_corner,
+            munin::detail::border::unicode::bottom_left_corner,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::cross,
+            munin::detail::border::unicode::bottom_right_corner,
           },
           // clang-format on
       },
@@ -157,34 +157,26 @@ namespace {
 constexpr auto highlight_attribute =
     terminalpp::attribute{terminalpp::high_colour(5, 4, 1)};
 
-constexpr auto highlighted_single_lined_rounded_top_left_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_top_left_corner,
-        highlight_attribute};
+constexpr auto highlighted_top_left_corner = terminalpp::element{
+    munin::detail::border::unicode::top_left_corner, highlight_attribute};
 
-constexpr auto highlighted_single_lined_horizontal_beam = terminalpp::element{
-    munin::detail::single_lined_horizontal_beam, highlight_attribute};
+constexpr auto highlighted_horizontal_beam = terminalpp::element{
+    munin::detail::border::unicode::horizontal_beam, highlight_attribute};
 
-constexpr auto highlighted_single_lined_cross =
-    terminalpp::element{munin::detail::single_lined_cross, highlight_attribute};
+constexpr auto highlighted_cross = terminalpp::element{
+    munin::detail::border::unicode::cross, highlight_attribute};
 
-constexpr auto highlighted_single_lined_rounded_top_right_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_top_right_corner,
-        highlight_attribute};
+constexpr auto highlighted_top_right_corner = terminalpp::element{
+    munin::detail::border::unicode::top_right_corner, highlight_attribute};
 
-constexpr auto highlighted_single_lined_vertical_beam = terminalpp::element{
-    munin::detail::single_lined_vertical_beam, highlight_attribute};
+constexpr auto highlighted_vertical_beam = terminalpp::element{
+    munin::detail::border::unicode::vertical_beam, highlight_attribute};
 
-constexpr auto highlighted_single_lined_rounded_bottom_left_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_bottom_left_corner,
-        highlight_attribute};
+constexpr auto highlighted_bottom_left_corner = terminalpp::element{
+    munin::detail::border::unicode::bottom_left_corner, highlight_attribute};
 
-constexpr auto highlighted_single_lined_rounded_bottom_right_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_bottom_right_corner,
-        highlight_attribute};
+constexpr auto highlighted_bottom_right_corner = terminalpp::element{
+    munin::detail::border::unicode::bottom_right_corner, highlight_attribute};
 
 }  // namespace
 
@@ -208,28 +200,28 @@ TEST_F(
       {
           // clang-format off
           {
-            highlighted_single_lined_rounded_top_left_corner,
-            highlighted_single_lined_horizontal_beam,
-            highlighted_single_lined_horizontal_beam,
-            highlighted_single_lined_rounded_top_right_corner,
+            highlighted_top_left_corner,
+            highlighted_horizontal_beam,
+            highlighted_horizontal_beam,
+            highlighted_top_right_corner,
           },
           {
-            highlighted_single_lined_vertical_beam,
+            highlighted_vertical_beam,
             '0',
             '1',
-            highlighted_single_lined_cross,
+            highlighted_cross,
           },
           {
-            highlighted_single_lined_vertical_beam,
+            highlighted_vertical_beam,
             '1',
             '2',
-            highlighted_single_lined_vertical_beam,
+            highlighted_vertical_beam,
           },
           {
-            highlighted_single_lined_rounded_bottom_left_corner,
-            highlighted_single_lined_cross,
-            highlighted_single_lined_horizontal_beam,
-            highlighted_single_lined_rounded_bottom_right_corner,
+            highlighted_bottom_left_corner,
+            highlighted_cross,
+            highlighted_horizontal_beam,
+            highlighted_bottom_right_corner,
           },
           // clang-format on
       },
@@ -241,34 +233,26 @@ namespace {
 constexpr auto lowlight_attribute =
     terminalpp::attribute{terminalpp::high_colour(2, 1, 2)};
 
-constexpr auto lowlighted_single_lined_rounded_top_left_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_top_left_corner,
-        lowlight_attribute};
+constexpr auto lowlighted_top_left_corner = terminalpp::element{
+    munin::detail::border::unicode::top_left_corner, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_horizontal_beam = terminalpp::element{
-    munin::detail::single_lined_horizontal_beam, lowlight_attribute};
+constexpr auto lowlighted_horizontal_beam = terminalpp::element{
+    munin::detail::border::unicode::horizontal_beam, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_cross =
-    terminalpp::element{munin::detail::single_lined_cross, lowlight_attribute};
+constexpr auto lowlighted_cross = terminalpp::element{
+    munin::detail::border::unicode::cross, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_rounded_top_right_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_top_right_corner,
-        lowlight_attribute};
+constexpr auto lowlighted_top_right_corner = terminalpp::element{
+    munin::detail::border::unicode::top_right_corner, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_vertical_beam = terminalpp::element{
-    munin::detail::single_lined_vertical_beam, lowlight_attribute};
+constexpr auto lowlighted_vertical_beam = terminalpp::element{
+    munin::detail::border::unicode::vertical_beam, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_rounded_bottom_left_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_bottom_left_corner,
-        lowlight_attribute};
+constexpr auto lowlighted_bottom_left_corner = terminalpp::element{
+    munin::detail::border::unicode::bottom_left_corner, lowlight_attribute};
 
-constexpr auto lowlighted_single_lined_rounded_bottom_right_corner =
-    terminalpp::element{
-        munin::detail::single_lined_rounded_bottom_right_corner,
-        lowlight_attribute};
+constexpr auto lowlighted_bottom_right_corner = terminalpp::element{
+    munin::detail::border::unicode::bottom_right_corner, lowlight_attribute};
 
 }  // namespace
 
@@ -296,28 +280,28 @@ TEST_F(
       {
           // clang-format off
           {
-            lowlighted_single_lined_rounded_top_left_corner,
-            lowlighted_single_lined_horizontal_beam,
-            lowlighted_single_lined_horizontal_beam,
-            lowlighted_single_lined_rounded_top_right_corner,
+            lowlighted_top_left_corner,
+            lowlighted_horizontal_beam,
+            lowlighted_horizontal_beam,
+            lowlighted_top_right_corner,
           },
           {
-            lowlighted_single_lined_vertical_beam,
+            lowlighted_vertical_beam,
             '0',
             '1',
-            lowlighted_single_lined_cross,
+            lowlighted_cross,
           },
           {
-            lowlighted_single_lined_vertical_beam,
+            lowlighted_vertical_beam,
             '1',
             '2',
-            lowlighted_single_lined_vertical_beam,
+            lowlighted_vertical_beam,
           },
           {
-            lowlighted_single_lined_rounded_bottom_left_corner,
-            lowlighted_single_lined_cross,
-            lowlighted_single_lined_horizontal_beam,
-            lowlighted_single_lined_rounded_bottom_right_corner,
+            lowlighted_bottom_left_corner,
+            lowlighted_cross,
+            lowlighted_horizontal_beam,
+            lowlighted_bottom_right_corner,
           },
           // clang-format on
       },
