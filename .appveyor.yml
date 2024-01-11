@@ -21,7 +21,8 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
 
   matrix:
-    - shared: True
+    # currently disabled due to a problem linking: see issue #262
+    #    - shared: True
     - shared: False
 
 cache:
