@@ -2,7 +2,7 @@
 #include "fill_canvas.hpp"
 #include "mock/component.hpp"
 #include "redraw.hpp"
-#include <munin/detail/unicode_glyphs.hpp>
+#include <munin/detail/border_glyphs.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/scroll_frame.hpp>
 #include <gtest/gtest.h>
@@ -39,28 +39,28 @@ TEST_F(a_new_scroll_frame, draws_a_solid_frame)
       {
           // clang-format off
           { 
-            munin::detail::single_lined_rounded_top_left_corner,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_rounded_top_right_corner,
+            munin::detail::border::unicode::top_left_corner,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::top_right_corner,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             'X',
             'X',
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
           },
           {
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
             'X',
             'X',
-            munin::detail::single_lined_vertical_beam,
+            munin::detail::border::unicode::vertical_beam,
           },
           { 
-            munin::detail::single_lined_rounded_bottom_left_corner,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_horizontal_beam,
-            munin::detail::single_lined_rounded_bottom_right_corner,
+            munin::detail::border::unicode::bottom_left_corner,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::horizontal_beam,
+            munin::detail::border::unicode::bottom_right_corner,
           },
           // clang-format on
       },
