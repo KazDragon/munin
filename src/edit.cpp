@@ -3,11 +3,12 @@
 #include "munin/render_surface.hpp"
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
+
+#include <memory>
 
 namespace munin {
 
@@ -274,7 +275,7 @@ private:
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-edit::edit() : pimpl_(boost::make_unique<impl>(*this))
+edit::edit() : pimpl_(std::make_unique<impl>(*this))
 {
 }
 

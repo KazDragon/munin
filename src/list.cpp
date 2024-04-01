@@ -1,12 +1,13 @@
 #include "munin/list.hpp"
 
-#include <boost/make_unique.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/max_element.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
+
+#include <memory>
 
 namespace munin {
 
@@ -175,7 +176,7 @@ struct list::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-list::list() : pimpl_{boost::make_unique<impl>(*this)}
+list::list() : pimpl_{std::make_unique<impl>(*this)}
 {
 }
 

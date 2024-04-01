@@ -6,7 +6,6 @@
 #include "munin/null_layout.hpp"
 #include "munin/render_surface.hpp"
 
-#include <boost/make_unique.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/algorithm/find_if.hpp>
 #include <boost/range/algorithm/for_each.hpp>
@@ -14,6 +13,7 @@
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 
+#include <memory>
 #include <vector>
 
 namespace munin {
@@ -630,7 +630,7 @@ private:
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-container::container() : pimpl_(boost::make_unique<impl>(*this))
+container::container() : pimpl_(std::make_unique<impl>(*this))
 {
 }
 

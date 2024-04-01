@@ -4,7 +4,7 @@
 #include "munin/detail/adaptive_fill.hpp"
 #include "munin/view.hpp"
 
-#include <boost/make_unique.hpp>
+#include <memory>
 
 namespace munin {
 
@@ -70,7 +70,7 @@ struct solid_frame::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-solid_frame::solid_frame() : pimpl_(boost::make_unique<impl>(*this))
+solid_frame::solid_frame() : pimpl_(std::make_unique<impl>(*this))
 {
     auto &attr = pimpl_->current_attribute;
 

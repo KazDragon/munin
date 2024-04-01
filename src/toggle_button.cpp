@@ -5,9 +5,10 @@
 #include "munin/grid_layout.hpp"
 #include "munin/solid_frame.hpp"
 
-#include <boost/make_unique.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
+
+#include <memory>
 
 namespace munin {
 
@@ -23,7 +24,7 @@ struct toggle_button::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-toggle_button::toggle_button(bool checked) : pimpl_(boost::make_unique<impl>())
+toggle_button::toggle_button(bool checked) : pimpl_(std::make_unique<impl>())
 {
     pimpl_->fill = make_fill([this](render_surface &) -> terminalpp::element {
         return pimpl_->toggle_state ? 'X' : ' ';

@@ -3,13 +3,13 @@
 #include "munin/render_surface.hpp"
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/make_unique.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/scope_exit.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <memory>
 #include <utility>
 
 namespace munin {
@@ -360,7 +360,7 @@ viewport::viewport(std::shared_ptr<component> tracked_component)
 viewport::viewport(
     std::shared_ptr<component> tracked_component,
     std::unique_ptr<resize_strategy> strategy)
-  : pimpl_(boost::make_unique<impl>(
+  : pimpl_(std::make_unique<impl>(
       *this, std::move(tracked_component), std::move(strategy)))
 {
 }
@@ -551,7 +551,7 @@ class horizontal_viewport_resize_strategy : public viewport::resize_strategy
 std::unique_ptr<viewport::resize_strategy>
 make_default_viewport_resize_strategy()
 {
-    return boost::make_unique<default_viewport_resize_strategy>();
+    return std::make_unique<default_viewport_resize_strategy>();
 }
 
 // ==========================================================================
@@ -560,7 +560,7 @@ make_default_viewport_resize_strategy()
 std::unique_ptr<viewport::resize_strategy>
 make_vertical_viewport_resize_strategy()
 {
-    return boost::make_unique<vertical_viewport_resize_strategy>();
+    return std::make_unique<vertical_viewport_resize_strategy>();
 }
 
 // ==========================================================================
@@ -569,7 +569,7 @@ make_vertical_viewport_resize_strategy()
 std::unique_ptr<viewport::resize_strategy>
 make_horizontal_viewport_resize_strategy()
 {
-    return boost::make_unique<horizontal_viewport_resize_strategy>();
+    return std::make_unique<horizontal_viewport_resize_strategy>();
 }
 
 }  // namespace munin

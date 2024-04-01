@@ -3,7 +3,7 @@
 #include "munin/scroll_frame.hpp"
 #include "munin/viewport.hpp"
 
-#include <boost/make_unique.hpp>
+#include <memory>
 
 namespace munin {
 
@@ -60,7 +60,7 @@ scroll_pane::scroll_pane(
   : framed_component(
       std::static_pointer_cast<frame>(inner_frame),
       std::static_pointer_cast<viewport>(inner_viewport)),
-    pimpl_(boost::make_unique<impl>())
+    pimpl_(std::make_unique<impl>())
 {
     pimpl_->frame_ = std::static_pointer_cast<scroll_frame>(inner_frame);
     pimpl_->viewport_ = std::static_pointer_cast<viewport>(inner_viewport);

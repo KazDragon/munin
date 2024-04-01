@@ -3,11 +3,12 @@
 #include "munin/render_surface.hpp"
 
 #include <boost/algorithm/clamp.hpp>
-#include <boost/make_unique.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
+
+#include <memory>
 
 using namespace terminalpp::literals;  // NOLINT
 
@@ -508,7 +509,7 @@ private:
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-text_area::text_area() : pimpl_(boost::make_unique<impl>(*this))
+text_area::text_area() : pimpl_(std::make_unique<impl>(*this))
 {
 }
 

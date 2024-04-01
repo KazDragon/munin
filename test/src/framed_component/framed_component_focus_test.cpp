@@ -4,7 +4,6 @@
 #include <gtest/gtest.h>
 #include <munin/framed_component.hpp>
 
-using testing::_;
 using testing::Assign;
 using testing::DoAll;
 using testing::Return;

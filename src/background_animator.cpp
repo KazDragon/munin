@@ -3,7 +3,6 @@
 #include <boost/asio/bind_executor.hpp>
 #include <boost/asio/steady_timer.hpp>
 #include <boost/asio/strand.hpp>
-#include <boost/make_unique.hpp>
 
 namespace munin {
 
