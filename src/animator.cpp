@@ -1,11 +1,11 @@
 #include "munin/animator.hpp"
 
-#include <boost/make_unique.hpp>
 #include <boost/range/algorithm/lower_bound.hpp>
 #include <boost/range/algorithm_ext/erase.hpp>
 #include <boost/range/iterator_range.hpp>
 
 #include <deque>
+#include <memory>
 
 namespace munin {
 
@@ -47,7 +47,7 @@ public:
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-animator::animator() : pimpl_(boost::make_unique<impl>())
+animator::animator() : pimpl_(std::make_unique<impl>())
 {
 }
 

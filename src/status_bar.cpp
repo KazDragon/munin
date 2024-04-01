@@ -1,10 +1,11 @@
 #include "munin/status_bar.hpp"
 
-#include <boost/make_unique.hpp>
 #include <munin/animator.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/element.hpp>
+
+#include <memory>
 
 namespace munin {
 
@@ -36,7 +37,7 @@ struct status_bar::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-status_bar::status_bar(animator &anim) : pimpl_(boost::make_unique<impl>(anim))
+status_bar::status_bar(animator &anim) : pimpl_(std::make_unique<impl>(anim))
 {
 }
 

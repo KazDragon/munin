@@ -3,7 +3,6 @@
 #include "munin/detail/border_glyphs.hpp"
 #include "munin/render_surface.hpp"
 
-#include <boost/make_unique.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 
@@ -122,8 +121,7 @@ struct vertical_scrollbar::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-vertical_scrollbar::vertical_scrollbar()
-  : pimpl_(boost::make_unique<impl>(*this))
+vertical_scrollbar::vertical_scrollbar() : pimpl_(std::make_unique<impl>(*this))
 {
 }
 

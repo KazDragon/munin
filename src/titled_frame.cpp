@@ -5,7 +5,7 @@
 #include "munin/image.hpp"
 #include "munin/view.hpp"
 
-#include <boost/make_unique.hpp>
+#include <memory>
 
 namespace munin {
 
@@ -69,7 +69,7 @@ struct titled_frame::impl
 // CONSTRUCTOR
 // ==========================================================================
 titled_frame::titled_frame(terminalpp::string const &title)
-  : pimpl_(boost::make_unique<impl>(*this))
+  : pimpl_(std::make_unique<impl>(*this))
 {
     pimpl_->title_text = title;
     pimpl_->title = make_image(pimpl_->title_text);

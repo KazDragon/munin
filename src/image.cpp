@@ -3,9 +3,8 @@
 #include "munin/detail/json_adaptors.hpp"
 #include "munin/render_surface.hpp"
 
-#include <boost/make_unique.hpp>
-
 #include <algorithm>
+#include <memory>
 #include <utility>
 
 using namespace terminalpp::literals;  // NOLINT
@@ -143,7 +142,7 @@ image::image(terminalpp::string content, terminalpp::element fill)
 // CONSTRUCTOR
 // ==========================================================================
 image::image(std::vector<terminalpp::string> content, terminalpp::element fill)
-  : pimpl_(boost::make_unique<impl>())
+  : pimpl_(std::make_unique<impl>())
 {
     // There is a special case for "empty" content, where the content is
     // a single empty string.  In this case, it is not stored, and is as if

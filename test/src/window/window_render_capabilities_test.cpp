@@ -2,10 +2,10 @@
 #include "mock/component.hpp"
 #include "mock/render_surface_capabilities.hpp"
 
-#include <boost/make_unique.hpp>
 #include <gtest/gtest.h>
 #include <munin/window.hpp>
 
+#include <memory>
 #include <optional>
 
 using testing::_;
@@ -21,8 +21,8 @@ public:
     {
         ON_CALL(capabilities_, supports_unicode()).WillByDefault(Return(false));
 
-        window_ = boost::make_unique<munin::window>(
-            terminal_, content_, capabilities_);
+        window_ =
+            std::make_unique<munin::window>(terminal_, content_, capabilities_);
     }
 
 protected:

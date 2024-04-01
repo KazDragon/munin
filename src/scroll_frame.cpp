@@ -6,7 +6,7 @@
 #include "munin/vertical_scrollbar.hpp"
 #include "munin/view.hpp"
 
-#include <boost/make_unique.hpp>
+#include <memory>
 
 namespace munin {
 
@@ -73,7 +73,7 @@ struct scroll_frame::impl
 // ==========================================================================
 // CONSTRUCTOR
 // ==========================================================================
-scroll_frame::scroll_frame() : pimpl_(boost::make_unique<impl>(*this))
+scroll_frame::scroll_frame() : pimpl_(std::make_unique<impl>(*this))
 {
     pimpl_->horizontal_scrollbar_ = make_horizontal_scrollbar();
     pimpl_->horizontal_scrollbar_->set_lowlight_attribute(
