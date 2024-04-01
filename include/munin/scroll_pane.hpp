@@ -1,6 +1,7 @@
 #pragma once
 #include "munin/framed_component.hpp"
 #include "munin/viewport.hpp"
+
 #include <memory>
 
 namespace munin {
@@ -12,44 +13,44 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT scroll_pane : public framed_component  // NOLINT
 {
- public:
-  //* =====================================================================
-  /// \brief Constructor
-  //* =====================================================================
-  explicit scroll_pane(std::shared_ptr<component> const &inner_component);
+public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    explicit scroll_pane(std::shared_ptr<component> const &inner_component);
 
-  //* =====================================================================
-  /// \brief Constructor
-  //* =====================================================================
-  scroll_pane(
-      std::shared_ptr<component> const &inner_component,
-      std::unique_ptr<viewport::resize_strategy> viewport_resize_strategy);
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    scroll_pane(
+        std::shared_ptr<component> const &inner_component,
+        std::unique_ptr<viewport::resize_strategy> viewport_resize_strategy);
 
-  //* =====================================================================
-  /// \brief Destructor
-  //* =====================================================================
-  ~scroll_pane() override;
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~scroll_pane() override;
 
-  //* =====================================================================
-  /// \brief Sets the attribute of the elements when the inner component
-  /// has focus.
-  //* =====================================================================
-  void set_highlight_attribute(terminalpp::attribute const &attr);
+    //* =====================================================================
+    /// \brief Sets the attribute of the elements when the inner component
+    /// has focus.
+    //* =====================================================================
+    void set_highlight_attribute(terminalpp::attribute const &attr);
 
-  //* =====================================================================
-  /// \brief Sets the attribute of the elements when the inner component
-  /// does not have focus.
-  //* =====================================================================
-  void set_lowlight_attribute(terminalpp::attribute const &attr);
+    //* =====================================================================
+    /// \brief Sets the attribute of the elements when the inner component
+    /// does not have focus.
+    //* =====================================================================
+    void set_lowlight_attribute(terminalpp::attribute const &attr);
 
- private:
-  scroll_pane(
-      std::shared_ptr<component> const &frame,
-      std::shared_ptr<component> const &viewport,
-      std::shared_ptr<component> const &inner_component);
+private:
+    scroll_pane(
+        std::shared_ptr<component> const &frame,
+        std::shared_ptr<component> const &viewport,
+        std::shared_ptr<component> const &inner_component);
 
-  struct impl;
-  std::unique_ptr<impl> pimpl_;
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================

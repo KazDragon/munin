@@ -1,5 +1,6 @@
 #pragma once
 #include "munin/animator.hpp"
+
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/steady_timer.hpp>
 
@@ -18,32 +19,32 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT background_animator : public animator  // NOLINT
 {
- public:
-  //* =====================================================================
-  /// \brief Constructor
-  //* =====================================================================
-  explicit background_animator(boost::asio::io_context::strand &strand);
+public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    explicit background_animator(boost::asio::io_context::strand &strand);
 
-  //* =====================================================================
-  /// \brief Destructor
-  //* =====================================================================
-  ~background_animator() override;
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~background_animator() override;
 
- private:
-  //* =====================================================================
-  /// \brief Schedules a function to be called at a certain time.
-  /// This is used to schedule the requested component redraws.
-  //* =====================================================================
-  void reset_timer(
-      std::chrono::steady_clock::time_point execution_time) override;
+private:
+    //* =====================================================================
+    /// \brief Schedules a function to be called at a certain time.
+    /// This is used to schedule the requested component redraws.
+    //* =====================================================================
+    void reset_timer(
+        std::chrono::steady_clock::time_point execution_time) override;
 
-  //* =====================================================================
-  /// \brief Returns the current time
-  //* =====================================================================
-  [[nodiscard]] std::chrono::steady_clock::time_point do_now() const override;
+    //* =====================================================================
+    /// \brief Returns the current time
+    //* =====================================================================
+    [[nodiscard]] std::chrono::steady_clock::time_point do_now() const override;
 
-  boost::asio::io_context::strand &strand_;
-  boost::asio::steady_timer timer_;
+    boost::asio::io_context::strand &strand_;
+    boost::asio::steady_timer timer_;
 };
 
 }  // namespace munin

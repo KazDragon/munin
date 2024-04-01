@@ -1,8 +1,9 @@
 #include "mock/component.hpp"
 #include "mock/frame.hpp"
+
+#include <gtest/gtest.h>
 #include <munin/framed_component.hpp>
 #include <terminalpp/mouse.hpp>
-#include <gtest/gtest.h>
 
 using testing::_;
 using testing::Return;
@@ -19,85 +20,83 @@ using framed_component_mouse_data = std::tuple<
 class framed_components
   : public testing::TestWithParam<framed_component_mouse_data>
 {
- protected:
-  framed_components()
-  {
-    // Fake out the position and size functions for the frame and inner
-    // components.
-    ON_CALL(*mock_frame_, do_set_position(_))
-        .WillByDefault(SaveArg<0>(&mock_frame_position_));
-    ON_CALL(*mock_frame_, do_get_position())
-        .WillByDefault(ReturnPointee(&mock_frame_position_));
+protected:
+    framed_components()
+    {
+        // Fake out the position and size functions for the frame and inner
+        // components.
+        ON_CALL(*mock_frame_, do_set_position(_))
+            .WillByDefault(SaveArg<0>(&mock_frame_position_));
+        ON_CALL(*mock_frame_, do_get_position())
+            .WillByDefault(ReturnPointee(&mock_frame_position_));
 
-    ON_CALL(*mock_frame_, do_set_size(_))
-        .WillByDefault(SaveArg<0>(&mock_frame_size_));
-    ON_CALL(*mock_frame_, do_get_size())
-        .WillByDefault(ReturnPointee(&mock_frame_size_));
+        ON_CALL(*mock_frame_, do_set_size(_))
+            .WillByDefault(SaveArg<0>(&mock_frame_size_));
+        ON_CALL(*mock_frame_, do_get_size())
+            .WillByDefault(ReturnPointee(&mock_frame_size_));
 
-    ON_CALL(*mock_inner_, do_set_position(_))
-        .WillByDefault(SaveArg<0>(&mock_inner_position_));
-    ON_CALL(*mock_inner_, do_get_position())
-        .WillByDefault(ReturnPointee(&mock_inner_position_));
+        ON_CALL(*mock_inner_, do_set_position(_))
+            .WillByDefault(SaveArg<0>(&mock_inner_position_));
+        ON_CALL(*mock_inner_, do_get_position())
+            .WillByDefault(ReturnPointee(&mock_inner_position_));
 
-    ON_CALL(*mock_inner_, do_set_size(_))
-        .WillByDefault(SaveArg<0>(&mock_inner_size_));
-    ON_CALL(*mock_inner_, do_get_size())
-        .WillByDefault(ReturnPointee(&mock_inner_size_));
-  }
+        ON_CALL(*mock_inner_, do_set_size(_))
+            .WillByDefault(SaveArg<0>(&mock_inner_size_));
+        ON_CALL(*mock_inner_, do_get_size())
+            .WillByDefault(ReturnPointee(&mock_inner_size_));
+    }
 
-  std::shared_ptr<mock_frame> mock_frame_{make_mock_frame()};
-  std::shared_ptr<mock_component> mock_inner_{make_mock_component()};
-  std::shared_ptr<munin::framed_component> framed_component_{
-      make_framed_component(mock_frame_, mock_inner_)};
+    std::shared_ptr<mock_frame> mock_frame_{make_mock_frame()};
+    std::shared_ptr<mock_component> mock_inner_{make_mock_component()};
+    std::shared_ptr<munin::framed_component> framed_component_{
+        make_framed_component(mock_frame_, mock_inner_)};
 
- private:
-  terminalpp::point mock_frame_position_;
-  terminalpp::extent mock_frame_size_;
+private:
+    terminalpp::point mock_frame_position_;
+    terminalpp::extent mock_frame_size_;
 
-  terminalpp::point mock_inner_position_;
-  terminalpp::extent mock_inner_size_;
+    terminalpp::point mock_inner_position_;
+    terminalpp::extent mock_inner_size_;
 };
 
 TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
 {
-  auto const &params = GetParam();
-  auto const &component_size = std::get<0>(params);
-  auto const &initial_click = std::get<1>(params);
-  auto const &expected_click = std::get<2>(params);
+    auto const &params = GetParam();
+    auto const &component_size = std::get<0>(params);
+    auto const &initial_click = std::get<1>(params);
+    auto const &expected_click = std::get<2>(params);
 
-  ON_CALL(*mock_frame_, north_border_height())
-      .WillByDefault(Return(terminalpp::coordinate_type{1}));
-  ON_CALL(*mock_frame_, south_border_height())
-      .WillByDefault(Return(terminalpp::coordinate_type{1}));
-  ON_CALL(*mock_frame_, west_border_width())
-      .WillByDefault(Return(terminalpp::coordinate_type{1}));
-  ON_CALL(*mock_frame_, east_border_width())
-      .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, north_border_height())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, south_border_height())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, west_border_width())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
+    ON_CALL(*mock_frame_, east_border_width())
+        .WillByDefault(Return(terminalpp::coordinate_type{1}));
 
-  framed_component_->set_size(component_size);
+    framed_component_->set_size(component_size);
 
-  auto received_mouse_event = terminalpp::mouse::event{};
-  EXPECT_CALL(*mock_inner_, do_event(_))
-      .WillOnce(
-          [&received_mouse_event](auto ev)
-          {
+    auto received_mouse_event = terminalpp::mouse::event{};
+    EXPECT_CALL(*mock_inner_, do_event(_))
+        .WillOnce([&received_mouse_event](auto ev) {
             auto *mouse_event = boost::any_cast<terminalpp::mouse::event>(&ev);
 
             if (mouse_event)
             {
-              received_mouse_event = *mouse_event;
+                received_mouse_event = *mouse_event;
             }
-          });
+        });
 
-  auto const sent_mouse_report = terminalpp::mouse::event{
-      terminalpp::mouse::event_type::left_button_down, initial_click};
+    auto const sent_mouse_report = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down, initial_click};
 
-  framed_component_->event(sent_mouse_report);
+    framed_component_->event(sent_mouse_report);
 
-  auto const expected_mouse_report = terminalpp::mouse::event{
-      terminalpp::mouse::event_type::left_button_down, expected_click};
+    auto const expected_mouse_report = terminalpp::mouse::event{
+        terminalpp::mouse::event_type::left_button_down, expected_click};
 
-  ASSERT_EQ(expected_mouse_report, received_mouse_event);
+    ASSERT_EQ(expected_mouse_report, received_mouse_event);
 }
 
 INSTANTIATE_TEST_SUITE_P(

@@ -1,6 +1,9 @@
 #include "munin/filled_box.hpp"
+
 #include "munin/render_surface.hpp"
+
 #include <terminalpp/algorithm/for_each_in_region.hpp>
+
 
 namespace munin {
 
@@ -25,7 +28,7 @@ filled_box::filled_box(std::function<fill_function_type> fill_function)
 // ==========================================================================
 bool filled_box::do_can_receive_focus() const
 {
-  return false;
+    return false;
 }
 
 // ==========================================================================
@@ -33,8 +36,8 @@ bool filled_box::do_can_receive_focus() const
 // ==========================================================================
 void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 {
-  preferred_size_ = preferred_size;
-  on_preferred_size_changed();
+    preferred_size_ = preferred_size;
+    on_preferred_size_changed();
 }
 
 // ==========================================================================
@@ -42,7 +45,7 @@ void filled_box::set_preferred_size(terminalpp::extent preferred_size)
 // ==========================================================================
 terminalpp::extent filled_box::do_get_preferred_size() const
 {
-  return preferred_size_;
+    return preferred_size_;
 }
 
 // ==========================================================================
@@ -51,15 +54,15 @@ terminalpp::extent filled_box::do_get_preferred_size() const
 void filled_box::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-  auto const element = fill_function_(surface);
+    auto const element = fill_function_(surface);
 
-  terminalpp::for_each_in_region(
-      surface,
-      region,
-      [&element](
-          terminalpp::element &elem,
-          terminalpp::coordinate_type column,  // NOLINT
-          terminalpp::coordinate_type row) { elem = element; });
+    terminalpp::for_each_in_region(
+        surface,
+        region,
+        [&element](
+            terminalpp::element &elem,
+            terminalpp::coordinate_type column,  // NOLINT
+            terminalpp::coordinate_type row) { elem = element; });
 }
 
 // ==========================================================================
@@ -67,11 +70,11 @@ void filled_box::do_draw(
 // ==========================================================================
 nlohmann::json filled_box::do_to_json() const
 {
-  nlohmann::json patch = R"([
+    nlohmann::json patch = R"([
         { "op": "replace", "path": "/type", "value": "filled_box" }
     ])"_json;
 
-  return basic_component::do_to_json().patch(patch);
+    return basic_component::do_to_json().patch(patch);
 }
 
 // ==========================================================================
@@ -79,7 +82,7 @@ nlohmann::json filled_box::do_to_json() const
 // ==========================================================================
 std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill)
 {
-  return std::make_shared<filled_box>(fill);
+    return std::make_shared<filled_box>(fill);
 }
 
 // ==========================================================================
@@ -88,7 +91,7 @@ std::shared_ptr<filled_box> make_fill(terminalpp::element const &fill)
 std::shared_ptr<filled_box> make_fill(
     std::function<terminalpp::element(render_surface &)> fill_function)
 {
-  return std::make_shared<filled_box>(std::move(fill_function));
+    return std::make_shared<filled_box>(std::move(fill_function));
 }
 
 }  // namespace munin

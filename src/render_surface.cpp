@@ -19,7 +19,7 @@ render_surface::column_proxy::column_proxy(
 terminalpp::element &render_surface::column_proxy::operator[](
     terminalpp::coordinate_type row)
 {
-  return surface_.get_element(column_, row);
+    return surface_.get_element(column_, row);
 }
 
 // ==========================================================================
@@ -44,7 +44,7 @@ render_surface::render_surface(
 // ==========================================================================
 bool render_surface::supports_unicode() const
 {
-  return capabilities_.supports_unicode();
+    return capabilities_.supports_unicode();
 }
 
 // ==========================================================================
@@ -52,7 +52,7 @@ bool render_surface::supports_unicode() const
 // ==========================================================================
 void render_surface::offset_by(terminalpp::extent offset)
 {
-  offset_ += offset;
+    offset_ += offset;
 }
 
 // ==========================================================================
@@ -60,7 +60,7 @@ void render_surface::offset_by(terminalpp::extent offset)
 // ==========================================================================
 terminalpp::extent render_surface::size() const
 {
-  return canvas_.size() - offset_;
+    return canvas_.size() - offset_;
 }
 
 // ==========================================================================
@@ -69,7 +69,7 @@ terminalpp::extent render_surface::size() const
 render_surface::column_proxy render_surface::operator[](
     terminalpp::coordinate_type column)
 {
-  return {*this, column};
+    return {*this, column};
 }
 
 // ==========================================================================
@@ -78,7 +78,7 @@ render_surface::column_proxy render_surface::operator[](
 terminalpp::element &render_surface::get_element(
     terminalpp::coordinate_type column, terminalpp::coordinate_type row)
 {
-  return canvas_[column + offset_.width_][row + offset_.height_];
+    return canvas_[column + offset_.width_][row + offset_.height_];
 }
 
 }  // namespace munin
