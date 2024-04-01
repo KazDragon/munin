@@ -1,6 +1,9 @@
 #include "munin/basic_component.hpp"
+
 #include "munin/detail/json_adaptors.hpp"
+
 #include <terminalpp/mouse.hpp>
+
 
 namespace munin {
 
@@ -11,14 +14,14 @@ namespace {
 // ==========================================================================
 void toggle_focus(bool &has_focus, component &comp)
 {
-  if (std::exchange(has_focus, !has_focus))
-  {
-    comp.on_focus_lost();
-  }
-  else
-  {
-    comp.on_focus_set();
-  }
+    if (std::exchange(has_focus, !has_focus))
+    {
+        comp.on_focus_lost();
+    }
+    else
+    {
+        comp.on_focus_set();
+    }
 }
 
 }  // namespace
@@ -35,7 +38,7 @@ basic_component::basic_component() : has_focus_(false)
 // ==========================================================================
 bool basic_component::can_receive_focus() const
 {
-  return do_can_receive_focus();
+    return do_can_receive_focus();
 }
 
 // ==========================================================================
@@ -43,7 +46,7 @@ bool basic_component::can_receive_focus() const
 // ==========================================================================
 bool basic_component::do_can_receive_focus() const
 {
-  return true;
+    return true;
 }
 
 // ==========================================================================
@@ -51,7 +54,7 @@ bool basic_component::do_can_receive_focus() const
 // ==========================================================================
 void basic_component::do_set_position(terminalpp::point const &position)
 {
-  bounds_.origin_ = position;
+    bounds_.origin_ = position;
 }
 
 // ==========================================================================
@@ -59,7 +62,7 @@ void basic_component::do_set_position(terminalpp::point const &position)
 // ==========================================================================
 terminalpp::point basic_component::do_get_position() const
 {
-  return bounds_.origin_;
+    return bounds_.origin_;
 }
 
 // ==========================================================================
@@ -67,7 +70,7 @@ terminalpp::point basic_component::do_get_position() const
 // ==========================================================================
 void basic_component::do_set_size(terminalpp::extent const &size)
 {
-  bounds_.size_ = size;
+    bounds_.size_ = size;
 }
 
 // ==========================================================================
@@ -75,7 +78,7 @@ void basic_component::do_set_size(terminalpp::extent const &size)
 // ==========================================================================
 terminalpp::extent basic_component::do_get_size() const
 {
-  return bounds_.size_;
+    return bounds_.size_;
 }
 
 // ==========================================================================
@@ -83,7 +86,7 @@ terminalpp::extent basic_component::do_get_size() const
 // ==========================================================================
 bool basic_component::do_has_focus() const
 {
-  return has_focus_;
+    return has_focus_;
 }
 
 // ==========================================================================
@@ -91,13 +94,13 @@ bool basic_component::do_has_focus() const
 // ==========================================================================
 void basic_component::do_set_focus()
 {
-  if (can_receive_focus())
-  {
-    if (!std::exchange(has_focus_, true))
+    if (can_receive_focus())
     {
-      on_focus_set();
+        if (!std::exchange(has_focus_, true))
+        {
+            on_focus_set();
+        }
     }
-  }
 }
 
 // ==========================================================================
@@ -105,10 +108,10 @@ void basic_component::do_set_focus()
 // ==========================================================================
 void basic_component::do_lose_focus()
 {
-  if (std::exchange(has_focus_, false))
-  {
-    on_focus_lost();
-  }
+    if (std::exchange(has_focus_, false))
+    {
+        on_focus_lost();
+    }
 }
 
 // ==========================================================================
@@ -116,10 +119,10 @@ void basic_component::do_lose_focus()
 // ==========================================================================
 void basic_component::do_focus_next()
 {
-  if (can_receive_focus())
-  {
-    toggle_focus(has_focus_, *this);
-  }
+    if (can_receive_focus())
+    {
+        toggle_focus(has_focus_, *this);
+    }
 }
 
 // ==========================================================================
@@ -127,10 +130,10 @@ void basic_component::do_focus_next()
 // ==========================================================================
 void basic_component::do_focus_previous()
 {
-  if (can_receive_focus())
-  {
-    toggle_focus(has_focus_, *this);
-  }
+    if (can_receive_focus())
+    {
+        toggle_focus(has_focus_, *this);
+    }
 }
 
 // ==========================================================================
@@ -138,8 +141,8 @@ void basic_component::do_focus_previous()
 // ==========================================================================
 bool basic_component::do_get_cursor_state() const
 {
-  // By default, a component has no cursor.
-  return false;
+    // By default, a component has no cursor.
+    return false;
 }
 
 // ==========================================================================
@@ -147,9 +150,9 @@ bool basic_component::do_get_cursor_state() const
 // ==========================================================================
 terminalpp::point basic_component::do_get_cursor_position() const
 {
-  // By default, a component has no cursor, so we choose a sentinel
-  // value of (0,0) for its non-existent location.
-  return {};
+    // By default, a component has no cursor, so we choose a sentinel
+    // value of (0,0) for its non-existent location.
+    return {};
 }
 
 // ==========================================================================
@@ -164,15 +167,15 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 // ==========================================================================
 void basic_component::do_event(boost::any const &event)
 {
-  if (auto const *mouse = boost::any_cast<terminalpp::mouse::event>(&event);
-      mouse != nullptr
-      && mouse->action_ != terminalpp::mouse::event_type::button_up)
-  {
-    if (!has_focus())
+    if (auto const *mouse = boost::any_cast<terminalpp::mouse::event>(&event);
+        mouse != nullptr
+        && mouse->action_ != terminalpp::mouse::event_type::button_up)
     {
-      set_focus();
+        if (!has_focus())
+        {
+            set_focus();
+        }
     }
-  }
 }
 
 // ==========================================================================
@@ -180,14 +183,15 @@ void basic_component::do_event(boost::any const &event)
 // ==========================================================================
 nlohmann::json basic_component::do_to_json() const
 {
-  return {
-      {"type", "basic_component"},
-      {"position", detail::to_json(get_position())},
-      {"size", detail::to_json(get_size())},
-      {"preferred_size", detail::to_json(get_preferred_size())},
-      {"has_focus", has_focus()},
-      {"cursor_state", get_cursor_state()},
-      {"cursor_position", detail::to_json(get_cursor_position())}};
+    return {
+        {"type",            "basic_component"                     },
+        {"position",        detail::to_json(get_position())       },
+        {"size",            detail::to_json(get_size())           },
+        {"preferred_size",  detail::to_json(get_preferred_size()) },
+        {"has_focus",       has_focus()                           },
+        {"cursor_state",    get_cursor_state()                    },
+        {"cursor_position", detail::to_json(get_cursor_position())}
+    };
 }
 
 }  // namespace munin

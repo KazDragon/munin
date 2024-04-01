@@ -8,45 +8,45 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT toggle_button : public munin::composite_component  // NOLINT
 {
- public:
-  //* =====================================================================
-  /// \brief Constructor
-  //* =====================================================================
-  explicit toggle_button(bool checked = false);
+public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    explicit toggle_button(bool checked = false);
 
-  //* =====================================================================
-  /// \brief Destructor
-  //* =====================================================================
-  ~toggle_button() override;
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~toggle_button() override;
 
-  //* =====================================================================
-  /// \brief Sets the toggle state of the button.
-  //* =====================================================================
-  void set_toggle_state(bool checked);
+    //* =====================================================================
+    /// \brief Sets the toggle state of the button.
+    //* =====================================================================
+    void set_toggle_state(bool checked);
 
-  //* =====================================================================
-  /// \fn on_state_changed
-  /// An event that fires when the toggle state of the button changes.
-  //* =====================================================================
-  boost::signals2::signal<void(bool)> on_state_changed;  // NOLINT
+    //* =====================================================================
+    /// \fn on_state_changed
+    /// An event that fires when the toggle state of the button changes.
+    //* =====================================================================
+    boost::signals2::signal<void(bool)> on_state_changed;  // NOLINT
 
- protected:
-  //* =====================================================================
-  /// \brief Called by event().  Derived classes must override this
-  /// function in order to handle events in a custom manner.
-  //* =====================================================================
-  void do_event(boost::any const &event) override;
+protected:
+    //* =====================================================================
+    /// \brief Called by event().  Derived classes must override this
+    /// function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(boost::any const &event) override;
 
-  //* =====================================================================
-  /// \brief Called by to_json().  Derived classes must override this
-  /// function in order to add additional data about their implementation
-  /// in a custom manner.
-  //* =====================================================================
-  [[nodiscard]] nlohmann::json do_to_json() const override;
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to add additional data about their implementation
+    /// in a custom manner.
+    //* =====================================================================
+    [[nodiscard]] nlohmann::json do_to_json() const override;
 
- private:
-  struct impl;
-  std::unique_ptr<impl> pimpl_;
+private:
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 //* =========================================================================

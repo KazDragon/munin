@@ -2,9 +2,10 @@
 
 #include "munin/container.hpp"
 #include "munin/layout.hpp"
+
 #include <boost/any.hpp>
+
 #include <memory>
-#include <tuple>
 #include <type_traits>
 #include <utility>
 
@@ -24,8 +25,8 @@ void view_helper(
 // object and passed as the layout hint.
 template <
     class Hint,
-    class = typename std::enable_if<
-        !std::is_convertible<Hint, std::shared_ptr<component>>::value>::type,
+    class = std::enable_if_t<
+        !std::is_convertible_v<Hint, std::shared_ptr<component>>>,
     class... Args>
 void view_helper(
     std::shared_ptr<container> const &content,
@@ -38,10 +39,10 @@ inline void view_helper(
     std::shared_ptr<container> const &content,
     std::shared_ptr<component> const &prev)
 {
-  if (prev)
-  {
-    content->add_component(prev);
-  }
+    if (prev)
+    {
+        content->add_component(prev);
+    }
 }
 
 }  // namespace detail
@@ -73,12 +74,12 @@ inline void view_helper(
 template <class... Args>
 std::shared_ptr<container> view(std::unique_ptr<layout> lyt, Args &&...args)
 {
-  auto comp = munin::make_container();
-  comp->set_layout(std::move(lyt));
-  detail::view_helper(
-      comp, std::shared_ptr<component>{}, std::forward<Args>(args)...);
+    auto comp = munin::make_container();
+    comp->set_layout(std::move(lyt));
+    detail::view_helper(
+        comp, std::shared_ptr<component>{}, std::forward<Args>(args)...);
 
-  return comp;
+    return comp;
 }
 
 namespace detail {
@@ -90,12 +91,12 @@ void view_helper(
     std::shared_ptr<component> const &comp,
     Args &&...args)
 {
-  if (prev)
-  {
-    content->add_component(prev);
-  }
+    if (prev)
+    {
+        content->add_component(prev);
+    }
 
-  view_helper(content, comp, std::forward<Args>(args)...);
+    view_helper(content, comp, std::forward<Args>(args)...);
 }
 
 template <class Hint, class, class... Args>
@@ -105,12 +106,12 @@ void view_helper(
     Hint &&hint,
     Args &&...args)
 {
-  if (prev)
-  {
-    content->add_component(prev, boost::any(std::forward<Hint>(hint)));
-  }
+    if (prev)
+    {
+        content->add_component(prev, boost::any(std::forward<Hint>(hint)));
+    }
 
-  view_helper(content, {}, std::forward<Args>(args)...);
+    view_helper(content, {}, std::forward<Args>(args)...);
 }
 
 }  // namespace detail

@@ -1,6 +1,8 @@
 #include "munin/scroll_pane.hpp"
+
 #include "munin/scroll_frame.hpp"
 #include "munin/viewport.hpp"
+
 #include <boost/make_unique.hpp>
 
 namespace munin {
@@ -10,20 +12,20 @@ namespace munin {
 // ==========================================================================
 struct scroll_pane::impl
 {
-  // ======================================================================
-  // UPDATE_ANCHOR_BOUNDS
-  // ======================================================================
-  void update_anchor_bounds()
-  {
-    auto const anchor_bounds = viewport_->get_anchor_bounds();
-    frame_->set_horizontal_slider_position(
-        anchor_bounds.origin_.x_, anchor_bounds.size_.width_);
-    frame_->set_vertical_slider_position(
-        anchor_bounds.origin_.y_, anchor_bounds.size_.height_);
-  }
+    // ======================================================================
+    // UPDATE_ANCHOR_BOUNDS
+    // ======================================================================
+    void update_anchor_bounds()
+    {
+        auto const anchor_bounds = viewport_->get_anchor_bounds();
+        frame_->set_horizontal_slider_position(
+            anchor_bounds.origin_.x_, anchor_bounds.size_.width_);
+        frame_->set_vertical_slider_position(
+            anchor_bounds.origin_.y_, anchor_bounds.size_.height_);
+    }
 
-  std::shared_ptr<scroll_frame> frame_;  // NOLINT
-  std::shared_ptr<viewport> viewport_;   // NOLINT
+    std::shared_ptr<scroll_frame> frame_;  // NOLINT
+    std::shared_ptr<viewport> viewport_;   // NOLINT
 };
 
 // ==========================================================================
@@ -60,12 +62,12 @@ scroll_pane::scroll_pane(
       std::static_pointer_cast<viewport>(inner_viewport)),
     pimpl_(boost::make_unique<impl>())
 {
-  pimpl_->frame_ = std::static_pointer_cast<scroll_frame>(inner_frame);
-  pimpl_->viewport_ = std::static_pointer_cast<viewport>(inner_viewport);
+    pimpl_->frame_ = std::static_pointer_cast<scroll_frame>(inner_frame);
+    pimpl_->viewport_ = std::static_pointer_cast<viewport>(inner_viewport);
 
-  pimpl_->viewport_->on_anchor_bounds_changed.connect(
-      [this] { pimpl_->update_anchor_bounds(); });
-  pimpl_->update_anchor_bounds();
+    pimpl_->viewport_->on_anchor_bounds_changed.connect(
+        [this] { pimpl_->update_anchor_bounds(); });
+    pimpl_->update_anchor_bounds();
 }
 
 // ==========================================================================
@@ -78,7 +80,7 @@ scroll_pane::~scroll_pane() = default;
 // ==========================================================================
 void scroll_pane::set_highlight_attribute(terminalpp::attribute const &attr)
 {
-  pimpl_->frame_->set_highlight_attribute(attr);
+    pimpl_->frame_->set_highlight_attribute(attr);
 }
 
 // ==========================================================================
@@ -86,7 +88,7 @@ void scroll_pane::set_highlight_attribute(terminalpp::attribute const &attr)
 // ==========================================================================
 void scroll_pane::set_lowlight_attribute(terminalpp::attribute const &attr)
 {
-  pimpl_->frame_->set_lowlight_attribute(attr);
+    pimpl_->frame_->set_lowlight_attribute(attr);
 }
 
 // ==========================================================================
@@ -95,7 +97,7 @@ void scroll_pane::set_lowlight_attribute(terminalpp::attribute const &attr)
 std::shared_ptr<scroll_pane> make_scroll_pane(
     std::shared_ptr<component> const &inner_component)
 {
-  return std::make_shared<scroll_pane>(inner_component);
+    return std::make_shared<scroll_pane>(inner_component);
 }
 
 // ==========================================================================
@@ -105,7 +107,7 @@ std::shared_ptr<scroll_pane> make_scroll_pane(
     std::shared_ptr<component> const &inner_component,
     std::unique_ptr<viewport::resize_strategy> strategy)
 {
-  return std::make_shared<scroll_pane>(inner_component, std::move(strategy));
+    return std::make_shared<scroll_pane>(inner_component, std::move(strategy));
 }
 
 }  // namespace munin

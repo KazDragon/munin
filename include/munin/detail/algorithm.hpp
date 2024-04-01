@@ -1,10 +1,10 @@
 #pragma once
 
 #include "munin/export.hpp"
+
 #include <terminalpp/rectangle.hpp>
+
 #include <optional>
-#include <string>
-#include <vector>
 
 namespace terminalpp {
 class canvas;

@@ -1,4 +1,5 @@
 #include "munin/detail/unicode_glyphs.hpp"
+
 #include <terminalpp/glyph.hpp>
 
 namespace munin::detail::border {

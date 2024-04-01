@@ -1,10 +1,10 @@
 #pragma once
 
+#include <gsl/gsl-lite.hpp>
+#include <gtest/gtest.h>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/rectangle.hpp>
 #include <terminalpp/string.hpp>
-#include <gsl/gsl-lite.hpp>
-#include <gtest/gtest.h>
 
 void assert_similar_canvas_block(
     std::initializer_list<terminalpp::string const> expected,

@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp>
 #include <munin/window.hpp>
+
 #include <memory>
 
 namespace munin {
@@ -30,28 +31,28 @@ namespace munin {
 //* =========================================================================
 class MUNIN_EXPORT console_application  // NOLINT
 {
- public:
-  //* =====================================================================
-  /// \brief Constructor
-  //* =====================================================================
-  console_application(
-      terminalpp::behaviour const &beh,
-      boost::asio::io_context &io_context,
-      std::shared_ptr<component> content);
+public:
+    //* =====================================================================
+    /// \brief Constructor
+    //* =====================================================================
+    console_application(
+        terminalpp::behaviour const &beh,
+        boost::asio::io_context &io_context,
+        std::shared_ptr<component> content);
 
-  //* =====================================================================
-  /// \brief Access the underlying terminal
-  //* =====================================================================
-  terminalpp::terminal &terminal();
+    //* =====================================================================
+    /// \brief Access the underlying terminal
+    //* =====================================================================
+    terminalpp::terminal &terminal();
 
-  //* =====================================================================
-  /// \brief Destructor
-  //* =====================================================================
-  ~console_application();
+    //* =====================================================================
+    /// \brief Destructor
+    //* =====================================================================
+    ~console_application();
 
- private:
-  struct impl;
-  std::unique_ptr<impl> pimpl_;
+private:
+    struct impl;
+    std::unique_ptr<impl> pimpl_;
 };
 
 }  // namespace munin
