@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Munin
-   &#160;<span id="projectnumber">0.7.2.7</span>
+   &#160;<span id="projectnumber">0.7.2.9</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -83,100 +83,100 @@ $(function() {
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"></span><span class="comment">//* =========================================================================</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classmunin_1_1composite__component.html">   19</a></span>&#160;<span class="keyword">class </span>MUNIN_EXPORT <a class="code" href="classmunin_1_1composite__component.html">composite_component</a> : <span class="keyword">public</span> <a class="code" href="classmunin_1_1basic__component.html">munin::basic_component</a></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <a class="code" href="classmunin_1_1composite__component.html">composite_component</a>();</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <a class="code" href="classmunin_1_1composite__component.html">composite_component</a>();</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keywordtype">void</span> set_layout(std::unique_ptr&lt;layout&gt; lyt);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">void</span> set_layout(std::unique_ptr&lt;layout&gt; lyt);</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordtype">void</span> add_component(</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      std::shared_ptr&lt;component&gt; <span class="keyword">const</span> &amp;comp,</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      boost::any <span class="keyword">const</span> &amp;hint = boost::any());</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> add_component(</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        std::shared_ptr&lt;component&gt; <span class="keyword">const</span> &amp;comp,</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        boost::any <span class="keyword">const</span> &amp;hint = boost::any());</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keywordtype">void</span> do_set_position(terminalpp::point <span class="keyword">const</span> &amp;position) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> do_set_position(terminalpp::point <span class="keyword">const</span> &amp;position) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  [[nodiscard]] terminalpp::point do_get_position() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    [[nodiscard]] terminalpp::point do_get_position() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordtype">void</span> do_set_size(terminalpp::extent <span class="keyword">const</span> &amp;size) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> do_set_size(terminalpp::extent <span class="keyword">const</span> &amp;size) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  [[nodiscard]] terminalpp::extent do_get_size() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    [[nodiscard]] terminalpp::extent do_get_size() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  [[nodiscard]] terminalpp::extent do_get_preferred_size() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    [[nodiscard]] terminalpp::extent do_get_preferred_size() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  [[nodiscard]] <span class="keywordtype">bool</span> do_has_focus() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    [[nodiscard]] <span class="keywordtype">bool</span> do_has_focus() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="keywordtype">void</span> do_set_focus() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> do_set_focus() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keywordtype">void</span> do_lose_focus() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">void</span> do_lose_focus() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="keywordtype">void</span> do_focus_next() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> do_focus_next() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keywordtype">void</span> do_focus_previous() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordtype">void</span> do_focus_previous() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  [[nodiscard]] <span class="keywordtype">bool</span> do_get_cursor_state() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    [[nodiscard]] <span class="keywordtype">bool</span> do_get_cursor_state() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  [[nodiscard]] terminalpp::point do_get_cursor_position() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    [[nodiscard]] terminalpp::point do_get_cursor_position() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keywordtype">void</span> do_set_cursor_position(terminalpp::point <span class="keyword">const</span> &amp;position) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordtype">void</span> do_set_cursor_position(terminalpp::point <span class="keyword">const</span> &amp;position) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <span class="keywordtype">void</span> do_draw(<a class="code" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle <span class="keyword">const</span> &amp;region)</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordtype">void</span> do_draw(<a class="code" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle <span class="keyword">const</span> &amp;region)</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="keywordtype">void</span> do_event(boost::any <span class="keyword">const</span> &amp;event) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    <span class="keywordtype">void</span> do_event(boost::any <span class="keyword">const</span> &amp;event) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  [[nodiscard]] nlohmann::json do_to_json() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    [[nodiscard]] nlohmann::json do_to_json() <span class="keyword">const override</span>;</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <a class="code" href="classmunin_1_1container.html">munin::container</a> content_;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <a class="code" href="classmunin_1_1container.html">munin::container</a> content_;</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;};</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;}  <span class="comment">// namespace munin</span></div>
 <div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition:</b> basic_component.hpp:12</div></div>
 <div class="ttc" id="aclassmunin_1_1composite__component_html"><div class="ttname"><a href="classmunin_1_1composite__component.html">munin::composite_component</a></div><div class="ttdoc">Implements a component that simply forwards from and to an underlying container.</div><div class="ttdef"><b>Definition:</b> composite_component.hpp:20</div></div>
-<div class="ttc" id="aclassmunin_1_1container_html"><div class="ttname"><a href="classmunin_1_1container.html">munin::container</a></div><div class="ttdoc">A graphical element capable of containing and arranging other subcomponents.</div><div class="ttdef"><b>Definition:</b> container.hpp:17</div></div>
-<div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition:</b> render_surface.hpp:14</div></div>
+<div class="ttc" id="aclassmunin_1_1container_html"><div class="ttname"><a href="classmunin_1_1container.html">munin::container</a></div><div class="ttdoc">A graphical element capable of containing and arranging other subcomponents.</div><div class="ttdef"><b>Definition:</b> container.hpp:16</div></div>
+<div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition:</b> render_surface.hpp:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 11 2024 14:46:28 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Apr 1 2024 08:49:16 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

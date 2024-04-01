@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Munin
-   &#160;<span id="projectnumber">0.7.2.7</span>
+   &#160;<span id="projectnumber">0.7.2.9</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -74,46 +74,47 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;munin/animator.hpp&quot;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;boost/asio/io_context.hpp&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;boost/asio/steady_timer.hpp&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>munin {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="comment">//* =========================================================================</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"></span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classmunin_1_1background__animator.html">   19</a></span>&#160;<span class="keyword">class </span>MUNIN_EXPORT <a class="code" href="classmunin_1_1background__animator.html">background_animator</a> : <span class="keyword">public</span> <a class="code" href="classmunin_1_1animator.html">animator</a>  <span class="comment">// NOLINT</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;{</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <span class="keyword">explicit</span> <a class="code" href="classmunin_1_1background__animator.html">background_animator</a>(boost::asio::io_context::strand &amp;strand);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e">   30</a></span>&#160;  <a class="code" href="classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e">~background_animator</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordtype">void</span> reset_timer(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      std::chrono::steady_clock::time_point execution_time) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"></span>  <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  [[nodiscard]] std::chrono::steady_clock::time_point do_now() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  boost::asio::io_context::strand &amp;strand_;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  boost::asio::steady_timer timer_;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;};</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}  <span class="comment">// namespace munin</span></div>
-<div class="ttc" id="aclassmunin_1_1animator_html"><div class="ttname"><a href="classmunin_1_1animator.html">munin::animator</a></div><div class="ttdoc">An injectable interface into a render surface that allows timing of animated components.</div><div class="ttdef"><b>Definition:</b> animator.hpp:12</div></div>
-<div class="ttc" id="aclassmunin_1_1background__animator_html"><div class="ttname"><a href="classmunin_1_1background__animator.html">munin::background_animator</a></div><div class="ttdoc">A class that executes the scheduled redraw requests on an execution strand.</div><div class="ttdef"><b>Definition:</b> background_animator.hpp:20</div></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;boost/asio/io_context.hpp&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;boost/asio/steady_timer.hpp&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>munin {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="comment">//* =========================================================================</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment"></span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classmunin_1_1background__animator.html">   20</a></span>&#160;<span class="keyword">class </span>MUNIN_EXPORT <a class="code" href="classmunin_1_1background__animator.html">background_animator</a> : <span class="keyword">public</span> <a class="code" href="classmunin_1_1animator.html">animator</a>  <span class="comment">// NOLINT</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;{</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classmunin_1_1background__animator.html">background_animator</a>(boost::asio::io_context::strand &amp;strand);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e">   31</a></span>&#160;    <a class="code" href="classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e">~background_animator</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> reset_timer(</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        std::chrono::steady_clock::time_point execution_time) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"></span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    [[nodiscard]] std::chrono::steady_clock::time_point do_now() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    boost::asio::io_context::strand &amp;strand_;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    boost::asio::steady_timer timer_;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;};</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}  <span class="comment">// namespace munin</span></div>
+<div class="ttc" id="aclassmunin_1_1animator_html"><div class="ttname"><a href="classmunin_1_1animator.html">munin::animator</a></div><div class="ttdoc">An injectable interface into a render surface that allows timing of animated components.</div><div class="ttdef"><b>Definition:</b> animator.hpp:13</div></div>
+<div class="ttc" id="aclassmunin_1_1background__animator_html"><div class="ttname"><a href="classmunin_1_1background__animator.html">munin::background_animator</a></div><div class="ttdoc">A class that executes the scheduled redraw requests on an execution strand.</div><div class="ttdef"><b>Definition:</b> background_animator.hpp:21</div></div>
 <div class="ttc" id="aclassmunin_1_1background__animator_html_ac856cffbd7d6d3ef0230529c2c98d95e"><div class="ttname"><a href="classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e">munin::background_animator::~background_animator</a></div><div class="ttdeci">~background_animator() override</div><div class="ttdoc">Destructor.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Jan 11 2024 14:46:28 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Apr 1 2024 08:49:16 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
