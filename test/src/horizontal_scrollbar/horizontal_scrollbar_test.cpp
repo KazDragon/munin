@@ -77,7 +77,7 @@ TEST_F(a_horizontal_scrollbar, with_size_but_no_slider_draws_a_frame_border)
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { munin::detail::border::unicode::horizontal_beam,
                 munin::detail::border::unicode::horizontal_beam, 
                 munin::detail::border::unicode::horizontal_beam,
@@ -85,7 +85,7 @@ TEST_F(a_horizontal_scrollbar, with_size_but_no_slider_draws_a_frame_border)
           "XXXX"_ts,
           "XXXX"_ts,
           "XXXX"_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -210,6 +210,11 @@ static slider_test_data const test_data[] = {
     slider_test_data{18, 20, 14}, // 14 + 4/18
 
     slider_test_data{19, 20, 15}, // Special: 15
+
+    // Boundary cases for viewports only slightly bigger than their
+    // associated component.
+    slider_test_data{0,  2,  0 }, // Special case for only top and bottom
+    slider_test_data{1,  2,  15}, // Special case for only top and bottom
 };
 
 INSTANTIATE_TEST_SUITE_P(
@@ -230,7 +235,7 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           {
             munin::detail::border::unicode::horizontal_beam, 
             munin::detail::border::unicode::horizontal_beam, 
@@ -241,7 +246,7 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 
@@ -250,7 +255,7 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           {
             munin::detail::border::unicode::horizontal_beam, 
             munin::detail::border::unicode::horizontal_beam, 
@@ -261,7 +266,7 @@ TEST_F(a_horizontal_scrollbar, draws_the_correct_scroller_position_when_resized)
             munin::detail::border::unicode::horizontal_beam,
             munin::detail::border::unicode::horizontal_beam,
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -313,7 +318,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             lowlight_horizontal_beam, 
             lowlight_horizontal_beam, 
@@ -324,7 +329,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -348,7 +353,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             highlight_horizontal_beam, 
             highlight_horizontal_beam, 
@@ -359,7 +364,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -386,7 +391,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             lowlight_horizontal_beam, 
             lowlight_horizontal_beam, 
@@ -397,7 +402,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -424,7 +429,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             highlight_horizontal_beam, 
             highlight_horizontal_beam, 
@@ -435,7 +440,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -464,7 +469,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             new_lowlight_horizontal_beam, 
             new_lowlight_horizontal_beam, 
@@ -475,7 +480,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }
@@ -507,7 +512,7 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { 
             new_highlight_horizontal_beam, 
             new_highlight_horizontal_beam, 
@@ -518,7 +523,7 @@ TEST_F(
             'X',
             'X',
           },
-  // clang-format on
+            // clang-format on
     },
         canvas);
 }

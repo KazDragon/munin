@@ -202,6 +202,11 @@ static slider_test_data const test_data[] = {
     slider_test_data{18, 20, 14}, // 14 + 4/18
 
     slider_test_data{19, 20, 15}, // Special: 15
+
+    // Boundary cases for viewports only slightly bigger than their
+    // associated component.
+    slider_test_data{0,  2,  0 }, // Special case for only top and bottom
+    slider_test_data{1,  2,  15}, // Special case for only top and bottom
 };
 
 INSTANTIATE_TEST_SUITE_P(
