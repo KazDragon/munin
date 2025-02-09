@@ -29,7 +29,7 @@ namespace munin {
 /// \endcode
 ///
 //* =========================================================================
-class MUNIN_EXPORT console_application  // NOLINT
+class MUNIN_EXPORT console_application
 {
 public:
     //* =====================================================================

@@ -10,7 +10,7 @@ namespace munin {
 //* =========================================================================
 /// \brief A class that displays a list of elements.
 //* =========================================================================
-class MUNIN_EXPORT list : public basic_component  // NOLINT
+class MUNIN_EXPORT list : public basic_component
 {
 public:
     //* =====================================================================

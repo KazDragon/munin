@@ -47,10 +47,10 @@ struct console_application::impl
         schedule_read(terminal_, window_);
     }
 
-    consolepp::console console_;     // NOLINT
-    terminalpp::terminal terminal_;  // NOLINT
-    window window_;                  // NOLINT
-    terminalpp::canvas canvas_;      // NOLINT
+    consolepp::console console_;
+    terminalpp::terminal terminal_;
+    window window_;
+    terminalpp::canvas canvas_;
 };
 
 // ==========================================================================

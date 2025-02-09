@@ -55,10 +55,9 @@ find_package(Boost 1.69.0 REQUIRED)
 find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
 # And of course, Munin is built atop the Terminal++ library, which
-# also requires fmt and gsl-lite.
+# also requires fmt
 find_package(fmt 5.3 CONFIG REQUIRED)
-find_package(terminalpp 3.0.0 CONFIG REQUIRED)
-find_package(gsl-lite 0.38.0 REQUIRED)
+find_package(terminalpp 4.0.0 CONFIG REQUIRED)
 
 # If we are building with Console++, then require that library
 if (MUNIN_WITH_CONSOLEPP)
@@ -174,6 +173,19 @@ target_sources(munin
         src/detail/json_adaptors.cpp
 )
 
+target_compile_options(munin
+    PRIVATE
+        # Do not generate warning C4251 (member needs dll linkage) on MSVC
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4251>
+        # Do not generate warning C4275 (type needs dll linkage) on MSVC
+        $<$<CXX_COMPILER_ID:MSVC>:/wd4275>
+        # Any warning on MSVC is an error
+        $<$<CXX_COMPILER_ID:MSVC>:/WX>
+
+        # Add warnings on g++ and Clang
+        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -Werror -Wno-sign-compare -Wno-tautological-compare -Wno-unused-parameter>
+)
+
 if (MUNIN_WITH_CONSOLEPP)
     target_sources(munin
         PRIVATE
@@ -213,10 +225,10 @@ target_compile_options(munin
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
 )
 
-# The required C++ Standard for Telnet++ is C++17.
+# The required C++ Standard for Telnet++ is C++20.
 target_compile_features(munin
     PUBLIC 
-        cxx_std_17
+        cxx_std_20
 )
 
 generate_export_header(munin

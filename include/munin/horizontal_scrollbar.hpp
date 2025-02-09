@@ -9,7 +9,7 @@ namespace munin {
 /// horizontal position of e.g. a viewport relative to its underlying
 /// component.
 //* =========================================================================
-class MUNIN_EXPORT horizontal_scrollbar : public basic_component  // NOLINT
+class MUNIN_EXPORT horizontal_scrollbar : public basic_component
 {
 public:
     //* =====================================================================

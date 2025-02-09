@@ -82,8 +82,8 @@ private:
     terminalpp::element &get_element(
         terminalpp::coordinate_type column, terminalpp::coordinate_type row);
 
-    render_surface_capabilities const &capabilities_;
     terminalpp::canvas &canvas_;
+    render_surface_capabilities const &capabilities_;
     terminalpp::extent offset_;
 };
 

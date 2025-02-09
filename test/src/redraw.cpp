@@ -13,7 +13,7 @@ terminalpp::extent calculate_bounds(
         regions.begin(),
         regions.end(),
         terminalpp::extent{},
-        [](auto &bounds, auto const &region) {
+        [](auto bounds, auto const &region) {
             bounds.width_ = std::max(
                 bounds.width_, region.origin_.x_ + region.size_.width_);
             bounds.height_ = std::max(
@@ -26,7 +26,7 @@ std::vector<bool> create_redraw_map(
     std::vector<terminalpp::rectangle> const &regions)
 {
     auto extent = calculate_bounds(regions);
-    std::vector<bool> redraw_map(extent.width_ * extent.height_);
+    std::vector<bool> redraw_map(extent.width_ * extent.height_);  // NOLINT
 
     for (auto const &region : regions)
     {

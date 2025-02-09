@@ -20,7 +20,7 @@ namespace munin {
 //* =========================================================================
 /// \brief An object that represents a top-level window.
 //* =========================================================================
-class MUNIN_EXPORT window  // NOLINT
+class MUNIN_EXPORT window
 {
 public:
     //* =====================================================================

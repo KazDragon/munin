@@ -80,11 +80,12 @@ terminalpp::extent brush::do_get_preferred_size() const
 
     using boost::adaptors::transformed;
 
-    return pattern_.empty() ? terminalpp::extent(1, 1)
-                            : terminalpp::extent(
-                                terminalpp::coordinate_type(*boost::max_element(
-                                    pattern_ | transformed(size))),
-                                terminalpp::coordinate_type(pattern_.size()));
+    return pattern_.empty()
+             ? terminalpp::extent(1, 1)
+             : terminalpp::extent(
+                 terminalpp::coordinate_type(
+                     *boost::max_element(pattern_ | transformed(size))),
+                 static_cast<terminalpp::coordinate_type>(pattern_.size()));
 }
 
 // ==========================================================================

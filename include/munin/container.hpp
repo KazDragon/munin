@@ -12,7 +12,7 @@ class layout;
 /// \brief A graphical element capable of containing and arranging other
 /// subcomponents.
 //* =========================================================================
-class MUNIN_EXPORT container final : public component  // NOLINT
+class MUNIN_EXPORT container final : public component
 {
 public:
     //* =====================================================================

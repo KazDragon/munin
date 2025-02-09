@@ -16,7 +16,7 @@ namespace munin {
 // ==========================================================================
 struct list::impl
 {
-    explicit impl(list &self) : self(self)
+    explicit impl(list &self) : self_(self)
     {
     }
 
@@ -32,12 +32,12 @@ struct list::impl
         };
 
         auto const preferred_width = terminalpp::coordinate_type(
-            items.empty()
+            items_.empty()
                 ? 0
-                : *boost::max_element(items | transformed(string_size)));
+                : *boost::max_element(items_ | transformed(string_size)));
 
         auto const preferred_height =
-            static_cast<terminalpp::coordinate_type>(items.size());
+            static_cast<terminalpp::coordinate_type>(items_.size());
 
         return {preferred_width, preferred_height};
     }
@@ -47,8 +47,9 @@ struct list::impl
     // ======================================================================
     [[nodiscard]] terminalpp::point get_cursor_position() const
     {
-        return selected_item_index ? terminalpp::point(0, *selected_item_index)
-                                   : terminalpp::point(0, 0);
+        return selected_item_index_
+                 ? terminalpp::point(0, *selected_item_index_)
+                 : terminalpp::point(0, 0);
     }
 
     // ======================================================================
@@ -61,12 +62,12 @@ struct list::impl
             surface,
             region,
             [this](auto &elem, auto const column, auto const row) {
-                elem = row < items.size() && column < items[row].size()
-                         ? items[row][column]
+                elem = row < items_.size() && column < items_[row].size()
+                         ? items_[row][column]
                          : ' ';
 
                 elem.attribute_.polarity_ =
-                    selected_item_index && *selected_item_index == row
+                    selected_item_index_ && *selected_item_index_ == row
                         ? terminalpp::graphics::polarity::negative
                         : terminalpp::graphics::polarity::positive;
             });
@@ -78,13 +79,13 @@ struct list::impl
     void handle_mouse_report(terminalpp::mouse::event const &ev)
     {
         if (auto const clicked_row = ev.position_.y_;
-            clicked_row < items.size())
+            clicked_row < items_.size())
         {
-            self.select_item(clicked_row);
+            self_.select_item(clicked_row);
         }
         else
         {
-            self.select_item(std::nullopt);
+            self_.select_item(std::nullopt);
         }
     }
 
@@ -93,19 +94,19 @@ struct list::impl
     // ======================================================================
     void handle_cursor_up()
     {
-        if (!items.empty())
+        if (!items_.empty())
         {
-            if (auto const current_item = self.get_selected_item_index();
+            if (auto const current_item = self_.get_selected_item_index();
                 current_item.has_value())
             {
-                self.select_item(
+                self_.select_item(
                     *current_item == 0 ? std::nullopt
                                        : std::optional<int>(*current_item - 1));
             }
             else
             {
-                self.select_item(
-                    std::optional(static_cast<int>(items.size() - 1)));
+                self_.select_item(
+                    std::optional(static_cast<int>(items_.size() - 1)));
             }
         }
     }
@@ -115,19 +116,19 @@ struct list::impl
     // ======================================================================
     void handle_cursor_down()
     {
-        if (!items.empty())
+        if (!items_.empty())
         {
-            if (auto const current_item = self.get_selected_item_index();
+            if (auto const current_item = self_.get_selected_item_index();
                 current_item.has_value())
             {
-                self.select_item(
-                    *current_item == items.size() - 1
+                self_.select_item(
+                    *current_item == items_.size() - 1
                         ? std::nullopt
                         : std::optional<int>(*current_item + 1));
             }
             else
             {
-                self.select_item(0);
+                self_.select_item(0);
             }
         }
     }
@@ -137,7 +138,7 @@ struct list::impl
     // ======================================================================
     void handle_keypress(terminalpp::virtual_key const &vk)
     {
-        switch (vk.key)  // NOLINT
+        switch (vk.key)
         {
             case terminalpp::vk::cursor_up:
                 handle_cursor_up();
@@ -145,6 +146,9 @@ struct list::impl
 
             case terminalpp::vk::cursor_down:
                 handle_cursor_down();
+                break;
+
+            default:
                 break;
         }
     }
@@ -168,9 +172,9 @@ struct list::impl
         }
     }
 
-    list &self;
-    std::vector<terminalpp::string> items;
-    std::optional<int> selected_item_index;
+    list &self_;
+    std::vector<terminalpp::string> items_;
+    std::optional<int> selected_item_index_;
 };
 
 // ==========================================================================
@@ -190,7 +194,7 @@ list::~list() = default;
 // ==========================================================================
 std::optional<int> list::get_selected_item_index() const
 {
-    return pimpl_->selected_item_index;
+    return pimpl_->selected_item_index_;
 }
 
 // ==========================================================================
@@ -202,9 +206,9 @@ void list::select_item(std::optional<int> const &index)
     // item in the list, otherwise it is a programming error.
     assert(!index.has_value() || index >= 0);
     assert(
-        !index.has_value() || index < static_cast<int>(pimpl_->items.size()));
+        !index.has_value() || index < static_cast<int>(pimpl_->items_.size()));
 
-    pimpl_->selected_item_index = index;
+    pimpl_->selected_item_index_ = index;
     on_item_changed();
     on_cursor_position_changed();
     on_redraw({
@@ -217,13 +221,13 @@ void list::select_item(std::optional<int> const &index)
 // ==========================================================================
 void list::set_items(std::vector<terminalpp::string> const &items)
 {
-    pimpl_->items = items;
-    pimpl_->selected_item_index =
-        !pimpl_->selected_item_index.has_value() || pimpl_->items.empty()
+    pimpl_->items_ = items;
+    pimpl_->selected_item_index_ =
+        !pimpl_->selected_item_index_.has_value() || pimpl_->items_.empty()
             ? std::nullopt
-        : *pimpl_->selected_item_index < pimpl_->items.size()  // NOLINT
-            ? pimpl_->selected_item_index
-            : std::optional(static_cast<int>(pimpl_->items.size() - 1));
+        : *pimpl_->selected_item_index_ < pimpl_->items_.size()  // NOLINT
+            ? pimpl_->selected_item_index_
+            : std::optional(static_cast<int>(pimpl_->items_.size() - 1));
 
     on_item_changed();
     on_cursor_position_changed();

@@ -107,8 +107,8 @@ struct edit::impl
         using std::end;
 
         auto const &is_visible_in_edits = [&](auto const &element) {
-            auto const &is_control_element = [](auto const &element) {
-                return element.glyph_.character_
+            auto const &is_control_element = [](auto const &control_element) {
+                return control_element.glyph_.character_
                     <= terminalpp::detail::ascii::esc;
             };
 
@@ -261,7 +261,7 @@ private:
     void handle_text(char ch)
     {
         terminalpp::string text;
-        text += ch;
+        text += static_cast<terminalpp::byte>(ch);
 
         insert_text(text);
     }
@@ -384,12 +384,11 @@ void edit::do_set_cursor_position(terminalpp::point const &position)
 void edit::do_draw(
     render_surface &surface, terminalpp::rectangle const &region) const
 {
-    auto const size = get_size();
-
     terminalpp::for_each_in_region(
         surface,
         region,
-        [=](terminalpp::element &elem,
+        [this, size = get_size()](
+            terminalpp::element &elem,
             terminalpp::coordinate_type column,  // NOLINT
             terminalpp::coordinate_type row) {
             if (column < get_length())

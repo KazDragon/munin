@@ -11,7 +11,7 @@ namespace munin {
 //* =========================================================================
 /// A component that represents a text area.
 //* =========================================================================
-class MUNIN_EXPORT text_area : public basic_component  // NOLINT
+class MUNIN_EXPORT text_area : public basic_component
 {
 public:
     // A type that represents a uniquely indexed position within the document.

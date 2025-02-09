@@ -10,7 +10,7 @@ namespace munin {
 /// \brief A component that represents a horizontally-scrolling editable
 /// text area.
 //* =========================================================================
-class MUNIN_EXPORT edit : public basic_component  // NOLINT
+class MUNIN_EXPORT edit : public basic_component
 {
 public:
     using text_index = std::int32_t;

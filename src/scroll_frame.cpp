@@ -64,10 +64,10 @@ struct scroll_frame::impl
              east_beam_region});
     }
 
-    scroll_frame &self_;                                          // NOLINT
-    terminalpp::attribute current_attribute_;                     // NOLINT
-    std::shared_ptr<horizontal_scrollbar> horizontal_scrollbar_;  // NOLINT
-    std::shared_ptr<vertical_scrollbar> vertical_scrollbar_;      // NOLINT
+    scroll_frame &self_;
+    terminalpp::attribute current_attribute_;
+    std::shared_ptr<horizontal_scrollbar> horizontal_scrollbar_;
+    std::shared_ptr<vertical_scrollbar> vertical_scrollbar_;
 };
 
 // ==========================================================================

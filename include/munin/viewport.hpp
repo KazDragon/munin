@@ -8,7 +8,7 @@ namespace munin {
 /// \brief A component that tracks a subset of another, larger component and
 /// shows only a section of it.
 //* =========================================================================
-class MUNIN_EXPORT viewport : public basic_component  // NOLINT
+class MUNIN_EXPORT viewport : public basic_component
 {
 public:
     //* =====================================================================

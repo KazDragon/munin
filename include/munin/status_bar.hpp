@@ -12,7 +12,7 @@ class animator;
 /// \brief A class that models a marquee of scrolling text that can be used
 /// to display transient status messages.
 //* =========================================================================
-class MUNIN_EXPORT status_bar : public basic_component,  // NOLINT
+class MUNIN_EXPORT status_bar : public basic_component,
                                 public std::enable_shared_from_this<status_bar>
 {
 public:

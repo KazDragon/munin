@@ -427,7 +427,7 @@ private:
     // ======================================================================
     void handle_control_key(terminalpp::virtual_key const &ev)
     {
-        switch (ev.key)  // NOLINT
+        switch (ev.key)
         {
             case terminalpp::vk::cursor_left:
                 handle_cursor_left(ev.repeat_count);
@@ -461,6 +461,9 @@ private:
 
             case terminalpp::vk::enter:
                 handle_enter();
+                break;
+
+            default:
                 break;
         }
     }

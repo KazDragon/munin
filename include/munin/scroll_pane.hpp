@@ -11,7 +11,7 @@ namespace munin {
 /// and implements scroll bars that track the visible section of the
 /// component.
 //* =========================================================================
-class MUNIN_EXPORT scroll_pane : public framed_component  // NOLINT
+class MUNIN_EXPORT scroll_pane : public framed_component
 {
 public:
     //* =====================================================================
