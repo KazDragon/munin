@@ -2,12 +2,12 @@
 
 #include "munin/render_surface.hpp"
 
-#include <boost/algorithm/clamp.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <algorithm>
 #include <memory>
 
 namespace munin {
@@ -53,7 +53,7 @@ struct edit::impl
     // ======================================================================
     void set_caret_position(edit::text_index position)
     {
-        caret_position_ = boost::algorithm::clamp(position, 0, get_length());
+        caret_position_ = std::clamp(position, 0, get_length());
         update_cursor_position();
     }
 
@@ -71,7 +71,7 @@ struct edit::impl
     void update_cursor_position()
     {
         cursor_position_ = {
-            boost::algorithm::clamp(
+            std::clamp(
                 caret_position_, 0, std::max(0, self_.get_size().width_ - 1)),
             0};
         self_.on_cursor_position_changed();

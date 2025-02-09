@@ -2,12 +2,12 @@
 
 #include "munin/render_surface.hpp"
 
-#include <boost/algorithm/clamp.hpp>
 #include <boost/range/algorithm_ext/insert.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <algorithm>
 #include <memory>
 
 using namespace terminalpp::literals;  // NOLINT
@@ -61,7 +61,7 @@ struct text_area::impl
     // ======================================================================
     void set_caret_position(text_area::text_index position)
     {
-        caret_position_ = boost::algorithm::clamp(position, 0, get_length());
+        caret_position_ = std::clamp(position, 0, get_length());
         update_cursor_position();
     }
 
@@ -219,12 +219,12 @@ private:
     {
         // Fit the requested cursor position with the bounds of the laid
         // out text.
-        position.y_ = boost::algorithm::clamp(
+        position.y_ = std::clamp(
             position.y_,
             terminalpp::coordinate_type{0},
             static_cast<terminalpp::coordinate_type>(
                 laid_out_text_.size() - 1));
-        position.x_ = boost::algorithm::clamp(
+        position.x_ = std::clamp(
             position.x_,
             terminalpp::coordinate_type{0},
             std::min(

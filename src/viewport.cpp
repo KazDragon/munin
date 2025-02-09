@@ -2,13 +2,13 @@
 
 #include "munin/render_surface.hpp"
 
-#include <boost/algorithm/clamp.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/scope_exit.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <algorithm>
 #include <memory>
 #include <utility>
 
@@ -236,11 +236,11 @@ struct viewport::impl
         // edges of the viewport.  If so, then the anchor position must change
         // just enough to keep the cursor within the visual area.
         anchor_bounds_.origin_ = {
-            boost::algorithm::clamp(
+            std::clamp(
                 anchor_bounds_.origin_.x_,
                 tracked_cursor_position.x_ - viewport_size.width_ + 1,
                 tracked_cursor_position.x_),
-            boost::algorithm::clamp(
+            std::clamp(
                 anchor_bounds_.origin_.y_,
                 tracked_cursor_position.y_ - viewport_size.height_ + 1,
                 tracked_cursor_position.y_)};
