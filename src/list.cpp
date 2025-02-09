@@ -156,16 +156,16 @@ struct list::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(boost::any const &ev)
+    void event(std::any const &ev)
     {
         if (auto const *mouse_report =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_report != nullptr)
         {
             handle_mouse_report(*mouse_report);
         }
         else if (auto const *keypress =
-                     boost::any_cast<terminalpp::virtual_key>(&ev);
+                     std::any_cast<terminalpp::virtual_key>(&ev);
                  keypress != nullptr)
         {
             handle_keypress(*keypress);
@@ -265,7 +265,7 @@ void list::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void list::do_event(boost::any const &ev)
+void list::do_event(std::any const &ev)
 {
     pimpl_->event(ev);
 }

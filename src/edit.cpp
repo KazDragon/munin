@@ -405,15 +405,15 @@ void edit::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void edit::do_event(boost::any const &ev)
+void edit::do_event(std::any const &ev)
 {
-    if (auto const *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
+    if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
         vk != nullptr)
     {
         pimpl_->key_event(*vk);
         return;
     }
-    else if (auto const *mouse = boost::any_cast<terminalpp::mouse::event>(&ev);
+    else if (auto const *mouse = std::any_cast<terminalpp::mouse::event>(&ev);
              mouse != nullptr)
     {
         pimpl_->mouse_event(*mouse);

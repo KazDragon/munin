@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-
 namespace munin {
 
 // ==========================================================================
@@ -10,7 +9,7 @@ namespace munin {
 // ==========================================================================
 terminalpp::extent layout::get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints) const
+    std::vector<std::any> const &hints) const
 {
     assert(hints.empty() || hints.size() == components.size());
     return do_get_preferred_size(components, hints);
@@ -21,7 +20,7 @@ terminalpp::extent layout::get_preferred_size(
 // ==========================================================================
 void layout::operator()(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints,
+    std::vector<std::any> const &hints,
     terminalpp::extent size) const
 {
     assert(hints.empty() || hints.size() == components.size());

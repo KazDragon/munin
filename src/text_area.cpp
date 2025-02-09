@@ -147,10 +147,10 @@ struct text_area::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(boost::any const &ev)
+    void event(std::any const &ev)
     {
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event != nullptr)
         {
             handle_mouse_event(*mouse_event);
@@ -158,7 +158,7 @@ struct text_area::impl
         }
 
         if (auto const *keypress_event =
-                boost::any_cast<terminalpp::virtual_key>(&ev);
+                std::any_cast<terminalpp::virtual_key>(&ev);
             keypress_event != nullptr)
         {
             handle_keypress_event(*keypress_event);
@@ -630,7 +630,7 @@ void text_area::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void text_area::do_event(boost::any const &ev)
+void text_area::do_event(std::any const &ev)
 {
     pimpl_->event(ev);
 }

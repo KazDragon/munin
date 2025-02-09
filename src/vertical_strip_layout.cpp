@@ -13,7 +13,7 @@ namespace munin {
 // ==========================================================================
 terminalpp::extent vertical_strip_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints) const
+    std::vector<std::any> const &hints) const
 {
     // The preferred size of the whole component is the maximum height of
     // the components and the sum of the preferred widths of the components.
@@ -38,7 +38,7 @@ terminalpp::extent vertical_strip_layout::do_get_preferred_size(
 // ==========================================================================
 void vertical_strip_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints,
+    std::vector<std::any> const &hints,
     terminalpp::extent size) const
 {
     auto x_coord = static_cast<terminalpp::coordinate_type>(0);

@@ -19,7 +19,7 @@ public:
         do_get_preferred_size,
         terminalpp::extent(
             std::vector<std::shared_ptr<munin::component>> const &components,
-            std::vector<boost::any> const &hints));
+            std::vector<std::any> const &hints));
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -30,7 +30,7 @@ public:
         do_layout,
         void(
             std::vector<std::shared_ptr<munin::component>> const &components,
-            std::vector<boost::any> const &hints,
+            std::vector<std::any> const &hints,
             terminalpp::extent size));
 
     //* =====================================================================

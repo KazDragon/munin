@@ -15,7 +15,7 @@ protected:
     //* =====================================================================
     [[nodiscard]] terminalpp::extent do_get_preferred_size(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints) const override
+        std::vector<std::any> const &hints) const override
     {
         auto outer_frame = std::static_pointer_cast<frame>(components[0]);
         auto inner_preferred_size = components[1]->get_preferred_size();
@@ -34,7 +34,7 @@ protected:
     //* =====================================================================
     void do_layout(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints,
+        std::vector<std::any> const &hints,
         terminalpp::extent size) const override
     {
         auto const &outer_frame =
@@ -100,10 +100,9 @@ framed_component::framed_component(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void framed_component::do_event(boost::any const &ev)
+void framed_component::do_event(std::any const &ev)
 {
-    if (auto const *mouse_event =
-            boost::any_cast<terminalpp::mouse::event>(&ev);
+    if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
         mouse_event)
     {
         auto inner_mouse_event = *mouse_event;

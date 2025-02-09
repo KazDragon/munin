@@ -157,10 +157,10 @@ struct horizontal_scrollbar::impl
     // ======================================================================
     // HANDLE_EVENT
     // ======================================================================
-    void handle_event(boost::any const &event)
+    void handle_event(std::any const &event)
     {
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&event);
+                std::any_cast<terminalpp::mouse::event>(&event);
             mouse_event)
         {
             handle_mouse_event(*mouse_event);
@@ -295,7 +295,7 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void horizontal_scrollbar::do_event(boost::any const &event)
+void horizontal_scrollbar::do_event(std::any const &event)
 {
     pimpl_->handle_event(event);
 }

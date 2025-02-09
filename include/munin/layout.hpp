@@ -2,12 +2,13 @@
 
 #include "munin/export.hpp"
 
-#include <boost/any.hpp>
 #include <nlohmann/json.hpp>
 #include <terminalpp/extent.hpp>
 
+#include <any>
 #include <memory>
 #include <vector>
+
 
 namespace munin {
 
@@ -33,7 +34,7 @@ public:
     //* =====================================================================
     [[nodiscard]] terminalpp::extent get_preferred_size(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints) const;
+        std::vector<std::any> const &hints) const;
 
     //* =====================================================================
     /// \brief Performs a layout of the specified components within the
@@ -41,7 +42,7 @@ public:
     //* =====================================================================
     void operator()(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints,
+        std::vector<std::any> const &hints,
         terminalpp::extent size) const;
 
     //* =====================================================================
@@ -62,7 +63,7 @@ protected:
     //* =====================================================================
     [[nodiscard]] virtual terminalpp::extent do_get_preferred_size(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints) const = 0;
+        std::vector<std::any> const &hints) const = 0;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -71,7 +72,7 @@ protected:
     //* =====================================================================
     virtual void do_layout(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints,
+        std::vector<std::any> const &hints,
         terminalpp::extent size) const = 0;
 
     //* =====================================================================

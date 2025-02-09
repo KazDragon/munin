@@ -85,7 +85,7 @@ struct container::impl
     // ADD_COMPONENT
     // ======================================================================
     void add_component(
-        std::shared_ptr<component> const &comp, boost::any const &layout_hint)
+        std::shared_ptr<component> const &comp, std::any const &layout_hint)
     {
         component_connections cnx;
 
@@ -333,7 +333,7 @@ struct container::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(boost::any const &ev)
+    void event(std::any const &ev)
     {
         // We split incoming events into two types:
         // * Common events (e.g. keypressed, etc.) are passed on to the
@@ -342,7 +342,7 @@ struct container::impl
         //   of the event, and the co-ordinates of the event are passed on
         //   relative to the subcomponent's location.
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event == nullptr)
         {
             handle_common_event(ev);
@@ -592,7 +592,7 @@ private:
     // ======================================================================
     // HANDLE_COMMON_EVENT
     // ======================================================================
-    void handle_common_event(boost::any const &event)
+    void handle_common_event(std::any const &event)
     {
         if (auto comp = find_first_focussed_component(components_);
             comp != components_.end())
@@ -621,7 +621,7 @@ private:
     terminalpp::rectangle bounds_;
     std::unique_ptr<munin::layout> layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>> components_;
-    std::vector<boost::any> hints_;
+    std::vector<std::any> hints_;
     std::vector<component_connections> component_connections_;
     bool has_focus_ = false;
     bool in_focus_operation_ = false;
@@ -651,7 +651,7 @@ void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 // ADD_COMPONENT
 // ==========================================================================
 void container::add_component(
-    std::shared_ptr<component> const &comp, boost::any const &layout_hint)
+    std::shared_ptr<component> const &comp, std::any const &layout_hint)
 {
     pimpl_->add_component(comp, layout_hint);
 }
@@ -780,7 +780,7 @@ void container::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void container::do_event(boost::any const &event)
+void container::do_event(std::any const &event)
 {
     pimpl_->event(event);
 }

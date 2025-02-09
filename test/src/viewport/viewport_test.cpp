@@ -187,21 +187,21 @@ TEST_F(
 
 TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 {
-    boost::any received_event;
+    std::any received_event;
     ON_CALL(*tracked_component_, do_event(_))
         .WillByDefault(SaveArg<0>(&received_event));
 
     std::string const test_event = "test event";
     viewport_->event(test_event);
 
-    auto const *result = boost::any_cast<std::string>(&received_event);
+    auto const *result = std::any_cast<std::string>(&received_event);
     ASSERT_TRUE(result != nullptr);
     ASSERT_EQ(test_event, *result);
 }
 
 TEST_F(a_viewport, forwards_keypress_events_to_the_tracked_component)
 {
-    boost::any received_event;
+    std::any received_event;
     ON_CALL(*tracked_component_, do_event(_))
         .WillByDefault(SaveArg<0>(&received_event));
 
@@ -211,7 +211,7 @@ TEST_F(a_viewport, forwards_keypress_events_to_the_tracked_component)
     viewport_->event(keypress_event);
 
     auto const *result =
-        boost::any_cast<terminalpp::virtual_key>(&received_event);
+        std::any_cast<terminalpp::virtual_key>(&received_event);
     ASSERT_TRUE(result != nullptr);
     ASSERT_EQ(keypress_event, *result);
 }
@@ -445,9 +445,9 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
     std::optional<terminalpp::mouse::event> received_mouse_event;
 
     ON_CALL(*tracked_component_, do_event(_))
-        .WillByDefault([&received_mouse_event](boost::any const &ev) {
+        .WillByDefault([&received_mouse_event](std::any const &ev) {
             if (const auto *mouse_event =
-                    boost::any_cast<terminalpp::mouse::event>(&ev);
+                    std::any_cast<terminalpp::mouse::event>(&ev);
                 mouse_event != nullptr)
             {
                 received_mouse_event = *mouse_event;

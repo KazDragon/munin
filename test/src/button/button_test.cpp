@@ -84,8 +84,8 @@ TEST(a_new_button, receives_focus_when_clicked)
 }
 
 using event_emission_data = std::tuple<
-    boost::any,  // event
-    bool         // emits signal
+    std::any,  // event
+    bool       // emits signal
     >;
 
 class a_button : public testing::TestWithParam<event_emission_data>

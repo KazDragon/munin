@@ -25,8 +25,8 @@ TEST_F(
 {
     EXPECT_CALL(*component_, do_has_focus()).WillOnce(Return(true));
 
-    EXPECT_CALL(*component_, do_event(_)).WillOnce([](boost::any const &event) {
-        char const *p = boost::any_cast<char>(&event);
+    EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
+        char const *p = std::any_cast<char>(&event);
         ASSERT_NE(nullptr, p);
         ASSERT_EQ('X', *p);
     });
@@ -41,12 +41,11 @@ TEST_F(
 
     EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(true));
 
-    EXPECT_CALL(*component1_, do_event(_))
-        .WillOnce([](boost::any const &event) {
-            char const *p = boost::any_cast<char>(&event);
-            ASSERT_NE(nullptr, p);
-            ASSERT_EQ('X', *p);
-        });
+    EXPECT_CALL(*component1_, do_event(_)).WillOnce([](std::any const &event) {
+        char const *p = std::any_cast<char>(&event);
+        ASSERT_NE(nullptr, p);
+        ASSERT_EQ('X', *p);
+    });
     container_.event('X');
 }
 
@@ -64,8 +63,8 @@ TEST_F(
     EXPECT_CALL(*component_, do_get_size())
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
-    EXPECT_CALL(*component_, do_event(_)).WillOnce([](boost::any const &event) {
-        const auto *p = boost::any_cast<terminalpp::mouse::event>(&event);
+    EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
+        const auto *p = std::any_cast<terminalpp::mouse::event>(&event);
         ASSERT_NE(nullptr, p);
         ASSERT_EQ(ev, *p);
     });
@@ -98,9 +97,8 @@ TEST_P(
     EXPECT_CALL(*component_, do_get_size()).WillOnce(Return(component_size));
 
     EXPECT_CALL(*component_, do_event(_))
-        .WillOnce([&expected_value](boost::any event) {
-            auto *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&event);
+        .WillOnce([&expected_value](std::any event) {
+            auto *mouse_event = std::any_cast<terminalpp::mouse::event>(&event);
             ASSERT_NE(nullptr, mouse_event);
             ASSERT_EQ(expected_value, *mouse_event);
         });
@@ -157,8 +155,8 @@ TEST_F(
     EXPECT_CALL(*component1_, do_get_size())
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
-    EXPECT_CALL(*component1_, do_event(_)).WillOnce([](boost::any event) {
-        auto *report = boost::any_cast<terminalpp::mouse::event>(&event);
+    EXPECT_CALL(*component1_, do_event(_)).WillOnce([](std::any event) {
+        auto *report = std::any_cast<terminalpp::mouse::event>(&event);
         ASSERT_NE(nullptr, report);
         ASSERT_EQ(expected_value, *report);
     });

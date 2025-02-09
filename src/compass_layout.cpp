@@ -116,7 +116,7 @@ void layout_east_component(component &comp, used_headings &headings)
 // ==========================================================================
 terminalpp::extent compass_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints) const
+    std::vector<std::any> const &hints) const
 {
     // Keeps track of the "unused" area that a centre component would fit
     // into. For example, with a north component of (3,1) and an east
@@ -136,7 +136,7 @@ terminalpp::extent compass_layout::do_get_preferred_size(
     for (auto index = 0U; index < components.size(); ++index)
     {
         auto &comp = *components[index];
-        auto const *hint_any = boost::any_cast<heading>(&hints[index]);
+        auto const *hint_any = std::any_cast<heading>(&hints[index]);
         auto const &hint = hint_any != nullptr ? *hint_any : heading::centre;
         auto const &comp_preferred_size = comp.get_preferred_size();
 
@@ -197,7 +197,7 @@ terminalpp::extent compass_layout::do_get_preferred_size(
 // ==========================================================================
 void compass_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints,
+    std::vector<std::any> const &hints,
     terminalpp::extent size) const
 {
     std::vector<component *> centre_components;
@@ -206,7 +206,7 @@ void compass_layout::do_layout(
     for (auto index = 0U; index < components.size(); ++index)
     {
         auto &comp = *components[index];
-        auto const *hint_any = boost::any_cast<heading>(&hints[index]);
+        auto const *hint_any = std::any_cast<heading>(&hints[index]);
         auto const &hint = hint_any != nullptr ? *hint_any : heading::centre;
 
         switch (hint)

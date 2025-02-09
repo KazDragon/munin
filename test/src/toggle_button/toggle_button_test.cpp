@@ -145,10 +145,10 @@ TEST(setting_the_toggle_state_of_a_toggle_button, fires_a_redraw_request)
 namespace {
 
 using event_emission_data = std::tuple<
-    bool,        // checked status
-    boost::any,  // event
-    bool,        // emits signal
-    bool         // end status
+    bool,      // checked status
+    std::any,  // event
+    bool,      // emits signal
+    bool       // end status
     >;
 
 class a_toggle_button : public testing::TestWithParam<event_emission_data>

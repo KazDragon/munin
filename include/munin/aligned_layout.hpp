@@ -52,7 +52,7 @@ protected:
     //* =====================================================================
     [[nodiscard]] terminalpp::extent do_get_preferred_size(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints) const override;
+        std::vector<std::any> const &hints) const override;
 
     //* =====================================================================
     /// \brief Called by operator().  Derived classes must override this
@@ -61,7 +61,7 @@ protected:
     //* =====================================================================
     void do_layout(
         std::vector<std::shared_ptr<component>> const &components,
-        std::vector<boost::any> const &hints,
+        std::vector<std::any> const &hints,
         terminalpp::extent size) const override;
 
     //* =====================================================================

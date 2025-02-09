@@ -28,7 +28,7 @@ void composite_component::set_layout(std::unique_ptr<layout> lyt)
 // ADD_COMPONENT
 // ==========================================================================
 void composite_component::add_component(
-    std::shared_ptr<component> const &comp, boost::any const &hint)
+    std::shared_ptr<component> const &comp, std::any const &hint)
 {
     content_.add_component(comp, hint);
 }
@@ -150,7 +150,7 @@ void composite_component::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void composite_component::do_event(boost::any const &event)
+void composite_component::do_event(std::any const &event)
 {
     content_.event(event);
 }

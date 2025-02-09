@@ -46,7 +46,7 @@ grid_layout::grid_layout(terminalpp::extent dimensions)
 // ==========================================================================
 terminalpp::extent grid_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints) const
+    std::vector<std::any> const &hints) const
 {
     auto max_preferred_sizes = std::accumulate(
         components.begin(),
@@ -73,7 +73,7 @@ terminalpp::extent grid_layout::do_get_preferred_size(
 // ==========================================================================
 void grid_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints,
+    std::vector<std::any> const &hints,
     terminalpp::extent size) const
 {
     terminalpp::extent const component_size = {

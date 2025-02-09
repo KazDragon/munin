@@ -148,10 +148,10 @@ struct viewport::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    auto event(boost::any const &ev)
+    auto event(std::any const &ev)
     {
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event{
@@ -161,7 +161,7 @@ struct viewport::impl
             return tracked_component_->event(translated_event);
         }
         else if (auto const *keypress_event =
-                     boost::any_cast<terminalpp::virtual_key>(&ev);
+                     std::any_cast<terminalpp::virtual_key>(&ev);
                  keypress_event)
         {
             if (keypress_event->key == terminalpp::vk::pgup)
@@ -465,7 +465,7 @@ void viewport::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void viewport::do_event(boost::any const &event)
+void viewport::do_event(std::any const &event)
 {
     pimpl_->event(event);
 }

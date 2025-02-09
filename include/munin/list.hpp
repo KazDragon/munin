@@ -77,7 +77,7 @@ private:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
     struct impl;
     std::unique_ptr<impl> pimpl_;

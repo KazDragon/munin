@@ -38,7 +38,7 @@ public:
     //* =====================================================================
     void add_component(
         std::shared_ptr<component> const &comp,
-        boost::any const &layout_hint = boost::any());
+        std::any const &layout_hint = std::any());
 
     //* =====================================================================
     /// \brief Removes a component from the container.
@@ -118,7 +118,7 @@ private:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
     //* =====================================================================
     /// \brief Called by get_cursor_state().  Derived classes must override
