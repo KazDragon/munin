@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['readme_354',['README',['../md__home_runner_work_munin_munin_examples_chess_README.html',1,'(Global Namespace)'],['../md__home_runner_work_munin_munin_examples_hello_console_README.html',1,'(Global Namespace)']]]
+  ['of_20conduct_0',['Contributor Code of Conduct',['../md__2home_2runner_2work_2munin_2munin_2CODE__OF__CONDUCT.html',1,'']]]
 ];

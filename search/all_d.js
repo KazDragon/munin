@@ -1,11 +1,10 @@
 var searchData=
 [
-  ['readme_95',['README',['../md__home_runner_work_munin_munin_examples_chess_README.html',1,'(Global Namespace)'],['../md__home_runner_work_munin_munin_examples_hello_console_README.html',1,'(Global Namespace)']]],
-  ['redraw_5fcomponent_5fat_96',['redraw_component_at',['../classmunin_1_1animator.html#a28c9b99b4bb727f2d5c371163902792f',1,'munin::animator']]],
-  ['redraw_5fcomponents_97',['redraw_components',['../classmunin_1_1animator.html#a51fe511d628b69156612197b129b6701',1,'munin::animator']]],
-  ['remove_5fcomponent_98',['remove_component',['../classmunin_1_1container.html#a45da577fd96d70d39d3abdf3f6eb1bee',1,'munin::container']]],
-  ['render_5fsurface_99',['render_surface',['../classmunin_1_1render__surface.html',1,'munin::render_surface'],['../classmunin_1_1render__surface.html#a4590c8866d0cd4dfc394eb834dcd1704',1,'munin::render_surface::render_surface()']]],
-  ['render_5fsurface_5fcapabilities_100',['render_surface_capabilities',['../structmunin_1_1render__surface__capabilities.html',1,'munin']]],
-  ['repaint_101',['repaint',['../classmunin_1_1window.html#a7ba288ffb1005f640933c395ad0ea57a',1,'munin::window']]],
-  ['resize_5fstrategy_102',['resize_strategy',['../structmunin_1_1viewport_1_1resize__strategy.html',1,'munin::viewport']]]
+  ['has_5ffocus_0',['has_focus',['../classmunin_1_1component.html#a4a90b2e0e79e50a0a7fbe41d41856a5b',1,'munin::component']]],
+  ['heading_1',['heading',['../classmunin_1_1compass__layout.html#a64724038c1c4bad063cd6c43fb008a81',1,'munin::compass_layout']]],
+  ['highlight_5fon_5ffocus_2',['highlight_on_focus',['../classmunin_1_1frame.html#a4f48dae9b6f2500be23cb33796d5dcc5',1,'munin::frame::highlight_on_focus()'],['../classmunin_1_1horizontal__scrollbar.html#a3d1142e4f7e8de3f3b5256d9a4705076',1,'munin::horizontal_scrollbar::highlight_on_focus()'],['../classmunin_1_1vertical__scrollbar.html#abf81f48f437c128ea56d5644f7619fba',1,'munin::vertical_scrollbar::highlight_on_focus()']]],
+  ['horizontal_3',['horizontal',['../structmunin_1_1alignment.html#a917ae835a0abee6353ef026dfcacbb8b',1,'munin::alignment']]],
+  ['horizontal_5fscrollbar_4',['horizontal_scrollbar',['../classmunin_1_1horizontal__scrollbar.html',1,'munin::horizontal_scrollbar'],['../classmunin_1_1horizontal__scrollbar.html#a8f13775ca051a27ec7686994eb047ef4',1,'munin::horizontal_scrollbar::horizontal_scrollbar()']]],
+  ['horizontal_5fstrip_5flayout_5',['horizontal_strip_layout',['../classmunin_1_1horizontal__strip__layout.html',1,'munin']]],
+  ['how_20to_20contribute_20to_20munin_6',['How to Contribute to Munin',['../md__2home_2runner_2work_2munin_2munin_2CONTRIBUTING.html',1,'']]]
 ];

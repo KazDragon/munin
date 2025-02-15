@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['has_5ffocus_62',['has_focus',['../classmunin_1_1component.html#a4a90b2e0e79e50a0a7fbe41d41856a5b',1,'munin::component']]],
-  ['heading_63',['heading',['../classmunin_1_1compass__layout.html#a64724038c1c4bad063cd6c43fb008a81',1,'munin::compass_layout']]],
-  ['highlight_5fon_5ffocus_64',['highlight_on_focus',['../classmunin_1_1frame.html#a4f48dae9b6f2500be23cb33796d5dcc5',1,'munin::frame::highlight_on_focus()'],['../classmunin_1_1horizontal__scrollbar.html#a3d1142e4f7e8de3f3b5256d9a4705076',1,'munin::horizontal_scrollbar::highlight_on_focus()'],['../classmunin_1_1vertical__scrollbar.html#abf81f48f437c128ea56d5644f7619fba',1,'munin::vertical_scrollbar::highlight_on_focus()']]],
-  ['horizontal_65',['horizontal',['../structmunin_1_1alignment.html#a917ae835a0abee6353ef026dfcacbb8b',1,'munin::alignment']]],
-  ['horizontal_5fscrollbar_66',['horizontal_scrollbar',['../classmunin_1_1horizontal__scrollbar.html#a8f13775ca051a27ec7686994eb047ef4',1,'munin::horizontal_scrollbar::horizontal_scrollbar()'],['../classmunin_1_1horizontal__scrollbar.html',1,'munin::horizontal_scrollbar']]],
-  ['horizontal_5fstrip_5flayout_67',['horizontal_strip_layout',['../classmunin_1_1horizontal__strip__layout.html',1,'munin']]],
-  ['how_20to_20contribute_20to_20munin_68',['How to Contribute to Munin',['../md__home_runner_work_munin_munin_CONTRIBUTING.html',1,'']]]
+  ['background_5fanimator_0',['background_animator',['../classmunin_1_1background__animator.html',1,'munin::background_animator'],['../classmunin_1_1background__animator.html#af813bce0c197697d7624152600b460fb',1,'munin::background_animator::background_animator()']]],
+  ['basic_5fcomponent_1',['basic_component',['../classmunin_1_1basic__component.html',1,'munin::basic_component'],['../classmunin_1_1basic__component.html#a6135eb53b14424cd45333b9193b53305',1,'munin::basic_component::basic_component()']]],
+  ['basics_2',['The Basics',['../index.html#autotoc_md22',1,'']]],
+  ['brush_3',['brush',['../classmunin_1_1brush.html',1,'munin::brush'],['../classmunin_1_1brush.html#adc04b92d77f496c90ae1b49886be77d9',1,'munin::brush::brush()'],['../classmunin_1_1brush.html#af5bc7c57c4f65b6c1d42a1cc7f6d5149',1,'munin::brush::brush(terminalpp::string pattern)'],['../classmunin_1_1brush.html#a64ad63dad0e5f4affa18dc27a0e14461',1,'munin::brush::brush(std::vector&lt; terminalpp::string &gt; pattern)']]],
+  ['button_4',['button',['../classmunin_1_1button.html',1,'munin::button'],['../classmunin_1_1button.html#a84063a95bc74bb7d5729e568d2614d26',1,'munin::button::button()']]],
+  ['buttons_5',['buttons',['../index.html#autotoc_md18',1,'Buttons'],['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md3',1,'Version 0.3 - Buttons']]]
 ];

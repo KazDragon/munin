@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['how_20to_20contribute_20to_20munin_352',['How to Contribute to Munin',['../md__home_runner_work_munin_munin_CONTRIBUTING.html',1,'']]]
+  ['how_20to_20contribute_20to_20munin_0',['How to Contribute to Munin',['../md__2home_2runner_2work_2munin_2munin_2CONTRIBUTING.html',1,'']]]
 ];

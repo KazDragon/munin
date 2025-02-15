@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['edit_177',['edit',['../classmunin_1_1edit.html',1,'munin']]]
+  ['edit_0',['edit',['../classmunin_1_1edit.html',1,'munin']]]
 ];
