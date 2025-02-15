@@ -57,11 +57,16 @@ find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 # And of course, Munin is built atop the Terminal++ library, which
 # also requires fmt
 find_package(fmt 5.3 CONFIG REQUIRED)
-find_package(terminalpp 4.0.0 CONFIG REQUIRED)
+
+if (NOT TARGET KazDragon::terminalpp)
+    find_package(terminalpp 4.0.0 CONFIG REQUIRED)
+endif()
 
 # If we are building with Console++, then require that library
 if (MUNIN_WITH_CONSOLEPP)
-    find_package(consolepp 0.1.1 CONFIG REQUIRED)
+    if (NOT TARGET KazDragon::consolepp)
+        find_package(consolepp 0.1.1 CONFIG REQUIRED)
+    endif()
     
     set(MUNIN_PRIVATE_LIBRARIES
         ${MUNIN_PRIVATE_LIBRARIES}
