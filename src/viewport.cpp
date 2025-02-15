@@ -236,14 +236,18 @@ struct viewport::impl
         // edges of the viewport.  If so, then the anchor position must change
         // just enough to keep the cursor within the visual area.
         anchor_bounds_.origin_ = {
-            std::clamp(
-                anchor_bounds_.origin_.x_,
-                tracked_cursor_position.x_ - viewport_size.width_ + 1,
-                tracked_cursor_position.x_),
-            std::clamp(
-                anchor_bounds_.origin_.y_,
-                tracked_cursor_position.y_ - viewport_size.height_ + 1,
-                tracked_cursor_position.y_)};
+            viewport_size.width_ == 0
+                ? 0
+                : std::clamp(
+                    anchor_bounds_.origin_.x_,
+                    tracked_cursor_position.x_ - viewport_size.width_ + 1,
+                    tracked_cursor_position.x_),
+            viewport_size.height_ == 0
+                ? 0
+                : std::clamp(
+                    anchor_bounds_.origin_.y_,
+                    tracked_cursor_position.y_ - viewport_size.height_ + 1,
+                    tracked_cursor_position.y_)};
 
         if (old_anchor_bounds != anchor_bounds_)
         {
