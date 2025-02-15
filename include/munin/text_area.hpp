@@ -11,7 +11,7 @@ namespace munin {
 //* =========================================================================
 /// A component that represents a text area.
 //* =========================================================================
-class MUNIN_EXPORT text_area : public basic_component  // NOLINT
+class MUNIN_EXPORT text_area : public basic_component
 {
 public:
     // A type that represents a uniquely indexed position within the document.
@@ -113,7 +113,7 @@ protected:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
 private:
     struct impl;

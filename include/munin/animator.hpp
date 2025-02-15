@@ -9,7 +9,7 @@ namespace munin {
 /// \brief An injectable interface into a render surface that allows
 /// timing of animated components.
 //* =========================================================================
-class MUNIN_EXPORT animator  // NOLINT
+class MUNIN_EXPORT animator
 {
 public:
     //* =====================================================================

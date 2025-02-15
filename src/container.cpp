@@ -6,14 +6,13 @@
 #include "munin/null_layout.hpp"
 #include "munin/render_surface.hpp"
 
-#include <boost/range/adaptor/reversed.hpp>
-#include <boost/range/algorithm/find_if.hpp>
-#include <boost/range/algorithm/for_each.hpp>
 #include <boost/scope_exit.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 
+#include <algorithm>
 #include <memory>
+#include <ranges>
 #include <vector>
 
 namespace munin {
@@ -22,20 +21,20 @@ namespace {
 
 using component_connections = std::vector<boost::signals2::connection>;
 
-template <class ForwardRange>
-auto find_first_focussed_component(ForwardRange const &rng)
+auto find_first_focussed_component(std::ranges::forward_range auto const &rng)
 {
     auto const &component_has_focus = [](auto const &comp) {
         return comp->has_focus();
     };
 
-    return boost::find_if(rng, component_has_focus);
+    return std::ranges::find_if(rng, component_has_focus);
 }
 
 template <class ForwardRange, class IncrementFunction>
 auto increment_focus(ForwardRange const &rng, IncrementFunction &&increment)
 {
-    return boost::find_if(rng, std::forward<IncrementFunction>(increment));
+    return std::ranges::find_if(
+        rng, std::forward<IncrementFunction>(increment));
 }
 
 template <class ForwardRange>
@@ -55,7 +54,7 @@ auto find_component_at_point(
             && location.y_ < position.y_ + size.height_);
     };
 
-    return boost::find_if(rng, has_location_at_point);
+    return std::ranges::find_if(rng, has_location_at_point);
 }
 
 }  // namespace
@@ -85,7 +84,7 @@ struct container::impl
     // ADD_COMPONENT
     // ======================================================================
     void add_component(
-        std::shared_ptr<component> const &comp, boost::any const &layout_hint)
+        std::shared_ptr<component> const &comp, std::any const &layout_hint)
     {
         component_connections cnx;
 
@@ -133,7 +132,7 @@ struct container::impl
             {
                 components_.erase(components_.begin() + index);
                 hints_.erase(hints_.begin() + index);
-                boost::for_each(
+                std::ranges::for_each(
                     component_connections_[index], disconnect_connection);
 
                 component_connections_.erase(
@@ -269,14 +268,13 @@ struct container::impl
     // ======================================================================
     void focus_previous()
     {
-        using boost::adaptors::reversed;
-
         auto const &focus_previous_component = [](auto const &comp) {
             comp->focus_previous();
             return comp->has_focus();
         };
 
-        focus_incremental(components_ | reversed, focus_previous_component);
+        focus_incremental(
+            components_ | std::views::reverse, focus_previous_component);
     }
 
     // ======================================================================
@@ -333,7 +331,7 @@ struct container::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(boost::any const &ev)
+    void event(std::any const &ev)
     {
         // We split incoming events into two types:
         // * Common events (e.g. keypressed, etc.) are passed on to the
@@ -342,7 +340,7 @@ struct container::impl
         //   of the event, and the co-ordinates of the event are passed on
         //   relative to the subcomponent's location.
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event == nullptr)
         {
             handle_common_event(ev);
@@ -415,7 +413,7 @@ private:
                 : first_focussed_component;
 
         auto const &incrementally_focussed_component = increment_focus(
-            boost::make_iterator_range(increment_from, cend(components)),
+            std::ranges::subrange(increment_from, cend(components)),
             std::forward<Op>(increment_op));
 
         has_focus_ = incrementally_focussed_component != cend(components);
@@ -527,8 +525,8 @@ private:
                     return comp != orig && comp->has_focus();
                 };
 
-            if (auto comp =
-                    boost::find_if(components_, another_component_has_focus);
+            if (auto comp = std::ranges::find_if(
+                    components_, another_component_has_focus);
                 comp != components_.end())
             {
                 in_focus_operation_ = true;
@@ -592,7 +590,7 @@ private:
     // ======================================================================
     // HANDLE_COMMON_EVENT
     // ======================================================================
-    void handle_common_event(boost::any const &event)
+    void handle_common_event(std::any const &event)
     {
         if (auto comp = find_first_focussed_component(components_);
             comp != components_.end())
@@ -621,7 +619,7 @@ private:
     terminalpp::rectangle bounds_;
     std::unique_ptr<munin::layout> layout_ = make_null_layout();
     std::vector<std::shared_ptr<component>> components_;
-    std::vector<boost::any> hints_;
+    std::vector<std::any> hints_;
     std::vector<component_connections> component_connections_;
     bool has_focus_ = false;
     bool in_focus_operation_ = false;
@@ -651,7 +649,7 @@ void container::set_layout(std::unique_ptr<munin::layout> &&lyt)
 // ADD_COMPONENT
 // ==========================================================================
 void container::add_component(
-    std::shared_ptr<component> const &comp, boost::any const &layout_hint)
+    std::shared_ptr<component> const &comp, std::any const &layout_hint)
 {
     pimpl_->add_component(comp, layout_hint);
 }
@@ -780,7 +778,7 @@ void container::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void container::do_event(boost::any const &event)
+void container::do_event(std::any const &event)
 {
     pimpl_->event(event);
 }

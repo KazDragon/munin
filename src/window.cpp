@@ -4,7 +4,6 @@
 
 #include <terminalpp/terminal.hpp>
 
-
 namespace munin {
 
 // ==========================================================================
@@ -48,7 +47,7 @@ window::~window() = default;
 // ==========================================================================
 // EVENT
 // ==========================================================================
-void window::event(boost::any const &ev)
+void window::event(std::any const &ev)
 {
     content_->event(ev);
 }

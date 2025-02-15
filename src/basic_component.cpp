@@ -4,7 +4,6 @@
 
 #include <terminalpp/mouse.hpp>
 
-
 namespace munin {
 
 namespace {
@@ -165,9 +164,9 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void basic_component::do_event(boost::any const &event)
+void basic_component::do_event(std::any const &event)
 {
-    if (auto const *mouse = boost::any_cast<terminalpp::mouse::event>(&event);
+    if (auto const *mouse = std::any_cast<terminalpp::mouse::event>(&event);
         mouse != nullptr
         && mouse->action_ != terminalpp::mouse::event_type::button_up)
     {

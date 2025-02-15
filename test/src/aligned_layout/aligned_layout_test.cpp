@@ -33,7 +33,7 @@ TEST(
 
     auto const preferred_size = lyt->get_preferred_size(
         std::vector<std::shared_ptr<munin::component>>{component0, component1},
-        std::vector<boost::any>{munin::alignment_hcvb, munin::alignment_hcvt});
+        std::vector<std::any>{munin::alignment_hcvb, munin::alignment_hcvt});
 
     auto const expected_size = terminalpp::extent{10, 12};
 

@@ -8,7 +8,7 @@ namespace munin {
 //* =========================================================================
 /// \brief A class that frames a viewport using scrollbars.
 //* =========================================================================
-class MUNIN_EXPORT scroll_frame : public frame  // NOLINT
+class MUNIN_EXPORT scroll_frame : public frame
 {
 public:
     //* =====================================================================

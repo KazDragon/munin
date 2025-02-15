@@ -2,13 +2,13 @@
 
 #include "munin/export.hpp"
 
-#include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <nlohmann/json.hpp>
 #include <terminalpp/extent.hpp>
 #include <terminalpp/point.hpp>
 #include <terminalpp/rectangle.hpp>
 
+#include <any>
 #include <vector>
 
 namespace munin {
@@ -145,7 +145,7 @@ public:
     /// A component must specify the types of messages it may receive and
     /// what it will do with it.
     //* =====================================================================
-    void event(boost::any const &event);
+    void event(std::any const &event);
 
     //* =====================================================================
     /// \brief Returns details about the component in JSON format.
@@ -308,7 +308,7 @@ protected:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    virtual void do_event(boost::any const &event) = 0;
+    virtual void do_event(std::any const &event) = 0;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

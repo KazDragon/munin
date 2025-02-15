@@ -2,13 +2,13 @@
 
 #include "munin/render_surface.hpp"
 
-#include <boost/algorithm/clamp.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/scope_exit.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <algorithm>
 #include <memory>
 #include <utility>
 
@@ -148,10 +148,10 @@ struct viewport::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    auto event(boost::any const &ev)
+    auto event(std::any const &ev)
     {
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&ev);
+                std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event{
@@ -161,7 +161,7 @@ struct viewport::impl
             return tracked_component_->event(translated_event);
         }
         else if (auto const *keypress_event =
-                     boost::any_cast<terminalpp::virtual_key>(&ev);
+                     std::any_cast<terminalpp::virtual_key>(&ev);
                  keypress_event)
         {
             if (keypress_event->key == terminalpp::vk::pgup)
@@ -236,14 +236,18 @@ struct viewport::impl
         // edges of the viewport.  If so, then the anchor position must change
         // just enough to keep the cursor within the visual area.
         anchor_bounds_.origin_ = {
-            boost::algorithm::clamp(
-                anchor_bounds_.origin_.x_,
-                tracked_cursor_position.x_ - viewport_size.width_ + 1,
-                tracked_cursor_position.x_),
-            boost::algorithm::clamp(
-                anchor_bounds_.origin_.y_,
-                tracked_cursor_position.y_ - viewport_size.height_ + 1,
-                tracked_cursor_position.y_)};
+            viewport_size.width_ == 0
+                ? 0
+                : std::clamp(
+                    anchor_bounds_.origin_.x_,
+                    tracked_cursor_position.x_ - viewport_size.width_ + 1,
+                    tracked_cursor_position.x_),
+            viewport_size.height_ == 0
+                ? 0
+                : std::clamp(
+                    anchor_bounds_.origin_.y_,
+                    tracked_cursor_position.y_ - viewport_size.height_ + 1,
+                    tracked_cursor_position.y_)};
 
         if (old_anchor_bounds != anchor_bounds_)
         {
@@ -465,7 +469,7 @@ void viewport::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void viewport::do_event(boost::any const &event)
+void viewport::do_event(std::any const &event)
 {
     pimpl_->event(event);
 }

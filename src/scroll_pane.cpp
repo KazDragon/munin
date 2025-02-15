@@ -24,8 +24,8 @@ struct scroll_pane::impl
             anchor_bounds.origin_.y_, anchor_bounds.size_.height_);
     }
 
-    std::shared_ptr<scroll_frame> frame_;  // NOLINT
-    std::shared_ptr<viewport> viewport_;   // NOLINT
+    std::shared_ptr<scroll_frame> frame_;
+    std::shared_ptr<viewport> viewport_;
 };
 
 // ==========================================================================

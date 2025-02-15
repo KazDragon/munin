@@ -9,7 +9,7 @@ namespace munin {
 /// vertical position of e.g. a viewport relative to its underlying
 /// component.
 //* =========================================================================
-class MUNIN_EXPORT vertical_scrollbar : public basic_component  // NOLINT
+class MUNIN_EXPORT vertical_scrollbar : public basic_component
 {
 public:
     //* =====================================================================
@@ -104,7 +104,7 @@ protected:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
 private:
     struct impl;

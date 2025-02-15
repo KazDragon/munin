@@ -204,8 +204,8 @@ TEST(a_framed_component, forwards_events_to_the_inner_component)
     std::string received_value;
 
     EXPECT_CALL(*mock_comp, do_event(_))
-        .WillOnce([&received_value](boost::any const &ev) {
-            received_value = boost::any_cast<std::string>(ev);
+        .WillOnce([&received_value](std::any const &ev) {
+            received_value = std::any_cast<std::string>(ev);
         });
 
     framed_component->set_focus();

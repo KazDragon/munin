@@ -6,7 +6,7 @@ namespace munin {
 //* =========================================================================
 /// \brief A class that implements a clickable button
 //* =========================================================================
-class MUNIN_EXPORT toggle_button : public munin::composite_component  // NOLINT
+class MUNIN_EXPORT toggle_button : public munin::composite_component
 {
 public:
     //* =====================================================================
@@ -28,14 +28,14 @@ public:
     /// \fn on_state_changed
     /// An event that fires when the toggle state of the button changes.
     //* =====================================================================
-    boost::signals2::signal<void(bool)> on_state_changed;  // NOLINT
+    boost::signals2::signal<void(bool)> on_state_changed;
 
 protected:
     //* =====================================================================
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

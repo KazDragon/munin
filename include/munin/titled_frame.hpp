@@ -14,7 +14,7 @@ namespace munin {
 /// these determine the attributes with which the frame is drawn.  These
 /// attributes can be toggled by setting the highlight property.
 //* =========================================================================
-class MUNIN_EXPORT titled_frame : public frame  // NOLINT
+class MUNIN_EXPORT titled_frame : public frame
 {
 public:
     //* =====================================================================

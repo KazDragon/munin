@@ -38,7 +38,6 @@ install:
   - git pull
   - .\bootstrap-vcpkg.bat
   - cd %appveyor_build_folder%
-  - vcpkg install boost-any:%platform%-windows
   - vcpkg install boost-asio:%platform%-windows
   - vcpkg install boost-container-hash:%platform%-windows
   - vcpkg install boost-core:%platform%-windows
@@ -47,7 +46,6 @@ install:
   - vcpkg install boost-signals2:%platform%-windows
   - vcpkg install boost-smart-ptr:%platform%-windows
   - vcpkg install boost-spirit:%platform%-windows
-  - vcpkg install gsl-lite:%platform%-windows
   - vcpkg install fmt:%platform%-windows
   - vcpkg install nlohmann-json:%platform%-windows
   - vcpkg install gtest:%platform%-windows

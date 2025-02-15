@@ -17,7 +17,7 @@ namespace munin {
 /// level user interface component, which would be the owner of both the
 /// strand and the animator.
 //* =========================================================================
-class MUNIN_EXPORT background_animator : public animator  // NOLINT
+class MUNIN_EXPORT background_animator : public animator
 {
 public:
     //* =====================================================================

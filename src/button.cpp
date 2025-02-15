@@ -29,10 +29,9 @@ button::button(terminalpp::string text)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void button::do_event(boost::any const &ev)
+void button::do_event(std::any const &ev)
 {
-    if (auto const *mouse_event =
-            boost::any_cast<terminalpp::mouse::event>(&ev);
+    if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
         mouse_event != nullptr)
     {
         if (mouse_event->action_
@@ -41,7 +40,7 @@ void button::do_event(boost::any const &ev)
             on_click();
         }
     }
-    else if (auto const *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
+    else if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
              vk != nullptr)
     {
         if (vk->key == terminalpp::vk::enter

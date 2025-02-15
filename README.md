@@ -44,12 +44,12 @@ See [The Chess Example](examples/chess) for an example of how to tie this into a
 
 # Requirements
 
-Munin requires a C++17 compiler and the following libraries:
+Munin requires a C++20 compiler and the following libraries:
   * Boost (At least version 1.69.0)
   * nlohmann_json (At least version 3.3.0)
-  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 2.4.0)
-  * (for Terminal++) libfmt (At least version 5.3) and gsl-lite (at least version 0.38)
-  * Optionally, [Console++](https://github.com/KazDragon/consolepp) (At least version 0.1.0)
+  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 4.0.0)
+  * (for Terminal++) libfmt (At least version 5.3)
+  * Optionally, [Console++](https://github.com/KazDragon/consolepp) (At least version 0.2.0)
   * (for testing only) Google Test and Google Mock
 
 # Installation - CMake 

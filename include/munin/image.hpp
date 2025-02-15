@@ -12,7 +12,7 @@ namespace munin {
 /// \brief A class that models a box that is always filled with a centred
 /// pattern.
 //* =========================================================================
-class MUNIN_EXPORT image : public munin::basic_component  // NOLINT
+class MUNIN_EXPORT image : public munin::basic_component
 {
 public:
     //* =====================================================================

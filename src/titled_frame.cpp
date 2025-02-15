@@ -17,7 +17,7 @@ struct titled_frame::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    explicit impl(titled_frame &self) : self(self)
+    explicit impl(titled_frame &self) : self_(self)
     {
     }
 
@@ -26,12 +26,12 @@ struct titled_frame::impl
     // ======================================================================
     void redraw_frame()
     {
-        auto size = self.get_size();
+        auto size = self_.get_size();
         auto northwest_beam_region =
         size.width_ > 4 ? terminalpp::rectangle{{0, 0}, {2, 1}}
                         : terminalpp::rectangle{{0, 0}, {size.width_, 1}};
 
-        auto skipped_section_width = 3 + title->get_size().width_ + 1;
+        auto skipped_section_width = 3 + title_->get_size().width_ + 1;
         auto northeast_beam_region = terminalpp::rectangle{
             {skipped_section_width,                 0},
             {size.width_ - (skipped_section_width), 1}
@@ -51,7 +51,7 @@ struct titled_frame::impl
             ? terminalpp::rectangle{{size.width_ - 1, 1}, {1, size.height_ - 2}}
             : terminalpp::rectangle{};
 
-        self.on_redraw(
+        self_.on_redraw(
             {northwest_beam_region,
              northeast_beam_region,
              south_beam_region,
@@ -59,10 +59,10 @@ struct titled_frame::impl
              east_beam_region});
     }
 
-    titled_frame &self;
-    terminalpp::string title_text;
-    std::shared_ptr<image> title;
-    terminalpp::attribute current_attribute;
+    titled_frame &self_;
+    terminalpp::string title_text_;
+    std::shared_ptr<image> title_;
+    terminalpp::attribute current_attribute_;
 };
 
 // ==========================================================================
@@ -71,16 +71,16 @@ struct titled_frame::impl
 titled_frame::titled_frame(terminalpp::string const &title)
   : pimpl_(std::make_unique<impl>(*this))
 {
-    pimpl_->title_text = title;
-    pimpl_->title = make_image(pimpl_->title_text);
+    pimpl_->title_text_ = title;
+    pimpl_->title_ = make_image(pimpl_->title_text_);
 
-    auto &attr = pimpl_->current_attribute;
+    auto &attr = pimpl_->current_attribute_;
 
     auto title_piece = view(
         make_compass_layout(),
         make_fill(' '),
         compass_layout::heading::west,
-        pimpl_->title,
+        pimpl_->title_,
         compass_layout::heading::centre,
         make_fill(' '),
         compass_layout::heading::east);
@@ -174,7 +174,7 @@ nlohmann::json titled_frame::do_to_json() const
     ])"_json;
 
     auto json = composite_component::do_to_json().patch(patch);
-    json["title"] = to_string(pimpl_->title_text);
+    json["title"] = to_string(pimpl_->title_text_);
 
     return json;
 }
@@ -184,7 +184,7 @@ nlohmann::json titled_frame::do_to_json() const
 // ==========================================================================
 void titled_frame::do_inner_focus_changed()
 {
-    pimpl_->current_attribute = get_focus_attribute();
+    pimpl_->current_attribute_ = get_focus_attribute();
     pimpl_->redraw_frame();
 }
 

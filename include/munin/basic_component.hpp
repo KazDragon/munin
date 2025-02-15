@@ -117,7 +117,7 @@ protected:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

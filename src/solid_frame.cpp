@@ -16,7 +16,7 @@ struct solid_frame::impl
     // ======================================================================
     // CONSTRUCTOR
     // ======================================================================
-    explicit impl(solid_frame &self) : self(self)
+    explicit impl(solid_frame &self) : self_(self)
     {
     }
 
@@ -25,7 +25,7 @@ struct solid_frame::impl
     // ======================================================================
     void redraw_frame()
     {
-        auto size = self.get_size();
+        auto size = self_.get_size();
 
         if (size.width_ > 2 && size.height_ > 2)
         {
@@ -47,7 +47,7 @@ struct solid_frame::impl
                 {1,               size.height_ - 2}
             };
 
-            self.on_redraw(
+            self_.on_redraw(
                 {north_beam_region,
                  south_beam_region,
                  west_beam_region,
@@ -57,14 +57,14 @@ struct solid_frame::impl
         {
             // But if only our border is showing, then the redraw region is
             // the complete frame area.
-            self.on_redraw({
+            self_.on_redraw({
                 {{0, 0}, size}
             });
         }
     }
 
-    solid_frame &self;
-    terminalpp::attribute current_attribute;
+    solid_frame &self_;
+    terminalpp::attribute current_attribute_;
 };
 
 // ==========================================================================
@@ -72,7 +72,7 @@ struct solid_frame::impl
 // ==========================================================================
 solid_frame::solid_frame() : pimpl_(std::make_unique<impl>(*this))
 {
-    auto &attr = pimpl_->current_attribute;
+    auto &attr = pimpl_->current_attribute_;
 
     auto north_beam = view(
         make_compass_layout(),
@@ -157,7 +157,7 @@ nlohmann::json solid_frame::do_to_json() const
 // ==========================================================================
 void solid_frame::do_inner_focus_changed()
 {
-    pimpl_->current_attribute = get_focus_attribute();
+    pimpl_->current_attribute_ = get_focus_attribute();
     pimpl_->redraw_frame();
 }
 

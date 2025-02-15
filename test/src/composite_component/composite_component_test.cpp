@@ -84,8 +84,8 @@ TEST_F(a_composite_component, forwards_events_to_its_inner_component)
     std::string received_value;
 
     EXPECT_CALL(*composite_->inner_component, do_event(_))
-        .WillOnce([&received_value](boost::any const &ev) {
-            received_value = boost::any_cast<std::string>(ev);
+        .WillOnce([&received_value](std::any const &ev) {
+            received_value = std::any_cast<std::string>(ev);
         });
 
     composite_->set_focus();

@@ -4,7 +4,6 @@
 #include "munin/export.hpp"
 #include "munin/render_surface_capabilities.hpp"
 
-#include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 #include <nlohmann/json.hpp>
 #include <terminalpp/canvas.hpp>
@@ -12,15 +11,17 @@
 #include <terminalpp/screen.hpp>
 #include <terminalpp/terminal.hpp>
 
+#include <any>
 #include <memory>
 #include <vector>
+
 
 namespace munin {
 
 //* =========================================================================
 /// \brief An object that represents a top-level window.
 //* =========================================================================
-class MUNIN_EXPORT window  // NOLINT
+class MUNIN_EXPORT window
 {
 public:
     //* =====================================================================
@@ -52,7 +53,7 @@ public:
     /// \brief Send an event to the window.  This will be passed straight to
     /// the content.
     //* =====================================================================
-    void event(boost::any const &ev);
+    void event(std::any const &ev);
 
     //* =====================================================================
     /// \brief Writes a string to the terminal that represents the changes

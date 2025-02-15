@@ -28,10 +28,9 @@ struct status_bar::impl
     {
     }
 
-    animator &animator_;          // NOLINT
-    terminalpp::string message_;  // NOLINT
-    std::optional<std::chrono::steady_clock::time_point>
-        marquee_start_time_;  // NOLINT
+    animator &animator_;
+    terminalpp::string message_;
+    std::optional<std::chrono::steady_clock::time_point> marquee_start_time_;
 };
 
 // ==========================================================================

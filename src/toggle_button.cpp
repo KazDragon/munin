@@ -59,10 +59,9 @@ void toggle_button::set_toggle_state(bool checked)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void toggle_button::do_event(boost::any const &ev)
+void toggle_button::do_event(std::any const &ev)
 {
-    if (auto const *mouse_event =
-            boost::any_cast<terminalpp::mouse::event>(&ev);
+    if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
         mouse_event != nullptr)
     {
         if (mouse_event->action_
@@ -71,7 +70,7 @@ void toggle_button::do_event(boost::any const &ev)
             set_toggle_state(!pimpl_->toggle_state);
         }
     }
-    else if (auto const *vk = boost::any_cast<terminalpp::virtual_key>(&ev);
+    else if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
              vk != nullptr)
     {
         if (vk->key == terminalpp::vk::enter

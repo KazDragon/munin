@@ -7,11 +7,11 @@ void assert_similar_canvas_block(
     std::initializer_list<terminalpp::string const> expected,
     terminalpp::canvas const &cvs)
 {
-    assert_similar_canvas_block(gsl::span{expected}, cvs);
+    assert_similar_canvas_block(std::span{expected}, cvs);
 }
 
 void assert_similar_canvas_block(
-    gsl::span<terminalpp::string const> expected, terminalpp::canvas const &cvs)
+    std::span<terminalpp::string const> expected, terminalpp::canvas const &cvs)
 {
     assert_similar_canvas_block(expected, cvs, {{}, cvs.size()});
 }
@@ -21,11 +21,11 @@ void assert_similar_canvas_block(
     terminalpp::canvas const &cvs,
     terminalpp::rectangle const &bounds)
 {
-    assert_similar_canvas_block(gsl::span{expected}, cvs, bounds);
+    assert_similar_canvas_block(std::span{expected}, cvs, bounds);
 }
 
 void assert_similar_canvas_block(
-    gsl::span<terminalpp::string const> expected,
+    std::span<terminalpp::string const> expected,
     terminalpp::canvas const &cvs,
     terminalpp::rectangle const &bounds)
 {

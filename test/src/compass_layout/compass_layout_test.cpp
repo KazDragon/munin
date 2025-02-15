@@ -7,11 +7,11 @@
 using testing::Return;
 using testing::ValuesIn;
 
-static auto const north = boost::any{munin::compass_layout::heading::north};
-static auto const south = boost::any{munin::compass_layout::heading::south};
-static auto const east = boost::any{munin::compass_layout::heading::east};
-static auto const west = boost::any{munin::compass_layout::heading::west};
-static auto const centre = boost::any{munin::compass_layout::heading::centre};
+static auto const north = std::any{munin::compass_layout::heading::north};
+static auto const south = std::any{munin::compass_layout::heading::south};
+static auto const east = std::any{munin::compass_layout::heading::east};
+static auto const west = std::any{munin::compass_layout::heading::west};
+static auto const centre = std::any{munin::compass_layout::heading::centre};
 
 TEST(compass_layout_test, reports_attributes_as_json)
 {
@@ -31,7 +31,7 @@ TEST(a_compass_layout_with_no_elements, has_a_zero_preferred_size)
 
 using compass_layout_component_data = std::tuple<
     terminalpp::extent,    // preferred size
-    boost::any,            // layout hint
+    std::any,              // layout hint
     terminalpp::rectangle  // expected size
     >;
 
@@ -53,7 +53,7 @@ TEST_P(compass_layouts, place_components_at_these_positions)
     auto const &expected_preferred_size = std::get<2>(param);
 
     std::vector<std::shared_ptr<munin::component>> components;
-    std::vector<boost::any> hints;
+    std::vector<std::any> hints;
 
     for (auto const &component_datum : component_data)
     {
@@ -85,7 +85,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {5, 5},
-                boost::any(munin::compass_layout::heading::centre),
+                std::any(munin::compass_layout::heading::centre),
                 {{0, 0}, {10, 10}}}},
                                  {10, 10},
                                  {5, 5}},
@@ -93,7 +93,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {5, 5},
-                boost::any(munin::compass_layout::heading::north),
+                std::any(munin::compass_layout::heading::north),
                 {{0, 0}, {10, 5}}}},
                                  {10, 10},
                                  {5, 5}},
@@ -101,7 +101,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {5, 5},
-                boost::any(munin::compass_layout::heading::south),
+                std::any(munin::compass_layout::heading::south),
                 {{0, 5}, {10, 5}}}},
                                  {10, 10},
                                  {5, 5}},
@@ -109,7 +109,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {5, 5},
-                boost::any(munin::compass_layout::heading::west),
+                std::any(munin::compass_layout::heading::west),
                 {{0, 0}, {5, 10}}}},
                                  {10, 10},
                                  {5, 5}},
@@ -117,7 +117,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {5, 5},
-                boost::any(munin::compass_layout::heading::east),
+                std::any(munin::compass_layout::heading::east),
                 {{5, 0}, {5, 10}}}},
                                  {10, 10},
                                  {5, 5}}
@@ -130,11 +130,11 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{0, 0}, {10, 5}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{0, 5}, {10, 5}}}},
                                  {10, 10},
                                  {5, 10}},
@@ -142,11 +142,11 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{0, 5}, {10, 5}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{0, 0}, {10, 5}}}},
                                  {10, 10},
                                  {5, 10}},
@@ -154,11 +154,11 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 0}, {5, 10}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{5, 0}, {5, 10}}}},
                                  {10, 10},
                                  {10, 5}},
@@ -166,11 +166,11 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{5, 0}, {5, 10}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{0, 0}, {5, 10}}}},
                                  {10, 10},
                                  {10, 5}},
@@ -183,7 +183,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {3, 3},
-                boost::any(munin::compass_layout::heading::centre),
+                std::any(munin::compass_layout::heading::centre),
                 {{0, 0}, {2, 2}}}},
                                  {2, 2},
                                  {3, 3}},
@@ -191,7 +191,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {3, 3},
-                boost::any(munin::compass_layout::heading::north),
+                std::any(munin::compass_layout::heading::north),
                 {{0, 0}, {2, 2}}}},
                                  {2, 2},
                                  {3, 3}},
@@ -199,7 +199,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {3, 3},
-                boost::any(munin::compass_layout::heading::south),
+                std::any(munin::compass_layout::heading::south),
                 {{0, 0}, {2, 2}}}},
                                  {2, 2},
                                  {3, 3}},
@@ -207,7 +207,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {3, 3},
-                boost::any(munin::compass_layout::heading::west),
+                std::any(munin::compass_layout::heading::west),
                 {{0, 0}, {2, 2}}}},
                                  {2, 2},
                                  {3, 3}},
@@ -215,7 +215,7 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                 {3, 3},
-                boost::any(munin::compass_layout::heading::east),
+                std::any(munin::compass_layout::heading::east),
                 {{0, 0}, {2, 2}}}},
                                  {2, 2},
                                  {3, 3}}
@@ -245,23 +245,23 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{0, 0}, {12, 3}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{0, 9}, {12, 3}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{9, 3}, {3, 6}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 3}, {3, 6}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{3, 3}, {6, 6}}}},
                                  {12, 12},
                                  {11, 11}},
@@ -285,23 +285,23 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 0}, {3, 12}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{9, 0}, {3, 12}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{3, 0}, {6, 3}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{3, 9}, {6, 3}}},
              compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{3, 3}, {6, 6}}}},
                                  {12, 12},
                                  {11, 11}},
@@ -325,23 +325,23 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 0}, {12, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{0, 0}, {0, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{12, 0}, {0, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{12, 0}, {0, 0}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{12, 12}, {0, 0}}}},
                                  {12, 12},
                                  {36, 36}},
@@ -365,23 +365,23 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{0, 0}, {12, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 0}, {0, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{0, 0}, {0, 12}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{0, 0}, {0, 0}}},
              compass_layout_component_data{
                  {12, 12},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{0, 12}, {0, 0}}}},
                                  {12, 12},
                                  {36, 36}}
@@ -394,23 +394,23 @@ INSTANTIATE_TEST_SUITE_P(
         compass_layout_test_data{
                                  {compass_layout_component_data{
                  {5, 5},
-                 boost::any(munin::compass_layout::heading::centre),
+                 std::any(munin::compass_layout::heading::centre),
                  {{3, 3}, {6, 6}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::north),
+                 std::any(munin::compass_layout::heading::north),
                  {{0, 0}, {12, 3}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::south),
+                 std::any(munin::compass_layout::heading::south),
                  {{0, 9}, {12, 3}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::east),
+                 std::any(munin::compass_layout::heading::east),
                  {{9, 3}, {3, 6}}},
              compass_layout_component_data{
                  {3, 3},
-                 boost::any(munin::compass_layout::heading::west),
+                 std::any(munin::compass_layout::heading::west),
                  {{0, 3}, {3, 6}}}},
                                  {12, 12},
                                  {11, 11}}

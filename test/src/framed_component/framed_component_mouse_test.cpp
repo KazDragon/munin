@@ -80,7 +80,7 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
     auto received_mouse_event = terminalpp::mouse::event{};
     EXPECT_CALL(*mock_inner_, do_event(_))
         .WillOnce([&received_mouse_event](auto ev) {
-            auto *mouse_event = boost::any_cast<terminalpp::mouse::event>(&ev);
+            auto *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
 
             if (mouse_event)
             {

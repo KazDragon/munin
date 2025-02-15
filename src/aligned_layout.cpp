@@ -2,8 +2,6 @@
 
 #include "munin/component.hpp"
 
-#include <boost/range/numeric.hpp>
-
 #include <algorithm>
 
 namespace munin {
@@ -136,9 +134,9 @@ terminalpp::point calculate_component_position(
 // ==========================================================================
 // CALCULATE_ALIGNMENT
 // ==========================================================================
-alignment calculate_alignment(boost::any const &hint)
+alignment calculate_alignment(std::any const &hint)
 {
-    auto const *alignment_hint = boost::any_cast<alignment>(&hint);
+    auto const *alignment_hint = std::any_cast<alignment>(&hint);
 
     // By default, components are centre-aligned.
     return alignment_hint != nullptr
@@ -154,12 +152,13 @@ alignment calculate_alignment(boost::any const &hint)
 // ==========================================================================
 terminalpp::extent aligned_layout::do_get_preferred_size(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints) const
+    std::vector<std::any> const &hints) const
 {
     // The preferred size of this component is the largest preferred
     // extents of all components.
-    return boost::accumulate(
-        components,
+    return std::accumulate(
+        components.begin(),
+        components.end(),
         terminalpp::extent{0, 0},
         [](terminalpp::extent max, std::shared_ptr<component> const &comp) {
             auto const preferred_size = comp->get_preferred_size();
@@ -175,7 +174,7 @@ terminalpp::extent aligned_layout::do_get_preferred_size(
 // ==========================================================================
 void aligned_layout::do_layout(
     std::vector<std::shared_ptr<component>> const &components,
-    std::vector<boost::any> const &hints,
+    std::vector<std::any> const &hints,
     terminalpp::extent size) const
 {
     for (uint32_t index = 0; index < components.size(); ++index)

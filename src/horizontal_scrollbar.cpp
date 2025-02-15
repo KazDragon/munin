@@ -87,17 +87,17 @@ struct horizontal_scrollbar::impl
         {
             // The slider is in the leftmost position only if the viewport
             // x position is precisely 0.
-            auto const &slider_is_in_leftmost_position = [=] {
+            auto const &slider_is_in_leftmost_position = [this] {
                 return viewport_basis_x_position_ == 0;
             };
 
             // The slider is in the rightmost position only if the viewport
             // basis is as far right as it can be.
-            auto const &slider_is_in_rightmost_position = [=] {
+            auto const &slider_is_in_rightmost_position = [this] {
                 return viewport_basis_x_position_ == viewport_total_width_ - 1;
             };
 
-            auto const &interpolate_slider_position = [=] {
+            auto const &interpolate_slider_position = [this, scrollbar_width] {
                 // There are scrollbar_width - 2 possible positions.
                 // The leftmost but one starts at 1, and increments
                 // by (scrollbar_width - 2) / (viewport_basis_width - 2)
@@ -157,10 +157,10 @@ struct horizontal_scrollbar::impl
     // ======================================================================
     // HANDLE_EVENT
     // ======================================================================
-    void handle_event(boost::any const &event)
+    void handle_event(std::any const &event)
     {
         if (auto const *mouse_event =
-                boost::any_cast<terminalpp::mouse::event>(&event);
+                std::any_cast<terminalpp::mouse::event>(&event);
             mouse_event)
         {
             handle_mouse_event(*mouse_event);
@@ -295,7 +295,7 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void horizontal_scrollbar::do_event(boost::any const &event)
+void horizontal_scrollbar::do_event(std::any const &event)
 {
     pimpl_->handle_event(event);
 }

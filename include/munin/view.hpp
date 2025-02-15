@@ -3,8 +3,7 @@
 #include "munin/container.hpp"
 #include "munin/layout.hpp"
 
-#include <boost/any.hpp>
-
+#include <any>
 #include <memory>
 #include <type_traits>
 #include <utility>
@@ -108,7 +107,7 @@ void view_helper(
 {
     if (prev)
     {
-        content->add_component(prev, boost::any(std::forward<Hint>(hint)));
+        content->add_component(prev, std::any(std::forward<Hint>(hint)));
     }
 
     view_helper(content, {}, std::forward<Args>(args)...);

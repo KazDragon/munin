@@ -35,7 +35,7 @@ protected:
     //* =====================================================================
     void add_component(
         std::shared_ptr<component> const &comp,
-        boost::any const &hint = boost::any());
+        std::any const &hint = std::any());
 
     //* =====================================================================
     /// \brief Called by set_position().  Derived classes must override this
@@ -141,7 +141,7 @@ protected:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(boost::any const &event) override;
+    void do_event(std::any const &event) override;
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this
