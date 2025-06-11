@@ -6,7 +6,7 @@ Contributions are welcome!
 
 ## Scope
 
-Munin is a C++-14 library aimed at providing an component-based UI widget library to help development of high-quality, terminal-based user interfaces.
+Munin is a C++-20 library aimed at providing an component-based UI widget library to help development of high-quality, terminal-based user interfaces.
 
 ## Contributing
 
