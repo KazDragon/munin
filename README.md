@@ -108,7 +108,7 @@ Munin can be installed from source using CMake.  This requires Boost, Terminal++
 
 # Status
 
-Munin is automatically tested with MSVC 2019 and GCC 7.5.  For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the [issues page](https://github.com/KazDragon/munin/issues).  Feel free to discuss using Github Discussions!
+Munin is automatically tested with MSVC 2022 and GCC 13.3.  For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the [issues page](https://github.com/KazDragon/munin/issues).  Feel free to discuss using Github Discussions!
 
 # The Basics
 
