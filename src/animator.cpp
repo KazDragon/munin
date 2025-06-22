@@ -78,7 +78,8 @@ void animator::redraw_component_at(
     // execution time.
     pimpl_->animation_requests.insert(
         pimpl_->lower_bound(execution_time),
-        impl::animation_request{comp, bounds, execution_time});
+        impl::animation_request{
+            .comp = comp, .bounds = bounds, .execution_time = execution_time});
 
     // The 0th request is the one that must happen next, so reset our timer
     // for that moment.

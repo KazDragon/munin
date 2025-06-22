@@ -32,7 +32,7 @@ public:
     /// \brief An enumeration of possible compass headings within the
     /// layout.
     //* =====================================================================
-    enum class heading
+    enum class heading : std::uint8_t
     {
         centre,
         north,

@@ -43,18 +43,14 @@ void horizontal_strip_layout::do_layout(
 {
     auto y_coord = static_cast<terminalpp::coordinate_type>(0);
 
-    std::for_each(
-        components.begin(),
-        components.end(),
-        [&y_coord, size](auto const &comp) {
-            auto preferred_size = comp->get_preferred_size();
+    std::ranges::for_each(components, [&y_coord, size](auto const &comp) {
+        auto preferred_size = comp->get_preferred_size();
 
-            comp->set_position(terminalpp::point(0, y_coord));
-            comp->set_size(
-                terminalpp::extent(size.width_, preferred_size.height_));
+        comp->set_position(terminalpp::point(0, y_coord));
+        comp->set_size(terminalpp::extent(size.width_, preferred_size.height_));
 
-            y_coord += preferred_size.height_;
-        });
+        y_coord += preferred_size.height_;
+    });
 }
 
 // ==========================================================================

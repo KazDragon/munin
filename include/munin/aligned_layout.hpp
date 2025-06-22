@@ -4,7 +4,7 @@
 
 namespace munin {
 
-enum class horizontal_alignment
+enum class horizontal_alignment : std::uint8_t
 {
     left,
     centre,
@@ -12,7 +12,7 @@ enum class horizontal_alignment
     fill,
 };
 
-enum class vertical_alignment
+enum class vertical_alignment : std::uint8_t
 {
     top,
     centre,
@@ -80,34 +80,44 @@ std::unique_ptr<layout> make_aligned_layout();
 
 // Now a selection of alignment constants that you can use.
 
-static constexpr alignment const alignment_hlvt = {
-    horizontal_alignment::left, vertical_alignment::top};
+inline constexpr alignment const alignment_hlvt = {
+    .horizontal = horizontal_alignment::left,
+    .vertical = vertical_alignment::top};
 
-static constexpr alignment const alignment_hcvt = {
-    horizontal_alignment::centre, vertical_alignment::top};
+inline constexpr alignment const alignment_hcvt = {
+    .horizontal = horizontal_alignment::centre,
+    .vertical = vertical_alignment::top};
 
-static constexpr alignment const alignment_hrvt = {
-    horizontal_alignment::right, vertical_alignment::top};
+inline constexpr alignment const alignment_hrvt = {
+    .horizontal = horizontal_alignment::right,
+    .vertical = vertical_alignment::top};
 
-static constexpr alignment const alignment_hlvc = {
-    horizontal_alignment::left, vertical_alignment::centre};
+inline constexpr alignment const alignment_hlvc = {
+    .horizontal = horizontal_alignment::left,
+    .vertical = vertical_alignment::centre};
 
-static constexpr alignment const alignment_hcvc = {
-    horizontal_alignment::centre, vertical_alignment::centre};
+inline constexpr alignment const alignment_hcvc = {
+    .horizontal = horizontal_alignment::centre,
+    .vertical = vertical_alignment::centre};
 
-static constexpr alignment const alignment_hrvc = {
-    horizontal_alignment::right, vertical_alignment::centre};
+inline constexpr alignment const alignment_hrvc = {
+    .horizontal = horizontal_alignment::right,
+    .vertical = vertical_alignment::centre};
 
-static constexpr alignment const alignment_hlvb = {
-    horizontal_alignment::left, vertical_alignment::bottom};
+inline constexpr alignment const alignment_hlvb = {
+    .horizontal = horizontal_alignment::left,
+    .vertical = vertical_alignment::bottom};
 
-static constexpr alignment const alignment_hcvb = {
-    horizontal_alignment::centre, vertical_alignment::bottom};
+inline constexpr alignment const alignment_hcvb = {
+    .horizontal = horizontal_alignment::centre,
+    .vertical = vertical_alignment::bottom};
 
-static constexpr alignment const alignment_hrvb = {
-    horizontal_alignment::right, vertical_alignment::bottom};
+inline constexpr alignment const alignment_hrvb = {
+    .horizontal = horizontal_alignment::right,
+    .vertical = vertical_alignment::bottom};
 
-static constexpr alignment const alignment_fill = {
-    horizontal_alignment::fill, vertical_alignment::fill};
+inline constexpr alignment const alignment_fill = {
+    .horizontal = horizontal_alignment::fill,
+    .vertical = vertical_alignment::fill};
 
 }  // namespace munin

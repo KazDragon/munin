@@ -148,17 +148,17 @@ struct viewport::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    auto event(std::any const &ev)
+    void event(std::any const &ev)
     {
         if (auto const *mouse_event =
                 std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event{
-                mouse_event->action_,
-                mouse_event->position_ + anchor_bounds_.origin_};
+                .action_ = mouse_event->action_,
+                .position_ = mouse_event->position_ + anchor_bounds_.origin_};
 
-            return tracked_component_->event(translated_event);
+            tracked_component_->event(translated_event);
         }
         else if (auto const *keypress_event =
                      std::any_cast<terminalpp::virtual_key>(&ev);
@@ -189,7 +189,7 @@ struct viewport::impl
         }
         else
         {
-            return tracked_component_->event(ev);
+            tracked_component_->event(ev);
         }
     }
 
@@ -239,15 +239,15 @@ struct viewport::impl
             viewport_size.width_ == 0
                 ? 0
                 : std::clamp(
-                    anchor_bounds_.origin_.x_,
-                    tracked_cursor_position.x_ - viewport_size.width_ + 1,
-                    tracked_cursor_position.x_),
+                      anchor_bounds_.origin_.x_,
+                      tracked_cursor_position.x_ - viewport_size.width_ + 1,
+                      tracked_cursor_position.x_),
             viewport_size.height_ == 0
                 ? 0
                 : std::clamp(
-                    anchor_bounds_.origin_.y_,
-                    tracked_cursor_position.y_ - viewport_size.height_ + 1,
-                    tracked_cursor_position.y_)};
+                      anchor_bounds_.origin_.y_,
+                      tracked_cursor_position.y_ - viewport_size.height_ + 1,
+                      tracked_cursor_position.y_)};
 
         if (old_anchor_bounds != anchor_bounds_)
         {
@@ -354,7 +354,7 @@ private:
 // ==========================================================================
 viewport::viewport(std::shared_ptr<component> tracked_component)
   : viewport(
-      std::move(tracked_component), make_default_viewport_resize_strategy())
+        std::move(tracked_component), make_default_viewport_resize_strategy())
 {
 }
 
@@ -365,7 +365,7 @@ viewport::viewport(
     std::shared_ptr<component> tracked_component,
     std::unique_ptr<resize_strategy> strategy)
   : pimpl_(std::make_unique<impl>(
-      *this, std::move(tracked_component), std::move(strategy)))
+        *this, std::move(tracked_component), std::move(strategy)))
 {
 }
 

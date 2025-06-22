@@ -15,9 +15,8 @@ namespace {
 constexpr terminalpp::attribute default_lowlight_attribute = {};
 
 constexpr terminalpp::attribute default_highlight_attribute = {
-    terminalpp::graphics::colour::cyan,
-    {},
-    terminalpp::graphics::intensity::bold};
+    .foreground_colour_ = terminalpp::graphics::colour::cyan,
+    .intensity_ = terminalpp::graphics::intensity::bold};
 
 }  // namespace
 

@@ -9,7 +9,6 @@
 #include <memory>
 #include <vector>
 
-
 namespace munin {
 
 class component;

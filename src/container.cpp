@@ -610,8 +610,8 @@ private:
         {
             auto const &position = (*comp)->get_position();
 
-            (*comp)->event(
-                terminalpp::mouse::event{ev.action_, ev.position_ - position});
+            (*comp)->event(terminalpp::mouse::event{
+                .action_ = ev.action_, .position_ = ev.position_ - position});
         }
     }
 

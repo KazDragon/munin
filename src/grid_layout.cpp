@@ -52,7 +52,7 @@ terminalpp::extent grid_layout::do_get_preferred_size(
         components.begin(),
         components.end(),
         terminalpp::extent{},
-        [this](auto preferred_size, auto const &component) {
+        [](auto preferred_size, auto const &component) {
             auto const &component_preferred_size =
                 component->get_preferred_size();
             preferred_size.width_ = std::max(

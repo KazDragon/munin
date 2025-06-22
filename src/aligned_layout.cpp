@@ -142,7 +142,8 @@ alignment calculate_alignment(std::any const &hint)
     return alignment_hint != nullptr
              ? *alignment_hint
              : alignment{
-                 horizontal_alignment::centre, vertical_alignment::centre};
+                   .horizontal = horizontal_alignment::centre,
+                   .vertical = vertical_alignment::centre};
 }
 
 }  // namespace
