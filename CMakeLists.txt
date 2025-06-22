@@ -54,12 +54,8 @@ find_package(Boost 1.69.0 REQUIRED)
 # Munin requires the nlohmann_json package
 find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
-# And of course, Munin is built atop the Terminal++ library, which
-# also requires fmt
-find_package(fmt 5.3 CONFIG REQUIRED)
-
 if (NOT TARGET KazDragon::terminalpp)
-    find_package(terminalpp 4.0.0 CONFIG REQUIRED)
+    find_package(terminalpp 4.0.2 CONFIG REQUIRED)
 endif()
 
 # If we are building with Console++, then require that library
@@ -188,7 +184,7 @@ target_compile_options(munin
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
 
         # Add warnings on g++ and Clang
-        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -Werror -Wno-sign-compare -Wno-tautological-compare -Wno-unused-parameter>
+        $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -Werror -Wno-sign-compare -Wno-tautological-compare -Wno-unused-parameter -Wno-missing-field-initializers>
 )
 
 if (MUNIN_WITH_CONSOLEPP)

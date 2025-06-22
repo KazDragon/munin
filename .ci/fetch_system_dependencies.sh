@@ -5,7 +5,7 @@ export EXTERNAL_BUILD_ROOT=$HOME/external_build
 
 mkdir "$EXTERNAL_BUILD_ROOT" || true
 
-# Note: Boost and libfmt are install from apt in build.yml.
+# Note: Boost is installed from apt in build.yml.
 
 # Install nlohmann_json dependency
 if [ ! -f "$EXTERNAL_ROOT/include/nlohmann/json.hpp" ]; then
@@ -18,17 +18,19 @@ if [ ! -f "$EXTERNAL_ROOT/include/nlohmann/json.hpp" ]; then
 fi
 
 # Install Terminal++ dependency
-if [ ! -f "$EXTERNAL_ROOT/include/terminalpp-4.0.1/terminalpp/version.hpp" ]; then
-    wget https://github.com/KazDragon/terminalpp/archive/v4.0.1.tar.gz;
-    tar -xzf v4.0.1.tar.gz;
-    cd terminalpp-4.0.1;
-    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DCMAKE_PREFIX_PATH="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION="4.0.1" .;
+if [ ! -f "$EXTERNAL_ROOT/include/terminalpp-4.0.2/terminalpp/version.hpp" ]; then
+    cd "$EXTERNAL_BUILD_ROOT";
+    wget https://github.com/KazDragon/terminalpp/archive/v4.0.2.tar.gz;
+    tar -xzf v4.0.2.tar.gz;
+    cd terminalpp-4.0.2;
+    cmake -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" -DCMAKE_PREFIX_PATH="$EXTERNAL_ROOT" -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION="4.0.2" .;
     make -j2 && make install;
     cd ..;
 fi
 
 # Install Console++ dependency
 if [ ! -f "$EXTERNAL_ROOT/include/consolepp-0.2.1/consolepp/version.hpp" ]; then
+    cd "$EXTERNAL_BUILD_ROOT";
     wget https://github.com/KazDragon/consolepp/archive/v0.2.1.tar.gz;
     tar -xzf v0.2.1.tar.gz;
     cd consolepp-0.2.1;

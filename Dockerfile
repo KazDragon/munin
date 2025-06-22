@@ -12,8 +12,6 @@ RUN apt-get update \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-RUN apt-get install -y libfmt-dev
-
 USER $USERNAME
 
 WORKDIR /workspaces/$PROJECT
