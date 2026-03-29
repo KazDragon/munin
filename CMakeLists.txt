@@ -76,6 +76,7 @@ endif()
 
 # If we are building with tests, then we require the GTest library
 if (MUNIN_WITH_TESTS)
+    find_package(Threads REQUIRED)
     find_package(GTest CONFIG REQUIRED)
 endif()
 
