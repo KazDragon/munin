@@ -61,7 +61,10 @@ jobs:
           cmake --install terminalpp-build --config "$BUILD_TYPE"
 
       - name: Create Build Environment
-        run: cmake -E make_directory ${{runner.workspace}}/munin/build
+        shell: bash
+        run: |
+          cmake -E rm -rf ${{runner.workspace}}/munin/build
+          cmake -E make_directory ${{runner.workspace}}/munin/build
 
       - name: Configure CMake
         shell: bash
@@ -71,7 +74,12 @@ jobs:
       - name: Build
         shell: bash
         working-directory: ${{runner.workspace}}/munin/build
-        run: cmake --build . --config $BUILD_TYPE
+        run: |
+          cmake --build . --config $BUILD_TYPE || {
+            echo "Dumping munin_tester build.make context:";
+            sed -n '1340,1390p' CMakeFiles/munin_tester.dir/build.make || true;
+            false;
+          }
 
       - name: Test
         working-directory: ${{runner.workspace}}/munin/build
@@ -138,7 +146,10 @@ jobs:
         run: .ci/fetch_system_dependencies.sh
 
       - name: Create Build Environment
-        run: cmake -E make_directory ${{runner.workspace}}/munin/build
+        shell: bash
+        run: |
+          cmake -E rm -rf ${{runner.workspace}}/munin/build
+          cmake -E make_directory ${{runner.workspace}}/munin/build
 
       - name: Configure CMake
         shell: bash
