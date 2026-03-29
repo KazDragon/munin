@@ -359,7 +359,7 @@ target_include_directories(munin_tester
 
 target_link_libraries(munin_tester
     PRIVATE
-        KazDragon::munin
+        munin
         GTest::gmock_main
 )
 
