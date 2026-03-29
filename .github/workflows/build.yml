@@ -17,7 +17,7 @@ jobs:
           - build_type: Release
 
     env:
-      EXTERNAL_ROOT: ${{ runner.workspace }}/ext
+      EXTERNAL_ROOT: ${{ github.workspace }}/.ext
       BUILD_TYPE: ${{ matrix.build_type }}
 
     steps:
