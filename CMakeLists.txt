@@ -254,6 +254,7 @@ generate_export_header(munin
 )        
 
 if (MUNIN_WITH_TESTS)
+include(GoogleTest)
 enable_testing()
 
 add_executable(munin_tester)
