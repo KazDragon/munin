@@ -76,6 +76,7 @@ endif()
 
 # If we are building with tests, then we require the GTest library
 if (MUNIN_WITH_TESTS)
+    find_package(Threads REQUIRED)
     find_package(GTest CONFIG REQUIRED)
 endif()
 
@@ -99,6 +100,15 @@ endif()
 
 add_library(munin)
 add_library(KazDragon::munin ALIAS munin)
+
+set(MUNIN_GENERATED_INCLUDE_DIR
+    "${PROJECT_BINARY_DIR}/generated/include")
+set(MUNIN_GENERATED_EXPORT_HEADER
+    "${MUNIN_GENERATED_INCLUDE_DIR}/munin/export.hpp")
+set(MUNIN_GENERATED_VERSION_HEADER
+    "${MUNIN_GENERATED_INCLUDE_DIR}/munin/version.hpp")
+
+file(MAKE_DIRECTORY "${MUNIN_GENERATED_INCLUDE_DIR}/munin")
 
 target_sources(munin
     PRIVATE
@@ -131,7 +141,8 @@ target_sources(munin
         include/munin/vertical_strip_layout.hpp
         include/munin/window.hpp
         include/munin/vertical_scrollbar.hpp
-        include/munin/version.hpp
+        ${MUNIN_GENERATED_EXPORT_HEADER}
+        ${MUNIN_GENERATED_VERSION_HEADER}
         include/munin/view.hpp
         include/munin/viewport.hpp
     
@@ -210,6 +221,7 @@ target_link_libraries(munin
 
 target_include_directories(munin
     PUBLIC
+        $<BUILD_INTERFACE:${MUNIN_GENERATED_INCLUDE_DIR}>
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include/munin-${MUNIN_VERSION}>
 )
@@ -238,10 +250,11 @@ target_compile_features(munin
 
 generate_export_header(munin
     EXPORT_FILE_NAME
-        "${PROJECT_SOURCE_DIR}/include/munin/export.hpp"
+        "${MUNIN_GENERATED_EXPORT_HEADER}"
 )        
 
 if (MUNIN_WITH_TESTS)
+include(GoogleTest)
 enable_testing()
 
 add_executable(munin_tester)
@@ -347,7 +360,7 @@ target_include_directories(munin_tester
 
 target_link_libraries(munin_tester
     PRIVATE
-        KazDragon::munin
+        munin
         GTest::gmock_main
 )
 
@@ -379,7 +392,7 @@ endif()
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/include/munin/version.hpp.in
-    ${PROJECT_SOURCE_DIR}/include/munin/version.hpp
+    ${MUNIN_GENERATED_VERSION_HEADER}
     @ONLY)
 
 include(GNUInstallDirs)
@@ -433,6 +446,20 @@ install(
         include/
     DESTINATION
         ${CMAKE_INSTALL_INCLUDEDIR}/munin-${MUNIN_VERSION}
+)
+
+install(
+    FILES
+        "${MUNIN_GENERATED_EXPORT_HEADER}"
+    DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}/munin-${MUNIN_VERSION}/munin
+)
+
+install(
+    FILES
+        "${MUNIN_GENERATED_VERSION_HEADER}"
+    DESTINATION
+        ${CMAKE_INSTALL_INCLUDEDIR}/munin-${MUNIN_VERSION}/munin
 )
 
 install(

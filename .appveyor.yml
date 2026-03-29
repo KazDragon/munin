@@ -19,6 +19,8 @@ platform:
 
 environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  VCPKG_ROOT: C:\Tools\vcpkg
+  VCPKG_DEFAULT_BINARY_CACHE: C:\Tools\vcpkg\archives
 
   matrix:
     # currently disabled due to a problem linking: see issue #262
@@ -27,6 +29,8 @@ environment:
 
 cache:
   - C:\Tools\vcpkg\installed
+  - C:\Tools\vcpkg\downloads
+  - C:\Tools\vcpkg\archives
 
 init:
   - echo Appveyor Image = %APPVEYOR_BUILD_WORKER_IMAGE%
@@ -34,26 +38,27 @@ init:
   - echo Generator = %generator%
 
 install:
-  - cd C:\Tools\vcpkg
-  - git pull
+  - cd %VCPKG_ROOT%
+  - git fetch --tags --prune
+  - git checkout 58950f88544e4637524dbd6a01d0317cf4cb77fc
   - .\bootstrap-vcpkg.bat
   - cd %appveyor_build_folder%
-  - vcpkg install boost-asio:%platform%-windows
-  - vcpkg install boost-container-hash:%platform%-windows
-  - vcpkg install boost-core:%platform%-windows
-  - vcpkg install boost-range:%platform%-windows
-  - vcpkg install boost-scope-exit:%platform%-windows
-  - vcpkg install boost-signals2:%platform%-windows
-  - vcpkg install boost-smart-ptr:%platform%-windows
-  - vcpkg install boost-spirit:%platform%-windows
-  - vcpkg install nlohmann-json:%platform%-windows
-  - vcpkg install gtest:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-asio:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-container-hash:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-core:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-range:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-scope-exit:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-signals2:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-smart-ptr:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install boost-spirit:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install nlohmann-json:%platform%-windows
+  - %VCPKG_ROOT%\vcpkg install gtest:%platform%-windows
 
   - mkdir c:\Source
   - cd C:\Source
   - git clone https://github.com/KazDragon/terminalpp
   - cd terminalpp
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
   - cmake --build . --config %configuration%
   - cmake --install . --config %configuration%
 
@@ -61,7 +66,7 @@ build_script:
   - cd %appveyor_build_folder%
   - mkdir build
   - cd build
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries -DBUILD_SHARED_LIBS=%shared% ..
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries -DBUILD_SHARED_LIBS=%shared% ..
   - cmake --build . --config %configuration%
 
 test_script:
