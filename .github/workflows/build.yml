@@ -53,6 +53,7 @@ jobs:
           wget https://github.com/KazDragon/terminalpp/archive/v4.0.1.tar.gz
           tar -xzf v4.0.1.tar.gz
           cmake -S terminalpp-4.0.1 -B terminalpp-build \
+            -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" \
             -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
             -DTERMINALPP_WITH_TESTS=False \
