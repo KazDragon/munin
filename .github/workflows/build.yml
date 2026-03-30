@@ -20,6 +20,7 @@ jobs:
       EXTERNAL_ROOT: ${{ github.workspace }}/.ext
       BUILD_TYPE: ${{ matrix.build_type }}
       TERMINALPP_REF: master
+      TERMINALPP_VERSION: "4.0.0"
 
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +58,8 @@ jobs:
             -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" \
             -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
-            -DTERMINALPP_WITH_TESTS=False
+            -DTERMINALPP_WITH_TESTS=False \
+            -DTERMINALPP_VERSION="$TERMINALPP_VERSION"
           cmake --build terminalpp-build --config "$BUILD_TYPE"
           cmake --install terminalpp-build --config "$BUILD_TYPE"
 
@@ -91,6 +93,7 @@ jobs:
       EXTERNAL_ROOT: ${{ github.workspace }}/.ext
       BUILD_TYPE: ${{ matrix.build_type }}
       TERMINALPP_REF: master
+      TERMINALPP_VERSION: "4.0.0"
 
     steps:
       - uses: actions/checkout@v2
@@ -156,7 +159,8 @@ jobs:
             -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" \
             -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
-            -DTERMINALPP_WITH_TESTS=False
+            -DTERMINALPP_WITH_TESTS=False \
+            -DTERMINALPP_VERSION="$TERMINALPP_VERSION"
           cmake --build terminalpp-build --config "$BUILD_TYPE"
           cmake --install terminalpp-build --config "$BUILD_TYPE"
 
