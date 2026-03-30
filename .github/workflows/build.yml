@@ -19,6 +19,7 @@ jobs:
     env:
       EXTERNAL_ROOT: ${{ github.workspace }}/.ext
       BUILD_TYPE: ${{ matrix.build_type }}
+      TERMINALPP_REF: master
 
     steps:
       - uses: actions/checkout@v4
@@ -50,14 +51,13 @@ jobs:
         run: |
           mkdir -p "$EXTERNAL_ROOT"
           cd "${{ runner.workspace }}"
-          wget https://github.com/KazDragon/terminalpp/archive/v4.0.1.tar.gz
-          tar -xzf v4.0.1.tar.gz
-          cmake -S terminalpp-4.0.1 -B terminalpp-build \
+          wget "https://codeload.github.com/KazDragon/terminalpp/tar.gz/refs/heads/${TERMINALPP_REF}" -O terminalpp.tar.gz
+          tar -xzf terminalpp.tar.gz
+          cmake -S "terminalpp-${TERMINALPP_REF}" -B terminalpp-build \
             -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" \
             -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
-            -DTERMINALPP_WITH_TESTS=False \
-            -DTERMINALPP_VERSION=4.0.1
+            -DTERMINALPP_WITH_TESTS=False
           cmake --build terminalpp-build --config "$BUILD_TYPE"
           cmake --install terminalpp-build --config "$BUILD_TYPE"
 
@@ -90,6 +90,7 @@ jobs:
     env:
       EXTERNAL_ROOT: ${{ github.workspace }}/.ext
       BUILD_TYPE: ${{ matrix.build_type }}
+      TERMINALPP_REF: master
 
     steps:
       - uses: actions/checkout@v2
@@ -149,14 +150,13 @@ jobs:
         run: |
           mkdir -p "$EXTERNAL_ROOT"
           cd "${{ runner.workspace }}"
-          wget https://github.com/KazDragon/terminalpp/archive/v4.0.1.tar.gz
-          tar -xzf v4.0.1.tar.gz
-          cmake -S terminalpp-4.0.1 -B terminalpp-build \
+          wget "https://codeload.github.com/KazDragon/terminalpp/tar.gz/refs/heads/${TERMINALPP_REF}" -O terminalpp.tar.gz
+          tar -xzf terminalpp.tar.gz
+          cmake -S "terminalpp-${TERMINALPP_REF}" -B terminalpp-build \
             -DCMAKE_BUILD_TYPE="$BUILD_TYPE" \
             -DCMAKE_INSTALL_PREFIX="$EXTERNAL_ROOT" \
             -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
-            -DTERMINALPP_WITH_TESTS=False \
-            -DTERMINALPP_VERSION=4.0.1
+            -DTERMINALPP_WITH_TESTS=False
           cmake --build terminalpp-build --config "$BUILD_TYPE"
           cmake --install terminalpp-build --config "$BUILD_TYPE"
 
