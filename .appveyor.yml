@@ -21,6 +21,7 @@ environment:
   APPVEYOR_SAVE_CACHE_ON_ERROR: true
   VCPKG_ROOT: C:\Tools\vcpkg
   VCPKG_DEFAULT_BINARY_CACHE: C:\Tools\vcpkg\archives
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
 
   matrix:
     # currently disabled due to a problem linking: see issue #262
@@ -56,10 +57,10 @@ install:
 
   - mkdir c:\Source
   - cd C:\Source
-  - git clone https://github.com/KazDragon/terminalpp
+  - git clone --depth 1 https://github.com/KazDragon/terminalpp
   - cd terminalpp
   - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
-  - cmake --build . --config %configuration%
+  - cmake --build . --config %configuration% -- /m
   - cmake --install . --config %configuration%
 
 build_script:
@@ -67,7 +68,7 @@ build_script:
   - mkdir build
   - cd build
   - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=C:/Libraries -DBUILD_SHARED_LIBS=%shared% ..
-  - cmake --build . --config %configuration%
+  - cmake --build . --config %configuration% -- /m
 
 test_script:
   - ctest . --output-on-failure -C %configuration%
