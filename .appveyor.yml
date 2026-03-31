@@ -40,20 +40,22 @@ init:
 
 install:
   - cd %VCPKG_ROOT%
+  - if not exist "%VCPKG_DEFAULT_BINARY_CACHE%" mkdir "%VCPKG_DEFAULT_BINARY_CACHE%"
+  - if not exist "%VCPKG_ROOT%\downloads" mkdir "%VCPKG_ROOT%\downloads"
   - git fetch --tags --prune
   - git checkout 58950f88544e4637524dbd6a01d0317cf4cb77fc
   - .\bootstrap-vcpkg.bat
   - cd %appveyor_build_folder%
-  - %VCPKG_ROOT%\vcpkg install boost-asio:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-container-hash:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-core:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-range:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-scope-exit:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-signals2:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-smart-ptr:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install boost-spirit:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install nlohmann-json:%platform%-windows
-  - %VCPKG_ROOT%\vcpkg install gtest:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-asio:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-container-hash:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-core:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-range:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-scope-exit:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-signals2:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-smart-ptr:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install boost-spirit:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install nlohmann-json:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install gtest:%platform%-windows
 
   - mkdir c:\Source
   - cd C:\Source
