@@ -54,10 +54,6 @@ find_package(Boost 1.69.0 REQUIRED)
 # Munin requires the nlohmann_json package
 find_package(nlohmann_json 3.3.0 CONFIG REQUIRED)
 
-# And of course, Munin is built atop the Terminal++ library, which
-# also requires fmt
-find_package(fmt 5.3 CONFIG REQUIRED)
-
 if (NOT TARGET KazDragon::terminalpp)
     find_package(terminalpp 4.0.0 CONFIG REQUIRED)
 endif()
