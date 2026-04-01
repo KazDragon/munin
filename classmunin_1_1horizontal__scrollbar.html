@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.6</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.7</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -243,6 +243,9 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:accc538c2f7857c2f7a247ace38a238f4" id="r_accc538c2f7857c2f7a247ace38a238f4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1horizontal__scrollbar.html#accc538c2f7857c2f7a247ace38a238f4">do_can_receive_focus</a> () const override</td></tr>
+<tr class="memdesc:accc538c2f7857c2f7a247ace38a238f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether the scrollbar can receive keyboard focus.  <br /></td></tr>
+<tr class="separator:accc538c2f7857c2f7a247ace38a238f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5b832db7fbd08b12ecaaba1aa9a2703" id="r_ac5b832db7fbd08b12ecaaba1aa9a2703"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1horizontal__scrollbar.html#ac5b832db7fbd08b12ecaaba1aa9a2703">do_set_size</a> (terminalpp::extent const &amp;size) override</td></tr>
 <tr class="memdesc:ac5b832db7fbd08b12ecaaba1aa9a2703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a1c41d4901b62df7c1058d637e5eb4ed0" title="Sets the size of this component. This does not cause a redraw, on the basis that the entity performin...">set_size()</a>. Derived classes must override this function in order to set the size of the component in a custom manner.  <br /></td></tr>
 <tr class="separator:ac5b832db7fbd08b12ecaaba1aa9a2703"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -260,9 +263,6 @@ Protected Member Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b> () const</td></tr>
 <tr class="memdesc:a8754db3a75a9fdb963374fff3983c730 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if it is allowed for the component to receive focus, false otherwise. <br /></td></tr>
 <tr class="separator:a8754db3a75a9fdb963374fff3983c730 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaaeec39d6f363e6ad3546da0b3c04d66 inherit pro_methods_classmunin_1_1basic__component" id="r_aaaeec39d6f363e6ad3546da0b3c04d66"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#aaaeec39d6f363e6ad3546da0b3c04d66">do_can_receive_focus</a> () const</td></tr>
-<tr class="memdesc:aaaeec39d6f363e6ad3546da0b3c04d66 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if it is allowed for the component to receive focus, false otherwise. This is used by the focus functions of <a class="el" href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...">basic_component</a>. By default, a component may receive focus at all times. Override this function to specify different behaviour in your component.  <br /></td></tr>
-<tr class="separator:aaaeec39d6f363e6ad3546da0b3c04d66 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdf59a15cee965e1c58ef7eb0e5ebaf6 inherit pro_methods_classmunin_1_1basic__component" id="r_afdf59a15cee965e1c58ef7eb0e5ebaf6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#afdf59a15cee965e1c58ef7eb0e5ebaf6">do_set_position</a> (terminalpp::point const &amp;position) override</td></tr>
 <tr class="memdesc:afdf59a15cee965e1c58ef7eb0e5ebaf6 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a171cff652c3a276a182901412ef5e376" title="Sets the position of this component. This does not cause a redraw, on the basis that the entity perfo...">set_position()</a>. Derived classes must override this function in order to set the position of the component in a custom manner.  <br /></td></tr>
 <tr class="separator:afdf59a15cee965e1c58ef7eb0e5ebaf6 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,6 +308,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A class that displays a horizontal scrollbar that displays the horizontal position of e.g. a viewport relative to its underlying component. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="accc538c2f7857c2f7a247ace38a238f4" name="accc538c2f7857c2f7a247ace38a238f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accc538c2f7857c2f7a247ace38a238f4">&#9670;&#160;</a></span>do_can_receive_focus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool munin::horizontal_scrollbar::do_can_receive_focus </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns whether the scrollbar can receive keyboard focus. </p>
+
+<p>Reimplemented from <a class="el" href="classmunin_1_1basic__component.html#aaaeec39d6f363e6ad3546da0b3c04d66">munin::basic_component</a>.</p>
+
+</div>
+</div>
 <a id="aeb0b01ae02390036245bf4dc37ef7b51" name="aeb0b01ae02390036245bf4dc37ef7b51"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb0b01ae02390036245bf4dc37ef7b51">&#9670;&#160;</a></span>do_draw()</h2>
 
@@ -483,7 +512,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 1 2026 16:54:16 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Apr 1 2026 21:56:47 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
