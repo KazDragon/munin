@@ -85,39 +85,24 @@ struct horizontal_scrollbar::impl
         }
         else
         {
-            // The slider is in the leftmost position only if the viewport
-            // x position is precisely 0.
-            auto const &slider_is_in_leftmost_position = [this] {
-                return viewport_basis_x_position_ == 0;
-            };
-
-            // The slider is in the rightmost position only if the viewport
-            // basis is as far right as it can be.
-            auto const &slider_is_in_rightmost_position = [this] {
-                return viewport_basis_x_position_ == viewport_total_width_ - 1;
-            };
-
-            auto const &interpolate_slider_position = [this, scrollbar_width] {
-                // There are scrollbar_width - 2 possible positions.
-                // The leftmost but one starts at 1, and increments
-                // by (scrollbar_width - 2) / (viewport_basis_width - 2)
-                // per viewport_x_position.
+            if (viewport_basis_x_position_ == 0)
+            {
+                slider_position_ = 0;
+            }
+            else if (viewport_basis_x_position_ == viewport_total_width_)
+            {
+                slider_position_ = scrollbar_width - 1;
+            }
+            else
+            {
                 auto const slider_positions = scrollbar_width - 2;
-                auto const viewport_basis_positions = viewport_total_width_ - 2;
+                auto const viewport_basis_positions = viewport_total_width_ - 1;
 
-                // Starting from co-ordinate 1, increment by
-                // slider_positions / viewport_basis_width per viewport x
-                // position
-                return 1
-                     + (((viewport_basis_x_position_ - 1) * slider_positions)
-                        / viewport_basis_positions);
-            };
-
-            // Otherwise, it is an interpolated position between those points.
-            slider_position_ = slider_is_in_leftmost_position() ? 0
-                             : slider_is_in_rightmost_position()
-                                 ? (scrollbar_width - 1)
-                                 : interpolate_slider_position();
+                slider_position_ =
+                    1
+                  + (((viewport_basis_x_position_ - 1) * slider_positions)
+                     / viewport_basis_positions);
+            }
         }
     }
 

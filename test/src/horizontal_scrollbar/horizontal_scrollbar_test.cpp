@@ -188,33 +188,33 @@ TEST_P(
 static slider_test_data const test_data[] = {
     slider_test_data{0,  20, 0 }, // Special: 0
     slider_test_data{1,  20, 1 }, // 1
-    slider_test_data{2,  20, 1 }, // 1 + 14/18 // (14 / 18 per step )
-    slider_test_data{3,  20, 2 }, // 2 + 10/18
-    slider_test_data{4,  20, 3 }, // 3 + 6/18
+    slider_test_data{2,  20, 1 }, // 1 + 14/19
+    slider_test_data{3,  20, 2 }, // 2 + 9/19
+    slider_test_data{4,  20, 3 }, // 3 + 4/19
 
-    slider_test_data{5,  20, 4 }, // 4 + 2/18
-    slider_test_data{6,  20, 4 }, // 4 + 16/18
-    slider_test_data{7,  20, 5 }, // 5 + 12/18
-    slider_test_data{8,  20, 6 }, // 6 + 8/18
-    slider_test_data{9,  20, 7 }, // 7 + 4/18
+    slider_test_data{5,  20, 3 }, // 3 + 18/19
+    slider_test_data{6,  20, 4 }, // 4 + 13/19
+    slider_test_data{7,  20, 5 }, // 5 + 8/19
+    slider_test_data{8,  20, 6 }, // 6 + 3/19
+    slider_test_data{9,  20, 6 }, // 6 + 17/19
 
-    slider_test_data{10, 20, 8 }, // 8 + 0/18
-    slider_test_data{11, 20, 8 }, // 8 + 14/18
-    slider_test_data{12, 20, 9 }, // 9 + 10/18
-    slider_test_data{13, 20, 10}, // 10 + 6/18
-    slider_test_data{14, 20, 11}, // 11 + 2/18
+    slider_test_data{10, 20, 7 }, // 7 + 12/19
+    slider_test_data{11, 20, 8 }, // 8 + 7/19
+    slider_test_data{12, 20, 9 }, // 9 + 2/19
+    slider_test_data{13, 20, 9 }, // 9 + 16/19
+    slider_test_data{14, 20, 10}, // 10 + 11/19
 
-    slider_test_data{15, 20, 11}, // 11 + 16/18
-    slider_test_data{16, 20, 12}, // 12 + 12/18
-    slider_test_data{17, 20, 13}, // 13 + 8/18
-    slider_test_data{18, 20, 14}, // 14 + 4/18
+    slider_test_data{15, 20, 11}, // 11 + 6/19
+    slider_test_data{16, 20, 12}, // 12 + 1/19
+    slider_test_data{17, 20, 12}, // 12 + 15/19
+    slider_test_data{18, 20, 13}, // 13 + 10/19
+    slider_test_data{19, 20, 14}, // 14 + 5/19
+    slider_test_data{20, 20, 15}, // Special: 15
 
-    slider_test_data{19, 20, 15}, // Special: 15
-
-    // Boundary cases for viewports only slightly bigger than their
-    // associated component.
-    slider_test_data{0,  2,  0 }, // Special case for only top and bottom
-    slider_test_data{1,  2,  15}, // Special case for only top and bottom
+    // Boundary case where the viewport publishes max anchor origin == 2.
+    slider_test_data{0,  2,  0 },
+    slider_test_data{1,  2,  1 },
+    slider_test_data{2,  2,  15},
 };
 
 INSTANTIATE_TEST_SUITE_P(
