@@ -94,7 +94,7 @@ namespace {
 
 using slider_test_data = std::tuple<
     terminalpp::coordinate_type,  // x_position
-    terminalpp::coordinate_type,  // width
+    terminalpp::coordinate_type,  // maximum anchor x position
     terminalpp::coordinate_type   // expected x co-ordinate of slider
     >;
 
@@ -133,10 +133,10 @@ TEST_P(
 
     auto const &param = GetParam();
     auto const &x_position = get<0>(param);
-    auto const &width = get<1>(param);
+    auto const &maximum_anchor_x_position = get<1>(param);
     auto const &expected_slider_x_position = get<2>(param);
 
-    scrollbar_->set_slider_position(x_position, width);
+    scrollbar_->set_slider_position(x_position, maximum_anchor_x_position);
 
     for (terminalpp::coordinate_type x = 0; x < canvas_.size().width_; ++x)
     {
@@ -164,10 +164,10 @@ TEST_P(
 
     auto const &param = GetParam();
     auto const &x_position = get<0>(param);
-    auto const &width = get<1>(param);
+    auto const &maximum_anchor_x_position = get<1>(param);
     auto const &expected_slider_x_position = get<2>(param);
 
-    scrollbar_->set_slider_position(x_position, width);
+    scrollbar_->set_slider_position(x_position, maximum_anchor_x_position);
 
     for (terminalpp::coordinate_type x = 0; x < canvas_.size().width_; ++x)
     {
