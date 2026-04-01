@@ -29,6 +29,8 @@ struct horizontal_scrollbar::impl
         terminalpp::coordinate_type x_position,  // NOLINT
         terminalpp::coordinate_type width)
     {
+        // scroll_pane forwards the viewport anchor origin and its maximum
+        // horizontal extent here, not a count of addressable positions.
         viewport_basis_x_position_ = x_position;
         viewport_total_width_ = width;
         calculate_slider_position(self_.get_size().width_);
@@ -85,6 +87,8 @@ struct horizontal_scrollbar::impl
         }
         else
         {
+            // The viewport contract publishes the maximum anchor origin.
+            // That means the terminal endpoints are 0 and viewport_total_width_.
             if (viewport_basis_x_position_ == 0)
             {
                 slider_position_ = 0;
