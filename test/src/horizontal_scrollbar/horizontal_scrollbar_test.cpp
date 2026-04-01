@@ -32,6 +32,20 @@ TEST_F(a_new_horizontal_scrollbar, has_a_0x1_preferred_size)
     ASSERT_EQ(terminalpp::extent(0, 1), scrollbar_->get_preferred_size());
 }
 
+TEST_F(a_new_horizontal_scrollbar, refuses_focus)
+{
+    scrollbar_->set_focus();
+
+    ASSERT_FALSE(scrollbar_->has_focus());
+}
+
+TEST_F(a_new_horizontal_scrollbar, refuses_next_focus)
+{
+    scrollbar_->focus_next();
+
+    ASSERT_FALSE(scrollbar_->has_focus());
+}
+
 TEST_F(a_new_horizontal_scrollbar, draws_nothing)
 {
     terminalpp::canvas canvas({4, 4});
