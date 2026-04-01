@@ -1,0 +1,14 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+    "name": "munin",
+    "version-string": "0.0.0",
+    "dependencies": [
+        "boost-asio",
+        "boost-signals2",
+        "boost-range",
+        "boost-algorithm",
+        "boost-scope-exit",
+        "nlohmann-json",
+        "gtest"
+    ]
+}
