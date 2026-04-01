@@ -75,6 +75,11 @@ public:
 
 protected:
     //* =====================================================================
+    /// \brief Returns whether the scrollbar can receive keyboard focus.
+    //* =====================================================================
+    [[nodiscard]] bool do_can_receive_focus() const override;
+
+    //* =====================================================================
     /// \brief Called by set_size().  Derived classes must override this
     /// function in order to set the size of the component in a custom
     /// manner.

@@ -256,6 +256,14 @@ void vertical_scrollbar::set_highlight_attribute(
 }
 
 // ==========================================================================
+// DO_CAN_RECEIVE_FOCUS
+// ==========================================================================
+bool vertical_scrollbar::do_can_receive_focus() const
+{
+    return false;
+}
+
+// ==========================================================================
 // DO_SET_SIZE
 // ==========================================================================
 void vertical_scrollbar::do_set_size(terminalpp::extent const &size)
