@@ -369,6 +369,11 @@ TEST_F(a_viewport, draws_offset_area_when_viewport_position_is_offset)
     };
     fill_canvas(cvs, 'x');
 
+    auto const tracked_size = terminalpp::extent{4, 3};
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_size));
+    tracked_component_->on_preferred_size_changed();
+
     ON_CALL(*tracked_component_, do_draw(_, _))
         .WillByDefault([](munin::render_surface &surface,
                           terminalpp::rectangle const &region) {
@@ -634,4 +639,39 @@ TEST_F(
 
     ASSERT_EQ(terminalpp::rectangle({2, 2}, {2, 2}), anchor);
     ASSERT_EQ(terminalpp::point(8, 4), viewport_->get_cursor_position());
+}
+
+TEST_F(
+    a_viewport,
+    when_the_preferred_size_shrinks_anchor_origin_does_not_exceed_anchor_bounds)
+{
+    auto tracked_size = terminalpp::extent{};
+    ON_CALL(*tracked_component_, do_set_size(_))
+        .WillByDefault(SaveArg<0>(&tracked_size));
+    ON_CALL(*tracked_component_, do_get_size())
+        .WillByDefault(ReturnPointee(&tracked_size));
+
+    auto tracked_preferred_size = terminalpp::extent{};
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(ReturnPointee(&tracked_preferred_size));
+
+    auto tracked_cursor_position = terminalpp::point{};
+    ON_CALL(*tracked_component_, do_get_cursor_position())
+        .WillByDefault(ReturnPointee(&tracked_cursor_position));
+    ON_CALL(*tracked_component_, do_get_cursor_state())
+        .WillByDefault(Return(true));
+
+    auto const viewport_size = terminalpp::extent{4, 4};
+    viewport_->set_size(viewport_size);
+
+    tracked_preferred_size = terminalpp::extent{6, 6};
+    tracked_component_->on_preferred_size_changed();
+
+    tracked_cursor_position = {5, 5};
+    tracked_component_->on_cursor_position_changed();
+
+    tracked_preferred_size = terminalpp::extent{5, 5};
+    tracked_component_->on_preferred_size_changed();
+
+    ASSERT_EQ(terminalpp::rectangle({1, 1}, {1, 1}), viewport_->get_anchor_bounds());
 }

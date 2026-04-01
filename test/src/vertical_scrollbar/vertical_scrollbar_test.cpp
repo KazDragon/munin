@@ -207,6 +207,10 @@ static slider_test_data const test_data[] = {
     slider_test_data{0,  2,  0 },
     slider_test_data{1,  2,  1 },
     slider_test_data{2,  2,  15},
+
+    // Boundary case where the viewport publishes max anchor origin == 1.
+    slider_test_data{0,  1,  0 },
+    slider_test_data{1,  1,  15},
 };
 
 INSTANTIATE_TEST_SUITE_P(

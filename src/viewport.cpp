@@ -249,6 +249,10 @@ struct viewport::impl
                     tracked_cursor_position.y_ - viewport_size.height_ + 1,
                     tracked_cursor_position.y_)};
 
+        anchor_bounds_.origin_ = {
+            std::min(anchor_bounds_.origin_.x_, anchor_bounds_.size_.width_),
+            std::min(anchor_bounds_.origin_.y_, anchor_bounds_.size_.height_)};
+
         if (old_anchor_bounds != anchor_bounds_)
         {
             self_.on_anchor_bounds_changed();

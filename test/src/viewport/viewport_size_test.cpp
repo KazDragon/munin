@@ -142,6 +142,11 @@ TEST_F(
     };
     fill_canvas(cvs, 'x');
 
+    auto const tracked_size = terminalpp::extent{4, 3};
+    ON_CALL(*tracked_component_, do_get_preferred_size())
+        .WillByDefault(Return(tracked_size));
+    tracked_component_->on_preferred_size_changed();
+
     ON_CALL(*tracked_component_, do_draw(_, _))
         .WillByDefault([](munin::render_surface &surface,
                           terminalpp::rectangle const &region) {
