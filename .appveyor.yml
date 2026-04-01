@@ -22,6 +22,7 @@ environment:
   VCPKG_ROOT: C:\Tools\vcpkg
   VCPKG_DEFAULT_BINARY_CACHE: C:\Tools\vcpkg\archives
   CMAKE_BUILD_PARALLEL_LEVEL: 4
+  TERMINALPP_VERSION: 4.0.0
 
   matrix:
     # currently disabled due to a problem linking: see issue #262
@@ -61,7 +62,7 @@ install:
   - cd C:\Source
   - git clone --depth 1 https://github.com/KazDragon/terminalpp
   - cd terminalpp
-  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
+  - cmake -G "%generator%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake -DTERMINALPP_WITH_TESTS=False -DTERMINALPP_VERSION=%TERMINALPP_VERSION% -DCMAKE_INSTALL_PREFIX=C:/Libraries -DBUILD_SHARED_LIBS=%shared%  .
   - cmake --build . --config %configuration% -- /m
   - cmake --install . --config %configuration%
 
