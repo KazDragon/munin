@@ -1,24 +1,6 @@
 var searchData=
 [
-  ['_7eanimator_0',['~animator',['../classmunin_1_1animator.html#a8c7ff9b76a80f352ef34c85e7dd82447',1,'munin::animator']]],
-  ['_7ebackground_5fanimator_1',['~background_animator',['../classmunin_1_1background__animator.html#ac856cffbd7d6d3ef0230529c2c98d95e',1,'munin::background_animator']]],
-  ['_7ecomponent_2',['~component',['../classmunin_1_1component.html#a0dc440582ea085062eac7ce25ae1bfe4',1,'munin::component']]],
-  ['_7econsole_5fapplication_3',['~console_application',['../classmunin_1_1console__application.html#ae91947eda7ca4b2bf61edbe402f3903e',1,'munin::console_application']]],
-  ['_7econtainer_4',['~container',['../classmunin_1_1container.html#a737c12968250b28d7fa9fce5c7480b87',1,'munin::container']]],
-  ['_7eedit_5',['~edit',['../classmunin_1_1edit.html#a801fb7f6f594fcff06f0cfe98e8a92c6',1,'munin::edit']]],
-  ['_7ehorizontal_5fscrollbar_6',['~horizontal_scrollbar',['../classmunin_1_1horizontal__scrollbar.html#a74de74b3ab9eb8ff663c99b5e2470fda',1,'munin::horizontal_scrollbar']]],
-  ['_7eimage_7',['~image',['../classmunin_1_1image.html#a2fe1beaca1f148bca337fbd5da53b73d',1,'munin::image']]],
-  ['_7elayout_8',['~layout',['../classmunin_1_1layout.html#af15ae8378cecb607fe042e0ce0b639e4',1,'munin::layout']]],
-  ['_7elist_9',['~list',['../classmunin_1_1list.html#aa1e0094526a4038ac3f562f71de02311',1,'munin::list']]],
-  ['_7eresize_5fstrategy_10',['~resize_strategy',['../structmunin_1_1viewport_1_1resize__strategy.html#ab79336a44d44bc9ef4b8618cdde492f6',1,'munin::viewport::resize_strategy']]],
-  ['_7escroll_5fframe_11',['~scroll_frame',['../classmunin_1_1scroll__frame.html#a73872b2bc3d9dbda8a401f765b20920e',1,'munin::scroll_frame']]],
-  ['_7escroll_5fpane_12',['~scroll_pane',['../classmunin_1_1scroll__pane.html#ac26888e6865300d106fee4ca4381e77a',1,'munin::scroll_pane']]],
-  ['_7esolid_5fframe_13',['~solid_frame',['../classmunin_1_1solid__frame.html#a99208fdc4a634901bd4b123b4826c0ce',1,'munin::solid_frame']]],
-  ['_7estatus_5fbar_14',['~status_bar',['../classmunin_1_1status__bar.html#a35690eb73a5b1037405685414f71d4a0',1,'munin::status_bar']]],
-  ['_7etext_5farea_15',['~text_area',['../classmunin_1_1text__area.html#a6c9cea2f5b870e2a1c4f173fd8e03b80',1,'munin::text_area']]],
-  ['_7etitled_5fframe_16',['~titled_frame',['../classmunin_1_1titled__frame.html#a7fce562e75ba30075a463587abb0d810',1,'munin::titled_frame']]],
-  ['_7etoggle_5fbutton_17',['~toggle_button',['../classmunin_1_1toggle__button.html#a40527a90999e20d750f696d019009fba',1,'munin::toggle_button']]],
-  ['_7evertical_5fscrollbar_18',['~vertical_scrollbar',['../classmunin_1_1vertical__scrollbar.html#a861015f57446712727c86dcf28f68d86',1,'munin::vertical_scrollbar']]],
-  ['_7eviewport_19',['~viewport',['../classmunin_1_1viewport.html#a1d84216c62a31dd44501ef06ee9c72aa',1,'munin::viewport']]],
-  ['_7ewindow_20',['~window',['../classmunin_1_1window.html#a4fa581a11653b25eeed77eb2d1910d9d',1,'munin::window']]]
+  ['west_5fborder_5fwidth_0',['west_border_width',['../classmunin_1_1frame.html#a09845453bcbfb7a062089202ee68f556',1,'munin::frame::west_border_width()'],['../classmunin_1_1scroll__frame.html#a6d62c89fde087a223e51675d8a3f1984',1,'munin::scroll_frame::west_border_width()'],['../classmunin_1_1solid__frame.html#a248cb1fea3a617a7acfffb7da7fd64a6',1,'munin::solid_frame::west_border_width()'],['../classmunin_1_1titled__frame.html#ab997f5a0b4cd338b1f2fefa4e1216f57',1,'munin::titled_frame::west_border_width()']]],
+  ['window_1',['window',['../classmunin_1_1window.html',1,'munin::window'],['../classmunin_1_1window.html#a12c9a5b9ae459714eee5d2b1d8886f6a',1,'munin::window::window(terminalpp::terminal &amp;terminal, std::shared_ptr&lt; component &gt; content)'],['../classmunin_1_1window.html#a81c00c83150f89bf6c7186dc1fa24bfd',1,'munin::window::window(terminalpp::terminal &amp;terminal, std::shared_ptr&lt; component &gt; content, render_surface_capabilities const &amp;capabilities)'],['../index.html#autotoc_md27',1,'Window']]],
+  ['with_20vcpkg_2',['Dependency Resolution With vcpkg',['../index.html#autotoc_md15',1,'']]]
 ];

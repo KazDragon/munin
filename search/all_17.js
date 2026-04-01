@@ -1,5 +1,13 @@
 var searchData=
 [
-  ['west_5fborder_5fwidth_0',['west_border_width',['../classmunin_1_1frame.html#a09845453bcbfb7a062089202ee68f556',1,'munin::frame::west_border_width()'],['../classmunin_1_1scroll__frame.html#a6d62c89fde087a223e51675d8a3f1984',1,'munin::scroll_frame::west_border_width()'],['../classmunin_1_1solid__frame.html#a248cb1fea3a617a7acfffb7da7fd64a6',1,'munin::solid_frame::west_border_width()'],['../classmunin_1_1titled__frame.html#ab997f5a0b4cd338b1f2fefa4e1216f57',1,'munin::titled_frame::west_border_width()']]],
-  ['window_1',['window',['../classmunin_1_1window.html',1,'munin::window'],['../classmunin_1_1window.html#a12c9a5b9ae459714eee5d2b1d8886f6a',1,'munin::window::window(terminalpp::terminal &amp;terminal, std::shared_ptr&lt; component &gt; content)'],['../classmunin_1_1window.html#a81c00c83150f89bf6c7186dc1fa24bfd',1,'munin::window::window(terminalpp::terminal &amp;terminal, std::shared_ptr&lt; component &gt; content, render_surface_capabilities const &amp;capabilities)'],['../index.html#autotoc_md25',1,'Window']]]
+  ['vcpkg_0',['Dependency Resolution With vcpkg',['../index.html#autotoc_md15',1,'']]],
+  ['version_200_201_20munin_20fundamentals_1',['Version 0.1 - Munin Fundamentals',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md5',1,'']]],
+  ['version_200_202_20frames_2',['Version 0.2 - Frames',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md4',1,'']]],
+  ['version_200_203_20buttons_3',['Version 0.3 - Buttons',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md3',1,'']]],
+  ['version_200_204_20text_20areas_4',['Version 0.4 - Text Areas',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md2',1,'']]],
+  ['version_200_205_20lists_5',['Version 0.5 - Lists',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md1',1,'']]],
+  ['vertical_6',['vertical',['../structmunin_1_1alignment.html#a5a5e37a746e07364277eb34862f7b754',1,'munin::alignment']]],
+  ['vertical_5fscrollbar_7',['vertical_scrollbar',['../classmunin_1_1vertical__scrollbar.html',1,'munin::vertical_scrollbar'],['../classmunin_1_1vertical__scrollbar.html#a06c31bb9890f0e31d44d34207153abc0',1,'munin::vertical_scrollbar::vertical_scrollbar()']]],
+  ['vertical_5fstrip_5flayout_8',['vertical_strip_layout',['../classmunin_1_1vertical__strip__layout.html',1,'munin']]],
+  ['viewport_9',['viewport',['../classmunin_1_1viewport.html',1,'munin::viewport'],['../classmunin_1_1viewport.html#a546b2a7a9cf449c757b1b8bc47521239',1,'munin::viewport::viewport(std::shared_ptr&lt; component &gt; tracked_component)'],['../classmunin_1_1viewport.html#a6aafa01c0d568df910a987664ff558da',1,'munin::viewport::viewport(std::shared_ptr&lt; component &gt; tracked_component, std::unique_ptr&lt; resize_strategy &gt; strategy)']]]
 ];
