@@ -42,24 +42,67 @@ view(
 
 See [The Chess Example](examples/chess) for an example of how to tie this into a console application.
 
-# Requirements
+## Requirements
 
-Munin requires a C++20 compiler and the following libraries:
-  * Boost (At least version 1.69.0)
-  * nlohmann_json (At least version 3.3.0)
-  * [Terminal++](https://github.com/KazDragon/terminalpp) (At least version 4.0.0)
-  * Optionally, [Console++](https://github.com/KazDragon/consolepp) (At least version 0.2.0)
-  * (for testing only) Google Test and Google Mock
+- C++20 compiler
+- CMake 3.16+
+- Boost 1.69+ (required)
+- nlohmann_json 3.3.0+ (required)
+- [Terminal++](https://github.com/KazDragon/terminalpp) 4.0.0+ (required)
+- [Console++](https://github.com/KazDragon/consolepp) 0.1.1+ (optional, when `MUNIN_WITH_CONSOLEPP=True`)
+- Google Test / Google Mock (for tests only)
 
-# Installation - CMake 
+## Build And Install (From Source)
 
-Munin can be installed from source using CMake.  This requires Boost, Terminal++ and any other dependencies to have been installed beforehand, using their own instructions, or for the call to `cmake --configure` to be adjusted appropriately (e.g. `-DBOOST_ROOT=...` or `-DGtest_DIR=...`).  If you do not wish to install into a system directory, and thus avoid the use of sudo, you can also pass `-DCMAKE_INSTALL_PREFIX=...` into the `cmake --configure` call.
+```bash
+git clone https://github.com/KazDragon/munin.git
+cd munin
 
-    git clone https://github.com/KazDragon/munin.git && cd munin
-    mkdir build && cd build
-    cmake --configure -DCMAKE_BUILD_TYPE=Release ..
-    cmake --build .
-    sudo cmake --install .
+cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX="$HOME/.local" \
+  -DCMAKE_PREFIX_PATH="$HOME/.local"
+
+cmake --build build --config Release
+cmake --install build --config Release
+```
+
+`CMAKE_PREFIX_PATH` should include where `terminalpp` (and optional
+`consolepp`) are installed.
+
+## Dependency Resolution With vcpkg
+
+Munin can resolve third-party dependencies automatically through `vcpkg`:
+
+```bash
+cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
+  -DCMAKE_PREFIX_PATH="$HOME/.local"
+```
+
+When using manifest mode (`vcpkg.json` in this repository), configure will
+trigger third-party dependency installation automatically. KazDragon
+dependencies (for example `terminalpp`) are still expected to be available via
+`CMAKE_PREFIX_PATH` unless provided from source in the same build.
+
+## Consume From CMake (Installed Package)
+
+```cmake
+cmake_minimum_required(VERSION 3.16)
+project(my_app LANGUAGES CXX)
+
+find_package(munin CONFIG REQUIRED)
+
+add_executable(my_app main.cpp)
+target_link_libraries(my_app PRIVATE KazDragon::munin)
+```
+
+If installed to a non-system prefix:
+
+```bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH="$HOME/.local"
+```
 
 # Components:
 

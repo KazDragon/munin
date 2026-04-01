@@ -47,16 +47,7 @@ install:
   - git checkout 58950f88544e4637524dbd6a01d0317cf4cb77fc
   - .\bootstrap-vcpkg.bat
   - cd %appveyor_build_folder%
-  - call "%VCPKG_ROOT%\vcpkg" install boost-asio:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-container-hash:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-core:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-range:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-scope-exit:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-signals2:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-smart-ptr:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install boost-spirit:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install nlohmann-json:%platform%-windows
-  - call "%VCPKG_ROOT%\vcpkg" install gtest:%platform%-windows
+  - call "%VCPKG_ROOT%\vcpkg" install --triplet %platform%-windows
 
   - mkdir c:\Source
   - cd C:\Source
