@@ -16,7 +16,10 @@ message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
-if (NOT MUNIN_VERSION)
+if (MUNIN_VERSION)
+    include(function-parse_version)
+    parse_version("${MUNIN_VERSION}" "MUNIN_")
+else()
     include(function-git_version)
     git_version(MUNIN)
 endif()
@@ -238,7 +241,7 @@ target_compile_options(munin
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
 )
 
-# The required C++ Standard for Telnet++ is C++20.
+# The required C++ Standard for Munin is C++20.
 target_compile_features(munin
     PUBLIC 
         cxx_std_20
