@@ -28,7 +28,7 @@ var searchData=
   ['solid_5fframe_25',['solid_frame',['../classmunin_1_1solid__frame.html#a0210dd156cddd477d9beae399608e4c3',1,'munin::solid_frame::solid_frame()'],['../classmunin_1_1solid__frame.html',1,'munin::solid_frame']]],
   ['source_26',['Build And Install (From Source)',['../index.html#autotoc_md14',1,'']]],
   ['south_5fborder_5fheight_27',['south_border_height',['../classmunin_1_1frame.html#a73ba935ec0f11e06a651aa7f13f51f16',1,'munin::frame::south_border_height()'],['../classmunin_1_1scroll__frame.html#af0836d5393b690b194a636e841da9049',1,'munin::scroll_frame::south_border_height()'],['../classmunin_1_1solid__frame.html#a98d8e8b7623e524fd4fdf33af98cc91c',1,'munin::solid_frame::south_border_height()'],['../classmunin_1_1titled__frame.html#a25493b267f63d316c13ab95dd59af6cc',1,'munin::titled_frame::south_border_height()']]],
-  ['status_28',['Status',['../index.html#autotoc_md23',1,'']]],
+  ['status_28',['Status',['../index.html#autotoc_md24',1,'']]],
   ['status_5fbar_29',['status_bar',['../classmunin_1_1status__bar.html',1,'munin::status_bar'],['../classmunin_1_1status__bar.html#aa990d19ce126f24edb697a4e2fd81dc3',1,'munin::status_bar::status_bar()']]],
   ['supports_5funicode_30',['supports_unicode',['../classmunin_1_1render__surface.html#a3ee41f3f4c88b9994cfd0888b0180936',1,'munin::render_surface::supports_unicode()'],['../structmunin_1_1render__surface__capabilities.html#ad0a7bb6b5581eda94e9b0280f341d3d4',1,'munin::render_surface_capabilities::supports_unicode()'],['../classmunin_1_1default__render__surface__capabilities.html#a1347d3d0678b6a55f69507954bb3197d',1,'munin::default_render_surface_capabilities::supports_unicode()']]]
 ];

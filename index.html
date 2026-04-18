@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.7</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.8</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -138,6 +138,16 @@ Dependency Resolution With vcpkg</h1>
 <div class="line">  -DCMAKE_PREFIX_PATH=&quot;$HOME/.local&quot;</div>
 </div><!-- fragment --><p>When using manifest mode (<code>vcpkg.json</code> in this repository), configure will trigger third-party dependency installation automatically. KazDragon dependencies (for example <code>terminalpp</code>) are still expected to be available via <code>CMAKE_PREFIX_PATH</code> unless provided from source in the same build.</p>
 <h1><a class="anchor" id="autotoc_md16"></a>
+Automated Releases</h1>
+<p>Pushes to <code>master</code> that come from a merged pull request and pass the <code>build</code> workflow automatically publish a GitHub Release. The release version is chosen using the following precedence:</p>
+<ul>
+<li>pull request labels <code>semver:major</code>, <code>semver:minor</code>, <code>semver:patch</code></li>
+<li>Conventional Commit cues from the PR title or commit subjects</li>
+<li>contextual hints in the PR title/body such as <code>breaking</code> or <code>feature</code></li>
+<li><code>patch</code> when nothing else matches</li>
+</ul>
+<p>Downstream consumers continue to get the standard GitHub release experience, including the automatically generated source archives for each tag.</p>
+<h1><a class="anchor" id="autotoc_md17"></a>
 Consume From CMake (Installed Package)</h1>
 <div class="fragment"><div class="line">cmake_minimum_required(VERSION 3.16)</div>
 <div class="line">project(my_app LANGUAGES CXX)</div>
@@ -148,9 +158,9 @@ Consume From CMake (Installed Package)</h1>
 <div class="line">target_link_libraries(my_app PRIVATE KazDragon::munin)</div>
 </div><!-- fragment --><p>If installed to a non-system prefix:</p>
 <div class="fragment"><div class="line">cmake -S . -B build -DCMAKE_PREFIX_PATH=&quot;$HOME/.local&quot;</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md17"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md18"></a>
 Components:</h1>
-<h2><a class="anchor" id="autotoc_md18"></a>
+<h2><a class="anchor" id="autotoc_md19"></a>
 Fundamentals</h2>
 <ol type="1">
 <li>[x] Component - the base class of all UI components</li>
@@ -172,20 +182,20 @@ Fundamentals</h2>
 </li>
 <li>[x] Window - a top-level object that contains and draws components onto a canvas.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md20"></a>
 Frames</h2>
 <p>Implement the ability to frame components</p><ol type="1">
 <li>[x] Composite Component - a component that is made of many other components, but presents the interface of being just one component.</li>
 <li>[x] Solid Frame - a frame made of solid characters.</li>
 <li>[x] Named Frame - a frame that displays text in addition to the solid characters.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md20"></a>
+<h2><a class="anchor" id="autotoc_md21"></a>
 Buttons</h2>
 <p>Implement clickable buttons</p><ol type="1">
 <li>[x] Button - a normal click button</li>
 <li>[x] Toggle Button - a button that can be toggled on [x] and off [ ].</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Text Areas</h2>
 <p>Fundamentals for all types of text components:</p><ol type="1">
 <li>[X] Viewport - a component that sees a smaller portion of the underlying component</li>
@@ -198,31 +208,31 @@ Text Areas</h2>
 <li>[x] Edit - a single-lined horizontally scrolling text box, with a frame.</li>
 <li>[x] Text Area - a multiple-lined vertically scrolling text box, with a frame.</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 Lists</h2>
 <ol type="1">
 <li>[x] List - A vertical list of elements that can be individually selected.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<h1><a class="anchor" id="autotoc_md24"></a>
 Status</h1>
 <p>Munin is automatically tested with MSVC 2022 and GCC 13.3. For further information about the working status of Munin to report any bugs, or to make any feature requests, visit the <a href="https://github.com/KazDragon/munin/issues">issues page</a>. Feel free to discuss using Github Discussions!</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<h1><a class="anchor" id="autotoc_md25"></a>
 The Basics</h1>
 <p>The purpose of the Munin library is to provide a windowed component and layout framework for terminal applications, such as those executed on the command line, but also especially those provided by a Telnet server (e.g. a MUD, or chatter). Integration with either the command line or with a Telnet server is not provided by Munin; that is left to the integrator of the library. Examples can be found nearby this repository. For example, the Paradice9 (a chatter with tabletop roleplaying extensions) and Textray (a raycasting 3D room renderer) projects are both built using Server++, Telnet++, Terminal++, and Munin.</p>
-<h1><a class="anchor" id="autotoc_md25"></a>
+<h1><a class="anchor" id="autotoc_md26"></a>
 Component</h1>
 <p>The core abstraction within Munin is the component. Everything that is drawable in one way or another derives from this abstraction so that they can provide knowledge about where they are (position), how large they are (size), how large they would like to be (preferred size), what to do if a user interacts with it (event) and how to represent themselves on a canvas (draw).</p>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<h1><a class="anchor" id="autotoc_md27"></a>
 Container / Layout</h1>
 <p>Another key abstraction within Munin is the container. A container, when combined with a layout, declares how to arrange a set of components. Some layouts, for example the grid layout, simply place components in known positions according to the order in which they are added to the container. Other layouts, such as the compass and aligned layouts, require the developer to supply hints about where to place each component. The end effect is that the container automatically adjusts the size and position of its components according to how large the container itself is.</p>
-<h1><a class="anchor" id="autotoc_md27"></a>
+<h1><a class="anchor" id="autotoc_md28"></a>
 Window</h1>
 <p>At the top of the stack is the window. This is where the underlying application integrates with Munin. A window is not a component, but is instead constructed with a component that represents the user interface to be displayed. From here, events can be sent to the window's components. Ideally, these will be directly from Terminal++, and the default set of components are built with this in mind. But the interface is flexible enough to allow custom messages to be propagated to custom components. Additionally, you can register to receive a callback whenever something in the interface changes that requires repainting, and you can of course command to the window to repaint itself. This returns a string of text that you can send to a terminal to effect the repaint on the client. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 1 2026 21:56:47 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Sat Apr 18 2026 15:08:24 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
