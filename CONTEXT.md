@@ -28,6 +28,10 @@ _Avoid_: Separate test-only schema, debugger-only dump
 A stable automation-facing description of what kind of UI responsibility a **Component** fulfills, such as button, edit field, toggle, or container.
 _Avoid_: Raw class name, incidental implementation type
 
+**Accessible Name**:
+The user-facing text by which a **Component** can be identified in automation, such as the visible label on a button.
+_Avoid_: Rendered cell scrape, internal child text, implementation label
+
 **Native Event Path**:
 The same Munin event-routing path used for live application input, through which automated input must also travel.
 _Avoid_: Direct state mutation, test-only shortcut API
@@ -48,6 +52,7 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 - The **Automation Surface** describes a **Component Tree** for external tools but does not decide how those tools query or drive it
 - The **Automation Surface** is serialized as **Introspection JSON**
 - A **Semantic Role** belongs to a **Component** as part of the **Automation Surface**
+- An **Accessible Name** belongs to a **Component** as part of the **Automation Surface** when the component has user-facing identifying text
 - A **Focus Path** belongs to one **Component Tree** at a time and ends at exactly one **Focused Leaf**
 - Automated interaction should enter through the **Native Event Path** so the inspected **Component Tree** behaves exactly as it would for live input
 - In the MVP component set, the reported component `type` is treated as the effective **Semantic Role**
@@ -69,6 +74,12 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 > **Dev:** "Should automation inspect `munin::button` as a class name?"
 > **Domain expert:** "No — it should rely on the **Semantic Role** reported by the **Automation Surface**."
 
+> **Dev:** "Should Hugin read terminal cells to find the text on a button?"
+> **Domain expert:** "No — the button should expose its **Accessible Name** through **Introspection JSON**."
+
+> **Dev:** "Should static label-like content become a generic text role?"
+> **Domain expert:** "No — in Munin, **Image** is the component role for static label-like content."
+
 > **Dev:** "When Hugin asks what has focus, is that just one component?"
 > **Domain expert:** "Not exactly — Munin has a **Focus Path**, but the **Focused Leaf** is the most useful single target for many tests."
 
@@ -86,5 +97,7 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 - "interaction" was used loosely to mean either user-like input or direct programmatic control; resolved: automated interaction must use the **Native Event Path**
 - "type" risked meaning either an implementation class or automation meaning; resolved: **Semantic Role** is the automation-facing meaning a **Component** exposes
 - For the MVP, the reported component `type` and the effective **Semantic Role** are treated as the same thing unless the component set later proves otherwise
+- "label" risked meaning either user-visible identifying text or a separate label component; resolved: **Accessible Name** is the identifying text exposed by a component itself, while label associations can be modeled separately later
+- "text" risked becoming a catch-all role because terminal UIs render text; resolved: static label-like content remains an image role in Munin's current component vocabulary
 - "focus" risked being flattened to a single node; resolved: Munin focus is a **Focus Path** whose innermost target is the **Focused Leaf**
 - "to_json()" risked being treated as a mere debug dump; resolved: **Introspection JSON** is the serialized form of Munin's **Automation Surface**
