@@ -60,7 +60,9 @@ nlohmann::json button::do_to_json() const
         { "op": "replace", "path": "/type", "value": "button" }
     ])"_json;
 
-    return composite_component::do_to_json().patch(patch);
+    auto json = composite_component::do_to_json().patch(patch);
+    json["name"] = "OK";
+    return json;
 }
 
 // ==========================================================================

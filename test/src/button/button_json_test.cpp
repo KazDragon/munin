@@ -9,5 +9,6 @@ TEST(a_button, reports_attributes_as_json)
 
     ASSERT_EQ("button", json["type"]);
     ASSERT_EQ("ok_button", json["id"]);
+    ASSERT_EQ("OK", json["name"]);
     ASSERT_EQ(json.end(), json.find("subcomponents"));
 }
