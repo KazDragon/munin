@@ -315,6 +315,11 @@ nlohmann::json image::do_to_json() const
             terminalpp::to_string(pimpl_->content[index]);
     }
 
+    if (pimpl_->content.size() == 1U)
+    {
+        json["name"] = terminalpp::to_string(pimpl_->content[0]);
+    }
+
     return json;
 }
 

@@ -29,6 +29,7 @@ TEST(a_single_line_image, reports_attributes_as_json)
     ASSERT_EQ("image", json["type"]);
     ASSERT_EQ(1, json["content"]["size"]);
     ASSERT_EQ("test", json["content"]["content"][0]);
+    ASSERT_EQ("test", json["name"]);
     ASSERT_EQ(" ", json["fill"]);
 }
 
