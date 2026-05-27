@@ -103,3 +103,16 @@ TEST_F(a_composite_component, does_not_report_its_internal_subcomponents_as_json
     ASSERT_EQ("composite_component", json["type"]);
     ASSERT_EQ(json.end(), json.find("subcomponents"));
 }
+
+TEST_F(a_composite_component, reports_its_descendant_accessible_name_as_json)
+{
+    EXPECT_CALL(*composite_->inner_component, do_to_json())
+        .WillRepeatedly(Return(nlohmann::json{
+            {"type", "image"},
+            {"name", "OK"}
+        }));
+
+    auto const json = composite_->to_json();
+
+    ASSERT_EQ("OK", json["name"]);
+}

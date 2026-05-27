@@ -1,7 +1,46 @@
 #include <munin/composite_component.hpp>
 #include <munin/container.hpp>
 
+#include <optional>
+#include <string>
+
 namespace munin {
+
+namespace {
+
+auto find_accessible_name(nlohmann::json const &json) -> std::optional<std::string>
+{
+    if (auto const name = json.find("name");
+        name != json.end() && name->is_string())
+    {
+        return name->get<std::string>();
+    }
+
+    if (auto const component = json.find("component");
+        component != json.end() && component->is_object())
+    {
+        if (auto const name = find_accessible_name(*component))
+        {
+            return name;
+        }
+    }
+
+    if (auto const subcomponents = json.find("subcomponents");
+        subcomponents != json.end() && subcomponents->is_array())
+    {
+        for (auto const &subcomponent : *subcomponents)
+        {
+            if (auto const name = find_accessible_name(subcomponent))
+            {
+                return name;
+            }
+        }
+    }
+
+    return std::nullopt;
+}
+
+}  // namespace
 
 // ==========================================================================
 // CONSTRUCTOR
@@ -166,6 +205,10 @@ nlohmann::json composite_component::do_to_json() const
 
     auto json = content_.to_json().patch(patch);
     json["id"] = get_id();
+    if (auto const name = find_accessible_name(json))
+    {
+        json["name"] = *name;
+    }
     json.erase("subcomponents");
     return json;
 }

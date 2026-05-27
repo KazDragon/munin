@@ -8,9 +8,32 @@
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
+#include <algorithm>
+#include <cctype>
 #include <utility>
 
 namespace munin {
+
+namespace {
+
+auto stripped(terminalpp::string const &text) -> std::string
+{
+    auto result = terminalpp::to_string(text);
+    auto const is_not_space = [](unsigned char ch) {
+        return !std::isspace(ch);
+    };
+
+    result.erase(
+        result.begin(),
+        std::ranges::find_if(result, is_not_space));
+    result.erase(
+        std::ranges::find_if(result.rbegin(), result.rend(), is_not_space)
+            .base(),
+        result.end());
+    return result;
+}
+
+}  // namespace
 
 // ==========================================================================
 // CONSTRUCTOR
@@ -61,7 +84,7 @@ nlohmann::json button::do_to_json() const
     ])"_json;
 
     auto json = composite_component::do_to_json().patch(patch);
-    json["name"] = "OK";
+    json["name"] = stripped(json.value("name", ""));
     return json;
 }
 
