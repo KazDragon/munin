@@ -60,6 +60,15 @@ TEST_F(a_new_edit, reports_inserted_text_in_json)
     ASSERT_EQ("ok", json.at("text"));
 }
 
+TEST_F(a_new_edit, reports_caret_position_in_json)
+{
+    edit_->insert_text("ok");
+
+    auto const json = edit_->to_json();
+
+    ASSERT_EQ(2, json.at("caret_position"));
+}
+
 TEST_F(a_new_edit, when_setting_the_caret_position_keeps_it_at_the_0_position)
 {
     edit_->set_caret_position(5);
