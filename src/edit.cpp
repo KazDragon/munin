@@ -427,7 +427,7 @@ void edit::do_event(std::any const &ev)
 nlohmann::json edit::do_to_json() const
 {
     auto json = basic_component::do_to_json();
-    json["text"] = "";
+    json["text"] = terminalpp::to_string(get_text());
     return json;
 }
 
