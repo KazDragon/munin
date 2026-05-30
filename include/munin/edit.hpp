@@ -108,6 +108,12 @@ private:
     //* =====================================================================
     void do_event(std::any const &event) override;
 
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to report their attributes as JSON.
+    //* =====================================================================
+    [[nodiscard]] nlohmann::json do_to_json() const override;
+
     struct impl;
     std::unique_ptr<impl> pimpl_;
 };
