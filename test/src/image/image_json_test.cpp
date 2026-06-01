@@ -53,6 +53,7 @@ TEST(a_multi_line_image, reports_attributes_as_json)
     ASSERT_EQ(2, json["content"]["size"]);
     ASSERT_EQ("test", json["content"]["content"][0]);
     ASSERT_EQ("success", json["content"]["content"][1]);
+    ASSERT_EQ("test\nsuccess", json["name"]);
     ASSERT_EQ(" ", json["fill"]);
 }
 
@@ -65,6 +66,7 @@ TEST(a_multi_line_image_with_fill, reports_attributes_as_json)
     ASSERT_EQ(2, json["content"]["size"]);
     ASSERT_EQ("test", json["content"]["content"][0]);
     ASSERT_EQ("success", json["content"]["content"][1]);
+    ASSERT_EQ("test\nsuccess", json["name"]);
     ASSERT_EQ("Q", json["fill"]);
 }
 
