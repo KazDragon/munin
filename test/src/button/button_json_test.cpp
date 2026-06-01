@@ -56,6 +56,15 @@ TEST(a_button, reports_when_it_has_focus_as_json)
     ASSERT_EQ(true, json["has_focus"]);
 }
 
+TEST(a_button, reports_when_it_does_not_have_focus_as_json)
+{
+    munin::button button("OK");
+
+    nlohmann::json json = button.to_json();
+
+    ASSERT_EQ(false, json["has_focus"]);
+}
+
 TEST(a_button, reports_its_cursor_state_as_json)
 {
     munin::button button("OK");
