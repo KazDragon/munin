@@ -117,6 +117,17 @@ TEST(an_image, reports_its_default_focus_and_cursor_state_as_json)
     ASSERT_EQ(0, json["cursor_position"]["y"]);
 }
 
+TEST(an_image, reports_when_it_has_focus_as_json)
+{
+    munin::image image;
+    image.set_can_receive_focus(true);
+    image.set_focus();
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(true, json["has_focus"]);
+}
+
 TEST(an_image, reports_changed_fill_as_json)
 {
     munin::image image;
