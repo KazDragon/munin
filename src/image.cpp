@@ -244,16 +244,16 @@ terminalpp::extent image::do_get_preferred_size() const
     return pimpl_->content.empty()
              ? terminalpp::extent()
              : terminalpp::extent(
-                 static_cast<terminalpp::coordinate_type>(
-                     std::max_element(
-                         pimpl_->content.begin(),
-                         pimpl_->content.end(),
-                         [](auto const &lhs, auto const &rhs) {
-                             return lhs.size() < rhs.size();
-                         })
-                         ->size()),
-                 static_cast<terminalpp::coordinate_type>(
-                     pimpl_->content.size()));
+                   static_cast<terminalpp::coordinate_type>(
+                       std::max_element(
+                           pimpl_->content.begin(),
+                           pimpl_->content.end(),
+                           [](auto const &lhs, auto const &rhs) {
+                               return lhs.size() < rhs.size();
+                           })
+                           ->size()),
+                   static_cast<terminalpp::coordinate_type>(
+                       pimpl_->content.size()));
 }
 
 // ==========================================================================
@@ -318,6 +318,18 @@ nlohmann::json image::do_to_json() const
     if (pimpl_->content.size() == 1U)
     {
         json["name"] = terminalpp::to_string(pimpl_->content[0]);
+    }
+    else if (!pimpl_->content.empty())
+    {
+        auto name = terminalpp::to_string(pimpl_->content[0]);
+
+        for (size_t index = 1; index < pimpl_->content.size(); ++index)
+        {
+            name += "\n";
+            name += terminalpp::to_string(pimpl_->content[index]);
+        }
+
+        json["name"] = name;
     }
 
     return json;

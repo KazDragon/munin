@@ -135,3 +135,16 @@ TEST(an_image, reports_changed_single_line_content_as_json)
     ASSERT_EQ("Ready", json["content"]["content"][0]);
     ASSERT_EQ("Ready", json["name"]);
 }
+
+TEST(an_image, reports_changed_multi_line_content_as_json)
+{
+    munin::image image("Ready");
+    image.set_content(std::vector<terminalpp::string>{"First", "Second"});
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(2, json["content"]["size"]);
+    ASSERT_EQ("First", json["content"]["content"][0]);
+    ASSERT_EQ("Second", json["content"]["content"][1]);
+    ASSERT_EQ("First\nSecond", json["name"]);
+}
