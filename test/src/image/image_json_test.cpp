@@ -113,3 +113,13 @@ TEST(an_image, reports_its_default_focus_and_cursor_state_as_json)
     ASSERT_EQ(0, json["cursor_position"]["x"]);
     ASSERT_EQ(0, json["cursor_position"]["y"]);
 }
+
+TEST(an_image, reports_changed_fill_as_json)
+{
+    munin::image image;
+    image.set_fill('Z');
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ("Z", json["fill"]);
+}
