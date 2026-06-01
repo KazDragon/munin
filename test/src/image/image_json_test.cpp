@@ -9,6 +9,7 @@ TEST(a_default_image, reports_attributes_as_json)
     ASSERT_EQ("image", json["type"]);
     ASSERT_EQ(0, json["content"]["size"]);
     ASSERT_EQ(" ", json["fill"]);
+    ASSERT_EQ(json.end(), json.find("name"));
 }
 
 TEST(a_default_image_with_fill, reports_attributes_as_json)
