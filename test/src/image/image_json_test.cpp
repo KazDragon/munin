@@ -162,3 +162,14 @@ TEST(an_image, reports_changed_multi_line_content_as_json)
     ASSERT_EQ("Second", json["content"]["content"][1]);
     ASSERT_EQ("First\nSecond", json["name"]);
 }
+
+TEST(an_image, reports_default_content_after_content_is_cleared_as_json)
+{
+    munin::image image("Ready");
+    image.set_content();
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(0, json["content"]["size"]);
+    ASSERT_EQ(json.end(), json.find("name"));
+}
