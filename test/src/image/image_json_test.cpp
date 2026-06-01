@@ -91,3 +91,13 @@ TEST(an_image, reports_its_automation_id_as_json)
 
     ASSERT_EQ("status_image", json["id"]);
 }
+
+TEST(an_image, reports_its_preferred_size_as_json)
+{
+    munin::image image(std::vector<terminalpp::string>{"ok", "ready"});
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(5, json["preferred_size"]["width"]);
+    ASSERT_EQ(2, json["preferred_size"]["height"]);
+}
