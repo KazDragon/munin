@@ -67,3 +67,17 @@ TEST(a_multi_line_image_with_fill, reports_attributes_as_json)
     ASSERT_EQ("success", json["content"]["content"][1]);
     ASSERT_EQ("Q", json["fill"]);
 }
+
+TEST(an_image, reports_its_current_bounds_as_json)
+{
+    munin::image image;
+    image.set_position({3, 5});
+    image.set_size({7, 2});
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(3, json["position"]["x"]);
+    ASSERT_EQ(5, json["position"]["y"]);
+    ASSERT_EQ(7, json["size"]["width"]);
+    ASSERT_EQ(2, json["size"]["height"]);
+}
