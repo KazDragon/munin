@@ -101,3 +101,15 @@ TEST(an_image, reports_its_preferred_size_as_json)
     ASSERT_EQ(5, json["preferred_size"]["width"]);
     ASSERT_EQ(2, json["preferred_size"]["height"]);
 }
+
+TEST(an_image, reports_its_default_focus_and_cursor_state_as_json)
+{
+    munin::image image;
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(false, json["has_focus"]);
+    ASSERT_EQ(false, json["cursor_state"]);
+    ASSERT_EQ(0, json["cursor_position"]["x"]);
+    ASSERT_EQ(0, json["cursor_position"]["y"]);
+}
