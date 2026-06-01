@@ -603,6 +603,13 @@ private:
             return;
         }
 
+        if (auto const *key = std::any_cast<terminalpp::virtual_key>(&event);
+            key != nullptr && key->key == terminalpp::vk::bt)
+        {
+            focus_previous();
+            return;
+        }
+
         if (auto comp = find_first_focussed_component(components_);
             comp != components_.end())
         {

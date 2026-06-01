@@ -22,6 +22,15 @@ auto tab_key() -> terminalpp::virtual_key
         terminalpp::byte{'\t'}};
 }
 
+auto back_tab_key() -> terminalpp::virtual_key
+{
+    return terminalpp::virtual_key{
+        terminalpp::vk::bt,
+        terminalpp::vk_modifier::none,
+        1,
+        terminalpp::byte{'\t'}};
+}
+
 }  // namespace
 
 TEST_F(
@@ -81,6 +90,27 @@ TEST_F(
     }
 
     container_.event(tab_key());
+
+    ASSERT_TRUE(container_.has_focus());
+}
+
+TEST_F(
+    a_container_with_two_components_where_the_last_has_focus,
+    back_tab_moves_focus_to_the_previous_subcomponent)
+{
+    {
+        InSequence s1;
+        EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(true));
+        EXPECT_CALL(*component1_, do_focus_previous())
+            .WillOnce(std::ref(component1_->on_focus_lost));
+        EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(false));
+
+        EXPECT_CALL(*component0_, do_focus_previous())
+            .WillOnce(std::ref(component0_->on_focus_set));
+        EXPECT_CALL(*component0_, do_has_focus()).WillOnce(Return(true));
+    }
+
+    container_.event(back_tab_key());
 
     ASSERT_TRUE(container_.has_focus());
 }
