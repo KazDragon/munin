@@ -123,3 +123,15 @@ TEST(an_image, reports_changed_fill_as_json)
 
     ASSERT_EQ("Z", json["fill"]);
 }
+
+TEST(an_image, reports_changed_single_line_content_as_json)
+{
+    munin::image image;
+    image.set_content("Ready");
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ(1, json["content"]["size"]);
+    ASSERT_EQ("Ready", json["content"]["content"][0]);
+    ASSERT_EQ("Ready", json["name"]);
+}
