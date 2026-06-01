@@ -58,6 +58,11 @@ auto find_component_at_point(
     return std::ranges::find_if(rng, has_location_at_point);
 }
 
+auto virtual_key_from(std::any const &event) -> terminalpp::virtual_key const *
+{
+    return std::any_cast<terminalpp::virtual_key>(&event);
+}
+
 }  // namespace
 
 // ==========================================================================
@@ -596,14 +601,14 @@ private:
     // ======================================================================
     void handle_common_event(std::any const &event)
     {
-        if (auto const *key = std::any_cast<terminalpp::virtual_key>(&event);
+        if (auto const *key = virtual_key_from(event);
             key != nullptr && key->key == terminalpp::vk::ht)
         {
             focus_next();
             return;
         }
 
-        if (auto const *key = std::any_cast<terminalpp::virtual_key>(&event);
+        if (auto const *key = virtual_key_from(event);
             key != nullptr && key->key == terminalpp::vk::bt)
         {
             focus_previous();
