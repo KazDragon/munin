@@ -1,13 +1,28 @@
 #include "container_test.hpp"
 
 #include <terminalpp/mouse.hpp>
+#include <terminalpp/virtual_key.hpp>
 
 #include <tuple>
 #include <vector>
 
 using testing::_;
+using testing::InSequence;
 using testing::Return;
 using testing::ValuesIn;
+
+namespace {
+
+auto tab_key() -> terminalpp::virtual_key
+{
+    return terminalpp::virtual_key{
+        terminalpp::vk::ht,
+        terminalpp::vk_modifier::none,
+        1,
+        terminalpp::byte{'\t'}};
+}
+
+}  // namespace
 
 TEST_F(
     a_container_with_one_component, does_not_forward_events_to_the_subcomponent)
@@ -50,6 +65,27 @@ TEST_F(
 }
 
 TEST_F(
+    a_container_with_two_components_where_the_first_has_focus,
+    tab_moves_focus_to_the_next_subcomponent)
+{
+    {
+        InSequence s1;
+        EXPECT_CALL(*component0_, do_has_focus()).WillOnce(Return(true));
+        EXPECT_CALL(*component0_, do_focus_next())
+            .WillOnce(std::ref(component0_->on_focus_lost));
+        EXPECT_CALL(*component0_, do_has_focus()).WillOnce(Return(false));
+
+        EXPECT_CALL(*component1_, do_focus_next())
+            .WillOnce(std::ref(component1_->on_focus_set));
+        EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(true));
+    }
+
+    container_.event(tab_key());
+
+    ASSERT_TRUE(container_.has_focus());
+}
+
+TEST_F(
     a_container_with_one_component,
     forwards_mouse_events_even_though_the_component_has_no_focus)
 {
@@ -64,7 +100,7 @@ TEST_F(
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
     EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
-        const auto *p = std::any_cast<terminalpp::mouse::event>(&event);
+        auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
         ASSERT_NE(nullptr, p);
         ASSERT_EQ(ev, *p);
     });

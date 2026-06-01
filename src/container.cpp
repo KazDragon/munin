@@ -9,6 +9,7 @@
 #include <boost/scope_exit.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
+#include <terminalpp/virtual_key.hpp>
 
 #include <algorithm>
 #include <memory>
@@ -595,6 +596,13 @@ private:
     // ======================================================================
     void handle_common_event(std::any const &event)
     {
+        if (auto const *key = std::any_cast<terminalpp::virtual_key>(&event);
+            key != nullptr && key->key == terminalpp::vk::ht)
+        {
+            focus_next();
+            return;
+        }
+
         if (auto comp = find_first_focussed_component(components_);
             comp != components_.end())
         {
