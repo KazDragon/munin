@@ -81,3 +81,13 @@ TEST(an_image, reports_its_current_bounds_as_json)
     ASSERT_EQ(7, json["size"]["width"]);
     ASSERT_EQ(2, json["size"]["height"]);
 }
+
+TEST(an_image, reports_its_automation_id_as_json)
+{
+    munin::image image;
+    image.set_id("status_image");
+
+    nlohmann::json json = image.to_json();
+
+    ASSERT_EQ("status_image", json["id"]);
+}
