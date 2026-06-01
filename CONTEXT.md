@@ -36,6 +36,10 @@ _Avoid_: Rendered cell scrape, internal child text, implementation label
 The same Munin event-routing path used for live application input, through which automated input must also travel.
 _Avoid_: Direct state mutation, test-only shortcut API
 
+**Normal Keyboard Focus Navigation**:
+The Munin **Native Event Path** behavior where forward tabulation moves focus to the next focusable component and backward tabulation moves focus to the previous focusable component.
+_Avoid_: Test-only focus helper, direct focus mutation
+
 **Focus Path**:
 The chain of **Components** through a **Component Tree** that currently carries focus from an owning container down to the innermost focused target.
 _Avoid_: Flat global focus flag, single-node-only focus model
@@ -55,6 +59,7 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 - An **Accessible Name** belongs to a **Component** as part of the **Automation Surface** when the component has user-facing identifying text
 - A **Focus Path** belongs to one **Component Tree** at a time and ends at exactly one **Focused Leaf**
 - Automated interaction should enter through the **Native Event Path** so the inspected **Component Tree** behaves exactly as it would for live input
+- **Normal Keyboard Focus Navigation** is handled through the **Native Event Path**, not by an automation-only shortcut
 - In the MVP component set, the reported component `type` is treated as the effective **Semantic Role**
 
 ## Example dialogue
@@ -70,6 +75,9 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 
 > **Dev:** "Can Hugin trigger a button by calling a helper directly?"
 > **Domain expert:** "No — Hugin must use the **Native Event Path** so the test exercises the real UI behavior."
+
+> **Dev:** "How should automated tests move focus between controls?"
+> **Domain expert:** "Send the same tab or backward-tab key input a user would; Munin handles **Normal Keyboard Focus Navigation** through the **Native Event Path**."
 
 > **Dev:** "Should automation inspect `munin::button` as a class name?"
 > **Domain expert:** "No — it should rely on the **Semantic Role** reported by the **Automation Surface**."
@@ -95,6 +103,7 @@ _Avoid_: Whole focus path, arbitrary highlighted ancestor
 - "UI" was used loosely to mean either one client-facing interface or all connected interfaces in the process; resolved: **Component Tree** means one rooted UI surface
 - "automation support" was used loosely to mean both data exposure and test-runner behavior; resolved: **Automation Surface** means Munin's exposed facts only
 - "interaction" was used loosely to mean either user-like input or direct programmatic control; resolved: automated interaction must use the **Native Event Path**
+- "focus movement" risked becoming a test-only helper; resolved: normal tab and backward-tab navigation are **Native Event Path** behavior
 - "type" risked meaning either an implementation class or automation meaning; resolved: **Semantic Role** is the automation-facing meaning a **Component** exposes
 - For the MVP, the reported component `type` and the effective **Semantic Role** are treated as the same thing unless the component set later proves otherwise
 - "label" risked meaning either user-visible identifying text or a separate label component; resolved: **Accessible Name** is the identifying text exposed by a component itself, while label associations can be modeled separately later
