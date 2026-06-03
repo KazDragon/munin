@@ -45,6 +45,18 @@ TEST_F(a_new_container, reports_its_position_as_json)
     ASSERT_EQ(position.y_, json["position"]["y"]);
 }
 
+TEST_F(a_new_container, reports_its_size_as_json)
+{
+    munin::component &comp = container_;
+    terminalpp::extent const size{17, 23};
+
+    comp.set_size(size);
+
+    nlohmann::json json = comp.to_json();
+    ASSERT_EQ(size.width_, json["size"]["width"]);
+    ASSERT_EQ(size.height_, json["size"]["height"]);
+}
+
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
