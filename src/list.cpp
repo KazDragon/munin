@@ -280,7 +280,10 @@ nlohmann::json list::do_to_json() const
         { "op": "replace", "path": "/type", "value": "list" }
     ])"_json;
 
-    return basic_component::do_to_json().patch(patch);
+    auto json = basic_component::do_to_json().patch(patch);
+    json["items"]["size"] = 0;
+
+    return json;
 }
 
 // ==========================================================================

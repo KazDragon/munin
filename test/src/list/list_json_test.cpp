@@ -9,3 +9,12 @@ TEST(a_default_list, reports_its_type_as_json)
 
     ASSERT_EQ("list", json.at("type"));
 }
+
+TEST(a_default_list, reports_empty_items_as_json)
+{
+    munin::list list;
+
+    auto const json = list.to_json();
+
+    ASSERT_EQ(0, json.at("items").at("size"));
+}
