@@ -56,6 +56,15 @@ TEST_F(an_edit_json_snapshot, reports_when_it_does_not_have_focus)
     ASSERT_EQ(false, json.at("has_focus"));
 }
 
+TEST_F(an_edit_json_snapshot, reports_when_it_has_focus)
+{
+    edit_->set_focus();
+
+    auto const json = current_json();
+
+    ASSERT_EQ(true, json.at("has_focus"));
+}
+
 TEST_F(an_edit_json_snapshot, reports_empty_text)
 {
     auto const json = current_json();
