@@ -59,3 +59,14 @@ TEST(a_default_list, reports_no_selected_item_as_json)
 
     ASSERT_TRUE(json.at("selected_item_index").is_null());
 }
+
+TEST(a_list_json_with_a_selected_item, reports_the_selected_item_index_as_json)
+{
+    munin::list list;
+    list.set_items({"first"_ts, "second"_ts});
+    list.select_item(1);
+
+    auto const json = list.to_json();
+
+    ASSERT_EQ(1, json.at("selected_item_index"));
+}
