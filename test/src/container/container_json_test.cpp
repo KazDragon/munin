@@ -20,6 +20,33 @@ void assert_json_eq(
     ASSERT_EQ(expected.height_, json["height"]);
 }
 
+void allow_layout(mock_layout &lyt)
+{
+    ON_CALL(lyt, do_layout(_, _, _)).WillByDefault(Return());
+}
+
+std::unique_ptr<mock_layout> make_sized_layout(
+    terminalpp::extent const &preferred_size)
+{
+    auto lyt = make_mock_layout();
+    allow_layout(*lyt);
+    EXPECT_CALL(*lyt, do_get_preferred_size(_, _))
+        .WillRepeatedly(Return(preferred_size));
+    return lyt;
+}
+
+std::unique_ptr<mock_layout> make_json_layout(
+    terminalpp::extent const &preferred_size, std::string type)
+{
+    auto lyt = make_sized_layout(preferred_size);
+    EXPECT_CALL(*lyt, do_to_json()).WillRepeatedly([type = std::move(type)] {
+        return nlohmann::json{
+            {"type", type},
+        };
+    });
+    return lyt;
+}
+
 }  // namespace
 
 TEST_F(a_new_container, reports_attributes_as_json)
@@ -72,17 +99,10 @@ TEST_F(a_new_container, reports_its_size_as_json)
 TEST_F(a_new_container, reports_the_current_layout_as_json)
 {
     auto first_layout = make_mock_layout();
-    auto second_layout = make_mock_layout();
+    auto second_layout =
+        make_json_layout(terminalpp::extent{}, "replacement_layout");
 
-    ON_CALL(*first_layout, do_layout(_, _, _)).WillByDefault(Return());
-    ON_CALL(*second_layout, do_layout(_, _, _)).WillByDefault(Return());
-    EXPECT_CALL(*second_layout, do_get_preferred_size(_, _))
-        .WillRepeatedly(Return(terminalpp::extent{}));
-    EXPECT_CALL(*second_layout, do_to_json()).WillRepeatedly([] {
-        return nlohmann::json{
-            {"type", "replacement_layout"},
-        };
-    });
+    allow_layout(*first_layout);
 
     container_.set_layout(std::move(first_layout));
     container_.set_layout(std::move(second_layout));
@@ -94,16 +114,7 @@ TEST_F(a_new_container, reports_the_current_layout_as_json)
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
-    auto lyt = make_mock_layout();
-
-    EXPECT_CALL(*lyt, do_get_preferred_size(_, _))
-        .WillRepeatedly(Return(layout_size));
-    ON_CALL(*lyt, do_layout(_, _, _)).WillByDefault(Return());
-    ON_CALL(*lyt, do_to_json()).WillByDefault([] {
-        return nlohmann::json{
-            {"type", "mock_layout"}
-        };
-    });
+    auto lyt = make_json_layout(layout_size, "mock_layout");
 
     container_.set_layout(std::move(lyt));
 
@@ -133,11 +144,7 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
 TEST_F(a_container_with_two_components, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
-    auto lyt = make_mock_layout();
-
-    EXPECT_CALL(*lyt, do_get_preferred_size(_, _))
-        .WillRepeatedly(Return(layout_size));
-    ON_CALL(*lyt, do_layout(_, _, _)).WillByDefault(Return());
+    auto lyt = make_sized_layout(layout_size);
 
     container_.set_layout(std::move(lyt));
 
