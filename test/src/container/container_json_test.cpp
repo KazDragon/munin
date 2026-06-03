@@ -4,22 +4,36 @@
 using testing::_;
 using testing::Return;
 
+namespace {
+
+void assert_json_eq(
+    terminalpp::point const &expected, nlohmann::json const &json)
+{
+    ASSERT_EQ(expected.x_, json["x"]);
+    ASSERT_EQ(expected.y_, json["y"]);
+}
+
+void assert_json_eq(
+    terminalpp::extent const &expected, nlohmann::json const &json)
+{
+    ASSERT_EQ(expected.width_, json["width"]);
+    ASSERT_EQ(expected.height_, json["height"]);
+}
+
+}  // namespace
+
 TEST_F(a_new_container, reports_attributes_as_json)
 {
     munin::component &comp = container_;
 
     nlohmann::json json = comp.to_json();
     ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0, json["position"]["x"]);
-    ASSERT_EQ(0, json["position"]["y"]);
-    ASSERT_EQ(0, json["size"]["height"]);
-    ASSERT_EQ(0, json["size"]["width"]);
-    ASSERT_EQ(0, json["preferred_size"]["width"]);
-    ASSERT_EQ(0, json["preferred_size"]["height"]);
+    assert_json_eq(terminalpp::point{}, json["position"]);
+    assert_json_eq(terminalpp::extent{}, json["size"]);
+    assert_json_eq(terminalpp::extent{}, json["preferred_size"]);
     ASSERT_EQ(false, json["has_focus"]);
     ASSERT_EQ(false, json["cursor_state"]);
-    ASSERT_EQ(0, json["cursor_position"]["x"]);
-    ASSERT_EQ(0, json["cursor_position"]["y"]);
+    assert_json_eq(terminalpp::point{}, json["cursor_position"]);
     ASSERT_EQ("null_layout", json["layout"]["type"]);
 }
 
@@ -41,8 +55,7 @@ TEST_F(a_new_container, reports_its_position_as_json)
     comp.set_position(position);
 
     nlohmann::json json = comp.to_json();
-    ASSERT_EQ(position.x_, json["position"]["x"]);
-    ASSERT_EQ(position.y_, json["position"]["y"]);
+    assert_json_eq(position, json["position"]);
 }
 
 TEST_F(a_new_container, reports_its_size_as_json)
@@ -53,8 +66,7 @@ TEST_F(a_new_container, reports_its_size_as_json)
     comp.set_size(size);
 
     nlohmann::json json = comp.to_json();
-    ASSERT_EQ(size.width_, json["size"]["width"]);
-    ASSERT_EQ(size.height_, json["size"]["height"]);
+    assert_json_eq(size, json["size"]);
 }
 
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
@@ -83,16 +95,12 @@ TEST_F(a_container_with_one_component, reports_attributes_as_json)
 
     nlohmann::json json = comp.to_json();
     ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0, json["position"]["x"]);
-    ASSERT_EQ(0, json["position"]["y"]);
-    ASSERT_EQ(0, json["size"]["height"]);
-    ASSERT_EQ(0, json["size"]["width"]);
-    ASSERT_EQ(layout_size.width_, json["preferred_size"]["width"]);
-    ASSERT_EQ(layout_size.height_, json["preferred_size"]["height"]);
+    assert_json_eq(terminalpp::point{}, json["position"]);
+    assert_json_eq(terminalpp::extent{}, json["size"]);
+    assert_json_eq(layout_size, json["preferred_size"]);
     ASSERT_EQ(false, json["has_focus"]);
     ASSERT_EQ(false, json["cursor_state"]);
-    ASSERT_EQ(0, json["cursor_position"]["x"]);
-    ASSERT_EQ(0, json["cursor_position"]["y"]);
+    assert_json_eq(terminalpp::point{}, json["cursor_position"]);
     ASSERT_EQ("mock_layout", json["layout"]["type"]);
 
     nlohmann::json subcomponents = json["subcomponents"];
@@ -128,16 +136,12 @@ TEST_F(a_container_with_two_components, reports_attributes_as_json)
 
     nlohmann::json json = comp.to_json();
     ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0, json["position"]["x"]);
-    ASSERT_EQ(0, json["position"]["y"]);
-    ASSERT_EQ(0, json["size"]["height"]);
-    ASSERT_EQ(0, json["size"]["width"]);
-    ASSERT_EQ(layout_size.width_, json["preferred_size"]["width"]);
-    ASSERT_EQ(layout_size.height_, json["preferred_size"]["height"]);
+    assert_json_eq(terminalpp::point{}, json["position"]);
+    assert_json_eq(terminalpp::extent{}, json["size"]);
+    assert_json_eq(layout_size, json["preferred_size"]);
     ASSERT_EQ(false, json["has_focus"]);
     ASSERT_EQ(false, json["cursor_state"]);
-    ASSERT_EQ(0, json["cursor_position"]["x"]);
-    ASSERT_EQ(0, json["cursor_position"]["y"]);
+    assert_json_eq(terminalpp::point{}, json["cursor_position"]);
 
     nlohmann::json subcomponents = json["subcomponents"];
     ASSERT_EQ(2, subcomponents.size());
@@ -160,15 +164,11 @@ TEST_F(
 
     nlohmann::json json = container_.to_json();
     ASSERT_EQ("container", json["type"]);
-    ASSERT_EQ(0, json["position"]["x"]);
-    ASSERT_EQ(0, json["position"]["y"]);
-    ASSERT_EQ(0, json["size"]["height"]);
-    ASSERT_EQ(0, json["size"]["width"]);
-    ASSERT_EQ(0, json["preferred_size"]["width"]);
-    ASSERT_EQ(0, json["preferred_size"]["height"]);
+    assert_json_eq(terminalpp::point{}, json["position"]);
+    assert_json_eq(terminalpp::extent{}, json["size"]);
+    assert_json_eq(terminalpp::extent{}, json["preferred_size"]);
     ASSERT_EQ(true, json["has_focus"]);
     ASSERT_EQ(true, json["cursor_state"]);
-    ASSERT_EQ(4, json["cursor_position"]["x"]);
-    ASSERT_EQ(6, json["cursor_position"]["y"]);
+    assert_json_eq(terminalpp::point(4, 6), json["cursor_position"]);
     ASSERT_EQ("null_layout", json["layout"]["type"]);
 }
