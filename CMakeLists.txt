@@ -321,6 +321,7 @@ target_sources(munin_tester
         test/src/image/image_test.cpp
         test/src/image/image_redraw_test.cpp
         test/src/image/new_image_test.cpp
+        test/src/list/list_json_test.cpp
         test/src/list/list_test.cpp
         test/src/null_layout/null_layout_test.cpp
         test/src/render_surface/render_surface_capabilities_test.cpp

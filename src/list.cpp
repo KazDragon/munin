@@ -3,6 +3,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/algorithm/max_element.hpp>
 #include <munin/render_surface.hpp>
+#include <nlohmann/json.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -268,6 +269,18 @@ void list::do_draw(
 void list::do_event(std::any const &ev)
 {
     pimpl_->event(ev);
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json list::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "list" }
+    ])"_json;
+
+    return basic_component::do_to_json().patch(patch);
 }
 
 // ==========================================================================
