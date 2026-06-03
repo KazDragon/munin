@@ -69,6 +69,28 @@ TEST_F(a_new_container, reports_its_size_as_json)
     assert_json_eq(size, json["size"]);
 }
 
+TEST_F(a_new_container, reports_the_current_layout_as_json)
+{
+    auto first_layout = make_mock_layout();
+    auto second_layout = make_mock_layout();
+
+    ON_CALL(*first_layout, do_layout(_, _, _)).WillByDefault(Return());
+    ON_CALL(*second_layout, do_layout(_, _, _)).WillByDefault(Return());
+    EXPECT_CALL(*second_layout, do_get_preferred_size(_, _))
+        .WillRepeatedly(Return(terminalpp::extent{}));
+    EXPECT_CALL(*second_layout, do_to_json()).WillRepeatedly([] {
+        return nlohmann::json{
+            {"type", "replacement_layout"},
+        };
+    });
+
+    container_.set_layout(std::move(first_layout));
+    container_.set_layout(std::move(second_layout));
+
+    nlohmann::json json = container_.to_json();
+    ASSERT_EQ("replacement_layout", json["layout"]["type"]);
+}
+
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
