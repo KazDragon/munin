@@ -282,13 +282,11 @@ nlohmann::json list::do_to_json() const
 
     auto json = basic_component::do_to_json().patch(patch);
     json["items"]["size"] = pimpl_->items_.size();
-    if (!pimpl_->items_.empty())
+
+    for (size_t index = 0; index < pimpl_->items_.size(); ++index)
     {
-        json["items"]["content"][0] = terminalpp::to_string(pimpl_->items_[0]);
-    }
-    if (pimpl_->items_.size() > 1U)
-    {
-        json["items"]["content"][1] = terminalpp::to_string(pimpl_->items_[1]);
+        json["items"]["content"][index] =
+            terminalpp::to_string(pimpl_->items_[index]);
     }
 
     return json;
