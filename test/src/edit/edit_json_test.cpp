@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <munin/edit.hpp>
 
+using namespace terminalpp::literals;  // NOLINT
+
 class an_edit_json_snapshot : public testing::Test
 {
 protected:
@@ -79,6 +81,15 @@ TEST_F(an_edit_json_snapshot, reports_inserted_text)
     auto const json = current_json();
 
     ASSERT_EQ("ok", json.at("text"));
+}
+
+TEST_F(an_edit_json_snapshot, reports_set_text)
+{
+    edit_->set_text("set"_ts);
+
+    auto const json = current_json();
+
+    ASSERT_EQ("set", json.at("text"));
 }
 
 TEST_F(an_edit_json_snapshot, reports_caret_position)
