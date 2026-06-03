@@ -331,6 +331,7 @@ target_sources(munin_tester
         test/src/solid_frame/solid_frame_test.cpp
         test/src/status_bar/status_bar_test.cpp
         test/src/text_area/new_text_area_test.cpp
+        test/src/text_area/text_area_json_test.cpp
         test/src/text_area/text_area_test.cpp
         test/src/text_area/text_area_with_text_inserted_test.cpp
         test/src/text_area/text_area_typing_test.cpp
