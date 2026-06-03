@@ -29,3 +29,12 @@ TEST_F(a_text_area_json_snapshot, reports_inserted_text)
 
     ASSERT_EQ("ok", json.at("text"));
 }
+
+TEST_F(a_text_area_json_snapshot, reports_caret_position)
+{
+    text_area_.insert_text("ok"_ts);
+
+    auto const json = current_json();
+
+    ASSERT_EQ(2, json.at("caret_position"));
+}

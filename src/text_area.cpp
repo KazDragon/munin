@@ -643,6 +643,7 @@ nlohmann::json text_area::do_to_json() const
     auto json = basic_component::do_to_json();
     json["type"] = "text_area";
     json["text"] = terminalpp::to_string(get_text());
+    json["caret_position"] = get_caret_position();
     return json;
 }
 
