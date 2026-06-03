@@ -288,6 +288,7 @@ nlohmann::json list::do_to_json() const
         json["items"]["content"][index] =
             terminalpp::to_string(pimpl_->items_[index]);
     }
+    json["selected_item_index"] = nullptr;
 
     return json;
 }

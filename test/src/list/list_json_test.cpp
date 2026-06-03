@@ -50,3 +50,12 @@ TEST(a_list_json_with_two_items, reports_the_second_item_content_as_json)
 
     ASSERT_EQ("second", json.at("items").at("content").at(1));
 }
+
+TEST(a_default_list, reports_no_selected_item_as_json)
+{
+    munin::list list;
+
+    auto const json = list.to_json();
+
+    ASSERT_TRUE(json.at("selected_item_index").is_null());
+}
