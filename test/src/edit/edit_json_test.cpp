@@ -49,6 +49,13 @@ TEST_F(an_edit_json_snapshot, reports_its_preferred_size)
     ASSERT_EQ(1, json.at("preferred_size").at("height"));
 }
 
+TEST_F(an_edit_json_snapshot, reports_when_it_does_not_have_focus)
+{
+    auto const json = current_json();
+
+    ASSERT_EQ(false, json.at("has_focus"));
+}
+
 TEST_F(an_edit_json_snapshot, reports_empty_text)
 {
     auto const json = current_json();
