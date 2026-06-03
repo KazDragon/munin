@@ -281,7 +281,7 @@ nlohmann::json list::do_to_json() const
     ])"_json;
 
     auto json = basic_component::do_to_json().patch(patch);
-    json["items"]["size"] = 0;
+    json["items"]["size"] = pimpl_->items_.size();
 
     return json;
 }
