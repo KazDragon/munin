@@ -33,6 +33,18 @@ TEST_F(a_new_container, reports_its_automation_id_as_json)
     ASSERT_EQ("inventory_panel", json["id"]);
 }
 
+TEST_F(a_new_container, reports_its_position_as_json)
+{
+    munin::component &comp = container_;
+    terminalpp::point const position{6, 9};
+
+    comp.set_position(position);
+
+    nlohmann::json json = comp.to_json();
+    ASSERT_EQ(position.x_, json["position"]["x"]);
+    ASSERT_EQ(position.y_, json["position"]["y"]);
+}
+
 TEST_F(a_container_with_one_component, reports_attributes_as_json)
 {
     static constexpr terminalpp::extent const layout_size{3, 5};
