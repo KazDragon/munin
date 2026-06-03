@@ -30,3 +30,13 @@ TEST(a_list_json_with_an_item, reports_its_item_count_as_json)
 
     ASSERT_EQ(1, json.at("items").at("size"));
 }
+
+TEST(a_list_json_with_an_item, reports_its_item_content_as_json)
+{
+    munin::list list;
+    list.set_items({"first"_ts});
+
+    auto const json = list.to_json();
+
+    ASSERT_EQ("first", json.at("items").at("content").at(0));
+}

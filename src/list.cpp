@@ -282,6 +282,10 @@ nlohmann::json list::do_to_json() const
 
     auto json = basic_component::do_to_json().patch(patch);
     json["items"]["size"] = pimpl_->items_.size();
+    if (!pimpl_->items_.empty())
+    {
+        json["items"]["content"][0] = terminalpp::to_string(pimpl_->items_[0]);
+    }
 
     return json;
 }
