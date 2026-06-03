@@ -41,6 +41,14 @@ TEST_F(an_edit_json_snapshot, reports_its_current_bounds)
     ASSERT_EQ(2, json.at("size").at("height"));
 }
 
+TEST_F(an_edit_json_snapshot, reports_its_preferred_size)
+{
+    auto const json = current_json();
+
+    ASSERT_EQ(1, json.at("preferred_size").at("width"));
+    ASSERT_EQ(1, json.at("preferred_size").at("height"));
+}
+
 TEST_F(an_edit_json_snapshot, reports_empty_text)
 {
     auto const json = current_json();
