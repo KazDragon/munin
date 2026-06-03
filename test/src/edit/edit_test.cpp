@@ -15,11 +15,6 @@ using testing::ValuesIn;
 class a_new_edit : public testing::Test
 {
 protected:
-    [[nodiscard]] nlohmann::json current_json() const
-    {
-        return edit_->to_json();
-    }
-
     std::shared_ptr<munin::edit> edit_ = munin::make_edit();
 };
 
@@ -47,31 +42,6 @@ TEST_F(a_new_edit, has_its_cursor_at_home)
 TEST_F(a_new_edit, has_its_caret_in_the_0_position)
 {
     ASSERT_EQ(munin::edit::text_index(0), edit_->get_caret_position());
-}
-
-TEST_F(a_new_edit, reports_empty_text_in_json)
-{
-    auto const json = current_json();
-
-    ASSERT_EQ("", json.at("text"));
-}
-
-TEST_F(a_new_edit, reports_inserted_text_in_json)
-{
-    edit_->insert_text("ok");
-
-    auto const json = current_json();
-
-    ASSERT_EQ("ok", json.at("text"));
-}
-
-TEST_F(a_new_edit, reports_caret_position_in_json)
-{
-    edit_->insert_text("ok");
-
-    auto const json = current_json();
-
-    ASSERT_EQ(2, json.at("caret_position"));
 }
 
 TEST_F(a_new_edit, when_setting_the_caret_position_keeps_it_at_the_0_position)

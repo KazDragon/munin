@@ -302,6 +302,7 @@ target_sources(munin_tester
         test/src/container/container_redraw_test.cpp
         test/src/container/container_subcomponent_focus_test.cpp
         test/src/container/container_layout_test.cpp
+        test/src/edit/edit_json_test.cpp
         test/src/edit/edit_test.cpp
         test/src/edit/edit_mouse_test.cpp
         test/src/edit/edit_with_content_test.cpp

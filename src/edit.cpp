@@ -427,6 +427,7 @@ void edit::do_event(std::any const &ev)
 nlohmann::json edit::do_to_json() const
 {
     auto json = basic_component::do_to_json();
+    json["type"] = "edit";
     json["text"] = terminalpp::to_string(get_text());
     json["caret_position"] = get_caret_position();
     return json;
