@@ -89,3 +89,15 @@ TEST_F(an_edit_json_snapshot, reports_caret_position)
 
     ASSERT_EQ(2, json.at("caret_position"));
 }
+
+TEST_F(an_edit_json_snapshot, reports_cursor_after_inserted_text)
+{
+    edit_->set_size({4, 1});
+    edit_->insert_text("ok");
+
+    auto const json = current_json();
+
+    ASSERT_EQ(true, json.at("cursor_state"));
+    ASSERT_EQ(2, json.at("cursor_position").at("x"));
+    ASSERT_EQ(0, json.at("cursor_position").at("y"));
+}
