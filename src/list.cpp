@@ -286,6 +286,10 @@ nlohmann::json list::do_to_json() const
     {
         json["items"]["content"][0] = terminalpp::to_string(pimpl_->items_[0]);
     }
+    if (pimpl_->items_.size() > 1U)
+    {
+        json["items"]["content"][1] = terminalpp::to_string(pimpl_->items_[1]);
+    }
 
     return json;
 }

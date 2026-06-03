@@ -40,3 +40,13 @@ TEST(a_list_json_with_an_item, reports_its_item_content_as_json)
 
     ASSERT_EQ("first", json.at("items").at("content").at(0));
 }
+
+TEST(a_list_json_with_two_items, reports_the_second_item_content_as_json)
+{
+    munin::list list;
+    list.set_items({"first"_ts, "second"_ts});
+
+    auto const json = list.to_json();
+
+    ASSERT_EQ("second", json.at("items").at("content").at(1));
+}
