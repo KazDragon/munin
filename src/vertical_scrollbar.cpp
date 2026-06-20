@@ -298,6 +298,18 @@ void vertical_scrollbar::do_event(std::any const &event)
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json vertical_scrollbar::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "vertical_scrollbar" }
+    ])"_json;
+
+    return basic_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
 // MAKE_VERTICAL_SCROLLBAR
 // ==========================================================================
 std::shared_ptr<vertical_scrollbar> make_vertical_scrollbar()
