@@ -298,6 +298,18 @@ void horizontal_scrollbar::do_event(std::any const &event)
 }
 
 // ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json horizontal_scrollbar::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "horizontal_scrollbar" }
+    ])"_json;
+
+    return basic_component::do_to_json().patch(patch);
+}
+
+// ==========================================================================
 // MAKE_HORIZONTAL_SCROLLBAR
 // ==========================================================================
 std::shared_ptr<horizontal_scrollbar> make_horizontal_scrollbar()

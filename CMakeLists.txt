@@ -316,6 +316,7 @@ target_sources(munin_tester
         test/src/framed_component/framed_component_mouse_test.cpp
         test/src/grid_layout/grid_layout_test.cpp
         test/src/horizontal_strip_layout/horizontal_strip_layout_test.cpp
+        test/src/horizontal_scrollbar/horizontal_scrollbar_json_test.cpp
         test/src/horizontal_scrollbar/horizontal_scrollbar_test.cpp
         test/src/image/image_json_test.cpp
         test/src/image/image_test.cpp
