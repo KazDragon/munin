@@ -239,15 +239,15 @@ struct viewport::impl
             viewport_size.width_ == 0
                 ? 0
                 : std::clamp(
-                    anchor_bounds_.origin_.x_,
-                    tracked_cursor_position.x_ - viewport_size.width_ + 1,
-                    tracked_cursor_position.x_),
+                      anchor_bounds_.origin_.x_,
+                      tracked_cursor_position.x_ - viewport_size.width_ + 1,
+                      tracked_cursor_position.x_),
             viewport_size.height_ == 0
                 ? 0
                 : std::clamp(
-                    anchor_bounds_.origin_.y_,
-                    tracked_cursor_position.y_ - viewport_size.height_ + 1,
-                    tracked_cursor_position.y_)};
+                      anchor_bounds_.origin_.y_,
+                      tracked_cursor_position.y_ - viewport_size.height_ + 1,
+                      tracked_cursor_position.y_)};
 
         anchor_bounds_.origin_ = {
             std::min(anchor_bounds_.origin_.x_, anchor_bounds_.size_.width_),
@@ -358,7 +358,7 @@ private:
 // ==========================================================================
 viewport::viewport(std::shared_ptr<component> tracked_component)
   : viewport(
-      std::move(tracked_component), make_default_viewport_resize_strategy())
+        std::move(tracked_component), make_default_viewport_resize_strategy())
 {
 }
 
@@ -369,7 +369,7 @@ viewport::viewport(
     std::shared_ptr<component> tracked_component,
     std::unique_ptr<resize_strategy> strategy)
   : pimpl_(std::make_unique<impl>(
-      *this, std::move(tracked_component), std::move(strategy)))
+        *this, std::move(tracked_component), std::move(strategy)))
 {
 }
 
@@ -476,6 +476,18 @@ void viewport::do_draw(
 void viewport::do_event(std::any const &event)
 {
     pimpl_->event(event);
+}
+
+// ==========================================================================
+// DO_TO_JSON
+// ==========================================================================
+nlohmann::json viewport::do_to_json() const
+{
+    nlohmann::json patch = R"([
+        { "op": "replace", "path": "/type", "value": "viewport" }
+    ])"_json;
+
+    return basic_component::do_to_json().patch(patch);
 }
 
 // ==========================================================================
