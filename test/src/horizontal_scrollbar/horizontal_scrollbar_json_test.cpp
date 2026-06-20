@@ -19,3 +19,12 @@ TEST_F(a_horizontal_scrollbar_json_snapshot, reports_its_type)
 
     ASSERT_EQ("horizontal_scrollbar", json.at("type"));
 }
+
+TEST_F(a_horizontal_scrollbar_json_snapshot, reports_its_automation_id)
+{
+    scrollbar_->set_id("horizontal_scrollbar");
+
+    auto const json = current_json();
+
+    ASSERT_EQ("horizontal_scrollbar", json.at("id"));
+}

@@ -50,6 +50,15 @@ TEST_F(a_viewport_json_snapshot, reports_its_type)
     ASSERT_EQ("viewport", json.at("type"));
 }
 
+TEST_F(a_viewport_json_snapshot, reports_its_automation_id)
+{
+    viewport_->set_id("main_viewport");
+
+    auto const json = current_json();
+
+    ASSERT_EQ("main_viewport", json.at("id"));
+}
+
 TEST_F(a_viewport_json_snapshot, reports_its_anchor_bounds)
 {
     viewport_->set_size({3, 3});
