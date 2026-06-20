@@ -62,3 +62,19 @@ TEST_F(a_viewport_json_snapshot, reports_its_anchor_bounds)
     ASSERT_EQ(3, json.at("anchor_bounds").at("size").at("width"));
     ASSERT_EQ(3, json.at("anchor_bounds").at("size").at("height"));
 }
+
+TEST_F(a_viewport_json_snapshot, reports_the_tracked_component_snapshot)
+{
+    using testing::Return;
+
+    ON_CALL(*tracked_component_, do_to_json())
+        .WillByDefault(Return(nlohmann::json{
+            {"type", "tracked_component"},
+            {"id",   "tracked"          }
+    }));
+
+    auto const json = current_json();
+
+    ASSERT_EQ("tracked_component", json.at("component").at("type"));
+    ASSERT_EQ("tracked", json.at("component").at("id"));
+}

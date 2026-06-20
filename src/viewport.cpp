@@ -117,6 +117,14 @@ struct viewport::impl
     }
 
     // ======================================================================
+    // GET_TRACKED_COMPONENT_JSON
+    // ======================================================================
+    [[nodiscard]] auto get_tracked_component_json() const
+    {
+        return tracked_component_->to_json();
+    }
+
+    // ======================================================================
     // DRAW
     // ======================================================================
     void draw(render_surface &surface, terminalpp::rectangle const &region)
@@ -493,6 +501,7 @@ nlohmann::json viewport::do_to_json() const
 
     json["anchor_bounds"]["origin"] = detail::to_json(anchor_bounds.origin_);
     json["anchor_bounds"]["size"] = detail::to_json(anchor_bounds.size_);
+    json["component"] = pimpl_->get_tracked_component_json();
 
     return json;
 }
