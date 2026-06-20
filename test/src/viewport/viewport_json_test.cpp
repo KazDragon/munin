@@ -87,3 +87,23 @@ TEST_F(a_viewport_json_snapshot, reports_the_tracked_component_snapshot)
     ASSERT_EQ("tracked_component", json.at("component").at("type"));
     ASSERT_EQ("tracked", json.at("component").at("id"));
 }
+
+TEST_F(
+    a_viewport_json_snapshot, reports_the_tracked_component_as_a_subcomponent)
+{
+    using testing::Return;
+
+    auto const component_json = nlohmann::json{
+        {"type", "tracked_component"},
+        {"id",   "tracked"          }
+    };
+
+    ON_CALL(*tracked_component_, do_to_json())
+        .WillByDefault(Return(component_json));
+
+    auto const json = current_json();
+
+    auto const subcomponents = json.at("subcomponents");
+    ASSERT_EQ(1, subcomponents.size());
+    ASSERT_EQ(component_json, subcomponents.at(0));
+}

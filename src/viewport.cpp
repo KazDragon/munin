@@ -498,10 +498,12 @@ nlohmann::json viewport::do_to_json() const
 
     auto json = basic_component::do_to_json().patch(patch);
     auto const anchor_bounds = get_anchor_bounds();
+    auto const component_json = pimpl_->get_tracked_component_json();
 
     json["anchor_bounds"]["origin"] = detail::to_json(anchor_bounds.origin_);
     json["anchor_bounds"]["size"] = detail::to_json(anchor_bounds.size_);
-    json["component"] = pimpl_->get_tracked_component_json();
+    json["component"] = component_json;
+    json["subcomponents"][0] = component_json;
 
     return json;
 }
