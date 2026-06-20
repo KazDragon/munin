@@ -51,6 +51,12 @@ private:
     void do_draw(render_surface &surface, terminalpp::rectangle const &region)
         const override;
 
+    //* =====================================================================
+    /// \brief Called by to_json().  Derived classes must override this
+    /// function in order to represent their state in JSON.
+    //* =====================================================================
+    [[nodiscard]] nlohmann::json do_to_json() const override;
+
     struct impl;
     std::unique_ptr<impl> pimpl_;
 };
