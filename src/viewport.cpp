@@ -1,5 +1,6 @@
 #include "munin/viewport.hpp"
 
+#include "munin/detail/json_adaptors.hpp"
 #include "munin/render_surface.hpp"
 
 #include <boost/range/adaptor/filtered.hpp>
@@ -487,7 +488,13 @@ nlohmann::json viewport::do_to_json() const
         { "op": "replace", "path": "/type", "value": "viewport" }
     ])"_json;
 
-    return basic_component::do_to_json().patch(patch);
+    auto json = basic_component::do_to_json().patch(patch);
+    auto const anchor_bounds = get_anchor_bounds();
+
+    json["anchor_bounds"]["origin"] = detail::to_json(anchor_bounds.origin_);
+    json["anchor_bounds"]["size"] = detail::to_json(anchor_bounds.size_);
+
+    return json;
 }
 
 // ==========================================================================
