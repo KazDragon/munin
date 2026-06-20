@@ -3,6 +3,8 @@
 #include <gtest/gtest.h>
 #include <munin/status_bar.hpp>
 
+using namespace terminalpp::literals;  // NOLINT
+
 class a_status_bar_json_snapshot : public testing::Test
 {
 protected:
@@ -21,4 +23,13 @@ TEST_F(a_status_bar_json_snapshot, reports_its_type)
     auto const json = current_json();
 
     ASSERT_EQ("status_bar", json.at("type"));
+}
+
+TEST_F(a_status_bar_json_snapshot, reports_its_visible_message_as_name)
+{
+    status_bar_->set_message("Ready"_ts);
+
+    auto const json = current_json();
+
+    ASSERT_EQ("Ready", json.at("name"));
 }

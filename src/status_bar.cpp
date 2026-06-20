@@ -4,6 +4,7 @@
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/element.hpp>
+#include <terminalpp/string.hpp>
 
 #include <memory>
 
@@ -134,7 +135,10 @@ nlohmann::json status_bar::do_to_json() const
         { "op": "replace", "path": "/type", "value": "status_bar" }
     ])"_json;
 
-    return basic_component::do_to_json().patch(patch);
+    auto json = basic_component::do_to_json().patch(patch);
+    json["name"] = terminalpp::to_string(pimpl_->message_);
+
+    return json;
 }
 
 // ==========================================================================
