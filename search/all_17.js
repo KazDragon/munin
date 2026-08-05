@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['vcpkg_0',['Dependency Resolution With vcpkg',['../index.html#autotoc_md15',1,'']]],
+  ['vcpkg_0',['Dependency Resolution With vcpkg',['../index.html#autotoc_md20',1,'']]],
   ['version_1',['Version',['../classnext__release_1_1Version.html',1,'next_release']]],
   ['version_200_201_20munin_20fundamentals_2',['Version 0.1 - Munin Fundamentals',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md5',1,'']]],
   ['version_200_202_20frames_3',['Version 0.2 - Frames',['../md__2home_2runner_2work_2munin_2munin_2CHANGELOG.html#autotoc_md4',1,'']]],

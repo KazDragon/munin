@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.8</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -181,44 +181,48 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="comment">//* =====================================================================</span></div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="keywordtype">void</span> do_event(std::any <span class="keyword">const</span> &amp;event) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="keyword">struct </span>impl;</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>};</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    [[nodiscard]] nlohmann::json do_to_json() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    <span class="keyword">struct </span>impl;</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>};</div>
 </div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span> </div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>make_default_viewport_resize_strategy();</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>make_vertical_viewport_resize_strategy();</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>make_horizontal_viewport_resize_strategy();</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>std::shared_ptr&lt;viewport&gt; make_viewport(</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    std::shared_ptr&lt;component&gt; tracked_component);</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>std::shared_ptr&lt;viewport&gt; make_viewport(</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    std::shared_ptr&lt;component&gt; tracked_component,</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    std::unique_ptr&lt;viewport::resize_strategy&gt; strategy);</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span> </div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>}  <span class="comment">// namespace munin</span></div>
-<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:12</div></div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>make_default_viewport_resize_strategy();</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>make_vertical_viewport_resize_strategy();</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>std::unique_ptr&lt;viewport::resize_strategy&gt;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>make_horizontal_viewport_resize_strategy();</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>std::shared_ptr&lt;viewport&gt; make_viewport(</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    std::shared_ptr&lt;component&gt; tracked_component);</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>std::shared_ptr&lt;viewport&gt; make_viewport(</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    std::shared_ptr&lt;component&gt; tracked_component,</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    std::unique_ptr&lt;viewport::resize_strategy&gt; strategy);</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>}  <span class="comment">// namespace munin</span></div>
+<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:14</div></div>
 <div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition</b> render_surface.hpp:15</div></div>
 <div class="ttc" id="aclassmunin_1_1viewport_html"><div class="ttname"><a href="classmunin_1_1viewport.html">munin::viewport</a></div><div class="ttdoc">A component that tracks a subset of another, larger component and shows only a section of it.</div><div class="ttdef"><b>Definition</b> viewport.hpp:12</div></div>
 <div class="ttc" id="aclassmunin_1_1viewport_html_a1d84216c62a31dd44501ef06ee9c72aa"><div class="ttname"><a href="classmunin_1_1viewport.html#a1d84216c62a31dd44501ef06ee9c72aa">munin::viewport::~viewport</a></div><div class="ttdeci">~viewport() override</div><div class="ttdoc">Destructor.</div></div>
@@ -229,7 +233,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 18 2026 15:08:24 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

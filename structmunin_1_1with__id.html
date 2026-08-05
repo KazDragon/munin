@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Munin: munin::alignment Struct Reference</title>
+<title>Munin: munin::with_id Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,37 +71,45 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>munin</b></li><li class="navelem"><a class="el" href="structmunin_1_1alignment.html">alignment</a></li>  </ul>
+<li class="navelem"><b>munin</b></li><li class="navelem"><a class="el" href="structmunin_1_1with__id.html">with_id</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structmunin_1_1alignment-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">munin::alignment Struct Reference</div></div>
+<a href="#friends">Friends</a> &#124;
+<a href="structmunin_1_1with__id-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">munin::with_id Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>A hint for an <a class="el" href="classmunin_1_1aligned__layout.html" title="A class that knows how to lay components out in a container in a aligned manner.">aligned_layout</a> about where to place the component.  
- <a href="structmunin_1_1alignment.html#details">More...</a></p>
+<p>A helper function to set the Automation ID of a component in a more fluent manner.  
+ <a href="structmunin_1_1with__id.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="aligned__layout_8hpp_source.html">aligned_layout.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="component_8hpp_source.html">component.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a917ae835a0abee6353ef026dfcacbb8b" id="r_a917ae835a0abee6353ef026dfcacbb8b"><td class="memItemLeft" align="right" valign="top"><a id="a917ae835a0abee6353ef026dfcacbb8b" name="a917ae835a0abee6353ef026dfcacbb8b"></a>
-horizontal_alignment&#160;</td><td class="memItemRight" valign="bottom"><b>horizontal</b></td></tr>
-<tr class="memdesc:a917ae835a0abee6353ef026dfcacbb8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where to place the component horizontally (left, centre, right) <br /></td></tr>
-<tr class="separator:a917ae835a0abee6353ef026dfcacbb8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a5e37a746e07364277eb34862f7b754" id="r_a5a5e37a746e07364277eb34862f7b754"><td class="memItemLeft" align="right" valign="top"><a id="a5a5e37a746e07364277eb34862f7b754" name="a5a5e37a746e07364277eb34862f7b754"></a>
-vertical_alignment&#160;</td><td class="memItemRight" valign="bottom"><b>vertical</b></td></tr>
-<tr class="memdesc:a5a5e37a746e07364277eb34862f7b754"><td class="mdescLeft">&#160;</td><td class="mdescRight">Where to place the component vertically (top, centre, bottom) <br /></td></tr>
-<tr class="separator:a5a5e37a746e07364277eb34862f7b754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac4d9e4c1f2338beb761a2218f5d4869" id="r_aac4d9e4c1f2338beb761a2218f5d4869"><td class="memItemLeft" align="right" valign="top"><a id="aac4d9e4c1f2338beb761a2218f5d4869" name="aac4d9e4c1f2338beb761a2218f5d4869"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>id_</b></td></tr>
+<tr class="separator:aac4d9e4c1f2338beb761a2218f5d4869"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a293b0cf2bf7a2f8e9dfd3e64f36ce313" id="r_a293b0cf2bf7a2f8e9dfd3e64f36ce313"><td class="memTemplParams" colspan="2"><a id="a293b0cf2bf7a2f8e9dfd3e64f36ce313" name="a293b0cf2bf7a2f8e9dfd3e64f36ce313"></a>
+template&lt;typename ComponentType &gt; </td></tr>
+<tr class="memitem:a293b0cf2bf7a2f8e9dfd3e64f36ce313"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; ComponentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>operator|</b> (std::shared_ptr&lt; ComponentType &gt; const &amp;<a class="el" href="classmunin_1_1component.html">component</a>, <a class="el" href="structmunin_1_1with__id.html">with_id</a> const &amp;<a class="el" href="structmunin_1_1with__id.html">with_id</a>)</td></tr>
+<tr class="separator:a293b0cf2bf7a2f8e9dfd3e64f36ce313"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A hint for an <a class="el" href="classmunin_1_1aligned__layout.html" title="A class that knows how to lay components out in a container in a aligned manner.">aligned_layout</a> about where to place the component. </p>
+<div class="textblock"><p>A helper function to set the Automation ID of a component in a more fluent manner. </p>
+<dl class="section user"><dt></dt><dd>This is used like so: <div class="fragment"><div class="line"><span class="keyword">auto</span> <a class="code hl_class" href="classmunin_1_1component.html">component</a> = std::make_shared&lt;some_component&gt;() |</div>
+<div class="line"><a class="code hl_struct" href="structmunin_1_1with__id.html">munin::with_id</a>(<span class="stringliteral">&quot;ok_button&quot;</span>);</div>
+<div class="ttc" id="aclassmunin_1_1component_html"><div class="ttname"><a href="classmunin_1_1component.html">munin::component</a></div><div class="ttdoc">An object capable of being drawn on a canvas.</div><div class="ttdef"><b>Definition</b> component.hpp:25</div></div>
+<div class="ttc" id="astructmunin_1_1with__id_html"><div class="ttname"><a href="structmunin_1_1with__id.html">munin::with_id</a></div><div class="ttdoc">A helper function to set the Automation ID of a component in a more fluent manner.</div><div class="ttdef"><b>Definition</b> component.hpp:354</div></div>
+</div><!-- fragment --> </dd></dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/runner/work/munin/munin/include/munin/<a class="el" href="aligned__layout_8hpp_source.html">aligned_layout.hpp</a></li>
+<li>/home/runner/work/munin/munin/include/munin/<a class="el" href="component_8hpp_source.html">component.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.8</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -154,17 +154,21 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="comment">//* =====================================================================</span></div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keywordtype">void</span> do_event(std::any <span class="keyword">const</span> &amp;event) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keyword">struct </span>impl;</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>};</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    [[nodiscard]] nlohmann::json do_to_json() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keyword">struct </span>impl;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>};</div>
 </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>std::shared_ptr&lt;vertical_scrollbar&gt; make_vertical_scrollbar();</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>}  <span class="comment">// namespace munin</span></div>
-<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:12</div></div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>std::shared_ptr&lt;vertical_scrollbar&gt; make_vertical_scrollbar();</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>}  <span class="comment">// namespace munin</span></div>
+<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:14</div></div>
 <div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition</b> render_surface.hpp:15</div></div>
 <div class="ttc" id="aclassmunin_1_1vertical__scrollbar_html"><div class="ttname"><a href="classmunin_1_1vertical__scrollbar.html">munin::vertical_scrollbar</a></div><div class="ttdoc">A class that displays a vertical scrollbar that displays the vertical position of e....</div><div class="ttdef"><b>Definition</b> vertical_scrollbar.hpp:13</div></div>
 <div class="ttc" id="aclassmunin_1_1vertical__scrollbar_html_a2d1559d6053d8c5f1ae82658d7e45ef1"><div class="ttname"><a href="classmunin_1_1vertical__scrollbar.html#a2d1559d6053d8c5f1ae82658d7e45ef1">munin::vertical_scrollbar::on_scroll_up</a></div><div class="ttdeci">boost::signals2::signal&lt; void()&gt; on_scroll_up</div><div class="ttdoc">Connect to this signal to receive notifications when a scroll left instruction was received (e....</div><div class="ttdef"><b>Definition</b> vertical_scrollbar.hpp:68</div></div>
@@ -173,7 +177,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 18 2026 15:08:24 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

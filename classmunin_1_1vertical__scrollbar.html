@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.8</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -191,6 +191,14 @@ terminalpp::point&#160;</td><td class="memItemRight" valign="bottom"><b>get_curs
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_cursor_position</b> (terminalpp::point const &amp;position)</td></tr>
 <tr class="memdesc:a1e5dfa6321a6a4596e698835a86de22b inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the cursor's current position within the component. <br /></td></tr>
 <tr class="separator:a1e5dfa6321a6a4596e698835a86de22b inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad12c257cefd5d6ab2d8f8cfa6b905164 inherit pub_methods_classmunin_1_1component" id="r_ad12c257cefd5d6ab2d8f8cfa6b905164"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_id</b> (std::string const &amp;id)</td></tr>
+<tr class="memdesc:ad12c257cefd5d6ab2d8f8cfa6b905164 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the Automation ID of this component. <br /></td></tr>
+<tr class="separator:ad12c257cefd5d6ab2d8f8cfa6b905164 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad003ba94a15cc0f4ff05bb77a01487a8 inherit pub_methods_classmunin_1_1component" id="r_ad003ba94a15cc0f4ff05bb77a01487a8"><td class="memItemLeft" align="right" valign="top">
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> () const</td></tr>
+<tr class="memdesc:ad003ba94a15cc0f4ff05bb77a01487a8 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the Automation ID of this component. <br /></td></tr>
+<tr class="separator:ad003ba94a15cc0f4ff05bb77a01487a8 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component" id="r_a10ee479b2c677856585addc95fc053bb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface) const</td></tr>
 <tr class="memdesc:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <br /></td></tr>
 <tr class="separator:a10ee479b2c677856585addc95fc053bb inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -258,6 +266,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a301b17e42d3a028ecda5d4553d3b8ffb" id="r_a301b17e42d3a028ecda5d4553d3b8ffb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#a301b17e42d3a028ecda5d4553d3b8ffb">do_event</a> (std::any const &amp;<a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a">event</a>) override</td></tr>
 <tr class="memdesc:a301b17e42d3a028ecda5d4553d3b8ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
 <tr class="separator:a301b17e42d3a028ecda5d4553d3b8ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af42eb2aea6c24f2ce022a482ec7cebe4" id="r_af42eb2aea6c24f2ce022a482ec7cebe4"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1vertical__scrollbar.html#af42eb2aea6c24f2ce022a482ec7cebe4">do_to_json</a> () const override</td></tr>
+<tr class="memdesc:af42eb2aea6c24f2ce022a482ec7cebe4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab65e6b13641abb63bd57956bf9222ce4" title="Returns details about the component in JSON format.">to_json()</a>. Derived classes must override this function in order to represent their state in JSON.  <br /></td></tr>
+<tr class="separator:af42eb2aea6c24f2ce022a482ec7cebe4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classmunin_1_1basic__component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classmunin_1_1basic__component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classmunin_1_1basic__component.html">munin::basic_component</a></td></tr>
 <tr class="memitem:a8754db3a75a9fdb963374fff3983c730 inherit pro_methods_classmunin_1_1basic__component" id="r_a8754db3a75a9fdb963374fff3983c730"><td class="memItemLeft" align="right" valign="top">
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b> () const</td></tr>
@@ -296,9 +307,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 <tr class="memitem:ac133ec74e18cb0d6467d3b65a5555ce8 inherit pro_methods_classmunin_1_1basic__component" id="r_ac133ec74e18cb0d6467d3b65a5555ce8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#ac133ec74e18cb0d6467d3b65a5555ce8">do_set_cursor_position</a> (terminalpp::point const &amp;position) override</td></tr>
 <tr class="memdesc:ac133ec74e18cb0d6467d3b65a5555ce8 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a1e5dfa6321a6a4596e698835a86de22b" title="Sets the cursor&#39;s current position within the component.">set_cursor_position()</a>. Derived classes must override this function in order to set the cursor position in a custom manner.  <br /></td></tr>
 <tr class="separator:ac133ec74e18cb0d6467d3b65a5555ce8 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ee2207c84ee01eabe4b2f31b463a605 inherit pro_methods_classmunin_1_1basic__component" id="r_a1ee2207c84ee01eabe4b2f31b463a605"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#a1ee2207c84ee01eabe4b2f31b463a605">do_to_json</a> () const override</td></tr>
-<tr class="memdesc:a1ee2207c84ee01eabe4b2f31b463a605 inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab65e6b13641abb63bd57956bf9222ce4" title="Returns details about the component in JSON format.">to_json()</a>. Derived classes must override this function in order to add additional data about their implementation in a custom manner.  <br /></td></tr>
-<tr class="separator:a1ee2207c84ee01eabe4b2f31b463a605 inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac7a4e9c32b716ee1032582e2dd5a3ae inherit pro_methods_classmunin_1_1basic__component" id="r_aac7a4e9c32b716ee1032582e2dd5a3ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#aac7a4e9c32b716ee1032582e2dd5a3ae">do_set_id</a> (std::string const &amp;id) override</td></tr>
+<tr class="memdesc:aac7a4e9c32b716ee1032582e2dd5a3ae inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ad12c257cefd5d6ab2d8f8cfa6b905164" title="Sets the Automation ID of this component.">set_id()</a>. Derived classes may override this function in order to store the Automation ID in a custom manner.  <br /></td></tr>
+<tr class="separator:aac7a4e9c32b716ee1032582e2dd5a3ae inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbed22560675730ff50aef794a1e315d inherit pro_methods_classmunin_1_1basic__component" id="r_abbed22560675730ff50aef794a1e315d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1basic__component.html#abbed22560675730ff50aef794a1e315d">do_get_id</a> () const override</td></tr>
+<tr class="memdesc:abbed22560675730ff50aef794a1e315d inherit pro_methods_classmunin_1_1basic__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ad003ba94a15cc0f4ff05bb77a01487a8" title="Retrieves the Automation ID of this component.">get_id()</a>. Derived classes may override this function in order to retrieve the Automation ID in a custom manner.  <br /></td></tr>
+<tr class="separator:abbed22560675730ff50aef794a1e315d inherit pro_methods_classmunin_1_1basic__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classmunin_1_1component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classmunin_1_1component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classmunin_1_1component.html">munin::component</a></td></tr>
 <tr class="memitem:aabb9db037926e10d515a9b732539358f inherit pro_methods_classmunin_1_1component" id="r_aabb9db037926e10d515a9b732539358f"><td class="memItemLeft" align="right" valign="top">
 &#160;</td><td class="memItemRight" valign="bottom"><b>component</b> ()=default</td></tr>
@@ -473,6 +487,35 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 
 </div>
 </div>
+<a id="af42eb2aea6c24f2ce022a482ec7cebe4" name="af42eb2aea6c24f2ce022a482ec7cebe4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af42eb2aea6c24f2ce022a482ec7cebe4">&#9670;&#160;</a></span>do_to_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">nlohmann::json munin::vertical_scrollbar::do_to_json </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Called by <a class="el" href="classmunin_1_1component.html#ab65e6b13641abb63bd57956bf9222ce4" title="Returns details about the component in JSON format.">to_json()</a>. Derived classes must override this function in order to represent their state in JSON. </p>
+
+<p>Reimplemented from <a class="el" href="classmunin_1_1basic__component.html#a1ee2207c84ee01eabe4b2f31b463a605">munin::basic_component</a>.</p>
+
+</div>
+</div>
 <a id="aba258077167b20c47df585ac4040c9f4" name="aba258077167b20c47df585ac4040c9f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba258077167b20c47df585ac4040c9f4">&#9670;&#160;</a></span>set_slider_position()</h2>
 
@@ -512,7 +555,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 18 2026 15:08:24 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

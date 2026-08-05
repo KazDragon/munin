@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.1.8</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -122,26 +122,30 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> do_draw(<a class="code hl_class" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle <span class="keyword">const</span> &amp;region)</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">struct </span>impl;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>};</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="comment">//* =====================================================================</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    [[nodiscard]] nlohmann::json do_to_json() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">struct </span>impl;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    std::unique_ptr&lt;impl&gt; pimpl_;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>};</div>
 </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="comment">//* =========================================================================</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>MUNIN_EXPORT</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>std::shared_ptr&lt;status_bar&gt; make_status_bar(<a class="code hl_class" href="classmunin_1_1animator.html">animator</a> &amp;anim);</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}  <span class="comment">// namespace munin</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="comment">//* =========================================================================</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>MUNIN_EXPORT</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>std::shared_ptr&lt;status_bar&gt; make_status_bar(<a class="code hl_class" href="classmunin_1_1animator.html">animator</a> &amp;anim);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}  <span class="comment">// namespace munin</span></div>
 <div class="ttc" id="aclassmunin_1_1animator_html"><div class="ttname"><a href="classmunin_1_1animator.html">munin::animator</a></div><div class="ttdoc">An injectable interface into a render surface that allows timing of animated components.</div><div class="ttdef"><b>Definition</b> animator.hpp:13</div></div>
-<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:12</div></div>
+<div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:14</div></div>
 <div class="ttc" id="aclassmunin_1_1render__surface_html"><div class="ttname"><a href="classmunin_1_1render__surface.html">munin::render_surface</a></div><div class="ttdoc">A sub-view into a canvas that only allows reading and writing to a its elements; not operations that ...</div><div class="ttdef"><b>Definition</b> render_surface.hpp:15</div></div>
 <div class="ttc" id="aclassmunin_1_1status__bar_html"><div class="ttname"><a href="classmunin_1_1status__bar.html">munin::status_bar</a></div><div class="ttdoc">A class that models a marquee of scrolling text that can be used to display transient status messages...</div><div class="ttdef"><b>Definition</b> status_bar.hpp:17</div></div>
 <div class="ttc" id="aclassmunin_1_1status__bar_html_a35690eb73a5b1037405685414f71d4a0"><div class="ttname"><a href="classmunin_1_1status__bar.html#a35690eb73a5b1037405685414f71d4a0">munin::status_bar::~status_bar</a></div><div class="ttdeci">~status_bar() override</div><div class="ttdoc">Destructor.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sat Apr 18 2026 15:08:24 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
