@@ -164,8 +164,13 @@ struct viewport::impl
             mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event{
-                mouse_event->action_,
-                mouse_event->position_ + anchor_bounds_.origin_};
+                .action_ = mouse_event->action_,
+                .position_ = mouse_event->position_ + anchor_bounds_.origin_,
+                .button_ = mouse_event->button_,
+                .button_code_ = mouse_event->button_code_,
+                .modifiers_ = mouse_event->modifiers_,
+                .is_motion_ = mouse_event->is_motion_,
+                .is_release_ = mouse_event->is_release_};
 
             return tracked_component_->event(translated_event);
         }
