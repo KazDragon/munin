@@ -3,9 +3,18 @@ project(CHESS)
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 cmake_policy(VERSION 3.2)
 
-find_package(terminalpp 4.0.0 REQUIRED)
-find_package(munin 0.7.1 REQUIRED)
-find_package(consolepp 0.1.1 REQUIRED)
+if (NOT TARGET KazDragon::terminalpp)
+    find_package(terminalpp 4.0.0 REQUIRED)
+endif()
+
+if (NOT TARGET KazDragon::munin)
+    find_package(munin 0.7.1 REQUIRED)
+endif()
+
+if (NOT TARGET KazDragon::consolepp)
+    find_package(consolepp 0.1.1 REQUIRED)
+endif()
+
 find_package(Boost REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(Threads REQUIRED)
