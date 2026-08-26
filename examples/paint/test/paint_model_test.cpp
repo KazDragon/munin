@@ -53,3 +53,25 @@ TEST(a_paint_model, ignores_out_of_bounds_paint_points)
     EXPECT_EQ(black_cell(), model.at({0, 0}));
     EXPECT_EQ(black_cell(), model.at({1, 2}));
 }
+
+TEST(a_paint_model, preserves_overlap_and_fills_new_cells_black_when_resized)
+{
+    paint::paint_model model({2, 2});
+    model.paint({1, 1});
+
+    model.resize({3, 3});
+
+    EXPECT_EQ(bright_white_brush(), model.at({1, 1}));
+    EXPECT_EQ(black_cell(), model.at({2, 2}));
+}
+
+TEST(a_paint_model, accepts_zero_sized_resizes)
+{
+    paint::paint_model model({2, 2});
+    model.paint({1, 1});
+
+    model.resize({0, 0});
+    model.resize({2, 2});
+
+    EXPECT_EQ(black_cell(), model.at({1, 1}));
+}
