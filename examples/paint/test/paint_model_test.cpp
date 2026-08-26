@@ -30,3 +30,13 @@ TEST(a_paint_model, starts_with_black_cells_and_a_bright_white_brush)
     EXPECT_EQ(black_cell(), model.at({1, 2}));
     EXPECT_EQ(bright_white_brush(), model.selected_brush());
 }
+
+TEST(a_paint_model, paints_an_in_bounds_cell_with_the_selected_brush)
+{
+    paint::paint_model model({2, 3});
+
+    model.paint({1, 2});
+
+    EXPECT_EQ(bright_white_brush(), model.at({1, 2}));
+    EXPECT_EQ(black_cell(), model.at({0, 2}));
+}
