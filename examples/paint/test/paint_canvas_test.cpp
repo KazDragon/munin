@@ -2,8 +2,10 @@
 #include <gtest/gtest.h>
 #include <munin/event_context.hpp>
 #include <munin/mouse_event.hpp>
+#include <munin/render_surface.hpp>
 #include <paint/paint_canvas.hpp>
 #include <paint/paint_model.hpp>
+#include <terminalpp/canvas.hpp>
 #include <terminalpp/graphics.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
@@ -110,4 +112,20 @@ TEST(a_paint_canvas, resizes_the_model_to_match_the_framed_interior)
         context);
 
     EXPECT_EQ(bright_white_brush(), model.at({1, 1}));
+}
+
+TEST(a_paint_canvas, draws_painted_cells_as_spaces_with_cell_attributes)
+{
+    paint::paint_model model({1, 1});
+    auto canvas = paint::paint_canvas{model};
+    canvas.set_size({3, 3});
+    model.paint({0, 0});
+    auto output = terminalpp::canvas{
+        {3, 3}
+    };
+    auto surface = munin::render_surface{output};
+
+    canvas.draw(surface);
+
+    EXPECT_EQ(terminalpp::element(' ', bright_white_brush()), output[1][1]);
 }

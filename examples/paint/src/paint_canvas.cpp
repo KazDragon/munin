@@ -5,6 +5,7 @@
 #include <munin/event_context.hpp>
 #include <munin/mouse_event.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/element.hpp>
 
 #include <algorithm>
 #include <any>
@@ -42,6 +43,17 @@ auto paint_canvas::do_can_receive_focus() const -> bool
 void paint_canvas::do_draw(
     munin::render_surface &surface, terminalpp::rectangle const &region) const
 {
+    auto const size = get_size();
+
+    for (auto y = frame_thickness; y < size.height_ - frame_thickness; ++y)
+    {
+        for (auto x = frame_thickness; x < size.width_ - frame_thickness; ++x)
+        {
+            auto const canvas_position = terminalpp::point{x, y};
+            surface[x][y] = terminalpp::element{
+                ' ', model_.at(interior_position(canvas_position))};
+        }
+    }
 }
 
 void paint_canvas::do_event(
