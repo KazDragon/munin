@@ -169,6 +169,7 @@ target_sources(munin
         src/composite_component.cpp
         src/container.cpp
         src/edit.cpp
+        src/event_context.cpp
         src/filled_box.cpp
         src/frame.cpp
         src/framed_component.cpp

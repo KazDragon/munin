@@ -80,6 +80,7 @@ private:
     std::vector<terminalpp::rectangle> repaint_regions_;
     terminalpp::screen screen_;
     render_surface_capabilities const &capabilities_;
+    bool has_mouse_capture_ = false;
 };
 
 }  // namespace munin

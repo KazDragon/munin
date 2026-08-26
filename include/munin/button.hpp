@@ -26,6 +26,12 @@ protected:
     void do_event(std::any const &event) override;
 
     //* =====================================================================
+    /// \brief Called by event() with dispatch context. Derived classes must
+    /// override this function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(std::any const &event, event_context &context) override;
+
+    //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this
     /// function in order to add additional data about their implementation
     /// in a custom manner.
