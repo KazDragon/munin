@@ -5,6 +5,7 @@
 #include <munin/event_context.hpp>
 #include <munin/mouse_event.hpp>
 #include <munin/render_surface.hpp>
+#include <terminalpp/element.hpp>
 #include <terminalpp/graphics.hpp>
 
 #include <any>
@@ -42,6 +43,16 @@ auto constexpr colours = std::array{
         && position.y_ < std::ssize(colours);
 }
 
+[[nodiscard]] auto selection_marker_attribute(terminalpp::attribute brush)
+    -> terminalpp::attribute
+{
+    brush.foreground_colour_ =
+        brush.intensity_ == terminalpp::graphics::intensity::bold
+            ? terminalpp::graphics::colour::black
+            : terminalpp::graphics::colour::white;
+    return brush;
+}
+
 }  // namespace
 
 paint_palette::paint_palette(paint_model &model) : model_{model}
@@ -61,6 +72,27 @@ auto paint_palette::do_can_receive_focus() const -> bool
 void paint_palette::do_draw(
     munin::render_surface &surface, terminalpp::rectangle const &region) const
 {
+    for (auto y = terminalpp::coordinate_type{0}; y < std::ssize(colours); ++y)
+    {
+        for (auto x = terminalpp::coordinate_type{0}; x < 2; ++x)
+        {
+            auto const brush = brush_at({x, y});
+            auto const glyph = static_cast<terminalpp::byte>(
+                brush == model_.selected_brush() ? 'O' : ' ');
+            surface[x][y] =
+                terminalpp::element{glyph, selection_marker_attribute(brush)};
+        }
+    }
+
+    if (get_size().height_ > std::ssize(colours) + 1)
+    {
+        auto const y = terminalpp::coordinate_type{std::ssize(colours) + 1};
+        for (auto x = terminalpp::coordinate_type{0}; x < get_size().width_;
+             ++x)
+        {
+            surface[x][y] = terminalpp::element{' ', model_.selected_brush()};
+        }
+    }
 }
 
 void paint_palette::do_event(
