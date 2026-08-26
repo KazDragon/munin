@@ -12,6 +12,7 @@ public:
     explicit paint_canvas(paint_model &model);
 
 protected:
+    void do_set_size(terminalpp::extent const &size) override;
     [[nodiscard]] auto do_get_preferred_size() const
         -> terminalpp::extent override;
     [[nodiscard]] auto do_can_receive_focus() const -> bool override;

@@ -93,3 +93,21 @@ TEST(a_paint_canvas, paints_reported_motion_positions_during_a_left_stroke)
     EXPECT_EQ(bright_white_brush(), model.at({2, 1}));
     EXPECT_NE(bright_white_brush(), model.at({3, 2}));
 }
+
+TEST(a_paint_canvas, resizes_the_model_to_match_the_framed_interior)
+{
+    paint::paint_model model({1, 1});
+    auto canvas = paint::paint_canvas{model};
+    auto context = munin::event_context{};
+
+    canvas.set_size({5, 4});
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .position_ = {2, 2},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+
+    EXPECT_EQ(bright_white_brush(), model.at({1, 1}));
+}

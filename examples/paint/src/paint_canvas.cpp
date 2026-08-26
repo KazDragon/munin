@@ -6,12 +6,21 @@
 #include <munin/mouse_event.hpp>
 #include <munin/render_surface.hpp>
 
+#include <algorithm>
 #include <any>
 
 namespace paint {
 
 paint_canvas::paint_canvas(paint_model &model) : model_{model}
 {
+}
+
+void paint_canvas::do_set_size(terminalpp::extent const &size)
+{
+    munin::basic_component::do_set_size(size);
+    model_.resize(
+        {std::max(terminalpp::coordinate_type{0}, size.width_ - 2),
+         std::max(terminalpp::coordinate_type{0}, size.height_ - 2)});
 }
 
 auto paint_canvas::do_get_preferred_size() const -> terminalpp::extent
