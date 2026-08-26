@@ -127,6 +127,7 @@ target_sources(munin
         include/munin/composite_component.hpp
         include/munin/container.hpp
         include/munin/edit.hpp
+        include/munin/event_context.hpp
         include/munin/filled_box.hpp
         include/munin/framed_component.hpp
         include/munin/grid_layout.hpp
@@ -295,6 +296,7 @@ target_sources(munin_tester
         test/src/brush/new_brush_test.cpp
         test/src/button/button_test.cpp
         test/src/button/button_json_test.cpp
+        test/src/component/component_event_test.cpp
         test/src/compass_layout/compass_layout_test.cpp
         test/src/composite_component/composite_component_test.cpp
         test/src/container/container_test.cpp

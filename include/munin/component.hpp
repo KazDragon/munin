@@ -13,6 +13,7 @@
 
 namespace munin {
 
+class event_context;
 class render_surface;
 
 //* =========================================================================
@@ -156,6 +157,11 @@ public:
     /// what it will do with it.
     //* =====================================================================
     void event(std::any const &event);
+
+    //* =====================================================================
+    /// \brief Send an event to the component with dispatch context.
+    //* =====================================================================
+    void event(std::any const &event, event_context &context);
 
     //* =====================================================================
     /// \brief Returns details about the component in JSON format.
@@ -319,6 +325,12 @@ protected:
     /// function in order to handle events in a custom manner.
     //* =====================================================================
     virtual void do_event(std::any const &event) = 0;
+
+    //* =====================================================================
+    /// \brief Called by event() with dispatch context. Derived classes may
+    /// override this function in order to handle events in a custom manner.
+    //* =====================================================================
+    virtual void do_event(std::any const &event, event_context &context);
 
     //* =====================================================================
     /// \brief Called by set_id(). Derived classes must override this
