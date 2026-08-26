@@ -2,6 +2,7 @@
 
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
+#include "munin/event_context.hpp"
 #include "munin/layout.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/render_surface.hpp"
@@ -360,6 +361,23 @@ struct container::impl
     }
 
     // ======================================================================
+    // EVENT
+    // ======================================================================
+    void event(std::any const &ev, event_context &ctx)
+    {
+        if (auto const *mouse_event =
+                std::any_cast<terminalpp::mouse::event>(&ev);
+            mouse_event == nullptr)
+        {
+            handle_common_event(ev, ctx);
+        }
+        else
+        {
+            handle_mouse_event(*mouse_event, ctx);
+        }
+    }
+
+    // ======================================================================
     // TO_JSON
     // ======================================================================
     [[nodiscard]] nlohmann::json to_json() const
@@ -623,6 +641,32 @@ private:
     }
 
     // ======================================================================
+    // HANDLE_COMMON_EVENT
+    // ======================================================================
+    void handle_common_event(std::any const &event, event_context &ctx)
+    {
+        if (auto const *key = virtual_key_from(event);
+            key != nullptr && key->key == terminalpp::vk::ht)
+        {
+            focus_next();
+            return;
+        }
+
+        if (auto const *key = virtual_key_from(event);
+            key != nullptr && key->key == terminalpp::vk::bt)
+        {
+            focus_previous();
+            return;
+        }
+
+        if (auto comp = find_first_focussed_component(components_);
+            comp != components_.end())
+        {
+            (*comp)->event(event, ctx);
+        }
+    }
+
+    // ======================================================================
     // HANDLE_MOUSE_EVENT
     // ======================================================================
     void handle_mouse_event(terminalpp::mouse::event const &ev)
@@ -641,6 +685,31 @@ private:
                 .modifiers_ = ev.modifiers_,
                 .is_motion_ = ev.is_motion_,
                 .is_release_ = ev.is_release_});
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(
+        terminalpp::mouse::event const &ev, event_context &ctx)
+    {
+        if (auto const &comp =
+                find_component_at_point(components_, ev.position_);
+            comp != components_.end())
+        {
+            auto const &position = (*comp)->get_position();
+
+            (*comp)->event(
+                terminalpp::mouse::event{
+                    .action_ = ev.action_,
+                    .position_ = ev.position_ - position,
+                    .button_ = ev.button_,
+                    .button_code_ = ev.button_code_,
+                    .modifiers_ = ev.modifiers_,
+                    .is_motion_ = ev.is_motion_,
+                    .is_release_ = ev.is_release_},
+                ctx);
         }
     }
 
@@ -810,6 +879,14 @@ void container::do_draw(
 void container::do_event(std::any const &event)
 {
     pimpl_->event(event);
+}
+
+// ==========================================================================
+// DO_EVENT
+// ==========================================================================
+void container::do_event(std::any const &event, event_context &context)
+{
+    pimpl_->event(event, context);
 }
 
 // ==========================================================================

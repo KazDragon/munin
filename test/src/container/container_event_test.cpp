@@ -1,5 +1,6 @@
 #include "container_test.hpp"
 
+#include <munin/event_context.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
@@ -29,6 +30,20 @@ auto back_tab_key() -> terminalpp::virtual_key
     return keypress(terminalpp::vk::bt);
 }
 
+class context_observing_component : public mock_component
+{
+private:
+    void do_event(std::any const &ev, munin::event_context &ctx) override
+    {
+        event_ = ev;
+        context_ = &ctx;
+    }
+
+public:
+    std::any event_;
+    munin::event_context *context_ = nullptr;
+};
+
 }  // namespace
 
 TEST_F(
@@ -53,6 +68,24 @@ TEST_F(
         ASSERT_EQ('X', *p);
     });
     container_.event('X');
+}
+
+TEST_F(
+    a_container,
+    forwards_context_aware_common_events_to_the_focused_subcomponent)
+{
+    auto component = std::make_shared<context_observing_component>();
+    container_.add_component(component);
+
+    EXPECT_CALL(*component, do_has_focus()).WillOnce(Return(true));
+
+    munin::event_context context;
+    container_.event('X', context);
+
+    char const *p = std::any_cast<char>(&component->event_);
+    ASSERT_NE(nullptr, p);
+    ASSERT_EQ('X', *p);
+    ASSERT_EQ(&context, component->context_);
 }
 
 TEST_F(

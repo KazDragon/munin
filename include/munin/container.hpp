@@ -123,6 +123,12 @@ private:
     void do_event(std::any const &event) override;
 
     //* =====================================================================
+    /// \brief Called by event() with dispatch context. Derived classes must
+    /// override this function in order to handle events in a custom manner.
+    //* =====================================================================
+    void do_event(std::any const &event, event_context &context) override;
+
+    //* =====================================================================
     /// \brief Called by set_id().  Derived classes must override this
     /// function in order to store the Automation ID in a custom manner.
     //* =====================================================================
