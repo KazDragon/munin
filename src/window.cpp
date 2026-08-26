@@ -60,6 +60,30 @@ auto derived_mouse_event(
         .modifiers_ = ev.modifiers_};
 }
 
+auto translate(
+    terminalpp::mouse::event const &ev,
+    terminalpp::point const &origin) -> terminalpp::mouse::event
+{
+    return terminalpp::mouse::event{
+        .action_ = ev.action_,
+        .position_ = ev.position_ - origin,
+        .button_ = ev.button_,
+        .button_code_ = ev.button_code_,
+        .modifiers_ = ev.modifiers_,
+        .is_motion_ = ev.is_motion_,
+        .is_release_ = ev.is_release_};
+}
+
+auto translate(munin::mouse_event const &ev, terminalpp::point const &origin)
+    -> munin::mouse_event
+{
+    return munin::mouse_event{
+        .action_ = ev.action_,
+        .position_ = ev.position_ - origin,
+        .button_ = ev.button_,
+        .modifiers_ = ev.modifiers_};
+}
+
 }  // namespace
 
 // ==========================================================================
@@ -114,6 +138,7 @@ void window::event(std::any const &ev)
         {
             event_context_.reset_mouse_dispatch_state();
             has_mouse_capture_ = true;
+            event_context_.capture_mouse(content_, {});
             content_->event(ev, event_context_);
             content_->event(
                 derived_mouse_event(mouse_event_type::button_down, *mouse_ev),
@@ -123,16 +148,36 @@ void window::event(std::any const &ev)
 
         if (has_mouse_capture_ && is_button_up(*mouse_ev))
         {
-            content_->event(ev, event_context_);
-            content_->event(
+            auto captured_component = event_context_.captured_component();
+            auto const captured_origin = event_context_.captured_origin();
+            auto const local_mouse_event =
+                translate(*mouse_ev, captured_origin);
+            auto const local_button_up = translate(
                 derived_mouse_event(mouse_event_type::button_up, *mouse_ev),
-                event_context_);
+                captured_origin);
 
-            if (event_context_.has_click_interest()
-                && is_inside(mouse_ev->position_, content_->get_size()))
+            if (captured_component)
             {
+                captured_component->event(local_mouse_event, event_context_);
+                captured_component->event(local_button_up, event_context_);
+            }
+            else
+            {
+                content_->event(ev, event_context_);
                 content_->event(
-                    derived_mouse_event(mouse_event_type::click, *mouse_ev),
+                    derived_mouse_event(mouse_event_type::button_up, *mouse_ev),
+                    event_context_);
+            }
+
+            if (event_context_.has_click_interest() && captured_component
+                && is_inside(
+                    local_mouse_event.position_,
+                    captured_component->get_size()))
+            {
+                captured_component->event(
+                    translate(
+                        derived_mouse_event(mouse_event_type::click, *mouse_ev),
+                        captured_origin),
                     event_context_);
             }
 

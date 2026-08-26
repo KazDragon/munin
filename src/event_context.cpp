@@ -33,6 +33,8 @@ void event_context::set_click_synthesis_supported(bool supported)
 void event_context::reset_mouse_dispatch_state()
 {
     has_click_interest_ = false;
+    captured_component_.reset();
+    captured_origin_ = {};
 }
 
 // ==========================================================================
@@ -41,6 +43,33 @@ void event_context::reset_mouse_dispatch_state()
 bool event_context::has_click_interest() const
 {
     return has_click_interest_;
+}
+
+// ==========================================================================
+// CAPTURE_MOUSE
+// ==========================================================================
+void event_context::capture_mouse(
+    std::shared_ptr<component> const &component,
+    terminalpp::point const &origin)
+{
+    captured_component_ = component;
+    captured_origin_ = origin;
+}
+
+// ==========================================================================
+// CAPTURED_COMPONENT
+// ==========================================================================
+std::shared_ptr<component> event_context::captured_component() const
+{
+    return captured_component_.lock();
+}
+
+// ==========================================================================
+// CAPTURED_ORIGIN
+// ==========================================================================
+terminalpp::point event_context::captured_origin() const
+{
+    return captured_origin_;
 }
 
 }  // namespace munin

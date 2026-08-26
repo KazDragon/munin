@@ -738,6 +738,11 @@ private:
         {
             auto const &position = (*comp)->get_position();
 
+            if (ev.action_ == terminalpp::mouse::event_type::left_button_down)
+            {
+                ctx.capture_mouse(*comp, position);
+            }
+
             (*comp)->event(
                 terminalpp::mouse::event{
                     .action_ = ev.action_,
