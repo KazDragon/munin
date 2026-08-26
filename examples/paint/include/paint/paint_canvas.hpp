@@ -29,6 +29,7 @@ private:
     void paint_at(terminalpp::point position);
 
     paint_model &model_;
+    bool is_stroking_ = false;
 };
 
 }  // namespace paint

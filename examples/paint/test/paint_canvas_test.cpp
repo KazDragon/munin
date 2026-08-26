@@ -5,6 +5,7 @@
 #include <paint/paint_canvas.hpp>
 #include <paint/paint_model.hpp>
 #include <terminalpp/graphics.hpp>
+#include <terminalpp/mouse.hpp>
 #include <terminalpp/rectangle.hpp>
 
 #include <vector>
@@ -48,4 +49,47 @@ TEST(a_paint_canvas, paints_interior_left_button_downs_and_redraws_that_cell)
             {2, 1},
             {1, 1}
     }));
+}
+
+TEST(a_paint_canvas, paints_reported_motion_positions_during_a_left_stroke)
+{
+    paint::paint_model model({4, 3});
+    auto canvas = paint::paint_canvas{model};
+    canvas.set_size({6, 5});
+    auto context = munin::event_context{};
+
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .position_ = {1, 1},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+    canvas.event(
+        terminalpp::mouse::event{
+            .action_ = terminalpp::mouse::event_type::no_button_change,
+            .position_ = {3, 2},
+            .button_ = terminalpp::mouse::button::left,
+            .is_motion_ = true
+    },
+        context);
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_up,
+            .position_ = {3, 2},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+    canvas.event(
+        terminalpp::mouse::event{
+            .action_ = terminalpp::mouse::event_type::no_button_change,
+            .position_ = {4, 3},
+            .button_ = terminalpp::mouse::button::left,
+            .is_motion_ = true
+    },
+        context);
+
+    EXPECT_EQ(bright_white_brush(), model.at({0, 0}));
+    EXPECT_EQ(bright_white_brush(), model.at({2, 1}));
+    EXPECT_NE(bright_white_brush(), model.at({3, 2}));
 }

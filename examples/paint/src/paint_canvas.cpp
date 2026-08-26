@@ -32,12 +32,25 @@ void paint_canvas::do_draw(
 void paint_canvas::do_event(
     std::any const &event, munin::event_context &context)
 {
-    auto const *mouse = std::any_cast<munin::mouse_event>(&event);
-
-    if (mouse != nullptr
-        && mouse->action_ == munin::mouse_event_type::button_down
-        && mouse->button_ == terminalpp::mouse::button::left
-        && is_inside_interior(mouse->position_))
+    if (auto const *mouse = std::any_cast<munin::mouse_event>(&event);
+        mouse != nullptr)
+    {
+        if (mouse->action_ == munin::mouse_event_type::button_down
+            && mouse->button_ == terminalpp::mouse::button::left
+            && is_inside_interior(mouse->position_))
+        {
+            is_stroking_ = true;
+            paint_at(mouse->position_);
+        }
+        else if (mouse->action_ == munin::mouse_event_type::button_up)
+        {
+            is_stroking_ = false;
+        }
+    }
+    else if (auto const *mouse =
+                 std::any_cast<terminalpp::mouse::event>(&event);
+             mouse != nullptr && is_stroking_ && mouse->is_motion_
+             && is_inside_interior(mouse->position_))
     {
         paint_at(mouse->position_);
     }
