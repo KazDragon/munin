@@ -22,10 +22,12 @@ find_package(Threads REQUIRED)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(PAINT_PUBLIC_SOURCE_FILES
+    src/paint_canvas.cpp
     src/main.cpp
 )
 
 set(PAINT_PUBLIC_HEADER_FILES
+    include/paint/paint_canvas.hpp
     include/paint/paint_model.hpp
 )
 
@@ -51,7 +53,9 @@ target_link_libraries(paint
 if (MUNIN_WITH_TESTS)
     add_executable(paint_tester
         ${PAINT_PUBLIC_HEADER_FILES}
+        src/paint_canvas.cpp
         test/paint_model_test.cpp
+        test/paint_canvas_test.cpp
     )
 
     target_include_directories(paint_tester
@@ -62,6 +66,7 @@ if (MUNIN_WITH_TESTS)
     target_link_libraries(paint_tester
         PRIVATE
             KazDragon::terminalpp
+            KazDragon::munin
             GTest::gmock_main
     )
 
