@@ -14,7 +14,9 @@ class paint_model
 {
 public:
     explicit paint_model(terminalpp::extent size)
-      : size_{size}, cells_(size.width_ * size.height_, black_cell())
+      : size_{size},
+        cells_(size.width_ * size.height_, black_cell()),
+        selected_brush_{bright_white_brush()}
     {
     }
 
@@ -29,8 +31,13 @@ public:
     {
         if (is_in_bounds(position))
         {
-            cells_[index_of(position)] = selected_brush();
+            cells_[index_of(position)] = selected_brush_;
         }
+    }
+
+    void select_brush(terminalpp::attribute brush)
+    {
+        selected_brush_ = brush;
     }
 
     void resize(terminalpp::extent size)
@@ -56,10 +63,7 @@ public:
 
     [[nodiscard]] auto selected_brush() const -> terminalpp::attribute
     {
-        auto result = terminalpp::attribute{};
-        result.background_colour_ = terminalpp::graphics::colour::white;
-        result.intensity_ = terminalpp::graphics::intensity::bold;
-        return result;
+        return selected_brush_;
     }
 
 private:
@@ -67,6 +71,14 @@ private:
     {
         auto result = terminalpp::attribute{};
         result.background_colour_ = terminalpp::graphics::colour::black;
+        return result;
+    }
+
+    [[nodiscard]] static auto bright_white_brush() -> terminalpp::attribute
+    {
+        auto result = terminalpp::attribute{};
+        result.background_colour_ = terminalpp::graphics::colour::white;
+        result.intensity_ = terminalpp::graphics::intensity::bold;
         return result;
     }
 
@@ -83,6 +95,7 @@ private:
 
     terminalpp::extent size_;
     std::vector<terminalpp::attribute> cells_;
+    terminalpp::attribute selected_brush_;
 };
 
 }  // namespace paint

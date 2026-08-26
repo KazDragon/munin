@@ -20,6 +20,13 @@ namespace {
     return result;
 }
 
+[[nodiscard]] auto red_brush() -> terminalpp::attribute
+{
+    terminalpp::attribute result;
+    result.background_colour_ = terminalpp::graphics::colour::red;
+    return result;
+}
+
 }  // namespace
 
 TEST(a_paint_model, starts_with_black_cells_and_a_bright_white_brush)
@@ -74,4 +81,15 @@ TEST(a_paint_model, accepts_zero_sized_resizes)
     model.resize({2, 2});
 
     EXPECT_EQ(black_cell(), model.at({1, 1}));
+}
+
+TEST(a_paint_model, paints_with_the_updated_selected_brush)
+{
+    paint::paint_model model({2, 2});
+
+    model.select_brush(red_brush());
+    model.paint({1, 1});
+
+    EXPECT_EQ(red_brush(), model.selected_brush());
+    EXPECT_EQ(red_brush(), model.at({1, 1}));
 }
