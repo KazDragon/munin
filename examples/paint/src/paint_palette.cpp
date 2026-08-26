@@ -100,14 +100,21 @@ void paint_palette::do_event(
 {
     auto const *mouse = std::any_cast<munin::mouse_event>(&event);
 
-    if (mouse != nullptr && mouse->action_ == munin::mouse_event_type::click
-        && mouse->button_ == terminalpp::mouse::button::left
+    if (mouse != nullptr && mouse->button_ == terminalpp::mouse::button::left
         && is_swatch_position(mouse->position_))
     {
-        model_.select_brush(brush_at(mouse->position_));
-        on_redraw({
-            {{0, 0}, get_size()}
-        });
+        if (mouse->action_ == munin::mouse_event_type::button_down)
+        {
+            [[maybe_unused]] auto const click_will_be_synthesized =
+                context.register_click_interest();
+        }
+        else if (mouse->action_ == munin::mouse_event_type::click)
+        {
+            model_.select_brush(brush_at(mouse->position_));
+            on_redraw({
+                {{0, 0}, get_size()}
+            });
+        }
     }
 }
 

@@ -39,6 +39,7 @@ TEST(a_paint_palette, ignores_button_down_but_selects_on_synthesized_click)
     paint::paint_model model({1, 1});
     auto palette = paint::paint_palette{model};
     auto context = munin::event_context{};
+    context.set_click_synthesis_supported(true);
 
     palette.event(
         munin::mouse_event{
@@ -49,6 +50,7 @@ TEST(a_paint_palette, ignores_button_down_but_selects_on_synthesized_click)
         context);
 
     EXPECT_EQ(bright_white_brush(), model.selected_brush());
+    EXPECT_TRUE(context.has_click_interest());
 
     palette.event(
         munin::mouse_event{
