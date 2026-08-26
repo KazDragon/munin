@@ -22,12 +22,14 @@ find_package(Threads REQUIRED)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(PAINT_PUBLIC_SOURCE_FILES
+    src/paint_app.cpp
     src/paint_canvas.cpp
     src/paint_palette.cpp
     src/main.cpp
 )
 
 set(PAINT_PUBLIC_HEADER_FILES
+    include/paint/paint_app.hpp
     include/paint/paint_canvas.hpp
     include/paint/paint_model.hpp
     include/paint/paint_palette.hpp
@@ -55,10 +57,12 @@ target_link_libraries(paint
 if (MUNIN_WITH_TESTS)
     add_executable(paint_tester
         ${PAINT_PUBLIC_HEADER_FILES}
+        src/paint_app.cpp
         src/paint_canvas.cpp
         src/paint_palette.cpp
         test/paint_model_test.cpp
         test/paint_canvas_test.cpp
+        test/paint_app_test.cpp
         test/paint_palette_test.cpp
     )
 
