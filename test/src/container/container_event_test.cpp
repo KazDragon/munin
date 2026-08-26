@@ -1,6 +1,7 @@
 #include "container_test.hpp"
 
 #include <munin/event_context.hpp>
+#include <munin/mouse_event.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
@@ -167,6 +168,38 @@ TEST_F(
     });
 
     container_.event(ev);
+}
+
+TEST_F(
+    a_container_with_one_component,
+    forwards_derived_mouse_events_even_though_the_component_has_no_focus)
+{
+    static auto const ev = munin::mouse_event{
+        .action_ = munin::mouse_event_type::button_down,
+        .position_ = {5, 6},
+        .button_ = terminalpp::mouse::button::left
+    };
+
+    static auto const expected_value = munin::mouse_event{
+        .action_ = munin::mouse_event_type::button_down,
+        .position_ = {2, 2},
+        .button_ = terminalpp::mouse::button::left
+    };
+
+    EXPECT_CALL(*component_, do_get_position())
+        .WillRepeatedly(Return(terminalpp::point(3, 4)));
+
+    EXPECT_CALL(*component_, do_get_size())
+        .WillOnce(Return(terminalpp::extent(10, 10)));
+
+    munin::event_context context;
+    EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
+        auto const *p = std::any_cast<munin::mouse_event>(&event);
+        ASSERT_NE(nullptr, p);
+        ASSERT_EQ(expected_value, *p);
+    });
+
+    container_.event(ev, context);
 }
 
 using mouse_report_test_data = std::tuple<

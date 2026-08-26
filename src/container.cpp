@@ -4,6 +4,7 @@
 #include "munin/detail/json_adaptors.hpp"
 #include "munin/event_context.hpp"
 #include "munin/layout.hpp"
+#include "munin/mouse_event.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/render_surface.hpp"
 
@@ -352,7 +353,16 @@ struct container::impl
                 std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event == nullptr)
         {
-            handle_common_event(ev);
+            if (auto const *derived_mouse_event =
+                    std::any_cast<munin::mouse_event>(&ev);
+                derived_mouse_event == nullptr)
+            {
+                handle_common_event(ev);
+            }
+            else
+            {
+                handle_mouse_event(*derived_mouse_event);
+            }
         }
         else
         {
@@ -369,7 +379,16 @@ struct container::impl
                 std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event == nullptr)
         {
-            handle_common_event(ev, ctx);
+            if (auto const *derived_mouse_event =
+                    std::any_cast<munin::mouse_event>(&ev);
+                derived_mouse_event == nullptr)
+            {
+                handle_common_event(ev, ctx);
+            }
+            else
+            {
+                handle_mouse_event(*derived_mouse_event, ctx);
+            }
         }
         else
         {
@@ -691,6 +710,25 @@ private:
     // ======================================================================
     // HANDLE_MOUSE_EVENT
     // ======================================================================
+    void handle_mouse_event(munin::mouse_event const &ev)
+    {
+        if (auto const &comp =
+                find_component_at_point(components_, ev.position_);
+            comp != components_.end())
+        {
+            auto const &position = (*comp)->get_position();
+
+            (*comp)->event(munin::mouse_event{
+                .action_ = ev.action_,
+                .position_ = ev.position_ - position,
+                .button_ = ev.button_,
+                .modifiers_ = ev.modifiers_});
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
     void handle_mouse_event(
         terminalpp::mouse::event const &ev, event_context &ctx)
     {
@@ -709,6 +747,27 @@ private:
                     .modifiers_ = ev.modifiers_,
                     .is_motion_ = ev.is_motion_,
                     .is_release_ = ev.is_release_},
+                ctx);
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(munin::mouse_event const &ev, event_context &ctx)
+    {
+        if (auto const &comp =
+                find_component_at_point(components_, ev.position_);
+            comp != components_.end())
+        {
+            auto const &position = (*comp)->get_position();
+
+            (*comp)->event(
+                munin::mouse_event{
+                    .action_ = ev.action_,
+                    .position_ = ev.position_ - position,
+                    .button_ = ev.button_,
+                    .modifiers_ = ev.modifiers_},
                 ctx);
         }
     }
