@@ -136,6 +136,7 @@ target_sources(munin
         include/munin/image.hpp
         include/munin/layout.hpp
         include/munin/list.hpp
+        include/munin/mouse_event.hpp
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
         include/munin/scroll_pane.hpp
