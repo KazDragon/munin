@@ -96,6 +96,74 @@ TEST(a_paint_canvas, paints_reported_motion_positions_during_a_left_stroke)
     EXPECT_NE(bright_white_brush(), model.at({3, 2}));
 }
 
+TEST(a_paint_canvas, ignores_right_and_middle_button_downs)
+{
+    paint::paint_model model({3, 3});
+    auto canvas = paint::paint_canvas{model};
+    canvas.set_size({5, 5});
+    auto context = munin::event_context{};
+
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .position_ = {1, 1},
+            .button_ = terminalpp::mouse::button::right
+    },
+        context);
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .position_ = {2, 2},
+            .button_ = terminalpp::mouse::button::middle
+    },
+        context);
+
+    EXPECT_NE(bright_white_brush(), model.at({0, 0}));
+    EXPECT_NE(bright_white_brush(), model.at({1, 1}));
+}
+
+TEST(a_paint_canvas, treats_in_and_out_events_as_no_ops_during_a_stroke)
+{
+    paint::paint_model model({4, 3});
+    auto canvas = paint::paint_canvas{model};
+    canvas.set_size({6, 5});
+    auto context = munin::event_context{};
+
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .position_ = {1, 1},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::out,
+            .position_ = {5, 4},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+    canvas.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::in,
+            .position_ = {2, 2},
+            .button_ = terminalpp::mouse::button::left
+    },
+        context);
+    canvas.event(
+        terminalpp::mouse::event{
+            .action_ = terminalpp::mouse::event_type::no_button_change,
+            .position_ = {2, 2},
+            .button_ = terminalpp::mouse::button::left,
+            .is_motion_ = true
+    },
+        context);
+
+    EXPECT_EQ(bright_white_brush(), model.at({0, 0}));
+    EXPECT_EQ(bright_white_brush(), model.at({1, 1}));
+    EXPECT_NE(bright_white_brush(), model.at({3, 2}));
+}
+
 TEST(a_paint_canvas, resizes_the_model_to_match_the_framed_interior)
 {
     paint::paint_model model({1, 1});
