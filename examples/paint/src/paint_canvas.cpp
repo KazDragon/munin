@@ -10,6 +10,12 @@
 #include <any>
 
 namespace paint {
+namespace {
+
+auto constexpr frame_thickness = terminalpp::coordinate_type{1};
+auto constexpr frame_size = terminalpp::coordinate_type{2};
+
+}  // namespace
 
 paint_canvas::paint_canvas(paint_model &model) : model_{model}
 {
@@ -19,8 +25,8 @@ void paint_canvas::do_set_size(terminalpp::extent const &size)
 {
     munin::basic_component::do_set_size(size);
     model_.resize(
-        {std::max(terminalpp::coordinate_type{0}, size.width_ - 2),
-         std::max(terminalpp::coordinate_type{0}, size.height_ - 2)});
+        {std::max(terminalpp::coordinate_type{0}, size.width_ - frame_size),
+         std::max(terminalpp::coordinate_type{0}, size.height_ - frame_size)});
 }
 
 auto paint_canvas::do_get_preferred_size() const -> terminalpp::extent
@@ -68,14 +74,16 @@ void paint_canvas::do_event(
 auto paint_canvas::interior_position(terminalpp::point position) const
     -> terminalpp::point
 {
-    return {position.x_ - 1, position.y_ - 1};
+    return {position.x_ - frame_thickness, position.y_ - frame_thickness};
 }
 
 auto paint_canvas::is_inside_interior(terminalpp::point position) const -> bool
 {
     auto const size = get_size();
-    return position.x_ > 0 && position.x_ < size.width_ - 1 && position.y_ > 0
-        && position.y_ < size.height_ - 1;
+    return position.x_ >= frame_thickness
+        && position.x_ < size.width_ - frame_thickness
+        && position.y_ >= frame_thickness
+        && position.y_ < size.height_ - frame_thickness;
 }
 
 void paint_canvas::paint_at(terminalpp::point position)
