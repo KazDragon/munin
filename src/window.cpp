@@ -49,7 +49,7 @@ window::~window() = default;
 // ==========================================================================
 void window::event(std::any const &ev)
 {
-    content_->event(ev);
+    content_->event(ev, event_context_);
 }
 
 // ==========================================================================
