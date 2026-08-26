@@ -129,3 +129,21 @@ TEST(a_paint_canvas, draws_painted_cells_as_spaces_with_cell_attributes)
 
     EXPECT_EQ(terminalpp::element(' ', bright_white_brush()), output[1][1]);
 }
+
+TEST(a_paint_canvas, draws_an_ascii_frame_around_the_interior)
+{
+    paint::paint_model model({1, 1});
+    auto canvas = paint::paint_canvas{model};
+    canvas.set_size({3, 3});
+    auto output = terminalpp::canvas{
+        {3, 3}
+    };
+    auto surface = munin::render_surface{output};
+
+    canvas.draw(surface);
+
+    EXPECT_EQ('+', output[0][0].glyph_.character_);
+    EXPECT_EQ('-', output[1][0].glyph_.character_);
+    EXPECT_EQ('|', output[0][1].glyph_.character_);
+    EXPECT_EQ('+', output[2][2].glyph_.character_);
+}

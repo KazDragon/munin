@@ -45,6 +45,29 @@ void paint_canvas::do_draw(
 {
     auto const size = get_size();
 
+    if (size.width_ > 0 && size.height_ > 0)
+    {
+        auto const east = size.width_ - 1;
+        auto const south = size.height_ - 1;
+
+        for (auto x = terminalpp::coordinate_type{0}; x < size.width_; ++x)
+        {
+            surface[x][0] = terminalpp::element{'-'};
+            surface[x][south] = terminalpp::element{'-'};
+        }
+
+        for (auto y = terminalpp::coordinate_type{0}; y < size.height_; ++y)
+        {
+            surface[0][y] = terminalpp::element{'|'};
+            surface[east][y] = terminalpp::element{'|'};
+        }
+
+        surface[0][0] = terminalpp::element{'+'};
+        surface[east][0] = terminalpp::element{'+'};
+        surface[0][south] = terminalpp::element{'+'};
+        surface[east][south] = terminalpp::element{'+'};
+    }
+
     for (auto y = frame_thickness; y < size.height_ - frame_thickness; ++y)
     {
         for (auto x = frame_thickness; x < size.width_ - frame_thickness; ++x)
