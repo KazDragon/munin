@@ -7,11 +7,16 @@
 
 namespace paint {
 
+class paint_model;
+
 class paint_app : public munin::basic_component
 {
 public:
     paint_app();
     explicit paint_app(std::shared_ptr<munin::component> content);
+    paint_app(
+        std::shared_ptr<munin::component> content,
+        std::shared_ptr<paint_model> model);
 
     boost::signals2::signal<void()> on_quit;
 
@@ -29,6 +34,7 @@ protected:
 
 private:
     std::shared_ptr<munin::component> content_;
+    std::shared_ptr<paint_model> model_;
 };
 
 [[nodiscard]] auto make_paint_app() -> std::shared_ptr<paint_app>;
