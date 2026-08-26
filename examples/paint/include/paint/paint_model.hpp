@@ -26,7 +26,10 @@ public:
 
     void paint(terminalpp::point position)
     {
-        cells_[index_of(position)] = selected_brush();
+        if (is_in_bounds(position))
+        {
+            cells_[index_of(position)] = selected_brush();
+        }
     }
 
     [[nodiscard]] auto selected_brush() const -> terminalpp::attribute
@@ -48,6 +51,12 @@ private:
     [[nodiscard]] auto index_of(terminalpp::point position) const -> int
     {
         return position.y_ * size_.width_ + position.x_;
+    }
+
+    [[nodiscard]] auto is_in_bounds(terminalpp::point position) const -> bool
+    {
+        return position.x_ >= 0 && position.x_ < size_.width_
+            && position.y_ >= 0 && position.y_ < size_.height_;
     }
 
     terminalpp::extent size_;

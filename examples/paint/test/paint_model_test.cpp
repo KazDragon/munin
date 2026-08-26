@@ -40,3 +40,16 @@ TEST(a_paint_model, paints_an_in_bounds_cell_with_the_selected_brush)
     EXPECT_EQ(bright_white_brush(), model.at({1, 2}));
     EXPECT_EQ(black_cell(), model.at({0, 2}));
 }
+
+TEST(a_paint_model, ignores_out_of_bounds_paint_points)
+{
+    paint::paint_model model({2, 3});
+
+    model.paint({2, 0});
+    model.paint({0, 3});
+    model.paint({-1, 0});
+    model.paint({0, -1});
+
+    EXPECT_EQ(black_cell(), model.at({0, 0}));
+    EXPECT_EQ(black_cell(), model.at({1, 2}));
+}
