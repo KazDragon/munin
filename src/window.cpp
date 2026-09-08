@@ -34,7 +34,8 @@ private:
 
 auto is_left_button_down(terminalpp::mouse::event const &ev) -> bool
 {
-    return ev.action_ == terminalpp::mouse::event_type::left_button_down;
+    return ev.action_ == terminalpp::mouse::event_type::left_button_down
+        && !ev.is_motion_ && !ev.is_release_;
 }
 
 auto is_button_up(terminalpp::mouse::event const &ev) -> bool
@@ -183,6 +184,42 @@ void window::event(std::any const &ev)
 
             event_context_.reset_mouse_dispatch_state();
             has_mouse_capture_ = false;
+            return;
+        }
+
+        if (has_mouse_capture_)
+        {
+            auto captured_component = event_context_.captured_component();
+            auto const captured_origin = event_context_.captured_origin();
+            auto const local_mouse_event =
+                translate(*mouse_ev, captured_origin);
+
+            if (captured_component)
+            {
+                captured_component->event(local_mouse_event, event_context_);
+
+                auto const is_now_inside = is_inside(
+                    local_mouse_event.position_,
+                    captured_component->get_size());
+
+                if (is_now_inside != event_context_.captured_mouse_inside())
+                {
+                    captured_component->event(
+                        translate(
+                            derived_mouse_event(
+                                is_now_inside ? mouse_event_type::in
+                                              : mouse_event_type::out,
+                                *mouse_ev),
+                            captured_origin),
+                        event_context_);
+                    event_context_.set_captured_mouse_inside(is_now_inside);
+                }
+            }
+            else
+            {
+                content_->event(ev, event_context_);
+            }
+
             return;
         }
     }

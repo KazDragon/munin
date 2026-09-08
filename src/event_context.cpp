@@ -35,6 +35,7 @@ void event_context::reset_mouse_dispatch_state()
     has_click_interest_ = false;
     captured_component_.reset();
     captured_origin_ = {};
+    captured_mouse_inside_ = false;
 }
 
 // ==========================================================================
@@ -54,6 +55,7 @@ void event_context::capture_mouse(
 {
     captured_component_ = component;
     captured_origin_ = origin;
+    captured_mouse_inside_ = true;
 }
 
 // ==========================================================================
@@ -70,6 +72,22 @@ std::shared_ptr<component> event_context::captured_component() const
 terminalpp::point event_context::captured_origin() const
 {
     return captured_origin_;
+}
+
+// ==========================================================================
+// CAPTURED_MOUSE_INSIDE
+// ==========================================================================
+bool event_context::captured_mouse_inside() const
+{
+    return captured_mouse_inside_;
+}
+
+// ==========================================================================
+// SET_CAPTURED_MOUSE_INSIDE
+// ==========================================================================
+void event_context::set_captured_mouse_inside(bool inside)
+{
+    captured_mouse_inside_ = inside;
 }
 
 }  // namespace munin

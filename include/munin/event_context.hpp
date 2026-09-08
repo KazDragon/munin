@@ -33,12 +33,15 @@ public:
         terminalpp::point const &origin);
     [[nodiscard]] std::shared_ptr<component> captured_component() const;
     [[nodiscard]] terminalpp::point captured_origin() const;
+    [[nodiscard]] bool captured_mouse_inside() const;
+    void set_captured_mouse_inside(bool inside);
 
 private:
     bool click_synthesis_supported_ = false;
     bool has_click_interest_ = false;
     std::weak_ptr<component> captured_component_;
     terminalpp::point captured_origin_;
+    bool captured_mouse_inside_ = false;
 };
 
 }  // namespace munin
