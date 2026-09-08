@@ -1,3 +1,4 @@
+#include <boost/asio/post.hpp>
 #include <consolepp/console.hpp>
 #include <munin/console_application.hpp>
 #include <munin/window.hpp>
@@ -44,6 +45,7 @@ struct console_application::impl
             window_.repaint(canvas_);
         });
 
+        boost::asio::post(io_context, [this] { window_.repaint(canvas_); });
         schedule_read(terminal_, window_);
     }
 
