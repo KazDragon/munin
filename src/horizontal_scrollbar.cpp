@@ -293,7 +293,8 @@ void horizontal_scrollbar::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void horizontal_scrollbar::do_event(std::any const &event)
+void horizontal_scrollbar::do_event(
+    std::any const &event, event_context & /*context*/)
 {
     pimpl_->handle_event(event);
 }

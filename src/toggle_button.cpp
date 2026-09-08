@@ -59,7 +59,7 @@ void toggle_button::set_toggle_state(bool checked)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void toggle_button::do_event(std::any const &ev)
+void toggle_button::do_event(std::any const &ev, event_context & /*context*/)
 {
     if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
         mouse_event != nullptr)

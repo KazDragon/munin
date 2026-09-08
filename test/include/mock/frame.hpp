@@ -118,7 +118,7 @@ public:
     /// \brief Called by event().  Derived classes must override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    MOCK_METHOD1(do_event, void(std::any const &));
+    MOCK_METHOD2(do_event, void(std::any const &, munin::event_context &));
 
     //* =====================================================================
     /// \brief Called by to_json().  Derived classes must override this

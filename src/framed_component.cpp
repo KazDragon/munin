@@ -100,7 +100,7 @@ framed_component::framed_component(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void framed_component::do_event(std::any const &ev)
+void framed_component::do_event(std::any const &ev, event_context &context)
 {
     if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
         mouse_event)
@@ -125,11 +125,11 @@ void framed_component::do_event(std::any const &ev)
             0,
             std::min(inner_size.height_ - 1, inner_mouse_event.position_.y_));
 
-        inner_component_->event(inner_mouse_event);
+        inner_component_->event(inner_mouse_event, context);
     }
     else
     {
-        composite_component::do_event(ev);
+        composite_component::do_event(ev, context);
     }
 }
 

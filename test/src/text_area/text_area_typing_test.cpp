@@ -92,7 +92,7 @@ TEST_P(a_text_area_receiving_keypresses, leaves_the_cursor_in_the_correct_place)
     auto const &keypress = get<2>(params);
     auto const &expected_cursor_position = get<4>(params);
 
-    text_area_.event(keypress);
+    text_area_.event(keypress, context_);
 
     EXPECT_EQ(expected_cursor_position, cursor_position_);
 }
@@ -105,7 +105,7 @@ TEST_P(a_text_area_receiving_keypresses, redraws_the_text_area_appropriately)
     auto const &keypress = get<2>(params);
     auto const &expected_text = get<3>(params);
 
-    text_area_.event(keypress);
+    text_area_.event(keypress, context_);
 
     auto const &text = text_area_.get_text();
     EXPECT_EQ(expected_text, text);

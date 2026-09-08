@@ -147,7 +147,7 @@ struct text_area::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(std::any const &ev)
+    void event(std::any const &ev, event_context & /*context*/)
     {
         if (auto const *mouse_event =
                 std::any_cast<terminalpp::mouse::event>(&ev);
@@ -630,9 +630,9 @@ void text_area::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void text_area::do_event(std::any const &ev)
+void text_area::do_event(std::any const &ev, event_context &context)
 {
-    pimpl_->event(ev);
+    pimpl_->event(ev, context);
 }
 
 // ==========================================================================

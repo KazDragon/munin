@@ -220,15 +220,15 @@ TEST_P(
 }
 
 static move_caret_test_data const move_caret_test_entries[] = {
-  // Move to the beginning of the text
+    // Move to the beginning of the text
     move_caret_test_data{0,   {0, 0},  'L' },
     move_caret_test_data{1,   {1, 0},  'o' },
     move_caret_test_data{2,   {2, 0},  'r' },
     move_caret_test_data{3,   {3, 0},  'e' },
     move_caret_test_data{4,   {4, 0},  'm' },
 
- // Move to the end of the first line and the beginning of the next
-  // wrapped as determined by the newline.
+    // Move to the end of the first line and the beginning of the next
+    // wrapped as determined by the newline.
     move_caret_test_data{26,  {26, 0}, ',' },
     move_caret_test_data{27,  {27, 0}, '\n'},
     move_caret_test_data{28,  {0, 1},  'c' },
@@ -239,22 +239,22 @@ static move_caret_test_data const move_caret_test_entries[] = {
     move_caret_test_data{51,  {0, 2},  'e' },
     move_caret_test_data{52,  {1, 2},  'l' },
 
- // Moving on the end of the third line, the caret is placed
-  // precisely on the last character of the line.
+    // Moving on the end of the third line, the caret is placed
+    // precisely on the last character of the line.
     move_caret_test_data{78,  {27, 2}, ',' },
     move_caret_test_data{79,  {0, 3},  '\n'},
     move_caret_test_data{80,  {0, 3},  'l' },
     move_caret_test_data{81,  {1, 3},  'u' },
 
- // The text wraps at the end of the fourth line, which should
-  // happen smoothly.
+    // The text wraps at the end of the fourth line, which should
+    // happen smoothly.
     move_caret_test_data{106, {26, 3}, 'm' },
     move_caret_test_data{107, {27, 3}, 'o' },
     move_caret_test_data{108, {0, 4},  'l' },
     move_caret_test_data{109, {1, 4},  'e' },
 
- // The end of the whole text should allow the caret in its own
-  // line after the final newline.
+    // The end of the whole text should allow the caret in its own
+    // line after the final newline.
     move_caret_test_data{121, {6, 5},  '.' },
     move_caret_test_data{122, {7, 5},  '\n'},
     move_caret_test_data{123, {0, 6},  '!' }, // Special empty character
@@ -307,57 +307,57 @@ TEST_P(
 }
 
 static move_cursor_test_data const move_cursor_test_entries[] = {
-  // Move the cursor to the home point.
+    // Move the cursor to the home point.
     move_cursor_test_data{{0, 0},  {0, 0},  0,   'L' },
 
- // Move the cursor to arbitrary positions on the first row
+    // Move the cursor to arbitrary positions on the first row
     move_cursor_test_data{{2, 0},  {2, 0},  2,   'r' },
     move_cursor_test_data{{4, 0},  {4, 0},  4,   'm' },
     move_cursor_test_data{{12, 0}, {12, 0}, 12,  'd' },
     move_cursor_test_data{{20, 0}, {20, 0}, 20,  't' },
     move_cursor_test_data{{27, 0}, {27, 0}, 27,  '\n'},
 
- // Overflow the cursor on the line should clip to the end of the line.
+    // Overflow the cursor on the line should clip to the end of the line.
     move_cursor_test_data{{28, 0}, {27, 0}, 27,  '\n'},
 
- // Move the cursor to arbitrary positions on the second row
+    // Move the cursor to arbitrary positions on the second row
     move_cursor_test_data{{0, 1},  {0, 1},  28,  'c' },
     move_cursor_test_data{{11, 1}, {11, 1}, 39,  ' ' },
     move_cursor_test_data{{13, 1}, {13, 1}, 41,  'd' },
     move_cursor_test_data{{22, 1}, {22, 1}, 50,  '\n'},
 
- // Overflow the cursor on the line should clip to the end of the line.
+    // Overflow the cursor on the line should clip to the end of the line.
     move_cursor_test_data{{23, 1}, {22, 1}, 50,  '\n'},
 
- // Move the cursor to arbitrary positions on the third row
+    // Move the cursor to arbitrary positions on the third row
     move_cursor_test_data{{0, 2},  {0, 2},  51,  'e' },
     move_cursor_test_data{{11, 2}, {11, 2}, 62,  ' ' },
     move_cursor_test_data{{13, 2}, {13, 2}, 64,  'e' },
     move_cursor_test_data{{27, 2}, {27, 2}, 78,  ',' },
 
- // Overflow the cursor on the line should clip to the end of the line.
+    // Overflow the cursor on the line should clip to the end of the line.
     move_cursor_test_data{{28, 2}, {27, 2}, 78,  ',' },
 
- // Move the cursor to arbitrary positions on the fourth row, which wrapped
-  // from the third line, but started with a \n, which has been absorbed.
-  // We assume that people clicking in a location want to edit that line and
-  // not the line before, so the character underneath should not be the
-  // newline.
+    // Move the cursor to arbitrary positions on the fourth row, which wrapped
+    // from the third line, but started with a \n, which has been absorbed.
+    // We assume that people clicking in a location want to edit that line and
+    // not the line before, so the character underneath should not be the
+    // newline.
     move_cursor_test_data{{0, 3},  {0, 3},  80,  'l' },
     move_cursor_test_data{{11, 3}, {11, 3}, 91,  't' },
     move_cursor_test_data{{13, 3}, {13, 3}, 93,  'u' },
     move_cursor_test_data{{27, 3}, {27, 3}, 107, 'o' },
 
- // Overflow the cursor on the line should clip to the end of the line.
+    // Overflow the cursor on the line should clip to the end of the line.
     move_cursor_test_data{{28, 3}, {27, 3}, 107, 'o' },
 
- // Move the character to the seventh empty row
+    // Move the character to the seventh empty row
     move_cursor_test_data{{0, 6},  {0, 6},  123, '!' },
 
- // Overflow the cursor on the line should clip to the end of the line.
+    // Overflow the cursor on the line should clip to the end of the line.
     move_cursor_test_data{{1, 6},  {0, 6},  123, '!' },
 
- // Overflow the cursor downward should clip to the last entry
+    // Overflow the cursor downward should clip to the last entry
     move_cursor_test_data{{0, 7},  {0, 6},  123, '!' },
     move_cursor_test_data{{1, 7},  {0, 6},  123, '!' },
 };
@@ -385,7 +385,7 @@ TEST_F(
         terminalpp::mouse::event_type::left_button_down, {13, 1}
     };
 
-    text_area_.event(event);
+    text_area_.event(event, context_);
 
     auto const expected_cursor_position = terminalpp::point{13, 1};
     auto const expected_caret_position = munin::text_area::text_index{41};
@@ -427,7 +427,7 @@ TEST_P(pushing_a_movement_key, moves_the_cursor_as_described)
             reported_cursor_position = text_area_.get_cursor_position();
         });
 
-    text_area_.event(keypress);
+    text_area_.event(keypress, context_);
 
     ASSERT_EQ(expected_cursor_position, reported_cursor_position);
 }
@@ -471,13 +471,13 @@ auto const keypress_ctrl_end = terminalpp::virtual_key{
     terminalpp::vk::end, terminalpp::vk_modifier::ctrl, 1};
 
 movement_key_test_data const move_key_test_entries[] = {
-  // Move the cursor left from various points
+    // Move the cursor left from various points
     movement_key_test_data{{0, 0},  keypress_cursor_left,    {0, 0} },
     movement_key_test_data{{1, 0},  keypress_cursor_left,    {0, 0} },
     movement_key_test_data{{27, 0}, keypress_cursor_left,    {26, 0}},
     movement_key_test_data{{0, 1},  keypress_cursor_left,    {27, 0}},
 
- // Move the cursor right from various points
+    // Move the cursor right from various points
     movement_key_test_data{{0, 0},  keypress_cursor_right,   {1, 0} },
 
     movement_key_test_data{{0, 1},  keypress_cursor_right,   {1, 1} },
@@ -486,7 +486,7 @@ movement_key_test_data const move_key_test_entries[] = {
 
     movement_key_test_data{{0, 6},  keypress_cursor_right,   {0, 6} },
 
- // Move the cursor up from various points
+    // Move the cursor up from various points
     movement_key_test_data{{0, 0},  keypress_cursor_up,      {0, 0} },
     movement_key_test_data{{13, 0}, keypress_cursor_up,      {13, 0}},
     movement_key_test_data{{27, 0}, keypress_cursor_up,      {27, 0}},
@@ -501,9 +501,9 @@ movement_key_test_data const move_key_test_entries[] = {
 
     movement_key_test_data{{0, 6},  keypress_cursor_down,    {0, 6} },
 
- // Multi-key tests
+    // Multi-key tests
 
-  // Move the cursor left multiple times:
+    // Move the cursor left multiple times:
     movement_key_test_data{{0, 0},  keypress_cursor_left_2,  {0, 0} },
     movement_key_test_data{{1, 0},  keypress_cursor_left_2,  {0, 0} },
     movement_key_test_data{{2, 0},  keypress_cursor_left_2,  {0, 0} },
@@ -513,14 +513,14 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{1, 1},  keypress_cursor_left_2,  {27, 0}},
     movement_key_test_data{{2, 1},  keypress_cursor_left_2,  {0, 1} },
 
- // Move the cursor right multiple times
+    // Move the cursor right multiple times
     movement_key_test_data{{0, 0},  keypress_cursor_right_2, {2, 0} },
 
     movement_key_test_data{{25, 0}, keypress_cursor_right_2, {27, 0}},
     movement_key_test_data{{26, 0}, keypress_cursor_right_2, {0, 1} },
     movement_key_test_data{{27, 0}, keypress_cursor_right_2, {1, 1} },
 
- // Move the cursor up multiple times
+    // Move the cursor up multiple times
     movement_key_test_data{{0, 0},  keypress_cursor_up_2,    {0, 0} },
     movement_key_test_data{{15, 0}, keypress_cursor_up_2,    {15, 0}},
     movement_key_test_data{{22, 0}, keypress_cursor_up_2,    {22, 0}},
@@ -540,7 +540,7 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{22, 3}, keypress_cursor_up_2,    {22, 1}},
     movement_key_test_data{{27, 3}, keypress_cursor_up_2,    {22, 1}},
 
- // Move the cursor down multiple times
+    // Move the cursor down multiple times
     movement_key_test_data{{0, 0},  keypress_cursor_down_2,  {0, 2} },
     movement_key_test_data{{15, 0}, keypress_cursor_down_2,  {15, 2}},
     movement_key_test_data{{22, 0}, keypress_cursor_down_2,  {22, 2}},
@@ -550,7 +550,7 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{15, 1}, keypress_cursor_down_2,  {15, 3}},
     movement_key_test_data{{22, 1}, keypress_cursor_down_2,  {22, 3}},
 
- // Move the cursor home
+    // Move the cursor home
     movement_key_test_data{{0, 0},  keypress_home,           {0, 0} },
     movement_key_test_data{{10, 0}, keypress_home,           {0, 0} },
     movement_key_test_data{{27, 0}, keypress_home,           {0, 0} },
@@ -559,7 +559,7 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{10, 1}, keypress_home,           {0, 1} },
     movement_key_test_data{{22, 1}, keypress_home,           {0, 1} },
 
- // Move the cursor to document home
+    // Move the cursor to document home
     movement_key_test_data{{0, 0},  keypress_ctrl_home,      {0, 0} },
     movement_key_test_data{{10, 0}, keypress_ctrl_home,      {0, 0} },
     movement_key_test_data{{27, 0}, keypress_ctrl_home,      {0, 0} },
@@ -568,7 +568,7 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{10, 1}, keypress_ctrl_home,      {0, 0} },
     movement_key_test_data{{22, 1}, keypress_ctrl_home,      {0, 0} },
 
- // Move the cursor to the end
+    // Move the cursor to the end
     movement_key_test_data{{0, 0},  keypress_end,            {27, 0}},
     movement_key_test_data{{10, 0}, keypress_end,            {27, 0}},
     movement_key_test_data{{27, 0}, keypress_end,            {27, 0}},
@@ -577,7 +577,7 @@ movement_key_test_data const move_key_test_entries[] = {
     movement_key_test_data{{10, 1}, keypress_end,            {22, 1}},
     movement_key_test_data{{22, 1}, keypress_end,            {22, 1}},
 
- // Move the cursor to document end
+    // Move the cursor to document end
     movement_key_test_data{{0, 0},  keypress_ctrl_end,       {0, 6} },
     movement_key_test_data{{10, 0}, keypress_ctrl_end,       {0, 6} },
     movement_key_test_data{{27, 0}, keypress_ctrl_end,       {0, 6} },

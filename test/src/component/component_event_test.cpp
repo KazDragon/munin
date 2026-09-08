@@ -6,7 +6,7 @@
 
 using testing::_;
 
-TEST(a_component, context_aware_event_dispatch_bridges_to_legacy_do_event)
+TEST(a_component, event_dispatch_passes_context_to_do_event)
 {
     struct tag
     {
@@ -15,9 +15,11 @@ TEST(a_component, context_aware_event_dispatch_bridges_to_legacy_do_event)
     mock_component component;
     munin::event_context context;
 
-    EXPECT_CALL(component, do_event(_)).WillOnce([](std::any const &event) {
-        ASSERT_NE(nullptr, std::any_cast<tag>(&event));
-    });
+    EXPECT_CALL(component, do_event(_, _))
+        .WillOnce([](std::any const &event, munin::event_context &ctx) {
+            ASSERT_NE(nullptr, std::any_cast<tag>(&event));
+            ASSERT_NE(nullptr, &ctx);
+        });
 
     component.event(tag{}, context);
 }

@@ -157,7 +157,7 @@ struct list::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(std::any const &ev)
+    void event(std::any const &ev, event_context & /*context*/)
     {
         if (auto const *mouse_report =
                 std::any_cast<terminalpp::mouse::event>(&ev);
@@ -266,9 +266,9 @@ void list::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void list::do_event(std::any const &ev)
+void list::do_event(std::any const &ev, event_context &context)
 {
-    pimpl_->event(ev);
+    pimpl_->event(ev, context);
 }
 
 // ==========================================================================

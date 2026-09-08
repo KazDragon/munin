@@ -111,21 +111,6 @@ void paint_app::do_draw(
     }
 }
 
-void paint_app::do_event(std::any const &event)
-{
-    if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&event);
-        vk != nullptr
-        && (vk->key == terminalpp::vk::lowercase_q
-            || vk->key == terminalpp::vk::uppercase_q))
-    {
-        on_quit();
-    }
-    else if (content_)
-    {
-        content_->event(event);
-    }
-}
-
 void paint_app::do_event(std::any const &event, munin::event_context &context)
 {
     if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&event);

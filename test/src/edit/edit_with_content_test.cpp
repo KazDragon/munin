@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/edit.hpp>
+#include <munin/event_context.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -65,7 +66,8 @@ TEST_P(keypress_test, when_an_edit_with_content_receives_a_keypress)
     edit_.set_cursor_position(initial_pos);
     assert(edit_.get_caret_position() == initial_pos.x_);
 
-    edit_.event(terminalpp::virtual_key{keypress});
+    munin::event_context context;
+    edit_.event(terminalpp::virtual_key{keypress}, context);
 
     EXPECT_EQ(expected_pos, edit_.get_cursor_position());
     EXPECT_EQ(expected_caret_pos, edit_.get_caret_position());
@@ -113,7 +115,7 @@ INSTANTIATE_TEST_SUITE_P(
     keypresses,
     keypress_test,
     ValuesIn({
-  // clang-format off
+        // clang-format off
         // Cases with only one character in the content.
         keypress_data{ "t", {1, 0}, terminalpp::vk::lowercase_e, "te", "te", {2, 0}, 2 },
         keypress_data{ "t", {1, 0}, terminalpp::vk::uppercase_u, "tU", "tU", {2, 0}, 2 },
@@ -172,5 +174,5 @@ INSTANTIATE_TEST_SUITE_P(
         keypress_data{ "test", {2, 0}, terminalpp::vk::del, "tst",  "tst",  {1, 0}, 1 },
         keypress_data{ "test", {1, 0}, terminalpp::vk::del, "est",  "est",  {0, 0}, 0 },
         keypress_data{ "test", {0, 0}, terminalpp::vk::del, "test", "test", {0, 0}, 0 },
-  // clang-format on
+        // clang-format on
 }));

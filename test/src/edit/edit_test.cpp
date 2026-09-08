@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/edit.hpp>
+#include <munin/event_context.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/element.hpp>
@@ -235,7 +236,8 @@ TEST_P(receiving_keypresses, draws_appropriate_characters_and_moves_the_cursor)
     auto const cursor_pos = get<2>(params);
     auto const caret_pos = get<3>(params);
 
-    edit_.event(terminalpp::virtual_key{keypress});
+    munin::event_context context;
+    edit_.event(terminalpp::virtual_key{keypress}, context);
 
     ASSERT_EQ(cursor_pos, edit_.get_cursor_position());
     ASSERT_EQ(caret_pos, edit_.get_caret_position());
@@ -298,8 +300,11 @@ public:
     {
         edit_->set_size({4, 1});
         edit_->insert_text("testtest"_ts);
-        edit_->event(terminalpp::virtual_key{terminalpp::vk::cursor_left});
-        edit_->event(terminalpp::virtual_key{terminalpp::vk::cursor_left});
+        munin::event_context context;
+        edit_->event(
+            terminalpp::virtual_key{terminalpp::vk::cursor_left}, context);
+        edit_->event(
+            terminalpp::virtual_key{terminalpp::vk::cursor_left}, context);
         assert(edit_->get_caret_position() == munin::edit::text_index(6));
         assert(edit_->get_cursor_position() == terminalpp::point(3, 0));
     }
@@ -347,7 +352,8 @@ TEST_F(an_edit_with_content, updates_the_preferred_size_when_text_is_deleted)
     edit_->on_preferred_size_changed.connect(
         [&] { preferred_size = edit_->get_preferred_size(); });
 
-    edit_->event(terminalpp::virtual_key{terminalpp::vk::bs});
+    munin::event_context context;
+    edit_->event(terminalpp::virtual_key{terminalpp::vk::bs}, context);
 
     // Prefer enough space for "tes_" (including cursor).
     auto const expected_preferred_size = terminalpp::extent{4, 1};

@@ -26,6 +26,6 @@ TEST_F(a_text_area, gains_focus_when_clicked)
     bool has_focus = false;
     text_area_.on_focus_set.connect([&has_focus]() { has_focus = true; });
 
-    text_area_.event(mouse_down);
+    text_area_.event(mouse_down, context_);
     ASSERT_TRUE(has_focus);
 }

@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/composite_component.hpp>
+#include <munin/event_context.hpp>
 #include <munin/grid_layout.hpp>
 
 using testing::_;
@@ -83,20 +84,23 @@ TEST_F(a_composite_component, forwards_events_to_its_inner_component)
     static std::string const value = "test";
     std::string received_value;
 
-    EXPECT_CALL(*composite_->inner_component, do_event(_))
-        .WillOnce([&received_value](std::any const &ev) {
-            received_value = std::any_cast<std::string>(ev);
-        });
+    EXPECT_CALL(*composite_->inner_component, do_event(_, _))
+        .WillOnce(
+            [&received_value](std::any const &ev, munin::event_context &) {
+                received_value = std::any_cast<std::string>(ev);
+            });
 
     composite_->set_focus();
     ON_CALL(*composite_->inner_component, do_has_focus)
         .WillByDefault(Return(true));
 
-    composite_->event(value);
+    munin::event_context context;
+    composite_->event(value, context);
     ASSERT_EQ(value, received_value);
 }
 
-TEST_F(a_composite_component, does_not_report_its_internal_subcomponents_as_json)
+TEST_F(
+    a_composite_component, does_not_report_its_internal_subcomponents_as_json)
 {
     nlohmann::json json = composite_->to_json();
 
@@ -109,8 +113,8 @@ TEST_F(a_composite_component, reports_its_descendant_accessible_name_as_json)
     EXPECT_CALL(*composite_->inner_component, do_to_json())
         .WillRepeatedly(Return(nlohmann::json{
             {"type", "image"},
-            {"name", "OK"}
-        }));
+            {"name", "OK"   }
+    }));
 
     auto const json = composite_->to_json();
 

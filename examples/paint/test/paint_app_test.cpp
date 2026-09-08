@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <paint/paint_app.hpp>
 #include <terminalpp/virtual_key.hpp>
 
@@ -8,8 +9,11 @@ TEST(a_paint_app, emits_quit_for_lowercase_and_uppercase_q)
     auto quit_count = 0;
     app.on_quit.connect([&] { ++quit_count; });
 
-    app.event(terminalpp::virtual_key{.key = terminalpp::vk::lowercase_q});
-    app.event(terminalpp::virtual_key{.key = terminalpp::vk::uppercase_q});
+    munin::event_context context;
+    app.event(
+        terminalpp::virtual_key{.key = terminalpp::vk::lowercase_q}, context);
+    app.event(
+        terminalpp::virtual_key{.key = terminalpp::vk::uppercase_q}, context);
 
     EXPECT_EQ(2, quit_count);
 }

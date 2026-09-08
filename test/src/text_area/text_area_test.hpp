@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <munin/text_area.hpp>
 #include <terminalpp/canvas.hpp>
 
@@ -8,6 +9,7 @@ protected:
     static terminalpp::element const fill;
 
     munin::text_area text_area_;
+    munin::event_context context_;
     terminalpp::canvas canvas_{
         {0, 0}
     };

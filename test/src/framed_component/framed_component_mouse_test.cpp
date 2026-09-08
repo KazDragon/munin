@@ -2,6 +2,7 @@
 #include "mock/frame.hpp"
 
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <munin/framed_component.hpp>
 #include <terminalpp/mouse.hpp>
 
@@ -78,8 +79,9 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
     framed_component_->set_size(component_size);
 
     auto received_mouse_event = terminalpp::mouse::event{};
-    EXPECT_CALL(*mock_inner_, do_event(_))
-        .WillOnce([&received_mouse_event](auto ev) {
+    EXPECT_CALL(*mock_inner_, do_event(_, _))
+        .WillOnce([&received_mouse_event](
+                      std::any const &ev, munin::event_context &) {
             auto *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
 
             if (mouse_event)
@@ -91,7 +93,8 @@ TEST_P(framed_components, forward_mouse_clicks_to_the_inner_component)
     auto const sent_mouse_report = terminalpp::mouse::event{
         terminalpp::mouse::event_type::left_button_down, initial_click};
 
-    framed_component_->event(sent_mouse_report);
+    munin::event_context context;
+    framed_component_->event(sent_mouse_report, context);
 
     auto const expected_mouse_report = terminalpp::mouse::event{
         terminalpp::mouse::event_type::left_button_down, expected_click};

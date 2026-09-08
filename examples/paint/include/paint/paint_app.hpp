@@ -32,7 +32,6 @@ protected:
     void do_draw(
         munin::render_surface &surface,
         terminalpp::rectangle const &region) const override;
-    void do_event(std::any const &event) override;
     void do_event(
         std::any const &event, munin::event_context &context) override;
 

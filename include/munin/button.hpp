@@ -20,12 +20,6 @@ public:
 
 protected:
     //* =====================================================================
-    /// \brief Called by event().  Derived classes must override this
-    /// function in order to handle events in a custom manner.
-    //* =====================================================================
-    void do_event(std::any const &event) override;
-
-    //* =====================================================================
     /// \brief Called by event() with dispatch context. Derived classes must
     /// override this function in order to handle events in a custom manner.
     //* =====================================================================

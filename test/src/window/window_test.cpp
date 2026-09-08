@@ -18,7 +18,7 @@ TEST_F(a_window, passes_events_to_the_content)
 
     std::any result;
 
-    EXPECT_CALL(*content_, do_event(_)).WillOnce(SaveArg<0>(&result));
+    EXPECT_CALL(*content_, do_event(_, _)).WillOnce(SaveArg<0>(&result));
 
     window_->event(tag{});
 
@@ -149,8 +149,8 @@ TEST(
 
     {
         InSequence sequence;
-        EXPECT_CALL(*child, do_event(_))
-            .WillOnce([](std::any const &event) {
+        EXPECT_CALL(*child, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &) {
                 auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
                 ASSERT_NE(nullptr, p);
                 ASSERT_EQ(
@@ -158,19 +158,19 @@ TEST(
                     p->action_);
                 ASSERT_EQ(terminalpp::point(1, 1), p->position_);
             })
-            .WillOnce([](std::any const &event) {
+            .WillOnce([](std::any const &event, munin::event_context &) {
                 auto const *p = std::any_cast<munin::mouse_event>(&event);
                 ASSERT_NE(nullptr, p);
                 ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
                 ASSERT_EQ(terminalpp::point(1, 1), p->position_);
             })
-            .WillOnce([](std::any const &event) {
+            .WillOnce([](std::any const &event, munin::event_context &) {
                 auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
                 ASSERT_NE(nullptr, p);
                 ASSERT_EQ(terminalpp::mouse::event_type::button_up, p->action_);
                 ASSERT_EQ(terminalpp::point(8, 1), p->position_);
             })
-            .WillOnce([](std::any const &event) {
+            .WillOnce([](std::any const &event, munin::event_context &) {
                 auto const *p = std::any_cast<munin::mouse_event>(&event);
                 ASSERT_NE(nullptr, p);
                 ASSERT_EQ(munin::mouse_event_type::button_up, p->action_);

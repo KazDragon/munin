@@ -52,31 +52,6 @@ button::button(terminalpp::string text)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void button::do_event(std::any const &ev)
-{
-    if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
-        mouse_event != nullptr)
-    {
-        if (mouse_event->action_
-            == terminalpp::mouse::event_type::left_button_down)
-        {
-            on_click();
-        }
-    }
-    else if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
-             vk != nullptr)
-    {
-        if (vk->key == terminalpp::vk::enter
-            || vk->key == terminalpp::vk::space)
-        {
-            on_click();
-        }
-    }
-}
-
-// ==========================================================================
-// DO_EVENT
-// ==========================================================================
 void button::do_event(std::any const &ev, event_context &ctx)
 {
     if (auto const *mouse_event = std::any_cast<munin::mouse_event>(&ev);
@@ -94,9 +69,14 @@ void button::do_event(std::any const &ev, event_context &ctx)
             on_click();
         }
     }
-    else if (std::any_cast<terminalpp::virtual_key>(&ev) != nullptr)
+    else if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
+             vk != nullptr)
     {
-        do_event(ev);
+        if (vk->key == terminalpp::vk::enter
+            || vk->key == terminalpp::vk::space)
+        {
+            on_click();
+        }
     }
 }
 

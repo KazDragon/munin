@@ -293,7 +293,8 @@ void vertical_scrollbar::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void vertical_scrollbar::do_event(std::any const &event)
+void vertical_scrollbar::do_event(
+    std::any const &event, event_context & /*context*/)
 {
     pimpl_->handle_event(event);
 }

@@ -152,14 +152,9 @@ public:
         render_surface &surface, terminalpp::rectangle const &region) const;
 
     //* =====================================================================
-    /// \brief Send an event to the component.  This may be of any type.
-    /// A component must specify the types of messages it may receive and
-    /// what it will do with it.
-    //* =====================================================================
-    void event(std::any const &event);
-
-    //* =====================================================================
     /// \brief Send an event to the component with dispatch context.
+    /// This may be of any type. A component must specify the types of
+    /// messages it may receive and what it will do with them.
     //* =====================================================================
     void event(std::any const &event, event_context &context);
 
@@ -321,16 +316,10 @@ protected:
         render_surface &surface, terminalpp::rectangle const &region) const = 0;
 
     //* =====================================================================
-    /// \brief Called by event().  Derived classes must override this
-    /// function in order to handle events in a custom manner.
-    //* =====================================================================
-    virtual void do_event(std::any const &event) = 0;
-
-    //* =====================================================================
     /// \brief Called by event() with dispatch context. Derived classes may
     /// override this function in order to handle events in a custom manner.
     //* =====================================================================
-    virtual void do_event(std::any const &event, event_context &context);
+    virtual void do_event(std::any const &event, event_context &context) = 0;
 
     //* =====================================================================
     /// \brief Called by set_id(). Derived classes must override this

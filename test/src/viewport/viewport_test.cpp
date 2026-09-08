@@ -6,6 +6,7 @@
 
 #include <gmock/gmock.h>
 #include <munin/edit.hpp>
+#include <munin/event_context.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/viewport.hpp>
 #include <terminalpp/algorithm/for_each_in_region.hpp>
@@ -188,11 +189,12 @@ TEST_F(
 TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 {
     std::any received_event;
-    ON_CALL(*tracked_component_, do_event(_))
+    ON_CALL(*tracked_component_, do_event(_, _))
         .WillByDefault(SaveArg<0>(&received_event));
 
     std::string const test_event = "test event";
-    viewport_->event(test_event);
+    munin::event_context context;
+    viewport_->event(test_event, context);
 
     auto const *result = std::any_cast<std::string>(&received_event);
     ASSERT_TRUE(result != nullptr);
@@ -202,13 +204,14 @@ TEST_F(a_viewport, forwards_events_to_the_tracked_component)
 TEST_F(a_viewport, forwards_keypress_events_to_the_tracked_component)
 {
     std::any received_event;
-    ON_CALL(*tracked_component_, do_event(_))
+    ON_CALL(*tracked_component_, do_event(_, _))
         .WillByDefault(SaveArg<0>(&received_event));
 
     auto const keypress_event = terminalpp::virtual_key{
         terminalpp::vk::lowercase_a, terminalpp::vk_modifier::none, 1};
 
-    viewport_->event(keypress_event);
+    munin::event_context context;
+    viewport_->event(keypress_event, context);
 
     auto const *result =
         std::any_cast<terminalpp::virtual_key>(&received_event);
@@ -449,9 +452,10 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
 
     std::optional<terminalpp::mouse::event> received_mouse_event;
 
-    ON_CALL(*tracked_component_, do_event(_))
-        .WillByDefault([&received_mouse_event](std::any const &ev) {
-            if (const auto *mouse_event =
+    ON_CALL(*tracked_component_, do_event(_, _))
+        .WillByDefault([&received_mouse_event](
+                           std::any const &ev, munin::event_context &) {
+            if (auto const *mouse_event =
                     std::any_cast<terminalpp::mouse::event>(&ev);
                 mouse_event != nullptr)
             {
@@ -459,7 +463,8 @@ TEST_F(a_viewport, translates_mouse_events_to_the_tracked_component)
             }
         });
 
-    viewport_->event(viewport_mouse_event);
+    munin::event_context context;
+    viewport_->event(viewport_mouse_event, context);
 
     ASSERT_TRUE(received_mouse_event.has_value());
     ASSERT_EQ(expected_mouse_event, *received_mouse_event);
@@ -673,5 +678,6 @@ TEST_F(
     tracked_preferred_size = terminalpp::extent{5, 5};
     tracked_component_->on_preferred_size_changed();
 
-    ASSERT_EQ(terminalpp::rectangle({1, 1}, {1, 1}), viewport_->get_anchor_bounds());
+    ASSERT_EQ(
+        terminalpp::rectangle({1, 1}, {1, 1}), viewport_->get_anchor_bounds());
 }
