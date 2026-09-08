@@ -7,7 +7,6 @@
 #include <munin/compass_layout.hpp>
 #include <munin/event_context.hpp>
 #include <munin/image.hpp>
-#include <munin/view.hpp>
 #include <terminalpp/virtual_key.hpp>
 
 #include <any>
@@ -18,94 +17,43 @@ namespace {
 
 using namespace terminalpp::literals;  // NOLINT
 
-[[nodiscard]] auto make_content(std::shared_ptr<paint_model> const &model)
-    -> std::shared_ptr<munin::component>
-{
-    return munin::view(
-        munin::make_compass_layout(),
-        std::make_shared<paint_palette>(*model),
-        munin::compass_layout::heading::west,
-        std::make_shared<paint_canvas>(*model),
-        munin::compass_layout::heading::centre,
-        munin::make_image("drag paint  q quit"_ets),
-        munin::compass_layout::heading::south);
-}
-
 }  // namespace
 
 paint_app::paint_app() = default;
 
-paint_app::paint_app(std::shared_ptr<munin::component> content)
-  : content_{std::move(content)}
+paint_app::paint_app(std::shared_ptr<paint_model> model)
+  : model_{std::move(model)}
 {
+    add_paint_components(model_);
+}
+
+paint_app::paint_app(std::shared_ptr<munin::component> content)
+{
+    set_layout(munin::make_compass_layout());
+    add_component(std::move(content), munin::compass_layout::heading::centre);
 }
 
 paint_app::paint_app(
     std::shared_ptr<munin::component> content,
     std::shared_ptr<paint_model> model)
-  : content_{std::move(content)}, model_{std::move(model)}
+  : model_{std::move(model)}
 {
+    set_layout(munin::make_compass_layout());
+    add_component(std::move(content), munin::compass_layout::heading::centre);
 }
 
-void paint_app::do_set_size(terminalpp::extent const &size)
+void paint_app::add_paint_components(std::shared_ptr<paint_model> const &model)
 {
-    munin::basic_component::do_set_size(size);
-
-    if (content_)
-    {
-        content_->set_size(size);
-    }
-}
-
-auto paint_app::do_get_preferred_size() const -> terminalpp::extent
-{
-    return content_ ? content_->get_preferred_size() : terminalpp::extent{};
-}
-
-auto paint_app::do_has_focus() const -> bool
-{
-    return content_ && content_->has_focus();
-}
-
-void paint_app::do_set_focus()
-{
-    if (content_)
-    {
-        content_->set_focus();
-    }
-}
-
-void paint_app::do_lose_focus()
-{
-    if (content_)
-    {
-        content_->lose_focus();
-    }
-}
-
-void paint_app::do_focus_next()
-{
-    if (content_)
-    {
-        content_->focus_next();
-    }
-}
-
-void paint_app::do_focus_previous()
-{
-    if (content_)
-    {
-        content_->focus_previous();
-    }
-}
-
-void paint_app::do_draw(
-    munin::render_surface &surface, terminalpp::rectangle const &region) const
-{
-    if (content_)
-    {
-        content_->draw(surface, region);
-    }
+    set_layout(munin::make_compass_layout());
+    add_component(
+        std::make_shared<paint_palette>(*model),
+        munin::compass_layout::heading::west);
+    add_component(
+        std::make_shared<paint_canvas>(*model),
+        munin::compass_layout::heading::centre);
+    add_component(
+        munin::make_image("drag paint  q quit"_ets),
+        munin::compass_layout::heading::south);
 }
 
 void paint_app::do_event(std::any const &event, munin::event_context &context)
@@ -117,16 +65,16 @@ void paint_app::do_event(std::any const &event, munin::event_context &context)
     {
         on_quit();
     }
-    else if (content_)
+    else
     {
-        content_->event(event, context);
+        munin::composite_component::do_event(event, context);
     }
 }
 
 auto make_paint_app() -> std::shared_ptr<paint_app>
 {
     auto model = std::make_shared<paint_model>(terminalpp::extent{0, 0});
-    return std::make_shared<paint_app>(make_content(model), model);
+    return std::make_shared<paint_app>(model);
 }
 
 }  // namespace paint
