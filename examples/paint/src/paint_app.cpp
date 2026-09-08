@@ -65,9 +65,41 @@ auto paint_app::do_get_preferred_size() const -> terminalpp::extent
     return content_ ? content_->get_preferred_size() : terminalpp::extent{};
 }
 
-auto paint_app::do_can_receive_focus() const -> bool
+auto paint_app::do_has_focus() const -> bool
 {
-    return false;
+    return content_ && content_->has_focus();
+}
+
+void paint_app::do_set_focus()
+{
+    if (content_)
+    {
+        content_->set_focus();
+    }
+}
+
+void paint_app::do_lose_focus()
+{
+    if (content_)
+    {
+        content_->lose_focus();
+    }
+}
+
+void paint_app::do_focus_next()
+{
+    if (content_)
+    {
+        content_->focus_next();
+    }
+}
+
+void paint_app::do_focus_previous()
+{
+    if (content_)
+    {
+        content_->focus_previous();
+    }
 }
 
 void paint_app::do_draw(

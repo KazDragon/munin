@@ -24,7 +24,11 @@ protected:
     void do_set_size(terminalpp::extent const &size) override;
     [[nodiscard]] auto do_get_preferred_size() const
         -> terminalpp::extent override;
-    [[nodiscard]] auto do_can_receive_focus() const -> bool override;
+    [[nodiscard]] auto do_has_focus() const -> bool override;
+    void do_set_focus() override;
+    void do_lose_focus() override;
+    void do_focus_next() override;
+    void do_focus_previous() override;
     void do_draw(
         munin::render_surface &surface,
         terminalpp::rectangle const &region) const override;

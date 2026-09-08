@@ -36,6 +36,7 @@ int main()
                    << terminalpp::use_alternate_screen_buffer()
                    << terminalpp::set_window_title("paint");
 
+    content->set_focus();
     io_context.run();
 
     app.terminal() << terminalpp::use_normal_screen_buffer()
