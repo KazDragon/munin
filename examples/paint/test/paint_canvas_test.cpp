@@ -53,6 +53,19 @@ TEST(a_paint_canvas, paints_interior_left_button_downs_and_redraws_that_cell)
     }));
 }
 
+TEST(a_paint_canvas, can_accept_focus)
+{
+    paint::paint_model model({1, 1});
+    auto canvas = paint::paint_canvas{model};
+    auto focus_set_count = 0;
+    canvas.on_focus_set.connect([&] { ++focus_set_count; });
+
+    canvas.set_focus();
+
+    EXPECT_TRUE(canvas.has_focus());
+    EXPECT_EQ(1, focus_set_count);
+}
+
 TEST(a_paint_canvas, paints_reported_motion_positions_during_a_left_stroke)
 {
     paint::paint_model model({4, 3});

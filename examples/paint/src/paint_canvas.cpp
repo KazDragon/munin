@@ -37,7 +37,7 @@ auto paint_canvas::do_get_preferred_size() const -> terminalpp::extent
 
 auto paint_canvas::do_can_receive_focus() const -> bool
 {
-    return false;
+    return true;
 }
 
 void paint_canvas::do_draw(
