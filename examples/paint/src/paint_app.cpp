@@ -6,7 +6,6 @@
 
 #include <munin/compass_layout.hpp>
 #include <munin/event_context.hpp>
-#include <munin/filled_box.hpp>
 #include <munin/image.hpp>
 #include <munin/view.hpp>
 #include <terminalpp/virtual_key.hpp>
@@ -24,8 +23,6 @@ using namespace terminalpp::literals;  // NOLINT
 {
     return munin::view(
         munin::make_compass_layout(),
-        munin::make_fill(' '),
-        munin::compass_layout::heading::centre,
         std::make_shared<paint_palette>(*model),
         munin::compass_layout::heading::west,
         std::make_shared<paint_canvas>(*model),
