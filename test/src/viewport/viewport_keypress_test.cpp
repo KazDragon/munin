@@ -1,6 +1,7 @@
 #include "viewport_test.hpp"
 
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <terminalpp/virtual_key.hpp>
 
 using testing::_;
@@ -21,7 +22,8 @@ TEST_F(a_viewport, when_receiving_a_pgdn_translates_that_to_a_cursor_set)
     ON_CALL(*tracked_component_, do_set_cursor_position(_))
         .WillByDefault(SaveArg<0>(&tracked_cursor_position));
 
-    viewport_->event(keypress_pgdn);
+    munin::event_context context;
+    viewport_->event(keypress_pgdn, context);
 
     // The pgdn will have been translated to a cursor move down that
     // relates to the height of the viewport.
@@ -43,7 +45,8 @@ TEST_F(a_viewport, when_receiving_a_pgup_translates_that_to_a_cursor_set)
     ON_CALL(*tracked_component_, do_set_cursor_position(_))
         .WillByDefault(SaveArg<0>(&tracked_cursor_position));
 
-    viewport_->event(keypress_pgup);
+    munin::event_context context;
+    viewport_->event(keypress_pgup, context);
 
     // The pgdn will have been translated to a cursor move down that
     // relates to the height of the viewport.

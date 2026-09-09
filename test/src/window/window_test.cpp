@@ -1,8 +1,13 @@
 #include "window_test.hpp"
 
 #include <gtest/gtest.h>
+#include <munin/button.hpp>
+#include <munin/container.hpp>
+#include <munin/event_context.hpp>
+#include <munin/mouse_event.hpp>
 
 using testing::_;
+using testing::InSequence;
 using testing::SaveArg;
 
 TEST_F(a_window, passes_events_to_the_content)
@@ -13,10 +18,444 @@ TEST_F(a_window, passes_events_to_the_content)
 
     std::any result;
 
-    EXPECT_CALL(*content_, do_event(_)).WillOnce(SaveArg<0>(&result));
+    EXPECT_CALL(*content_, do_event(_, _)).WillOnce(SaveArg<0>(&result));
 
     window_->event(tag{});
 
     auto *ptag = std::any_cast<tag>(&result);
     ASSERT_NE(nullptr, ptag);
+}
+
+class context_observing_component : public mock_component
+{
+private:
+    void do_event(std::any const &ev, munin::event_context &ctx) override
+    {
+        event_ = ev;
+        context_ = &ctx;
+    }
+
+public:
+    std::any event_;
+    munin::event_context *context_ = nullptr;
+};
+
+TEST_F(a_window, passes_events_to_the_content_with_context)
+{
+    struct tag
+    {
+    };
+
+    auto content = std::make_shared<context_observing_component>();
+    auto window = munin::window(terminal_, content);
+
+    window.event(tag{});
+
+    ASSERT_NE(nullptr, std::any_cast<tag>(&content->event_));
+    ASSERT_NE(nullptr, content->context_);
+}
+
+TEST(
+    a_window_mouse_events,
+    clicks_a_button_on_left_release_when_clicks_can_be_synthesized)
+{
+    auto behaviour = terminalpp::behaviour{};
+    behaviour.supports_basic_mouse_tracking = true;
+    behaviour.supports_sgr_mouse_encoding = true;
+
+    fake_channel channel;
+    terminalpp::terminal terminal{channel, behaviour};
+    auto button = std::make_shared<munin::button>(" OK ");
+    button->set_size({6, 3});
+    auto window = munin::window(terminal, button);
+
+    auto click_count = 0;
+    button->on_click.connect([&click_count] { ++click_count; });
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+
+    ASSERT_EQ(0, click_count);
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::button_up,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+
+    ASSERT_EQ(1, click_count);
+}
+
+TEST(
+    a_window_mouse_events,
+    clicks_a_nested_button_on_left_release_when_clicks_can_be_synthesized)
+{
+    auto behaviour = terminalpp::behaviour{};
+    behaviour.supports_basic_mouse_tracking = true;
+    behaviour.supports_sgr_mouse_encoding = true;
+
+    fake_channel channel;
+    terminalpp::terminal terminal{channel, behaviour};
+    auto container = munin::make_container();
+    container->set_size({10, 5});
+    auto button = std::make_shared<munin::button>(" OK ");
+    button->set_size({6, 3});
+    container->add_component(button);
+    auto window = munin::window(terminal, container);
+
+    auto click_count = 0;
+    button->on_click.connect([&click_count] { ++click_count; });
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+
+    ASSERT_EQ(0, click_count);
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::button_up,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+
+    ASSERT_EQ(1, click_count);
+}
+
+TEST(
+    a_window_mouse_events,
+    sends_captured_button_up_to_the_mouse_down_recipient_outside_its_bounds)
+{
+    auto behaviour = terminalpp::behaviour{};
+    behaviour.supports_basic_mouse_tracking = true;
+    behaviour.supports_sgr_mouse_encoding = true;
+
+    fake_channel channel;
+    terminalpp::terminal terminal{channel, behaviour};
+    auto container = munin::make_container();
+    container->set_size({10, 5});
+    auto child = make_mock_component();
+    container->add_component(child);
+    auto window = munin::window(terminal, container);
+
+    EXPECT_CALL(*child, do_get_position())
+        .WillRepeatedly(testing::Return(terminalpp::point(0, 0)));
+    EXPECT_CALL(*child, do_get_size())
+        .WillRepeatedly(testing::Return(terminalpp::extent(6, 3)));
+
+    {
+        InSequence sequence;
+        EXPECT_CALL(*child, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(terminalpp::mouse::event_type::button_up, p->action_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_up, p->action_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            });
+    }
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::button_up,
+        .position_ = {8, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+}
+
+TEST(
+    a_window_mouse_events,
+    sends_button_up_to_content_when_the_captured_component_has_expired)
+{
+    fake_channel channel;
+    terminalpp::terminal terminal{channel};
+    auto content = make_mock_component();
+    auto window = munin::window(terminal, content);
+
+    {
+        InSequence sequence;
+        EXPECT_CALL(*content, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &context) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+
+                context.capture_mouse(make_mock_component(), {});
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(terminalpp::mouse::event_type::button_up, p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_up, p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            });
+    }
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::button_up,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+}
+
+TEST(
+    a_window_mouse_events,
+    sends_mouse_motion_to_content_when_the_captured_component_has_expired)
+{
+    fake_channel channel;
+    terminalpp::terminal terminal{channel};
+    auto content = make_mock_component();
+    auto window = munin::window(terminal, content);
+
+    {
+        InSequence sequence;
+        EXPECT_CALL(*content, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &context) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+
+                context.capture_mouse(make_mock_component(), {});
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+                ASSERT_TRUE(p->is_motion_);
+                ASSERT_EQ(terminalpp::point(2, 1), p->position_);
+            });
+    }
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {2, 1},
+        .button_ = terminalpp::mouse::button::left,
+        .button_code_ = 32,
+        .is_motion_ = true
+    });
+}
+
+TEST(
+    a_window_mouse_events,
+    sends_mouse_out_to_the_captured_component_when_dragging_over_another_component)
+{
+    auto behaviour = terminalpp::behaviour{};
+    behaviour.supports_basic_mouse_tracking = true;
+    behaviour.supports_sgr_mouse_encoding = true;
+
+    fake_channel channel;
+    terminalpp::terminal terminal{channel, behaviour};
+    auto container = munin::make_container();
+    container->set_size({12, 3});
+    auto captured = make_mock_component();
+    auto other = make_mock_component();
+    container->add_component(captured);
+    container->add_component(other);
+    auto window = munin::window(terminal, container);
+
+    EXPECT_CALL(*captured, do_get_position())
+        .WillRepeatedly(testing::Return(terminalpp::point(0, 0)));
+    EXPECT_CALL(*captured, do_get_size())
+        .WillRepeatedly(testing::Return(terminalpp::extent(6, 3)));
+    EXPECT_CALL(*other, do_get_position())
+        .WillRepeatedly(testing::Return(terminalpp::point(6, 0)));
+    EXPECT_CALL(*other, do_get_size())
+        .WillRepeatedly(testing::Return(terminalpp::extent(6, 3)));
+
+    {
+        InSequence sequence;
+        EXPECT_CALL(*captured, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(
+                    terminalpp::mouse::event_type::left_button_down,
+                    p->action_);
+                ASSERT_TRUE(p->is_motion_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::out, p->action_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            });
+    }
+
+    EXPECT_CALL(*other, do_event(_, _)).Times(0);
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {8, 1},
+        .button_ = terminalpp::mouse::button::left,
+        .button_code_ = 32,
+        .is_motion_ = true
+    });
+}
+
+TEST(
+    a_window_mouse_events,
+    sends_mouse_in_to_the_captured_component_when_dragging_back_into_it)
+{
+    auto behaviour = terminalpp::behaviour{};
+    behaviour.supports_basic_mouse_tracking = true;
+    behaviour.supports_sgr_mouse_encoding = true;
+
+    fake_channel channel;
+    terminalpp::terminal terminal{channel, behaviour};
+    auto container = munin::make_container();
+    container->set_size({12, 3});
+    auto captured = make_mock_component();
+    auto other = make_mock_component();
+    container->add_component(captured);
+    container->add_component(other);
+    auto window = munin::window(terminal, container);
+
+    EXPECT_CALL(*captured, do_get_position())
+        .WillRepeatedly(testing::Return(terminalpp::point(0, 0)));
+    EXPECT_CALL(*captured, do_get_size())
+        .WillRepeatedly(testing::Return(terminalpp::extent(6, 3)));
+    EXPECT_CALL(*other, do_get_position())
+        .WillRepeatedly(testing::Return(terminalpp::point(6, 0)));
+    EXPECT_CALL(*other, do_get_size())
+        .WillRepeatedly(testing::Return(terminalpp::extent(6, 3)));
+
+    {
+        InSequence sequence;
+        EXPECT_CALL(*captured, do_event(_, _))
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::button_down, p->action_);
+                ASSERT_EQ(terminalpp::point(1, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_TRUE(p->is_motion_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::out, p->action_);
+                ASSERT_EQ(terminalpp::point(8, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_TRUE(p->is_motion_);
+                ASSERT_EQ(terminalpp::point(2, 1), p->position_);
+            })
+            .WillOnce([](std::any const &event, munin::event_context &) {
+                auto const *p = std::any_cast<munin::mouse_event>(&event);
+                ASSERT_NE(nullptr, p);
+                ASSERT_EQ(munin::mouse_event_type::in, p->action_);
+                ASSERT_EQ(terminalpp::point(2, 1), p->position_);
+            });
+    }
+
+    EXPECT_CALL(*other, do_event(_, _)).Times(0);
+
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {1, 1},
+        .button_ = terminalpp::mouse::button::left
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {8, 1},
+        .button_ = terminalpp::mouse::button::left,
+        .button_code_ = 32,
+        .is_motion_ = true
+    });
+    window.event(terminalpp::mouse::event{
+        .action_ = terminalpp::mouse::event_type::left_button_down,
+        .position_ = {2, 1},
+        .button_ = terminalpp::mouse::button::left,
+        .button_code_ = 32,
+        .is_motion_ = true
+    });
 }

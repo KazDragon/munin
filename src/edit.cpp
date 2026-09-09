@@ -405,7 +405,7 @@ void edit::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void edit::do_event(std::any const &ev)
+void edit::do_event(std::any const &ev, event_context & /*context*/)
 {
     if (auto const *vk = std::any_cast<terminalpp::virtual_key>(&ev);
         vk != nullptr)

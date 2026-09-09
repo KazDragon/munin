@@ -116,10 +116,10 @@ protected:
     void do_set_cursor_position(terminalpp::point const &position) override;
 
     //* =====================================================================
-    /// \brief Called by event().  Derived classes must override this
+    /// \brief Called by event().  Derived classes may override this
     /// function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(std::any const &event) override;
+    void do_event(std::any const &event, event_context &context) override;
 
     //* =====================================================================
     /// \brief Called by set_id().  Derived classes may override this

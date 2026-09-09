@@ -164,7 +164,8 @@ void basic_component::do_set_cursor_position(terminalpp::point const &position)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void basic_component::do_event(std::any const &event)
+void basic_component::do_event(
+    std::any const &event, event_context & /*context*/)
 {
     if (auto const *mouse = std::any_cast<terminalpp::mouse::event>(&event);
         mouse != nullptr

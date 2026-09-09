@@ -6,6 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/detail/border_glyphs.hpp>
+#include <munin/event_context.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/vertical_scrollbar.hpp>
 #include <terminalpp/mouse.hpp>
@@ -21,6 +22,7 @@ class a_vertical_scrollbar : public testing::Test
 protected:
     std::shared_ptr<munin::vertical_scrollbar> scrollbar_{
         munin::make_vertical_scrollbar()};
+    munin::event_context context_;
 };
 
 using a_new_vertical_scrollbar = a_vertical_scrollbar;
@@ -541,7 +543,7 @@ TEST_F(a_vertical_scrollbar, with_no_slider_emits_no_scroll_events_when_clicked)
 
     scrollbar_->on_scroll_down.connect([&] { scroll_down_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_up_clicked);
     ASSERT_FALSE(scroll_down_clicked);
@@ -565,7 +567,7 @@ TEST_F(
 
     scrollbar_->on_scroll_down.connect([&] { scroll_down_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_TRUE(scroll_up_clicked);
     ASSERT_FALSE(scroll_down_clicked);
@@ -589,7 +591,7 @@ TEST_F(
 
     scrollbar_->on_scroll_down.connect([&] { scroll_down_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_up_clicked);
     ASSERT_TRUE(scroll_down_clicked);
@@ -613,7 +615,7 @@ TEST_F(
 
     scrollbar_->on_scroll_down.connect([&] { scroll_down_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_up_clicked);
     ASSERT_FALSE(scroll_down_clicked);

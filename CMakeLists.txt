@@ -5,6 +5,7 @@ option(MUNIN_WITH_CONSOLEPP "Build using Console++" False)
 option(MUNIN_COVERAGE  "Build with code coverage options")
 option(MUNIN_SANITIZE "Build using sanitizers" "")
 option(MUNIN_WITH_TESTS "Build with tests" True)
+option(MUNIN_WITH_EXAMPLES "Build examples" False)
 option(MUNIN_DOC_ONLY "Build only documentation" False)
 
 message("Building Munin with Console++: ${MUNIN_WITH_CONSOLEPP}")
@@ -12,6 +13,7 @@ message("Building Munin with config: ${CMAKE_BUILD_TYPE}")
 message("Building Munin with code coverage: ${MUNIN_COVERAGE}")
 message("Building Munin with sanitizers: ${MUNIN_SANITIZE}")
 message("Building Munin with tests: ${MUNIN_WITH_TESTS}")
+message("Building Munin with examples: ${MUNIN_WITH_EXAMPLES}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
@@ -61,8 +63,9 @@ if (NOT TARGET KazDragon::terminalpp)
     find_package(terminalpp 4.0.0 CONFIG REQUIRED)
 endif()
 
-# If we are building with Console++, then require that library
-if (MUNIN_WITH_CONSOLEPP)
+# If we are building with Console++, or building examples that use it, then
+# require that library.
+if (MUNIN_WITH_CONSOLEPP OR MUNIN_WITH_EXAMPLES)
     if (NOT TARGET KazDragon::consolepp)
         find_package(consolepp 0.1.1 CONFIG REQUIRED)
     endif()
@@ -73,9 +76,13 @@ if (MUNIN_WITH_CONSOLEPP)
     )
 endif()
 
+# If we are building with tests or examples, then we require threads.
+if (MUNIN_WITH_TESTS OR MUNIN_WITH_EXAMPLES)
+    find_package(Threads REQUIRED)
+endif()
+
 # If we are building with tests, then we require the GTest library
 if (MUNIN_WITH_TESTS)
-    find_package(Threads REQUIRED)
     find_package(GTest CONFIG REQUIRED)
 endif()
 
@@ -120,6 +127,7 @@ target_sources(munin
         include/munin/composite_component.hpp
         include/munin/container.hpp
         include/munin/edit.hpp
+        include/munin/event_context.hpp
         include/munin/filled_box.hpp
         include/munin/framed_component.hpp
         include/munin/grid_layout.hpp
@@ -128,6 +136,7 @@ target_sources(munin
         include/munin/image.hpp
         include/munin/layout.hpp
         include/munin/list.hpp
+        include/munin/mouse_event.hpp
         include/munin/null_layout.hpp
         include/munin/render_surface.hpp
         include/munin/scroll_pane.hpp
@@ -160,6 +169,7 @@ target_sources(munin
         src/composite_component.cpp
         src/container.cpp
         src/edit.cpp
+        src/event_context.cpp
         src/filled_box.cpp
         src/frame.cpp
         src/framed_component.cpp
@@ -201,7 +211,7 @@ target_compile_options(munin
         $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:-Wall -Wextra -Wshadow -Wnon-virtual-dtor -Wpedantic -Werror -Wno-sign-compare -Wno-tautological-compare -Wno-unused-parameter>
 )
 
-if (MUNIN_WITH_CONSOLEPP)
+if (MUNIN_WITH_CONSOLEPP OR MUNIN_WITH_EXAMPLES)
     target_sources(munin
         PRIVATE
             include/munin/console_application.hpp
@@ -288,6 +298,7 @@ target_sources(munin_tester
         test/src/brush/new_brush_test.cpp
         test/src/button/button_test.cpp
         test/src/button/button_json_test.cpp
+        test/src/component/component_event_test.cpp
         test/src/compass_layout/compass_layout_test.cpp
         test/src/composite_component/composite_component_test.cpp
         test/src/container/container_test.cpp
@@ -395,6 +406,10 @@ if (MSVC)
     endif()
 endif()
 
+endif()
+
+if (MUNIN_WITH_EXAMPLES)
+    add_subdirectory(examples)
 endif()
 
 configure_file(

@@ -1,5 +1,7 @@
 #include "container_test.hpp"
 
+#include <munin/event_context.hpp>
+#include <munin/mouse_event.hpp>
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
@@ -29,6 +31,20 @@ auto back_tab_key() -> terminalpp::virtual_key
     return keypress(terminalpp::vk::bt);
 }
 
+class context_observing_component : public mock_component
+{
+private:
+    void do_event(std::any const &ev, munin::event_context &ctx) override
+    {
+        event_ = ev;
+        context_ = &ctx;
+    }
+
+public:
+    std::any event_;
+    munin::event_context *context_ = nullptr;
+};
+
 }  // namespace
 
 TEST_F(
@@ -38,7 +54,8 @@ TEST_F(
     // the component to receive the events.
     EXPECT_CALL(*component_, do_has_focus()).WillRepeatedly(Return(false));
 
-    container_.event('X');
+    munin::event_context context;
+    container_.event('X', context);
 }
 
 TEST_F(
@@ -47,12 +64,32 @@ TEST_F(
 {
     EXPECT_CALL(*component_, do_has_focus()).WillOnce(Return(true));
 
-    EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
-        char const *p = std::any_cast<char>(&event);
-        ASSERT_NE(nullptr, p);
-        ASSERT_EQ('X', *p);
-    });
-    container_.event('X');
+    EXPECT_CALL(*component_, do_event(_, _))
+        .WillOnce([](std::any const &event, munin::event_context &) {
+            char const *p = std::any_cast<char>(&event);
+            ASSERT_NE(nullptr, p);
+            ASSERT_EQ('X', *p);
+        });
+    munin::event_context context;
+    container_.event('X', context);
+}
+
+TEST_F(
+    a_container,
+    forwards_context_aware_common_events_to_the_focused_subcomponent)
+{
+    auto component = std::make_shared<context_observing_component>();
+    container_.add_component(component);
+
+    EXPECT_CALL(*component, do_has_focus()).WillOnce(Return(true));
+
+    munin::event_context context;
+    container_.event('X', context);
+
+    char const *p = std::any_cast<char>(&component->event_);
+    ASSERT_NE(nullptr, p);
+    ASSERT_EQ('X', *p);
+    ASSERT_EQ(&context, component->context_);
 }
 
 TEST_F(
@@ -63,12 +100,14 @@ TEST_F(
 
     EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(true));
 
-    EXPECT_CALL(*component1_, do_event(_)).WillOnce([](std::any const &event) {
-        char const *p = std::any_cast<char>(&event);
-        ASSERT_NE(nullptr, p);
-        ASSERT_EQ('X', *p);
-    });
-    container_.event('X');
+    EXPECT_CALL(*component1_, do_event(_, _))
+        .WillOnce([](std::any const &event, munin::event_context &) {
+            char const *p = std::any_cast<char>(&event);
+            ASSERT_NE(nullptr, p);
+            ASSERT_EQ('X', *p);
+        });
+    munin::event_context context;
+    container_.event('X', context);
 }
 
 TEST_F(
@@ -87,7 +126,8 @@ TEST_F(
         EXPECT_CALL(*component1_, do_has_focus()).WillOnce(Return(true));
     }
 
-    container_.event(tab_key());
+    munin::event_context context;
+    container_.event(tab_key(), context);
 
     ASSERT_TRUE(container_.has_focus());
 }
@@ -108,7 +148,8 @@ TEST_F(
         EXPECT_CALL(*component0_, do_has_focus()).WillOnce(Return(true));
     }
 
-    container_.event(back_tab_key());
+    munin::event_context context;
+    container_.event(back_tab_key(), context);
 
     ASSERT_TRUE(container_.has_focus());
 }
@@ -127,13 +168,48 @@ TEST_F(
     EXPECT_CALL(*component_, do_get_size())
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
-    EXPECT_CALL(*component_, do_event(_)).WillOnce([](std::any const &event) {
-        auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
-        ASSERT_NE(nullptr, p);
-        ASSERT_EQ(ev, *p);
-    });
+    EXPECT_CALL(*component_, do_event(_, _))
+        .WillOnce([](std::any const &event, munin::event_context &) {
+            auto const *p = std::any_cast<terminalpp::mouse::event>(&event);
+            ASSERT_NE(nullptr, p);
+            ASSERT_EQ(ev, *p);
+        });
 
-    container_.event(ev);
+    munin::event_context context;
+    container_.event(ev, context);
+}
+
+TEST_F(
+    a_container_with_one_component,
+    forwards_derived_mouse_events_even_though_the_component_has_no_focus)
+{
+    static auto const ev = munin::mouse_event{
+        .action_ = munin::mouse_event_type::button_down,
+        .position_ = {5, 6},
+        .button_ = terminalpp::mouse::button::left
+    };
+
+    static auto const expected_value = munin::mouse_event{
+        .action_ = munin::mouse_event_type::button_down,
+        .position_ = {2, 2},
+        .button_ = terminalpp::mouse::button::left
+    };
+
+    EXPECT_CALL(*component_, do_get_position())
+        .WillRepeatedly(Return(terminalpp::point(3, 4)));
+
+    EXPECT_CALL(*component_, do_get_size())
+        .WillOnce(Return(terminalpp::extent(10, 10)));
+
+    munin::event_context context;
+    EXPECT_CALL(*component_, do_event(_, _))
+        .WillOnce([](std::any const &event, munin::event_context &) {
+            auto const *p = std::any_cast<munin::mouse_event>(&event);
+            ASSERT_NE(nullptr, p);
+            ASSERT_EQ(expected_value, *p);
+        });
+
+    container_.event(ev, context);
 }
 
 using mouse_report_test_data = std::tuple<
@@ -160,13 +236,14 @@ TEST_P(
 
     EXPECT_CALL(*component_, do_get_size()).WillOnce(Return(component_size));
 
-    EXPECT_CALL(*component_, do_event(_))
-        .WillOnce([&expected_value](std::any event) {
+    EXPECT_CALL(*component_, do_event(_, _))
+        .WillOnce([&expected_value](std::any event, munin::event_context &) {
             auto *mouse_event = std::any_cast<terminalpp::mouse::event>(&event);
             ASSERT_NE(nullptr, mouse_event);
             ASSERT_EQ(expected_value, *mouse_event);
         });
-    container_.event(event);
+    munin::event_context context;
+    container_.event(event, context);
 }
 
 INSTANTIATE_TEST_SUITE_P(
@@ -219,11 +296,13 @@ TEST_F(
     EXPECT_CALL(*component1_, do_get_size())
         .WillOnce(Return(terminalpp::extent(10, 10)));
 
-    EXPECT_CALL(*component1_, do_event(_)).WillOnce([](std::any event) {
-        auto *report = std::any_cast<terminalpp::mouse::event>(&event);
-        ASSERT_NE(nullptr, report);
-        ASSERT_EQ(expected_value, *report);
-    });
+    EXPECT_CALL(*component1_, do_event(_, _))
+        .WillOnce([](std::any event, munin::event_context &) {
+            auto *report = std::any_cast<terminalpp::mouse::event>(&event);
+            ASSERT_NE(nullptr, report);
+            ASSERT_EQ(expected_value, *report);
+        });
 
-    container_.event(event);
+    munin::event_context context;
+    container_.event(event, context);
 }

@@ -3,6 +3,7 @@
 #include "redraw.hpp"
 
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <munin/list.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
@@ -19,7 +20,7 @@ constexpr auto negative_attr = [] {
     return attr;
 }();
 
-}
+}  // namespace
 
 TEST(a_list, is_a_component)
 {
@@ -43,6 +44,7 @@ protected:
     std::shared_ptr<munin::list> list_{munin::make_list()};
     terminalpp::canvas canvas_{list_size};
     munin::render_surface surface_{canvas_};
+    munin::event_context context_;
 };
 
 }  // namespace
@@ -112,22 +114,25 @@ TEST_F(a_new_list, signals_a_cursor_position_change_when_setting_the_list_items)
 
 TEST_F(a_new_list, can_be_clicked)
 {
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {1, 1}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {1, 1}
+    },
+        context_);
 
     ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_new_list, ignores_the_up_key)
 {
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
     ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
 TEST_F(a_new_list, ignores_the_down_key)
 {
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
     ASSERT_FALSE(list_->get_selected_item_index().has_value());
 }
 
@@ -220,9 +225,11 @@ TEST_F(a_list_with_an_item, selects_the_item_when_it_is_clicked)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed]() { item_changed = true; });
 
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {0, 0}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {0, 0}
+    },
+        context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -236,9 +243,11 @@ TEST_F(a_list_with_an_item, deselects_the_item_when_empty_space_is_clicked)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed]() { item_changed = true; });
 
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {0, 1}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {0, 1}
+    },
+        context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -251,7 +260,7 @@ TEST_F(a_list_with_an_item, selects_the_item_when_the_up_key_is_pressed)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -265,7 +274,8 @@ TEST_F(a_list_with_an_item, selects_the_item_when_the_down_key_is_pressed)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -293,11 +303,11 @@ TEST_F(a_list_with_a_selected_item, draws_that_item_in_negative)
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { "test  ", negative_attr },
           "      "_ts,
           "      "_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas_);
 }
@@ -308,7 +318,7 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -323,7 +333,8 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -406,9 +417,11 @@ TEST_F(a_list_with_two_items, selects_the_first_item_when_it_is_clicked)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed]() { item_changed = true; });
 
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {0, 0}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {0, 0}
+    },
+        context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -422,9 +435,11 @@ TEST_F(a_list_with_two_items, selects_the_second_item_when_it_is_clicked)
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed]() { item_changed = true; });
 
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {0, 1}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {0, 1}
+    },
+        context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -439,7 +454,7 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -454,7 +469,8 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -465,9 +481,11 @@ TEST_F(
 
 TEST_F(a_list_with_an_item, selects_no_item_when_empty_space_is_clicked)
 {
-    list_->event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down, {0, 2}
-    });
+    list_->event(
+        terminalpp::mouse::event{
+            terminalpp::mouse::event_type::left_button_down, {0, 2}
+    },
+        context_);
 
     auto const selected_item_index = list_->get_selected_item_index();
     ASSERT_FALSE(selected_item_index.has_value());
@@ -495,11 +513,11 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { "l0    ", negative_attr },
           "line1 "_ts,
           "      "_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas_);
 }
@@ -538,7 +556,8 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -554,7 +573,7 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -591,11 +610,11 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           "l0    "_ts,
           { "line1 ", negative_attr },
           "      "_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas_);
 }
@@ -607,7 +626,8 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_down});
+    list_->event(
+        terminalpp::virtual_key{terminalpp::vk::cursor_down}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -622,7 +642,7 @@ TEST_F(
     bool item_changed = false;
     list_->on_item_changed.connect([&item_changed] { item_changed = true; });
 
-    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up});
+    list_->event(terminalpp::virtual_key{terminalpp::vk::cursor_up}, context_);
 
     ASSERT_TRUE(item_changed);
 
@@ -649,11 +669,11 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           "l0    "_ts,
           { "line1 ", negative_attr },
           "      "_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas_);
 }
@@ -676,11 +696,11 @@ TEST_F(
 
     assert_similar_canvas_block(
         {
-  // clang-format off
+            // clang-format off
           { "l0    ", negative_attr },
           "line1 "_ts,
           "      "_ts,
-  // clang-format on
+            // clang-format on
     },
         canvas_);
 }

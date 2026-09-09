@@ -2,7 +2,9 @@
 
 #include "munin/detail/algorithm.hpp"
 #include "munin/detail/json_adaptors.hpp"
+#include "munin/event_context.hpp"
 #include "munin/layout.hpp"
+#include "munin/mouse_event.hpp"
 #include "munin/null_layout.hpp"
 #include "munin/render_surface.hpp"
 
@@ -339,7 +341,7 @@ struct container::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    void event(std::any const &ev)
+    void event(std::any const &ev, event_context &ctx)
     {
         // We split incoming events into two types:
         // * Common events (e.g. keypressed, etc.) are passed on to the
@@ -351,11 +353,20 @@ struct container::impl
                 std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event == nullptr)
         {
-            handle_common_event(ev);
+            if (auto const *derived_mouse_event =
+                    std::any_cast<munin::mouse_event>(&ev);
+                derived_mouse_event == nullptr)
+            {
+                handle_common_event(ev, ctx);
+            }
+            else
+            {
+                handle_mouse_event(*derived_mouse_event, ctx);
+            }
         }
         else
         {
-            handle_mouse_event(*mouse_event);
+            handle_mouse_event(*mouse_event, ctx);
         }
     }
 
@@ -599,7 +610,7 @@ private:
     // ======================================================================
     // HANDLE_COMMON_EVENT
     // ======================================================================
-    void handle_common_event(std::any const &event)
+    void handle_common_event(std::any const &event, event_context &ctx)
     {
         if (auto const *key = virtual_key_from(event);
             key != nullptr && key->key == terminalpp::vk::ht)
@@ -618,14 +629,44 @@ private:
         if (auto comp = find_first_focussed_component(components_);
             comp != components_.end())
         {
-            (*comp)->event(event);
+            (*comp)->event(event, ctx);
         }
     }
 
     // ======================================================================
     // HANDLE_MOUSE_EVENT
     // ======================================================================
-    void handle_mouse_event(terminalpp::mouse::event const &ev)
+    void handle_mouse_event(
+        terminalpp::mouse::event const &ev, event_context &ctx)
+    {
+        if (auto const &comp =
+                find_component_at_point(components_, ev.position_);
+            comp != components_.end())
+        {
+            auto const &position = (*comp)->get_position();
+
+            if (ev.action_ == terminalpp::mouse::event_type::left_button_down)
+            {
+                ctx.capture_mouse(*comp, position);
+            }
+
+            (*comp)->event(
+                terminalpp::mouse::event{
+                    .action_ = ev.action_,
+                    .position_ = ev.position_ - position,
+                    .button_ = ev.button_,
+                    .button_code_ = ev.button_code_,
+                    .modifiers_ = ev.modifiers_,
+                    .is_motion_ = ev.is_motion_,
+                    .is_release_ = ev.is_release_},
+                ctx);
+        }
+    }
+
+    // ======================================================================
+    // HANDLE_MOUSE_EVENT
+    // ======================================================================
+    void handle_mouse_event(munin::mouse_event const &ev, event_context &ctx)
     {
         if (auto const &comp =
                 find_component_at_point(components_, ev.position_);
@@ -634,7 +675,12 @@ private:
             auto const &position = (*comp)->get_position();
 
             (*comp)->event(
-                terminalpp::mouse::event{ev.action_, ev.position_ - position});
+                munin::mouse_event{
+                    .action_ = ev.action_,
+                    .position_ = ev.position_ - position,
+                    .button_ = ev.button_,
+                    .modifiers_ = ev.modifiers_},
+                ctx);
         }
     }
 
@@ -801,9 +847,9 @@ void container::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void container::do_event(std::any const &event)
+void container::do_event(std::any const &event, event_context &context)
 {
-    pimpl_->event(event);
+    pimpl_->event(event, context);
 }
 
 // ==========================================================================

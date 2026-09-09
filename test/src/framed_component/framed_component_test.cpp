@@ -2,6 +2,7 @@
 #include "mock/frame.hpp"
 
 #include <gtest/gtest.h>
+#include <munin/event_context.hpp>
 #include <munin/filled_box.hpp>
 #include <munin/frame.hpp>
 #include <munin/framed_component.hpp>
@@ -203,14 +204,16 @@ TEST(a_framed_component, forwards_events_to_the_inner_component)
     static std::string const value = "test";
     std::string received_value;
 
-    EXPECT_CALL(*mock_comp, do_event(_))
-        .WillOnce([&received_value](std::any const &ev) {
-            received_value = std::any_cast<std::string>(ev);
-        });
+    EXPECT_CALL(*mock_comp, do_event(_, _))
+        .WillOnce(
+            [&received_value](std::any const &ev, munin::event_context &) {
+                received_value = std::any_cast<std::string>(ev);
+            });
 
     framed_component->set_focus();
     ON_CALL(*mock_comp, do_has_focus).WillByDefault(Return(true));
 
-    framed_component->event(value);
+    munin::event_context context;
+    framed_component->event(value, context);
     ASSERT_EQ(value, received_value);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "munin/component.hpp"
+#include "munin/event_context.hpp"
 #include "munin/export.hpp"
 #include "munin/render_surface_capabilities.hpp"
 
@@ -14,7 +15,6 @@
 #include <any>
 #include <memory>
 #include <vector>
-
 
 namespace munin {
 
@@ -76,9 +76,11 @@ public:
 
 private:
     std::shared_ptr<component> content_;
+    event_context event_context_;
     std::vector<terminalpp::rectangle> repaint_regions_;
     terminalpp::screen screen_;
     render_surface_capabilities const &capabilities_;
+    bool has_mouse_capture_ = false;
 };
 
 }  // namespace munin

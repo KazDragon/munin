@@ -157,17 +157,22 @@ struct viewport::impl
     // ======================================================================
     // EVENT
     // ======================================================================
-    auto event(std::any const &ev)
+    auto event(std::any const &ev, event_context &ctx)
     {
         if (auto const *mouse_event =
                 std::any_cast<terminalpp::mouse::event>(&ev);
             mouse_event)
         {
             auto const translated_event = terminalpp::mouse::event{
-                mouse_event->action_,
-                mouse_event->position_ + anchor_bounds_.origin_};
+                .action_ = mouse_event->action_,
+                .position_ = mouse_event->position_ + anchor_bounds_.origin_,
+                .button_ = mouse_event->button_,
+                .button_code_ = mouse_event->button_code_,
+                .modifiers_ = mouse_event->modifiers_,
+                .is_motion_ = mouse_event->is_motion_,
+                .is_release_ = mouse_event->is_release_};
 
-            return tracked_component_->event(translated_event);
+            return tracked_component_->event(translated_event, ctx);
         }
         else if (auto const *keypress_event =
                      std::any_cast<terminalpp::virtual_key>(&ev);
@@ -193,12 +198,12 @@ struct viewport::impl
             }
             else
             {
-                tracked_component_->event(ev);
+                tracked_component_->event(ev, ctx);
             }
         }
         else
         {
-            return tracked_component_->event(ev);
+            return tracked_component_->event(ev, ctx);
         }
     }
 
@@ -482,9 +487,9 @@ void viewport::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void viewport::do_event(std::any const &event)
+void viewport::do_event(std::any const &event, event_context &context)
 {
-    pimpl_->event(event);
+    pimpl_->event(event, context);
 }
 
 // ==========================================================================

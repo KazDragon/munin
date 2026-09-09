@@ -8,7 +8,8 @@ namespace munin {
 
 namespace {
 
-auto find_accessible_name(nlohmann::json const &json) -> std::optional<std::string>
+auto find_accessible_name(nlohmann::json const &json)
+    -> std::optional<std::string>
 {
     if (auto const name = json.find("name");
         name != json.end() && name->is_string())
@@ -189,9 +190,10 @@ void composite_component::do_draw(
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void composite_component::do_event(std::any const &event)
+void composite_component::do_event(
+    std::any const &event, event_context &context)
 {
-    content_.event(event);
+    content_.event(event, context);
 }
 
 // ==========================================================================

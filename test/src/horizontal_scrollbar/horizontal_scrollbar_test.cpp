@@ -6,6 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/detail/border_glyphs.hpp>
+#include <munin/event_context.hpp>
 #include <munin/horizontal_scrollbar.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/mouse.hpp>
@@ -21,6 +22,7 @@ class a_horizontal_scrollbar : public testing::Test
 protected:
     std::shared_ptr<munin::horizontal_scrollbar> scrollbar_{
         munin::make_horizontal_scrollbar()};
+    munin::event_context context_;
 };
 
 using a_new_horizontal_scrollbar = a_horizontal_scrollbar;
@@ -562,7 +564,7 @@ TEST_F(
 
     scrollbar_->on_scroll_right.connect([&] { scroll_right_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_left_clicked);
     ASSERT_FALSE(scroll_right_clicked);
@@ -586,7 +588,7 @@ TEST_F(
 
     scrollbar_->on_scroll_right.connect([&] { scroll_right_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_TRUE(scroll_left_clicked);
     ASSERT_FALSE(scroll_right_clicked);
@@ -610,7 +612,7 @@ TEST_F(
 
     scrollbar_->on_scroll_right.connect([&] { scroll_right_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_left_clicked);
     ASSERT_TRUE(scroll_right_clicked);
@@ -634,7 +636,7 @@ TEST_F(
 
     scrollbar_->on_scroll_right.connect([&] { scroll_right_clicked = true; });
 
-    scrollbar_->event(mouse_event);
+    scrollbar_->event(mouse_event, context_);
 
     ASSERT_FALSE(scroll_left_clicked);
     ASSERT_FALSE(scroll_right_clicked);

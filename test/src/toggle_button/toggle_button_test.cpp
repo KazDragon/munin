@@ -1,6 +1,7 @@
 #include "redraw.hpp"
 
 #include <gmock/gmock.h>
+#include <munin/event_context.hpp>
 #include <munin/render_surface.hpp>
 #include <munin/toggle_button.hpp>
 #include <terminalpp/canvas.hpp>
@@ -161,6 +162,7 @@ public:
 
 protected:
     munin::toggle_button toggle_button_;
+    munin::event_context context_;
 };
 
 }  // namespace
@@ -181,7 +183,7 @@ TEST_P(a_toggle_button, emits_on_state_changed)
         end_state = new_state;
     });
 
-    toggle_button_.event(event);
+    toggle_button_.event(event, context_);
     ASSERT_EQ(state_changed_should_be_received, state_changed_received);
     ASSERT_EQ(expected_end_state, end_state);
 }

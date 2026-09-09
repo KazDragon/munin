@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 #include <munin/basic_component.hpp>
+#include <munin/event_context.hpp>
 #include <terminalpp/mouse.hpp>
 
 #include <cassert>
@@ -73,7 +74,8 @@ TEST_F(
     mouse_event.action_ = terminalpp::mouse::event_type::left_button_down;
     mouse_event.position_ = {0, 0};
 
-    component_.event(mouse_event);
+    munin::event_context context;
+    component_.event(mouse_event, context);
 
     ASSERT_TRUE(component_.has_focus());
     ASSERT_EQ(1, on_focus_set_count_);
@@ -86,7 +88,8 @@ TEST_F(
     mouse_event.action_ = terminalpp::mouse::event_type::button_up;
     mouse_event.position_ = {0, 0};
 
-    component_.event(mouse_event);
+    munin::event_context context;
+    component_.event(mouse_event, context);
 
     ASSERT_FALSE(component_.has_focus());
 }
@@ -160,7 +163,8 @@ TEST_F(
     mouse_event.action_ = terminalpp::mouse::event_type::left_button_down;
     mouse_event.position_ = {0, 0};
 
-    component_.event(mouse_event);
+    munin::event_context context;
+    component_.event(mouse_event, context);
 
     ASSERT_FALSE(component_.has_focus());
     ASSERT_EQ(0, on_focus_set_count_);
@@ -174,7 +178,8 @@ TEST_F(
     mouse_event.action_ = terminalpp::mouse::event_type::button_up;
     mouse_event.position_ = {0, 0};
 
-    component_.event(mouse_event);
+    munin::event_context context;
+    component_.event(mouse_event, context);
 
     ASSERT_FALSE(component_.has_focus());
 }

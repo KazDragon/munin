@@ -3,6 +3,8 @@
 
 #include <gtest/gtest.h>
 #include <munin/button.hpp>
+#include <munin/event_context.hpp>
+#include <munin/mouse_event.hpp>
 #include <munin/render_surface.hpp>
 #include <terminalpp/canvas.hpp>
 #include <terminalpp/mouse.hpp>
@@ -78,8 +80,12 @@ TEST(a_new_button, can_receive_focus)
 TEST(a_new_button, receives_focus_when_clicked)
 {
     munin::button button{""};
-    button.event(terminalpp::mouse::event{
-        terminalpp::mouse::event_type::left_button_down});
+    munin::event_context context;
+    button.event(
+        munin::mouse_event{
+            .action_ = munin::mouse_event_type::button_down,
+            .button_ = terminalpp::mouse::button::left},
+        context);
     ASSERT_TRUE(button.has_focus());
 }
 
@@ -108,7 +114,8 @@ TEST_P(a_button, emits_on_click)
     bool click_received = false;
     button_.on_click.connect([&click_received] { click_received = true; });
 
-    button_.event(event);
+    munin::event_context context;
+    button_.event(event, context);
     ASSERT_EQ(click_should_be_received, click_received);
 }
 
@@ -117,8 +124,9 @@ INSTANTIATE_TEST_SUITE_P(
     a_button,
     ValuesIn({
         event_emission_data{
-                            terminalpp::mouse::event{
-                terminalpp::mouse::event_type::left_button_down},
+                            munin::mouse_event{
+                .action_ = munin::mouse_event_type::button_down,
+                .button_ = terminalpp::mouse::button::left},
                             true                                                },
         event_emission_data{
                             terminalpp::virtual_key{terminalpp::vk::enter}, true},

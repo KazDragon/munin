@@ -117,10 +117,10 @@ private:
     void do_focus_previous() override;
 
     //* =====================================================================
-    /// \brief Called by event().  Derived classes must override this
-    /// function in order to handle events in a custom manner.
+    /// \brief Called by event() with dispatch context. Derived classes must
+    /// override this function in order to handle events in a custom manner.
     //* =====================================================================
-    void do_event(std::any const &event) override;
+    void do_event(std::any const &event, event_context &context) override;
 
     //* =====================================================================
     /// \brief Called by set_id().  Derived classes must override this

@@ -1,16 +1,18 @@
 #include "munin/button.hpp"
 
+#include "munin/event_context.hpp"
 #include "munin/framed_component.hpp"
 #include "munin/grid_layout.hpp"
 #include "munin/image.hpp"
+#include "munin/mouse_event.hpp"
 #include "munin/solid_frame.hpp"
 
 #include <terminalpp/mouse.hpp>
 #include <terminalpp/virtual_key.hpp>
 
 #include <algorithm>
-#include <cctype>
 #include <utility>
+#include <cctype>
 
 namespace munin {
 
@@ -23,9 +25,7 @@ auto stripped(terminalpp::string const &text) -> std::string
         return !std::isspace(ch);
     };
 
-    result.erase(
-        result.begin(),
-        std::ranges::find_if(result, is_not_space));
+    result.erase(result.begin(), std::ranges::find_if(result, is_not_space));
     result.erase(
         std::ranges::find_if(result.rbegin(), result.rend(), is_not_space)
             .base(),
@@ -52,13 +52,19 @@ button::button(terminalpp::string text)
 // ==========================================================================
 // DO_EVENT
 // ==========================================================================
-void button::do_event(std::any const &ev)
+void button::do_event(std::any const &ev, event_context &ctx)
 {
-    if (auto const *mouse_event = std::any_cast<terminalpp::mouse::event>(&ev);
+    if (auto const *mouse_event = std::any_cast<munin::mouse_event>(&ev);
         mouse_event != nullptr)
     {
-        if (mouse_event->action_
-            == terminalpp::mouse::event_type::left_button_down)
+        if (mouse_event->action_ == munin::mouse_event_type::button_down)
+        {
+            if (!ctx.register_click_interest())
+            {
+                on_click();
+            }
+        }
+        else if (mouse_event->action_ == munin::mouse_event_type::click)
         {
             on_click();
         }

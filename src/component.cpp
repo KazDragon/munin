@@ -1,9 +1,10 @@
 #include "munin/component.hpp"
 
+#include "munin/event_context.hpp"
 #include "munin/render_surface.hpp"
 
-#include <cassert>
 #include <utility>
+#include <cassert>
 
 namespace munin {
 
@@ -149,9 +150,9 @@ void component::draw(
 // ==========================================================================
 // EVENT
 // ==========================================================================
-void component::event(std::any const &ev)
+void component::event(std::any const &ev, event_context &ctx)
 {
-    do_event(ev);
+    do_event(ev, ctx);
 }
 
 // ==========================================================================
