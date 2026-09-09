@@ -22,7 +22,6 @@ public:
     auto operator=(event_context &&) -> event_context & = delete;
 
     [[nodiscard]] bool register_click_interest();
-    void deregister_click_interest();
 
     void set_click_synthesis_supported(bool supported);
     void reset_mouse_dispatch_state();

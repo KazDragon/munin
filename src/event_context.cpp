@@ -12,14 +12,6 @@ bool event_context::register_click_interest()
 }
 
 // ==========================================================================
-// DEREGISTER_CLICK_INTEREST
-// ==========================================================================
-void event_context::deregister_click_interest()
-{
-    has_click_interest_ = false;
-}
-
-// ==========================================================================
 // SET_CLICK_SYNTHESIS_SUPPORTED
 // ==========================================================================
 void event_context::set_click_synthesis_supported(bool supported)

@@ -51,8 +51,8 @@ auto is_inside(terminalpp::point const &point, terminalpp::extent const &size)
 }
 
 auto derived_mouse_event(
-    mouse_event_type action,
-    terminalpp::mouse::event const &ev) -> munin::mouse_event
+    mouse_event_type action, terminalpp::mouse::event const &ev)
+    -> munin::mouse_event
 {
     return munin::mouse_event{
         .action_ = action,
@@ -62,8 +62,8 @@ auto derived_mouse_event(
 }
 
 auto translate(
-    terminalpp::mouse::event const &ev,
-    terminalpp::point const &origin) -> terminalpp::mouse::event
+    terminalpp::mouse::event const &ev, terminalpp::point const &origin)
+    -> terminalpp::mouse::event
 {
     return terminalpp::mouse::event{
         .action_ = ev.action_,
