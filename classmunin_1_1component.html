@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.9.0.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -107,6 +107,8 @@ Inheritance diagram for munin::component:</div>
 <area href="classmunin_1_1text__area.html" title="A component that represents a text area." alt="munin::text_area" shape="rect" coords="185,560,360,584"/>
 <area href="classmunin_1_1vertical__scrollbar.html" title="A class that displays a vertical scrollbar that displays the vertical position of e...." alt="munin::vertical_scrollbar" shape="rect" coords="185,616,360,640"/>
 <area href="classmunin_1_1viewport.html" title="A component that tracks a subset of another, larger component and shows only a section of it." alt="munin::viewport" shape="rect" coords="185,672,360,696"/>
+<area href="classpaint_1_1paint__canvas.html" alt="paint::paint_canvas" shape="rect" coords="185,728,360,752"/>
+<area href="classpaint_1_1paint__palette.html" alt="paint::paint_palette" shape="rect" coords="185,784,360,808"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -181,10 +183,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> () 
 <tr class="memitem:a6ff83b678abcd5faabdf76c7bf44efa0" id="r_a6ff83b678abcd5faabdf76c7bf44efa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const</td></tr>
 <tr class="memdesc:a6ff83b678abcd5faabdf76c7bf44efa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <br /></td></tr>
 <tr class="separator:a6ff83b678abcd5faabdf76c7bf44efa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3420236b96f10aa32a4edd57bb92558a" id="r_a3420236b96f10aa32a4edd57bb92558a"><td class="memItemLeft" align="right" valign="top"><a id="a3420236b96f10aa32a4edd57bb92558a" name="a3420236b96f10aa32a4edd57bb92558a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event)</td></tr>
-<tr class="memdesc:a3420236b96f10aa32a4edd57bb92558a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component. This may be of any type. A component must specify the types of messages it may receive and what it will do with it. <br /></td></tr>
-<tr class="separator:a3420236b96f10aa32a4edd57bb92558a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97d8cce36ea8819625ff40e8fa095d9" id="r_ab97d8cce36ea8819625ff40e8fa095d9"><td class="memItemLeft" align="right" valign="top"><a id="ab97d8cce36ea8819625ff40e8fa095d9" name="ab97d8cce36ea8819625ff40e8fa095d9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context)</td></tr>
+<tr class="memdesc:ab97d8cce36ea8819625ff40e8fa095d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component with dispatch context. This may be of any type. A component must specify the types of messages it may receive and what it will do with them. <br /></td></tr>
+<tr class="separator:ab97d8cce36ea8819625ff40e8fa095d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab65e6b13641abb63bd57956bf9222ce4" id="r_ab65e6b13641abb63bd57956bf9222ce4"><td class="memItemLeft" align="right" valign="top"><a id="ab65e6b13641abb63bd57956bf9222ce4" name="ab65e6b13641abb63bd57956bf9222ce4"></a>
 nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> () const</td></tr>
 <tr class="memdesc:ab65e6b13641abb63bd57956bf9222ce4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns details about the component in JSON format. <br /></td></tr>
@@ -264,9 +266,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a595a774abe1b8c06f5d73bab7ad2bc60" id="r_a595a774abe1b8c06f5d73bab7ad2bc60"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a595a774abe1b8c06f5d73bab7ad2bc60">do_draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const =0</td></tr>
 <tr class="memdesc:a595a774abe1b8c06f5d73bab7ad2bc60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed context. A component must only draw the part of itself specified by the region.  <br /></td></tr>
 <tr class="separator:a595a774abe1b8c06f5d73bab7ad2bc60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7fef15832573b1cbfb9fd30aed6338e" id="r_ae7fef15832573b1cbfb9fd30aed6338e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#ae7fef15832573b1cbfb9fd30aed6338e">do_event</a> (std::any const &amp;<a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a">event</a>)=0</td></tr>
-<tr class="memdesc:ae7fef15832573b1cbfb9fd30aed6338e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
-<tr class="separator:ae7fef15832573b1cbfb9fd30aed6338e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35529ac5bb561afcd4a4b366edd1affd" id="r_a35529ac5bb561afcd4a4b366edd1affd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a35529ac5bb561afcd4a4b366edd1affd">do_event</a> (std::any const &amp;<a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9">event</a>, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context)=0</td></tr>
+<tr class="memdesc:a35529ac5bb561afcd4a4b366edd1affd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9" title="Send an event to the component with dispatch context. This may be of any type. A component must speci...">event()</a> with dispatch context. Derived classes may override this function in order to handle events in a custom manner.  <br /></td></tr>
+<tr class="separator:a35529ac5bb561afcd4a4b366edd1affd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a387f94c7f99a59981dadd61c845c9a" id="r_a7a387f94c7f99a59981dadd61c845c9a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a7a387f94c7f99a59981dadd61c845c9a">do_set_id</a> (std::string const &amp;id)=0</td></tr>
 <tr class="memdesc:a7a387f94c7f99a59981dadd61c845c9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ad12c257cefd5d6ab2d8f8cfa6b905164" title="Sets the Automation ID of this component.">set_id()</a>. Derived classes must override this function in order to store the Automation ID in a custom manner.  <br /></td></tr>
 <tr class="separator:a7a387f94c7f99a59981dadd61c845c9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -324,12 +326,12 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classmunin_1_1brush.html#a8ca4d987cca71602d4d5e1e024a3ca27">munin::brush</a>, <a class="el" href="classmunin_1_1composite__component.html#a33767ff18696a7519703aa96144263d8">munin::composite_component</a>, <a class="el" href="classmunin_1_1filled__box.html#a9eebc5524ee06d25d4bce071c83fb664">munin::filled_box</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#aeb0b01ae02390036245bf4dc37ef7b51">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1image.html#ad1800497295082e3a98210f333874ea6">munin::image</a>, <a class="el" href="classmunin_1_1text__area.html#a29f6e7b7fc82e264eb3a27ce039a6f5f">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a5682c002ce5fca11055f99a75cf7a14e">munin::vertical_scrollbar</a>.</p>
+<p>Implemented in <a class="el" href="classpaint_1_1paint__canvas.html#aefad4b7015d1449c1a113ecb2e56c39e">paint::paint_canvas</a>, <a class="el" href="classpaint_1_1paint__palette.html#af1e42817a1392ec74b4ca33c94fc9a1c">paint::paint_palette</a>, <a class="el" href="classmunin_1_1brush.html#a8ca4d987cca71602d4d5e1e024a3ca27">munin::brush</a>, <a class="el" href="classmunin_1_1composite__component.html#a33767ff18696a7519703aa96144263d8">munin::composite_component</a>, <a class="el" href="classmunin_1_1filled__box.html#a9eebc5524ee06d25d4bce071c83fb664">munin::filled_box</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#aeb0b01ae02390036245bf4dc37ef7b51">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1image.html#ad1800497295082e3a98210f333874ea6">munin::image</a>, <a class="el" href="classmunin_1_1text__area.html#a29f6e7b7fc82e264eb3a27ce039a6f5f">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a5682c002ce5fca11055f99a75cf7a14e">munin::vertical_scrollbar</a>.</p>
 
 </div>
 </div>
-<a id="ae7fef15832573b1cbfb9fd30aed6338e" name="ae7fef15832573b1cbfb9fd30aed6338e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7fef15832573b1cbfb9fd30aed6338e">&#9670;&#160;</a></span>do_event()</h2>
+<a id="a35529ac5bb561afcd4a4b366edd1affd" name="a35529ac5bb561afcd4a4b366edd1affd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35529ac5bb561afcd4a4b366edd1affd">&#9670;&#160;</a></span>do_event()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -341,8 +343,18 @@ Protected Member Functions</h2></td></tr>
           <td class="memname">virtual void munin::component::do_event </td>
           <td>(</td>
           <td class="paramtype">std::any const &amp;&#160;</td>
-          <td class="paramname"><em>event</em></td><td>)</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -352,9 +364,9 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner. </p>
+<p>Called by <a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9" title="Send an event to the component with dispatch context. This may be of any type. A component must speci...">event()</a> with dispatch context. Derived classes may override this function in order to handle events in a custom manner. </p>
 
-<p>Implemented in <a class="el" href="classmunin_1_1framed__component.html#a6b4b25227dd668e90ea1dadc4e74bfcd">munin::framed_component</a>, <a class="el" href="classmunin_1_1basic__component.html#a2338239d1d7957b8ec3c0dd0a51aaf36">munin::basic_component</a>, <a class="el" href="classmunin_1_1button.html#aa39bb843d46b0959e71cdc64701bbf5d">munin::button</a>, <a class="el" href="classmunin_1_1composite__component.html#a2fc0e11f414d13203e8d481b7de19ff8">munin::composite_component</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#a4db26768fbeae2eb09857fd774d8aca3">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1text__area.html#a869525599b1fce4b39882fae96731b44">munin::text_area</a>, <a class="el" href="classmunin_1_1toggle__button.html#aed2265d3816da82d7da22b18b0c46ca3">munin::toggle_button</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a301b17e42d3a028ecda5d4553d3b8ffb">munin::vertical_scrollbar</a>.</p>
+<p>Implemented in <a class="el" href="classmunin_1_1framed__component.html#ab713bab158e00a276c85e1cf7b75e8a3">munin::framed_component</a>, <a class="el" href="classmunin_1_1basic__component.html#afb7a66a88d7589cfa246cc1078ed912b">munin::basic_component</a>, <a class="el" href="classmunin_1_1button.html#a42d380d0894468967811b7c7c0662898">munin::button</a>, <a class="el" href="classmunin_1_1composite__component.html#a4ea46cb31cddab1cf3a682b916964b2f">munin::composite_component</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#a9c455dcb3c3747daac6ad77618a1b24b">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1text__area.html#ad89ddef0fa38a25ded8fb3ad7aa4b282">munin::text_area</a>, <a class="el" href="classmunin_1_1toggle__button.html#af853d4bf83737b18d41e41ce033e6aa6">munin::toggle_button</a>, <a class="el" href="classmunin_1_1vertical__scrollbar.html#a184af45ff65cf80236695ae9dd55125b">munin::vertical_scrollbar</a>, <a class="el" href="classpaint_1_1paint__app.html#ac65ebee2285efed74b45ab3ae90a10c7">paint::paint_app</a>, <a class="el" href="classpaint_1_1paint__canvas.html#a8f190cc01f76f63b17a63fc4bb616be5">paint::paint_canvas</a>, and <a class="el" href="classpaint_1_1paint__palette.html#a516f304d9c444fee78821d6b4cde4cd2">paint::paint_palette</a>.</p>
 
 </div>
 </div>
@@ -557,7 +569,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Called by <a class="el" href="classmunin_1_1component.html#a805b7b399ed5d53c81784f98d69de9e5" title="Retrieves the preferred size of this component.">get_preferred_size()</a>. Derived classes must override this function in order to get the size of the component in a custom manner. </p>
 
-<p>Implemented in <a class="el" href="classmunin_1_1brush.html#ae793103eb9ce5cd8a57c04e4d1b5e6a1">munin::brush</a>, <a class="el" href="classmunin_1_1composite__component.html#a0e3aba76b92be89f98936cdb3a8dcf5f">munin::composite_component</a>, <a class="el" href="classmunin_1_1filled__box.html#a25f1acd361a81157d6c67718046be6bd">munin::filled_box</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#a2049c5dac9bdb1051c41582bebc90dbf">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1image.html#a46d8923b0148c44e475b9b7908324e88">munin::image</a>, <a class="el" href="classmunin_1_1text__area.html#a87dbc58c6e454d68da94c268facabde5">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a726fc0e4d2d084a18978b3016b391bce">munin::vertical_scrollbar</a>.</p>
+<p>Implemented in <a class="el" href="classpaint_1_1paint__canvas.html#a178c2f573d40b88ce6dc2a257ff0950a">paint::paint_canvas</a>, <a class="el" href="classpaint_1_1paint__palette.html#a029c8a1bebd1417e600fede4152ea524">paint::paint_palette</a>, <a class="el" href="classmunin_1_1brush.html#ae793103eb9ce5cd8a57c04e4d1b5e6a1">munin::brush</a>, <a class="el" href="classmunin_1_1composite__component.html#a0e3aba76b92be89f98936cdb3a8dcf5f">munin::composite_component</a>, <a class="el" href="classmunin_1_1filled__box.html#a25f1acd361a81157d6c67718046be6bd">munin::filled_box</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#a2049c5dac9bdb1051c41582bebc90dbf">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1image.html#a46d8923b0148c44e475b9b7908324e88">munin::image</a>, <a class="el" href="classmunin_1_1text__area.html#a87dbc58c6e454d68da94c268facabde5">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a726fc0e4d2d084a18978b3016b391bce">munin::vertical_scrollbar</a>.</p>
 
 </div>
 </div>
@@ -793,7 +805,7 @@ Protected Member Functions</h2></td></tr>
 
 <p>Called by <a class="el" href="classmunin_1_1component.html#a1c41d4901b62df7c1058d637e5eb4ed0" title="Sets the size of this component. This does not cause a redraw, on the basis that the entity performin...">set_size()</a>. Derived classes must override this function in order to set the size of the component in a custom manner. </p>
 
-<p>Implemented in <a class="el" href="classmunin_1_1basic__component.html#aa50e2a335fbf96b240eb14a1034422c8">munin::basic_component</a>, <a class="el" href="classmunin_1_1composite__component.html#a7f38d0d34d02dbdb9a0808f2823e1f75">munin::composite_component</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#ac5b832db7fbd08b12ecaaba1aa9a2703">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1text__area.html#a21b552412b6329bd5ab1af03f7ac5874">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a265420f53694bb96582166e20bbf5f21">munin::vertical_scrollbar</a>.</p>
+<p>Implemented in <a class="el" href="classpaint_1_1paint__canvas.html#a35cd6ab82f3f1b985010d66cebf09173">paint::paint_canvas</a>, <a class="el" href="classmunin_1_1basic__component.html#aa50e2a335fbf96b240eb14a1034422c8">munin::basic_component</a>, <a class="el" href="classmunin_1_1composite__component.html#a7f38d0d34d02dbdb9a0808f2823e1f75">munin::composite_component</a>, <a class="el" href="classmunin_1_1horizontal__scrollbar.html#ac5b832db7fbd08b12ecaaba1aa9a2703">munin::horizontal_scrollbar</a>, <a class="el" href="classmunin_1_1text__area.html#a21b552412b6329bd5ab1af03f7ac5874">munin::text_area</a>, and <a class="el" href="classmunin_1_1vertical__scrollbar.html#a265420f53694bb96582166e20bbf5f21">munin::vertical_scrollbar</a>.</p>
 
 </div>
 </div>
@@ -850,8 +862,8 @@ Protected Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section user"><dt></dt><dd>Draws the whole component, as if <div class="fragment"><div class="line"><a class="code hl_class" href="classmunin_1_1component.html">component</a>.<a class="code hl_function" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">draw</a>(surface, {{}, <a class="code hl_class" href="classmunin_1_1component.html">component</a>.size()});</div>
-<div class="ttc" id="aclassmunin_1_1component_html"><div class="ttname"><a href="classmunin_1_1component.html">munin::component</a></div><div class="ttdoc">An object capable of being drawn on a canvas.</div><div class="ttdef"><b>Definition</b> component.hpp:25</div></div>
-<div class="ttc" id="aclassmunin_1_1component_html_a10ee479b2c677856585addc95fc053bb"><div class="ttname"><a href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">munin::component::draw</a></div><div class="ttdeci">void draw(render_surface &amp;surface) const</div><div class="ttdoc">Draws the component.</div><div class="ttdef"><b>Definition</b> component.cpp:135</div></div>
+<div class="ttc" id="aclassmunin_1_1component_html"><div class="ttname"><a href="classmunin_1_1component.html">munin::component</a></div><div class="ttdoc">An object capable of being drawn on a canvas.</div><div class="ttdef"><b>Definition</b> component.hpp:26</div></div>
+<div class="ttc" id="aclassmunin_1_1component_html_a10ee479b2c677856585addc95fc053bb"><div class="ttname"><a href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">munin::component::draw</a></div><div class="ttdeci">void draw(render_surface &amp;surface) const</div><div class="ttdoc">Draws the component.</div><div class="ttdef"><b>Definition</b> component.cpp:136</div></div>
 </div><!-- fragment --> had been called. </dd></dl>
 
 </div>
@@ -945,7 +957,7 @@ Protected Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 9 2026 14:07:17 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

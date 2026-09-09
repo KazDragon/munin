@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.9.0.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -83,7 +83,7 @@ $(function() {
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#aabb9db037926e10d515a9b732539358f">component</a>()=default</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#a595a774abe1b8c06f5d73bab7ad2bc60">do_draw</a>(render_surface &amp;surface, terminalpp::rectangle const &amp;region) const =0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#ae7fef15832573b1cbfb9fd30aed6338e">do_event</a>(std::any const &amp;event)=0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#a35529ac5bb561afcd4a4b366edd1affd">do_event</a>(std::any const &amp;event, event_context &amp;context)=0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#aebc18c0f2f17101a6eb775a93ba83a6f">do_focus_next</a>()=0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#ac594f17c9ad90b1cf46c555dfe7ded84">do_focus_previous</a>()=0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#a2f27978f8519ecf3cfef6624775245db">do_get_cursor_position</a>() const =0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
@@ -102,7 +102,7 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#ac3ac939f9b8b297250a2388033111a5a">do_to_json</a>() const =0</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb">draw</a>(render_surface &amp;surface) const</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">draw</a>(render_surface &amp;surface, terminalpp::rectangle const &amp;region) const</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a">event</a>(std::any const &amp;event)</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9">event</a>(std::any const &amp;event, event_context &amp;context)</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#ad438c0cf8ebe368f0bc8c277ed9267d5">focus_next</a>()</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classmunin_1_1component.html#a72536889752765ca776a593adf9a9dd5">focus_previous</a>()</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classmunin_1_1component.html#a94e67634045cb8848184d7384275ff9e">get_cursor_position</a>() const</td><td class="entry"><a class="el" href="classmunin_1_1component.html">munin::component</a></td><td class="entry"></td></tr>
@@ -129,7 +129,7 @@ $(function() {
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 9 2026 14:07:17 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

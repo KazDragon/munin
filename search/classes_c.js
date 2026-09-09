@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['scroll_5fframe_0',['scroll_frame',['../classmunin_1_1scroll__frame.html',1,'munin']]],
-  ['scroll_5fpane_1',['scroll_pane',['../classmunin_1_1scroll__pane.html',1,'munin']]],
-  ['solid_5fframe_2',['solid_frame',['../classmunin_1_1solid__frame.html',1,'munin']]],
-  ['status_5fbar_3',['status_bar',['../classmunin_1_1status__bar.html',1,'munin']]]
+  ['paint_5fapp_0',['paint_app',['../classpaint_1_1paint__app.html',1,'paint']]],
+  ['paint_5fcanvas_1',['paint_canvas',['../classpaint_1_1paint__canvas.html',1,'paint']]],
+  ['paint_5fmodel_2',['paint_model',['../classpaint_1_1paint__model.html',1,'paint']]],
+  ['paint_5fpalette_3',['paint_palette',['../classpaint_1_1paint__palette.html',1,'paint']]]
 ];

@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['version_0',['Version',['../classnext__release_1_1Version.html',1,'next_release']]],
-  ['vertical_5fscrollbar_1',['vertical_scrollbar',['../classmunin_1_1vertical__scrollbar.html',1,'munin']]],
-  ['vertical_5fstrip_5flayout_2',['vertical_strip_layout',['../classmunin_1_1vertical__strip__layout.html',1,'munin']]],
-  ['viewport_3',['viewport',['../classmunin_1_1viewport.html',1,'munin']]]
+  ['scroll_5fframe_0',['scroll_frame',['../classmunin_1_1scroll__frame.html',1,'munin']]],
+  ['scroll_5fpane_1',['scroll_pane',['../classmunin_1_1scroll__pane.html',1,'munin']]],
+  ['solid_5fframe_2',['solid_frame',['../classmunin_1_1solid__frame.html',1,'munin']]],
+  ['status_5fbar_3',['status_bar',['../classmunin_1_1status__bar.html',1,'munin']]]
 ];

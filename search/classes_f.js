@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['window_0',['window',['../classmunin_1_1window.html',1,'munin']]],
-  ['with_5fid_1',['with_id',['../structmunin_1_1with__id.html',1,'munin']]]
+  ['text_5farea_0',['text_area',['../classmunin_1_1text__area.html',1,'munin']]],
+  ['titled_5fframe_1',['titled_frame',['../classmunin_1_1titled__frame.html',1,'munin']]],
+  ['toggle_5fbutton_2',['toggle_button',['../classmunin_1_1toggle__button.html',1,'munin']]]
 ];

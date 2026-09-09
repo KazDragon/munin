@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['text_5farea_0',['text_area',['../classmunin_1_1text__area.html',1,'munin']]],
-  ['titled_5fframe_1',['titled_frame',['../classmunin_1_1titled__frame.html',1,'munin']]],
-  ['toggle_5fbutton_2',['toggle_button',['../classmunin_1_1toggle__button.html',1,'munin']]]
+  ['render_5fsurface_0',['render_surface',['../classmunin_1_1render__surface.html',1,'munin']]],
+  ['render_5fsurface_5fcapabilities_1',['render_surface_capabilities',['../structmunin_1_1render__surface__capabilities.html',1,'munin']]],
+  ['resize_5fstrategy_2',['resize_strategy',['../structmunin_1_1viewport_1_1resize__strategy.html',1,'munin::viewport']]]
 ];

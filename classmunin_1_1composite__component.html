@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.9.0.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -93,12 +93,13 @@ Inheritance diagram for munin::composite_component:</div>
  <div class="center">
   <img src="classmunin_1_1composite__component.png" usemap="#munin::composite_5Fcomponent_map" alt=""/>
   <map id="munin::composite_5Fcomponent_map" name="munin::composite_5Fcomponent_map">
-<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="370,56,545,80"/>
-<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="370,0,545,24"/>
+<area href="classmunin_1_1basic__component.html" title="A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen..." alt="munin::basic_component" shape="rect" coords="555,56,730,80"/>
+<area href="classmunin_1_1component.html" title="An object capable of being drawn on a canvas." alt="munin::component" shape="rect" coords="555,0,730,24"/>
 <area href="classmunin_1_1button.html" title="A class that implements a clickable button." alt="munin::button" shape="rect" coords="0,168,175,192"/>
 <area href="classmunin_1_1frame.html" title="A base class for frames that exposes the border widths." alt="munin::frame" shape="rect" coords="185,168,360,192"/>
 <area href="classmunin_1_1framed__component.html" title="A class that models a box that is always completely filled with a given element." alt="munin::framed_component" shape="rect" coords="555,168,730,192"/>
 <area href="classmunin_1_1toggle__button.html" title="A class that implements a clickable button." alt="munin::toggle_button" shape="rect" coords="740,168,915,192"/>
+<area href="classpaint_1_1paint__app.html" alt="paint::paint_app" shape="rect" coords="925,168,1100,192"/>
 <area href="classmunin_1_1scroll__frame.html" title="A class that frames a viewport using scrollbars." alt="munin::scroll_frame" shape="rect" coords="0,224,175,248"/>
 <area href="classmunin_1_1solid__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::solid_frame" shape="rect" coords="185,224,360,248"/>
 <area href="classmunin_1_1titled__frame.html" title="A component that draws a frame around its edges, and leaves the rest of the canvas undrawn." alt="munin::titled_frame" shape="rect" coords="370,224,545,248"/>
@@ -187,10 +188,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> () 
 <tr class="memitem:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component" id="r_a6ff83b678abcd5faabdf76c7bf44efa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const</td></tr>
 <tr class="memdesc:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <br /></td></tr>
 <tr class="separator:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component" id="r_a3420236b96f10aa32a4edd57bb92558a"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event)</td></tr>
-<tr class="memdesc:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component. This may be of any type. A component must specify the types of messages it may receive and what it will do with it. <br /></td></tr>
-<tr class="separator:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component" id="r_ab97d8cce36ea8819625ff40e8fa095d9"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context)</td></tr>
+<tr class="memdesc:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component with dispatch context. This may be of any type. A component must specify the types of messages it may receive and what it will do with them. <br /></td></tr>
+<tr class="separator:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component" id="r_ab65e6b13641abb63bd57956bf9222ce4"><td class="memItemLeft" align="right" valign="top">
 nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> () const</td></tr>
 <tr class="memdesc:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns details about the component in JSON format. <br /></td></tr>
@@ -248,9 +249,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>add_component</b> (st
 <tr class="memitem:a33767ff18696a7519703aa96144263d8" id="r_a33767ff18696a7519703aa96144263d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1composite__component.html#a33767ff18696a7519703aa96144263d8">do_draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const override</td></tr>
 <tr class="memdesc:a33767ff18696a7519703aa96144263d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a10ee479b2c677856585addc95fc053bb" title="Draws the component.">draw()</a>. Derived classes must override this function in order to draw onto the passed context. A component must only draw the part of itself specified by the region.  <br /></td></tr>
 <tr class="separator:a33767ff18696a7519703aa96144263d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fc0e11f414d13203e8d481b7de19ff8" id="r_a2fc0e11f414d13203e8d481b7de19ff8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1composite__component.html#a2fc0e11f414d13203e8d481b7de19ff8">do_event</a> (std::any const &amp;<a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a">event</a>) override</td></tr>
-<tr class="memdesc:a2fc0e11f414d13203e8d481b7de19ff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
-<tr class="separator:a2fc0e11f414d13203e8d481b7de19ff8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ea46cb31cddab1cf3a682b916964b2f" id="r_a4ea46cb31cddab1cf3a682b916964b2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1composite__component.html#a4ea46cb31cddab1cf3a682b916964b2f">do_event</a> (std::any const &amp;<a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9">event</a>, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context) override</td></tr>
+<tr class="memdesc:a4ea46cb31cddab1cf3a682b916964b2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9" title="Send an event to the component with dispatch context. This may be of any type. A component must speci...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
+<tr class="separator:a4ea46cb31cddab1cf3a682b916964b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefb36ed148bdd00ca50df815ac8209cc" id="r_aefb36ed148bdd00ca50df815ac8209cc"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1composite__component.html#aefb36ed148bdd00ca50df815ac8209cc">do_to_json</a> () const override</td></tr>
 <tr class="memdesc:aefb36ed148bdd00ca50df815ac8209cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab65e6b13641abb63bd57956bf9222ce4" title="Returns details about the component in JSON format.">to_json()</a>. Derived classes must override this function in order to add additional data about their implementation in a custom manner.  <br /></td></tr>
 <tr class="separator:aefb36ed148bdd00ca50df815ac8209cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -352,8 +353,8 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 
 </div>
 </div>
-<a id="a2fc0e11f414d13203e8d481b7de19ff8" name="a2fc0e11f414d13203e8d481b7de19ff8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2fc0e11f414d13203e8d481b7de19ff8">&#9670;&#160;</a></span>do_event()</h2>
+<a id="a4ea46cb31cddab1cf3a682b916964b2f" name="a4ea46cb31cddab1cf3a682b916964b2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ea46cb31cddab1cf3a682b916964b2f">&#9670;&#160;</a></span>do_event()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,8 +366,18 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
           <td class="memname">void munin::composite_component::do_event </td>
           <td>(</td>
           <td class="paramtype">std::any const &amp;&#160;</td>
-          <td class="paramname"><em>event</em></td><td>)</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;&#160;</td>
+          <td class="paramname"><em>context</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -376,11 +387,11 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 </table>
 </div><div class="memdoc">
 
-<p>Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner. </p>
+<p>Called by <a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9" title="Send an event to the component with dispatch context. This may be of any type. A component must speci...">event()</a>. Derived classes must override this function in order to handle events in a custom manner. </p>
 
-<p>Reimplemented from <a class="el" href="classmunin_1_1basic__component.html#a2338239d1d7957b8ec3c0dd0a51aaf36">munin::basic_component</a>.</p>
+<p>Reimplemented from <a class="el" href="classmunin_1_1basic__component.html#afb7a66a88d7589cfa246cc1078ed912b">munin::basic_component</a>.</p>
 
-<p>Reimplemented in <a class="el" href="classmunin_1_1framed__component.html#a6b4b25227dd668e90ea1dadc4e74bfcd">munin::framed_component</a>, and <a class="el" href="classmunin_1_1toggle__button.html#aed2265d3816da82d7da22b18b0c46ca3">munin::toggle_button</a>.</p>
+<p>Reimplemented in <a class="el" href="classmunin_1_1framed__component.html#ab713bab158e00a276c85e1cf7b75e8a3">munin::framed_component</a>, <a class="el" href="classmunin_1_1toggle__button.html#af853d4bf83737b18d41e41ce033e6aa6">munin::toggle_button</a>, and <a class="el" href="classpaint_1_1paint__app.html#ac65ebee2285efed74b45ab3ae90a10c7">paint::paint_app</a>.</p>
 
 </div>
 </div>
@@ -802,7 +813,7 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 9 2026 14:07:17 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

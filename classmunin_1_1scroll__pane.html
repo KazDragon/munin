@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.9.0.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -212,10 +212,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_id</b> () 
 <tr class="memitem:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component" id="r_a6ff83b678abcd5faabdf76c7bf44efa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1component.html#a6ff83b678abcd5faabdf76c7bf44efa0">draw</a> (<a class="el" href="classmunin_1_1render__surface.html">render_surface</a> &amp;surface, terminalpp::rectangle const &amp;region) const</td></tr>
 <tr class="memdesc:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws the component.  <br /></td></tr>
 <tr class="separator:a6ff83b678abcd5faabdf76c7bf44efa0 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component" id="r_a3420236b96f10aa32a4edd57bb92558a"><td class="memItemLeft" align="right" valign="top">
-void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event)</td></tr>
-<tr class="memdesc:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component. This may be of any type. A component must specify the types of messages it may receive and what it will do with it. <br /></td></tr>
-<tr class="separator:a3420236b96f10aa32a4edd57bb92558a inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component" id="r_ab97d8cce36ea8819625ff40e8fa095d9"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>event</b> (std::any const &amp;event, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context)</td></tr>
+<tr class="memdesc:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send an event to the component with dispatch context. This may be of any type. A component must specify the types of messages it may receive and what it will do with them. <br /></td></tr>
+<tr class="separator:ab97d8cce36ea8819625ff40e8fa095d9 inherit pub_methods_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component" id="r_ab65e6b13641abb63bd57956bf9222ce4"><td class="memItemLeft" align="right" valign="top">
 nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> () const</td></tr>
 <tr class="memdesc:ab65e6b13641abb63bd57956bf9222ce4 inherit pub_methods_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns details about the component in JSON format. <br /></td></tr>
@@ -248,9 +248,9 @@ boost::signals2::signal&lt; void()&gt;&#160;</td><td class="memItemRight" valign
 <tr class="memdesc:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to this signal in order to receive notifications about when the component's cursor position changes. <br /></td></tr>
 <tr class="separator:ae2a65ddc2f293efdcf992bb617265cdf inherit pub_attribs_classmunin_1_1component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classmunin_1_1framed__component"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classmunin_1_1framed__component')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classmunin_1_1framed__component.html">munin::framed_component</a></td></tr>
-<tr class="memitem:a6b4b25227dd668e90ea1dadc4e74bfcd inherit pro_methods_classmunin_1_1framed__component" id="r_a6b4b25227dd668e90ea1dadc4e74bfcd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1framed__component.html#a6b4b25227dd668e90ea1dadc4e74bfcd">do_event</a> (std::any const &amp;ev) override</td></tr>
-<tr class="memdesc:a6b4b25227dd668e90ea1dadc4e74bfcd inherit pro_methods_classmunin_1_1framed__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#a3420236b96f10aa32a4edd57bb92558a" title="Send an event to the component. This may be of any type. A component must specify the types of messag...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
-<tr class="separator:a6b4b25227dd668e90ea1dadc4e74bfcd inherit pro_methods_classmunin_1_1framed__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab713bab158e00a276c85e1cf7b75e8a3 inherit pro_methods_classmunin_1_1framed__component" id="r_ab713bab158e00a276c85e1cf7b75e8a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1framed__component.html#ab713bab158e00a276c85e1cf7b75e8a3">do_event</a> (std::any const &amp;ev, <a class="el" href="classmunin_1_1event__context.html">event_context</a> &amp;context) override</td></tr>
+<tr class="memdesc:ab713bab158e00a276c85e1cf7b75e8a3 inherit pro_methods_classmunin_1_1framed__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab97d8cce36ea8819625ff40e8fa095d9" title="Send an event to the component with dispatch context. This may be of any type. A component must speci...">event()</a>. Derived classes must override this function in order to handle events in a custom manner.  <br /></td></tr>
+<tr class="separator:ab713bab158e00a276c85e1cf7b75e8a3 inherit pro_methods_classmunin_1_1framed__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb2a10c773523eab7313a6ba74e56b43 inherit pro_methods_classmunin_1_1framed__component" id="r_afb2a10c773523eab7313a6ba74e56b43"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmunin_1_1framed__component.html#afb2a10c773523eab7313a6ba74e56b43">do_to_json</a> () const override</td></tr>
 <tr class="memdesc:afb2a10c773523eab7313a6ba74e56b43 inherit pro_methods_classmunin_1_1framed__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called by <a class="el" href="classmunin_1_1component.html#ab65e6b13641abb63bd57956bf9222ce4" title="Returns details about the component in JSON format.">to_json()</a>. Derived classes must override this function in order to add additional data about their implementation in a custom manner.  <br /></td></tr>
 <tr class="separator:afb2a10c773523eab7313a6ba74e56b43 inherit pro_methods_classmunin_1_1framed__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -334,7 +334,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>can_receive_focus</b>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 9 2026 14:07:17 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>

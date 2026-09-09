@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="raven.jpg"/></td>
   <td id="projectalign">
-   <div id="projectname">Munin<span id="projectnumber">&#160;0.8.2.1</span>
+   <div id="projectname">Munin<span id="projectnumber">&#160;0.9.0.1</span>
    </div>
    <div id="projectbrief">A text-based gui component library built on Terminal++</div>
   </td>
@@ -138,7 +138,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="comment">//* =====================================================================</span></div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">//* =====================================================================</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> do_event(std::any <span class="keyword">const</span> &amp;event) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> do_event(std::any <span class="keyword">const</span> &amp;event, <a class="code hl_class" href="classmunin_1_1event__context.html">event_context</a> &amp;context) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
 <div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="comment">//* =====================================================================</span></div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="comment">//* =====================================================================</span></div>
@@ -156,6 +156,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span> </div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>}  <span class="comment">// namespace munin</span></div>
 <div class="ttc" id="aclassmunin_1_1basic__component_html"><div class="ttname"><a href="classmunin_1_1basic__component.html">munin::basic_component</a></div><div class="ttdoc">A default implementation of a component. Only do_draw() and do_get_preferred_size() remain unimplemen...</div><div class="ttdef"><b>Definition</b> basic_component.hpp:14</div></div>
+<div class="ttc" id="aclassmunin_1_1event__context_html"><div class="ttname"><a href="classmunin_1_1event__context.html">munin::event_context</a></div><div class="ttdef"><b>Definition</b> event_context.hpp:14</div></div>
 <div class="ttc" id="aclassmunin_1_1list_html"><div class="ttname"><a href="classmunin_1_1list.html">munin::list</a></div><div class="ttdoc">A class that displays a list of elements.</div><div class="ttdef"><b>Definition</b> list.hpp:14</div></div>
 <div class="ttc" id="aclassmunin_1_1list_html_a59ecace60cfc652b3ec60701259a35d2"><div class="ttname"><a href="classmunin_1_1list.html#a59ecace60cfc652b3ec60701259a35d2">munin::list::on_item_changed</a></div><div class="ttdeci">boost::signals2::signal&lt; void()&gt; on_item_changed</div><div class="ttdoc">Connect to this signal to receive notifications when the selected item has changed.</div><div class="ttdef"><b>Definition</b> list.hpp:47</div></div>
 <div class="ttc" id="aclassmunin_1_1list_html_aa1e0094526a4038ac3f562f71de02311"><div class="ttname"><a href="classmunin_1_1list.html#aa1e0094526a4038ac3f562f71de02311">munin::list::~list</a></div><div class="ttdeci">~list() override</div><div class="ttdoc">Constructor.</div></div>
@@ -163,7 +164,7 @@ $(document).ready(function() { init_codefold(0); });
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Aug 5 2026 11:26:35 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+Generated on Wed Sep 9 2026 14:07:17 for Munin by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
 </small></address>
 </body>
 </html>
